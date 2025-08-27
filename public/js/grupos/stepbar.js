@@ -38,18 +38,22 @@
                 siguienteIndex = i; break;
             }
         }
-        const todasCompletadas = ORDEN.every(s => estadosCaptura[s] && estadosCaptura[s].estado);
 
-    navItems.forEach((item, i) => {
+        // Reset visual de todos los items (móvil y lateral)
+        navItems.forEach((item) => {
             item.classList.remove('completed', 'current', 'disabled', 'active', 'actual');
             const circle = item.querySelector('.step-circle');
             if (circle) circle.removeAttribute('data-status');
         });
 
-        navItems.forEach((item, i) => {
-            const sec = ORDEN[i];
+        // Aplicar estado por cada item según su data-step
+        navItems.forEach((item) => {
+            const sec = item.getAttribute('data-step');
+            if (!sec) return;
+            const idx = ORDEN.indexOf(sec);
             const circle = item.querySelector('.step-circle');
-            const completada = !!(estadosCaptura[sec] && estadosCaptura[sec].estado);
+            const completada = idx > -1 && !!(estadosCaptura[sec] && estadosCaptura[sec].estado);
+
             // Caso: selección manual prevalece (sin importar estado)
             if (pasoSeleccionado && pasoSeleccionado === sec) {
                 item.classList.add('active', 'actual');
@@ -57,11 +61,12 @@
                 item.style.pointerEvents='auto'; item.style.opacity='1';
                 return; // saltar resto
             }
+
             if (completada) {
                 item.classList.add('completed');
                 if (circle) circle.setAttribute('data-status', 'terminado');
                 item.style.pointerEvents = 'auto'; item.style.opacity = '1';
-            } else if (i === siguienteIndex) {
+            } else if (idx === siguienteIndex) {
                 // Es la primera pendiente
                 if (!pasoSeleccionado) {
                     // Caso normal: se muestra como actual

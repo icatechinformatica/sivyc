@@ -42,6 +42,45 @@
     .header-grupos .obs-badge { cursor: pointer; }
     .header-grupos .title-wrap, .header-grupos .obs-container, .header-grupos .badges-wrap { flex-shrink: 0; }
     .header-grupos .obs-container { flex: 1 1 auto; }
+
+    /* Inputs full-width en móvil dentro de esta vista */
+    .step-section .form-group .form-control,
+    .step-section .mb-2 .form-control,
+    .step-section select.form-control,
+    .step-section textarea.form-control { width: 100%; }
+
+    /* Ajuste específico para el buscador de CURP en móviles */
+    @media (max-width: 767.98px) {
+        #alumnos .input-group { width: 100% !important; }
+        #alumnos .input-group .form-control { flex: 1 1 auto; min-width: 0; }
+    }
+    /* Mantener un ancho cómodo en escritorio para el buscador de CURP */
+    @media (min-width: 768px) {
+        #alumnos .input-group { max-width: 400px; }
+    }
+
+    /* Reducir paddings/márgenes anidados en móvil para mejor aprovechamiento del ancho */
+    @media (max-width: 767.98px) {
+        /* Header compacto */
+        .header-grupos { padding: .5rem .75rem !important; }
+
+        /* Card body general más compacto en esta vista */
+        .card.card-body { padding: .75rem !important; }
+
+        /* Secciones: reducir separación vertical y padding interno */
+        .step-section.mb-4 { margin-bottom: 1rem !important; }
+        .step-section > .p-3 { padding: .75rem !important; }
+
+        /* Evitar doble gutter en columnas de sección, respetando px-0 cuando exista */
+        .step-section:not(.px-0) { padding-left: .5rem !important; padding-right: .5rem !important; }
+
+        /* Stepbar móvil aún más compacto */
+        .step-progress-nav-mobile .list-group-item { padding: .25rem .25rem !important; }
+
+        /* Títulos y separaciones internas un poco más compactas */
+        .step-section h5 { margin-bottom: .75rem !important; }
+        .step-section .d-flex.justify-content-end { margin-top: .75rem !important; }
+    }
 </style>
 @endpush
 
@@ -89,6 +128,31 @@
 
 <div class="card card-body">
     <div class="row">
+        {{-- * Stepbar móvil superior (solo círculos) --}} 
+        <div class="col-12 d-block d-md-none">
+            <nav id="step-progress-mobile" class="nav-sticky-mobile">
+                <ul class="list-group list-group-horizontal step-progress-nav step-progress-nav-mobile flex-nowrap overflow-auto" role="tablist" aria-label="Progreso de registro">
+                    <li class="list-group-item py-2 px-1" data-step="info_general">
+                        <span class="step-circle" data-status="actual">1</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="ubicacion">
+                        <span class="step-circle" data-status="restante">2</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="organismo">
+                        <span class="step-circle" data-status="restante">3</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="opciones">
+                        <span class="step-circle" data-status="restante">4</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="agenda">
+                        <span class="step-circle" data-status="restante">5</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="alumnos">
+                        <span class="step-circle" data-status="restante">6</span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
         {{-- * Barra de pasos lateral --}}
         <div class="col-md-3 d-none d-md-block">
             <nav id="step-progress" class="nav-sticky">
@@ -126,11 +190,11 @@
         @endif
         <div class="col-md-9">
             {{-- * Sección: Información general --> --}}
-            <div class="col-12 mb-4 step-section" id="info_general">
+            <div class="col-md-12 mb-4 step-section px-0" id="info_general">
                 {{ html()->form('POST')->id('info_general_form')->open() }}
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Información general</h5>
-                    <div class="row my-1">
+                    <div class="row my-1 px-0">
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('IMPARTICIÓN', 'imparticion')->class('form-label mb-1') }}
                             {{ html()->select('imparticion', [null => 'SELECCIONE EL TIPO DE IMPARTICIÓN'] + $tiposImparticion->pluck('imparticion', 'id')->toArray())->class('form-control')->required()

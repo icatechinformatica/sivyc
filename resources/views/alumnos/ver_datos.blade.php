@@ -42,6 +42,34 @@ if (!$esNuevoRegistro && $datos) {
 <div class="card card-body" id="formulario-alumno">
     {{-- Formulario de Datos Personales --}}
     <div class="row">
+        {{-- * Stepbar móvil superior (solo círculos) --}}
+        <div class="col-12 d-block d-md-none">
+            <nav id="step-progress-mobile" class="nav-sticky-mobile">
+                <ul class="list-group list-group-horizontal step-progress-nav step-progress-nav-mobile flex-nowrap overflow-auto" role="tablist" aria-label="Progreso de registro de alumno">
+                    <li class="list-group-item py-2 px-1" data-step="datos-personales">
+                        <span class="step-circle" data-status="actual">1</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="domicilio_section">
+                        <span class="step-circle" data-status="restante">2</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="contacto">
+                        <span class="step-circle" data-status="restante">3</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="grupos-vulnerables">
+                        <span class="step-circle" data-status="restante">4</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="capacitacion">
+                        <span class="step-circle" data-status="restante">5</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="laboral">
+                        <span class="step-circle" data-status="restante">6</span>
+                    </li>
+                    <li class="list-group-item py-2 px-1" data-step="cerss">
+                        <span class="step-circle" data-status="restante">7</span>
+                    </li>
+                </ul>
+            </nav>
+        </div>
         <!-- Step Progress y contenido principal -->
         <div class="col-md-3 d-none d-md-block">
             <nav id="step-progress" class="nav-sticky">
@@ -86,18 +114,18 @@ if (!$esNuevoRegistro && $datos) {
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-person-vcard mr-2"></i>Datos personales
                     </h5>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('CURP')->for('curp') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="curp-addon"><i class="bi bi-credit-card-2-front"></i></span>
                                 </div>
                                 {{ html()->text('curp')->class('form-control')->id('curp')->isReadonly(true)->value($esNuevoRegistro ? $curp : $datos->curp) }}
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Adjuntar Documento CURP')->for('documento_curp') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="documento-curp-addon"><i class="bi bi-file-earmark-text"></i></span>
                                 </div>
@@ -112,9 +140,9 @@ if (!$esNuevoRegistro && $datos) {
                             </small>
                             @endif
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Fecha de Expedición CURP')->for('fecha_documento_curp') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-curp-addon"><i class="bi bi-calendar"></i></span>
                                 </div>
@@ -122,18 +150,18 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro && !empty($documentos['curp']['fecha_expedicion']) ? date('Y-m-d', strtotime($documentos['curp']['fecha_expedicion'])) : '' ) !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Nombre')->for('nombre_s') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nombre-addon"><i class="bi bi-person"></i></span>
                                 </div>
                                 {!! html()->text('nombre_s')->class('form-control')->id('nombre_s')->attribute('aria-label', 'Nombre')->value(!$esNuevoRegistro ? $datos->nombre : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Primer Apellido')->for('primer_apellido') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="primer-apellido-addon"><i
                                             class="bi bi-person-lines-fill"></i></span>
@@ -144,9 +172,9 @@ if (!$esNuevoRegistro && $datos) {
                                 'primer-apellido-addon')->value(!$esNuevoRegistro ? $datos->apellido_paterno : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Segundo Apellido')->for('segundo_apellido') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="segundo-apellido-addon"><i class="bi bi-person-lines-fill"></i></span>
                                 </div>
@@ -154,9 +182,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro ? $datos->apellido_materno : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Entidad de Nacimiento')->for('entidad_de_nacimiento_select') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="entidad-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
@@ -166,9 +194,9 @@ if (!$esNuevoRegistro && $datos) {
 
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Fecha de Nacimiento')->for('fecha_de_nacimiento') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-addon"><i class="bi bi-calendar-date"></i></span>
                                 </div>
@@ -176,9 +204,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro ? $datos->fecha_nacimiento : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Sexo')->for('sexo') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="sexo-addon"><i class="bi bi-gender-ambiguous"></i></span>
                                 </div>
@@ -188,9 +216,9 @@ if (!$esNuevoRegistro && $datos) {
                                 {!! html()->text('sexo_input')->id('sexo_input')->class('form-control')->value(!$esNuevoRegistro ? $datos->sexo->sexo : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Nacionalidad')->for('nacionalidad_select') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nacionalidad-addon"><i class="bi bi-flag"></i></span>
                                 </div>
@@ -200,9 +228,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro ? $datos->nacionalidad->nacionalidad : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Estado Civil')->for('estado_civil') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="estado-civil-addon"><i class="bi bi-people"></i></span>
                                 </div>
@@ -223,18 +251,18 @@ if (!$esNuevoRegistro && $datos) {
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-house-door mr-2"></i>Domicilio</h5>
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('País')->for('pais') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="pais-addon"><i class="bi bi-globe2"></i></span>
                                 </div>
                                 {!! html()->select('pais_select', [null => 'SELECCIONE EL PAÍS'] + $paises->pluck('nombre', 'id')->toArray())->class('form-control')->id('pais_select')->value(!$esNuevoRegistro && $datos->pais ? $datos->pais->id : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Estado')->for('estado') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="estado-addon"><i class="bi bi-map"></i></span>
                                 </div>
@@ -242,9 +270,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro && $datos->estado ? $datos->estado->id : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Municipio')->for('municipio') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="municipio-addon"><i class="bi bi-building"></i></span>
                                 </div>
@@ -252,9 +280,9 @@ if (!$esNuevoRegistro && $datos) {
                                     ->value(!$esNuevoRegistro && $datos->municipio ? $datos->municipio->id : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Localidad')->for('localidad') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="localidad-addon"><i class="bi bi-geo"></i></span>
                                 </div>
@@ -262,9 +290,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value($esNuevoRegistro ? '' : $datos->clave_localidad) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Código Postal')->for('codigo_postal') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="cp-addon"><i class="bi bi-mailbox"></i></span>
                                 </div>
@@ -272,9 +300,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value($esNuevoRegistro ? '' : $datos->cp) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Domicilio')->for('domicilio') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="domicilio-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
@@ -282,9 +310,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value($esNuevoRegistro ? '' : $datos->domicilio) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Colonia')->for('colonia') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="colonia-addon"><i class="bi bi-signpost"></i></span>
                                 </div>
@@ -306,9 +334,9 @@ if (!$esNuevoRegistro && $datos) {
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-telephone mr-2"></i>Contacto</h5>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Teléfono Casa')->for('telefono_casa') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tel-casa-addon"><i class="bi bi-telephone"></i></span>
                                 </div>
@@ -316,9 +344,9 @@ if (!$esNuevoRegistro && $datos) {
                                     ->value($esNuevoRegistro ? '' : $datos->telefono_casa) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Teléfono Celular')->for('telefono_celular') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tel-cel-addon"><i class="bi bi-phone"></i></span>
                                 </div>
@@ -326,9 +354,9 @@ if (!$esNuevoRegistro && $datos) {
                                     ->value($esNuevoRegistro ? '' : $datos->telefono_celular) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Correo Electrónico')->for('correo_electronico') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="correo-addon"><i class="bi bi-envelope"></i></span>
                                 </div>
@@ -336,9 +364,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value($esNuevoRegistro ? '' : $datos->correo) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Facebook')->for('facebook') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="facebook-addon"><i class="bi bi-facebook"></i></span>
                                 </div>
@@ -412,9 +440,9 @@ if (!$esNuevoRegistro && $datos) {
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-info-circle mr-2"></i>DE LA CAPACITACIÓN </h5>
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('ULTIMO GRADO DE ESTUDIOS')->for('ultimo_grado_estudios') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="grado-estudios-addon"><i class="bi bi-mortarboard"></i></span>
                                 </div>
@@ -422,9 +450,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro && $datos->gradoEstudio ? $datos->gradoEstudio->id_grado_estudio : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-5 mb-3">
+                        <div class="col-12 col-md-5 mb-3">
                             {!! html()->label('DOCUMENTO DEL ULTIMO GRADO DE ESTUDIOS')->for('documento_ultimo_grado') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-award"></i></span>
                                 </div>
@@ -436,9 +464,9 @@ if (!$esNuevoRegistro && $datos) {
                             </small>
                             @endif
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('FECHA DEL DOCUMENTO')->for('fecha_documento_ultimo_grado') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-documento-addon"><i class="bi bi-calendar"></i></span>
                                 </div>
@@ -446,9 +474,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro && !empty($documentos['ultimo_grado_estudio']['fecha_expedicion']) ? date('Y-m-d', strtotime($documentos['ultimo_grado_estudio']['fecha_expedicion'])) : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-9 mb-3">
+                        <div class="col-12 col-md-9 mb-3">
                             {!! html()->label('MEDIO POR EL QUE SE ENTERO DEL SISTEMA')->for('medio_enterado_sistema') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="medio-enterado-addon"><i class="bi bi-megaphone"></i></span>
                                 </div>
@@ -456,9 +484,9 @@ if (!$esNuevoRegistro && $datos) {
                                         ->value(!$esNuevoRegistro && !empty($datos->medio_entero) ? $datos->medio_entero : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-9 mb-3">
+                        <div class="col-12 col-md-9 mb-3">
                             {!! html()->label('MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN')->for('motivo_eleccion_capacitacion') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="motivo-eleccion-addon"><i class="bi bi-list-check"></i></span>
                                 </div>
@@ -466,9 +494,9 @@ if (!$esNuevoRegistro && $datos) {
                                     ->value(!$esNuevoRegistro && !empty($datos->sistema_capacitacion_especificar) ? $datos->sistema_capacitacion_especificar : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-9 mb-3">
+                        <div class="col-12 col-md-9 mb-3">
                             {!! html()->label('MEDIO DE CONFIRMACIÓN')->for('medio_confirmacion') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="medio-confirmacion-addon"><i class="bi bi-chat-dots"></i></span>
                                 </div>
@@ -493,22 +521,22 @@ if (!$esNuevoRegistro && $datos) {
                         {!! html()->label('Si el aspirante es empleado, marcar esta casilla.')->for('empleado_aspirante')->class('form-check-label ml-2') !!}
                     </div>
                     <div class="row mt-3 d-none" id="datos-laboral">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Empresa donde trabaja')->for('empresa_trabaja') !!}
                             {!! html()->text('empresa_trabaja')->class('form-control')->id('empresa_trabaja')->placeholder('Nombre de la empresa')
                                     ->value($esNuevoRegistro ? '' : $datos->empresa_trabaja) !!}
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Puesto')->for('puesto_trabajo') !!}
                             {!! html()->text('puesto_trabajo')->class('form-control')->id('puesto_trabajo')->placeholder('Puesto que desempeña')
                                 ->value($esNuevoRegistro ? '' : $datos->puesto_empresa) !!}
                         </div>
-                        <div class="col-md-2 mb-3">
+                        <div class="col-12 col-md-2 mb-3">
                             {!! html()->label('Antigüedad')->for('antiguedad_trabajo') !!}
                             {!! html()->text('antiguedad_trabajo')->class('form-control')->id('antiguedad_trabajo')->placeholder('Años/Meses')
                                     ->value($esNuevoRegistro ? '' : $datos->antiguedad) !!}
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Dirección de la empresa')->for('direccion_trabajo') !!}
                             {!! html()->text('direccion_trabajo')->class('form-control')->id('direccion_trabajo')->placeholder('Dirección completa')
                                     ->value($esNuevoRegistro ? '' : $datos->direccion_empresa) !!}
@@ -531,14 +559,14 @@ if (!$esNuevoRegistro && $datos) {
                         {!! html()->label('Si el aspirante pertenece a algún CERSS, marcar esta casilla.')->for('aspirante_cerss')->class('form-check-label ml-2') !!}
                     </div>
                     <div class="row mt-3" id="datos-cerss">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('NUMERO DE EXPEDIENTE')->for('numero_expediente') !!}
                             {!! html()->text('numero_expediente')->class('form-control')->id('numero_expediente')->placeholder('Número de expediente')
                                 ->value(!$esNuevoRegistro && !empty($datosCerss['numero_expediente']) ? $datosCerss['numero_expediente'] : '') !!}
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('FICHA CERSS')->for('documento_ficha_cerss') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-file-earmark-text"></i></span>
                                 </div>

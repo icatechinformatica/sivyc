@@ -763,30 +763,32 @@ function aplicarEstadosPasos(estadosCaptura) {
     }
 
     // PRIMERO: Limpiar todos los estados
-    pasos.forEach((paso, index) => {
+    pasos.forEach((paso) => {
         paso.classList.remove('completed', 'current', 'disabled', 'active');
         const circulo = paso.querySelector('.step-circle');
-        circulo.removeAttribute('data-status');
+        circulo && circulo.removeAttribute('data-status');
     });
 
-    // SEGUNDO: Aplicar los nuevos estados
-    pasos.forEach((paso, index) => {
-        const seccion = secciones[index];
+    // SEGUNDO: Aplicar los nuevos estados mapeando por data-step
+    pasos.forEach((paso) => {
+        const dataStep = paso.getAttribute('data-step');
+        if (!dataStep) return;
+        const idx = secciones.indexOf(dataStep);
         const circulo = paso.querySelector('.step-circle');
-        const isEnabled = estadosCaptura[seccion]?.estado || false;
+        const isEnabled = estadosCaptura[dataStep]?.estado || false;
 
         if (isEnabled) {
             // Esta sección está completada/terminada
             paso.classList.add('completed');
-            circulo.setAttribute('data-status', 'terminado');
+            circulo && circulo.setAttribute('data-status', 'terminado');
 
             // Habilitar click para poder regresar
             paso.style.pointerEvents = 'auto';
             paso.style.opacity = '1';
-        } else if (index === siguienteSeccionIndex) {
+        } else if (idx === siguienteSeccionIndex) {
             // Esta es la siguiente sección disponible (actual)
             paso.classList.add('current', 'active');
-            circulo.setAttribute('data-status', 'actual');
+            circulo && circulo.setAttribute('data-status', 'actual');
 
             // Habilitar click
             paso.style.pointerEvents = 'auto';
@@ -794,7 +796,7 @@ function aplicarEstadosPasos(estadosCaptura) {
         } else {
             // Paso bloqueado/pendiente
             paso.classList.add('disabled');
-            circulo.setAttribute('data-status', 'pendiente');
+            circulo && circulo.setAttribute('data-status', 'pendiente');
 
             // Deshabilitar click
             paso.style.pointerEvents = 'none';
@@ -802,15 +804,19 @@ function aplicarEstadosPasos(estadosCaptura) {
         }
     });
 
-    // Si todas las secciones están completadas, marcar la última como actual
+    // Si todas las secciones están completadas, marcar la última como actual en ambas barras
     const todasCompletadas = secciones.every(seccion => estadosCaptura[seccion]?.estado);
     if (todasCompletadas) {
-        const ultimoPaso = pasos[pasos.length - 1];
-        const ultimoCirculo = ultimoPaso.querySelector('.step-circle');
-
-        ultimoPaso.classList.remove('completed');
-        ultimoPaso.classList.add('current', 'active');
-        ultimoCirculo.setAttribute('data-status', 'actual');
+        const ultimaSeccion = secciones[secciones.length - 1];
+        pasos.forEach((paso) => {
+            const dataStep = paso.getAttribute('data-step');
+            if (dataStep === ultimaSeccion) {
+                const circulo = paso.querySelector('.step-circle');
+                paso.classList.remove('completed');
+                paso.classList.add('current', 'active');
+                circulo && circulo.setAttribute('data-status', 'actual');
+            }
+        });
     }
 }
 
