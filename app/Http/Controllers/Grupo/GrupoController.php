@@ -183,21 +183,18 @@ class GrupoController extends Controller
         }
     }
 
-    public function asignarAlumnos(Request $request)
+    public function asignarAlumnos(Request $request, Grupo $grupo)
     {
         // Vista simple opcional si es GET
         if (!$request->isMethod('post')) {
-            return view('grupos.asignar_alumnos');
+            return view('grupos.asignar_alumnos', [
+                'grupo' => $grupo,
+            ]);
         }
-
-        $grupoId = $request->input('grupo_id');
+        $grupoId = $grupo->id;
         $curp = strtoupper(trim($request->input('curp')));
 
-        // * Verificar la existencia del grupo 
-        $grupo = Grupo::find($grupoId);
-        if (!$grupo) {
-            return redirect()->route('grupos.editar', $grupoId)->with('error', 'Grupo no encontrado.');
-        }
+        // * Verificar la existencia del grupo (ya viene inyectado)
 
         // * Verifica la existencia del alumno por CURP 
         $alumno = Alumno::where('curp', $curp)->first();
@@ -207,6 +204,22 @@ class GrupoController extends Controller
                 ->with('curp', $curp)
                 ->with('bandera', true)
                 ->with('grupo_id', $grupoId);
+        }
+
+        // * Verificar que el registro del alumno este completo
+
+        if (!$alumno->registroCompleto()) {
+            return redirect()->route('grupos.editar', $grupoId)->with('error', 'El registro del alumno no está completo.');
+        }
+
+        // * Verificar que el alumno tenga 15 años a la fecha de inicio del grupo.
+        $fechaInicioGrupo = $grupo->fecha_inicio();
+        $fechaReferencia = $fechaInicioGrupo ? Carbon::parse($fechaInicioGrupo) : Carbon::now();
+        $edadAlumno = Carbon::parse($alumno->fecha_nacimiento)->diffInYears($fechaReferencia);
+
+        if ($edadAlumno < 15) {
+            return redirect()->route('grupos.editar', $grupoId)
+                ->with('error', 'El alumno debe tener al menos 15 años para ser asignado a este grupo.');
         }
 
         // * Evitar duplicados 
@@ -253,10 +266,10 @@ class GrupoController extends Controller
             return redirect()->route('grupos.editar', $grupo->id)->with('success', 'Alumno eliminado del grupo.');
         } catch (\Throwable $e) {
             Log::error('Error al eliminar alumno del grupo', [
-                'grupo_id' => $grupo->id,
+                'grupo_id' => $grupo_id,
                 'error' => $e->getMessage(),
             ]);
-            return redirect()->route('grupos.editar', $grupo->id)
+            return redirect()->route('grupos.editar', $grupo_id)
                 ->with('error', 'No se pudo eliminar el alumno del grupo.');
         }
     }

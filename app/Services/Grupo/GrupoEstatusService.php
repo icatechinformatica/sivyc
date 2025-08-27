@@ -11,34 +11,69 @@ class GrupoEstatusService
 {
 
     /**
-     * Verifica si el grupo puede transicionar al nuevo estatus según la regla de IDs adyacentes (+/-1).
+     * Verifica si el grupo puede transicionar al nuevo estatus según la regla de IDs adyacentes (+/-1)
+     * y devuelve un resultado con mensaje para el usuario.
+     *
+     * Reglas principales:
      * - Si no tiene estatus previo, se permite la transición inicial.
      * - Si el estatus actual es final, no se permite.
+     * - Solo se permite transicionar a estatus adyacentes (según modelo), incluyendo finales como destino.
+     * - Para pasar a REVISIÓN (id=2) debe cumplir el mínimo de alumnos.
+     *
+     * @return array{ok: bool, mensaje: string}
      */
-    public function puedeTransicionar(Grupo $grupo, int $nuevo_estatus_id): bool
+    public function puedeTransicionar(Grupo $grupo, int $nuevo_estatus_id): array
     {
         $estatusActual = $grupo->estatusActual();
 
         // ? Si no hay estatus previo se permite
         if (!$estatusActual) {
-            return true;
+            return [
+                'ok' => true,
+                'mensaje' => 'Transición inicial permitida.'
+            ];
         }
 
         // ? Si el actual es final no se permite
         if ($estatusActual->final) {
-            return false;
+            return [
+                'ok' => false,
+                'mensaje' => 'No es posible cambiar el estatus porque el actual es final.'
+            ];
+        }
+
+        // ? Validar transición a REVISIÓN
+        if ($nuevo_estatus_id === 2) { // Sabiendo que el ID de REVISIÓN es 2
+            if (!$this->permitirRevision($grupo)) {
+                return [
+                    'ok' => false,
+                    'mensaje' => 'Para enviar a Revisión se requiere cumplir el mínimo de alumnos: ' . $grupo->servicio->alumnos_min
+                ];
+            }
         }
 
         // Adyacentes desde el modelo (permitiendo finales como destino)
-        return $grupo->estatusAdyacentes(true)->pluck('id')->contains($nuevo_estatus_id);
+        $permitidos = $grupo->estatusAdyacentes(true)->pluck('id');
+        if ($permitidos->contains($nuevo_estatus_id)) {
+            return [
+                'ok' => true,
+                'mensaje' => 'Transición permitida.'
+            ];
+        }
+
+        return [
+            'ok' => false,
+            'mensaje' => 'Transición no permitida: solo puedes avanzar a un estatus adyacente.'
+        ];
     }
 
     /**
-     * Compatibilidad: alias del método booleano. Devuelve true/false 
+     * Compatibilidad: alias booleano. Devuelve true/false tomando el campo 'ok'.
      */
     public function transicionesPosibles(Grupo $grupo, int $nuevo_estatus_id): bool
     {
-        return $this->puedeTransicionar($grupo, $nuevo_estatus_id);
+        $resultado = $this->puedeTransicionar($grupo, $nuevo_estatus_id);
+        return (bool)($resultado['ok'] ?? false);
     }
 
     /**
@@ -57,25 +92,20 @@ class GrupoEstatusService
         // Validar existencia del estatus destino
         $estatusDestino = Estatus::find($nuevo_estatus_id);
         if (!$estatusDestino) {
-            return response()->json([
-                'error' => 'El estatus destino no existe.'
-            ], 404);
+            return response()->json(['error' => 'El estatus destino no existe.'], 404);
         }
 
         $estatusActual = $grupo->estatusActual();
 
         // No-op
         if ($estatusActual && (int)$estatusActual->id === (int)$nuevo_estatus_id) {
-            return response()->json([
-                'error' => 'El grupo ya se encuentra en el estatus solicitado.'
-            ], 400);
+            return response()->json(['error' => 'El grupo ya se encuentra en el estatus solicitado.'], 400);
         }
 
-        // Validación de transición
-        if (!$this->puedeTransicionar($grupo, $nuevo_estatus_id)) {
-            return response()->json([
-                'error' => 'Transición no permitida. El estatus actual es final o la transición no es válida.'
-            ], 400);
+        // Validación de transición con mensaje detallado
+        $validacion = $this->puedeTransicionar($grupo, $nuevo_estatus_id);
+        if (!$validacion['ok']) {
+            return response()->json(['error' => $validacion['mensaje']], 400);
         }
 
         // Persistir cambio en transacción
@@ -105,5 +135,14 @@ class GrupoEstatusService
             'ok' => true,
             'mensaje' => 'Estatus actualizado correctamente.'
         ]);
+    }
+
+    public function permitirRevision(Grupo $grupo): bool
+    {
+        // Para pasar a revision es necesario tener el minimo de alumnos en base al tipo de servicio
+        $minAlumnos = $grupo->servicio->alumnos_min ?? 1;
+        $numAlumnos = $grupo->alumnos()->count();
+
+        return $numAlumnos >= $minAlumnos;
     }
 }
