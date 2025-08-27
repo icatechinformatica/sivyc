@@ -13,6 +13,7 @@ class Estatus extends Model
 
     protected $fillable = [
         'estatus',
+        'observacion',
         'turnado_a',
         'final',
     ];

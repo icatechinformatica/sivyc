@@ -87,7 +87,7 @@ class GrupoEstatusService
      * - es_ultimo_estatus: (bool) Estatus->final
      * Además, si se recibe $seccion, se actualiza Grupo.seccion_captura.
      */
-    public function cambiarEstatus(Grupo $grupo, int $nuevo_estatus_id, ?string $seccion = null)
+    public function cambiarEstatus(Grupo $grupo, int $nuevo_estatus_id, ?string $seccion = null, $observacion = null)
     {
         // Validar existencia del estatus destino
         $estatusDestino = Estatus::find($nuevo_estatus_id);
@@ -108,8 +108,10 @@ class GrupoEstatusService
             return response()->json(['error' => $validacion['mensaje']], 400);
         }
 
+    // La observación del turnado se almacena en la pivote tbl_grupo_estatus (campo 'observaciones').
+
         // Persistir cambio en transacción
-        DB::transaction(function () use ($grupo, $estatusActual, $nuevo_estatus_id, $estatusDestino, $seccion) {
+        DB::transaction(function () use ($grupo, $estatusActual, $nuevo_estatus_id, $estatusDestino, $seccion, $observacion) {
             // Actualizar seccion_captura del grupo si se proporciona
             if ($seccion !== null && $seccion !== '') {
                 $grupo->seccion_captura = $seccion;
@@ -127,6 +129,7 @@ class GrupoEstatusService
                 'fecha_cambio' => now(),
                 'es_ultimo_estatus' => (bool) $estatusDestino->final,
                 'id_usuario' => Auth::id(),
+                'observaciones' => $observacion,
                 // Campos no esenciales se guardan como null por defecto (observaciones/memorandum/ruta_documento)
             ]);
         });

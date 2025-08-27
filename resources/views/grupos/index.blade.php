@@ -5,6 +5,31 @@
 @push('content_css_sign')
 <link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <link rel="stylesheet" href="{{ asset('css/grupos/agenda_fullcalendar.css') }}" />
+<style>
+     /* ? Icono de "Observación Pendiente" */
+    .obs-pending {
+        color: #dc3545;
+        font-size: 1.25rem;
+        vertical-align: middle;
+        cursor: pointer;
+        animation: obs-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes obs-pulse {
+        0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(220,53,69,.3)); }
+        50% { transform: scale(1.15); filter: drop-shadow(0 0 .5rem rgba(220,53,69,.65)); }
+        100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(220,53,69,.3)); }
+    }
+    .obs-pending:focus { outline: 2px dashed #dc3545; outline-offset: 2px; }
+    .obs-icon-wrapper { display: inline-flex; align-items: center; gap: .25rem; }
+    .obs-badge { font-size: .7rem; background-color: #dc3545; }
+    /* Contenedor de estado dentro del td para armonizar alineación/espaciado */
+    .status-cell { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; flex-wrap: nowrap; min-height: 1.5rem; }
+    .status-badge { display: inline-flex; align-items: center; line-height: 1; }
+    @media (prefers-reduced-motion: reduce) {
+        .obs-pending { animation: none; }
+    }
+</style>
 @endpush
 
 @section('content')
@@ -68,7 +93,22 @@
                         <td>{{ $grupo->unidad->unidad }}</td>
                         <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
                         <td class="text-center">
-                            <span class="badge" style="background-color: {{ $grupo->estatusActual()->color ?? '#6c757d' }}">{{ $grupo->estatusActual()->estatus ?? 'SIN ASIGNAR' }}</span>
+                            <span class="status-cell">
+                            <span class="badge status-badge" style="background-color: {{ $grupo->estatusActual()->color ?? '#6c757d' }}" data-estatus-actual-id="{{ $grupo->estatusActual()->id }}">{{ $grupo->estatusActual()->estatus ?? 'SIN ASIGNAR' }}</span>
+                            @php
+                                $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? '');
+                            @endphp
+                            @if(!empty($obsTexto))
+                                <span class="obs-icon-wrapper">
+                                    <i class="bi bi-exclamation-circle-fill obs-pending obs-icon"
+                                       title="Observación pendiente: haz clic para ver"
+                                       role="button"
+                                       tabindex="0"
+                                       aria-label="Ver observación pendiente"
+                                       data-observacion="{{ $obsTexto }}"></i>
+                                </span>
+                            @endif
+                            </span>
                         </td>
                         <td class="text-center">
                             @foreach ($grupo->estatusAdyacentes() as $estatus)
@@ -100,11 +140,13 @@
         </table>
     </div>
 
-    <!-- Enlaces de paginación -->
+    {{-- Enlaces de paginación  --}}
     <div class="d-flex justify-content-center">
         {{ $grupos->appends(request()->query())->links('pagination::bootstrap-4') }}
     </div>
 </div>
+@include('grupos.observacionTurnado')
+@include('grupos.observacionVer')
 @endsection
 
 @push('script_sign')

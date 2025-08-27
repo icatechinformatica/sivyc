@@ -386,6 +386,7 @@ class GrupoController extends Controller
 
             $grupo = Grupo::find($request->grupo_id);
             $nuevo_estatus_id = $request->estatus_id;
+            $observacion = $request->observacion;
 
             if (!$grupo) {
                 return response()->json(['message' => 'Grupo no encontrado'], 404);
@@ -393,7 +394,7 @@ class GrupoController extends Controller
 
             // Retornar la respuesta correspondiente del servicio (incluye códigos 200/400/404)
             $seccion = $request->input('seccion');
-            return $this->grupoEstatusService->cambiarEstatus($grupo, (int) $nuevo_estatus_id, $seccion);
+            return $this->grupoEstatusService->cambiarEstatus($grupo, (int) $nuevo_estatus_id, $seccion, $observacion);
         } catch (\Exception $e) {
             Log::error('Error al turnar grupo: ' . $e->getMessage());
             return response()->json(['message' => 'Error al turnar grupo'], 500);

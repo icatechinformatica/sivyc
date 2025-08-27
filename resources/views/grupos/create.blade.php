@@ -6,24 +6,78 @@
 <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css">
 <link rel="stylesheet" href="{{ asset('css/grupos/agenda_fullcalendar.css') }}">
+<style>
+    /* Estilos scoped para header de Grupos */
+    .header-grupos .obs-badge {
+        background: #ffffff; /* warning light */
+        color: #850404;      /* warning text */
+        border: 2.2px dashed #ff0000;
+        border-radius: 9999px;
+        -webkit-appearance: none; /* normaliza botón si se usa <button> */
+        appearance: none;
+    }
+    .header-grupos .obs-text {
+        display: inline-block;
+        max-width: 36ch;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+    }
+    @media (min-width: 768px) {
+        .header-grupos .obs-text { max-width: 158ch; }
+    }
+    .header-grupos .badges-wrap > .badge { margin-right: .5rem; }
+    .header-grupos .badges-wrap > .badge:last-child { margin-right: 0; }
+    .header-grupos .title-wrap h5 { line-height: 1.2; }
+    /* Evita que el bloque central empuje los badges en md+ */
+    @media (min-width: 768px) {
+        .header-grupos .obs-container { min-width: 0; }
+    }
+    .header-grupos i.obs-icon { font-size: 1rem; }
+    .header-grupos .obs-badge .obs-icon { margin-right: .35rem; }
+    .header-grupos .obs-badge small { line-height: 1; }
+    .header-grupos .obs-badge:hover { filter: brightness(0.98); }
+    .header-grupos .obs-badge:focus { outline: 2px solid #ffe08a; outline-offset: 2px; }
+    .header-grupos .obs-badge { cursor: pointer; }
+    .header-grupos .title-wrap, .header-grupos .obs-container, .header-grupos .badges-wrap { flex-shrink: 0; }
+    .header-grupos .obs-container { flex: 1 1 auto; }
+</style>
 @endpush
 
 @section('content')
-<div class="card-header rounded-lg shadow d-flex align-items-center">
-    <div class="col-md-12 d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-        <div class="mb-2 mb-md-0">
-            <h5 class="mb-0 font-weight-bold">
-                Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span>
-            </h5>
+<div class="card-header rounded-lg shadow d-flex align-items-center header-grupos">
+    <div class="col-md-12 d-flex flex-column flex-md-row align-items-start align-items-md-center w-100">
+        <!-- Título -->
+        <div class="title-wrap mb-2 mb-md-0 order-1">
+            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span></h5>
         </div>
-        @if (!$esNuevoRegistro && isset($grupo))
-            @php($estatus = $grupo->estatusActual())
-            <div class="d-flex flex-wrap align-items-center">
-                <span class="badge badge-pill badge-light text-uppercase mr-2" style="font-weight: 600;">
+
+        @php $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? ''); @endphp
+        @if(!empty($obsTexto))
+        <!-- Observación (truncada con tooltip) -->
+        <div class="obs-container d-flex align-items-center order-3 order-md-2 my-1 my-md-0 mx-md-3">
+            <button type="button" class="obs-badge d-inline-flex align-items-center px-2 py-1 btn btn-link p-0 obs-icon"
+                aria-label="Ver observación completa" data-observacion="{{ $obsTexto }}">
+                <i class="bi bi-exclamation-circle-fill mr-1" tabindex="0" aria-hidden="true"></i>
+                <small class="obs-text">{{ $obsTexto }}</small>
+            </button>
+        </div>
+        @endif
+
+    @if (!$esNuevoRegistro && isset($grupo))
+        @php($estatus = $grupo->estatusActual())
+            <!-- Badges a la derecha -->
+            <div class="badges-wrap d-flex flex-wrap align-items-center order-2 order-md-3 ml-md-auto">
+                <span class="badge badge-pill badge-light text-uppercase" style="font-weight: 600;">
                     <i class="fa fa-hashtag mr-1" aria-hidden="true"></i>{{ $grupo->clave_grupo }}
                 </span>
                 @if ($estatus)
-                    <span class="badge badge-pill mr-0" style="background-color: {{ $estatus->color ?? '#6c757d' }}; color: #fff; font-weight: 600;">
+            <span class="badge badge-pill"
+              style="background-color: {{ $estatus->color ?? '#6c757d' }}; color: #fff; font-weight: 600;"
+              data-estatus-actual-id="{{ $estatus->id }}"
+              data-estatus-actual-text="{{ $estatus->estatus }}"
+              data-estatus-actual-color="{{ $estatus->color ?? '#6c757d' }}">
                         <i class="fa fa-info-circle mr-1" aria-hidden="true"></i>{{ $estatus->estatus }}
                     </span>
                 @endif
@@ -355,6 +409,10 @@
 @if (!$esNuevoRegistro && isset($grupo) && $grupo->id)
 @include('grupos.partials.modal_fullcalendar')
 @endif
+
+@include('grupos.observacionTurnado')
+@include('grupos.observacionVer')
+
 {{-- * CSS --}}
 @push('content_css_sign')
 <link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
