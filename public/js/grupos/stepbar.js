@@ -46,7 +46,7 @@
             if (circle) circle.removeAttribute('data-status');
         });
 
-        // Aplicar estado por cada item según su data-step
+    // Aplicar estado por cada item según su data-step
         navItems.forEach((item) => {
             const sec = item.getAttribute('data-step');
             if (!sec) return;
@@ -85,6 +85,13 @@
                 item.style.pointerEvents = 'none'; item.style.opacity = '0.5';
             }
         });
+
+        // Si no hay ningún activo explícito, marcar el primero visible como activo para el centrado móvil
+        const anyActive = document.querySelector('#step-progress-mobile li.active');
+        if (!anyActive) {
+            const first = document.querySelector('#step-progress-mobile li');
+            if (first) first.classList.add('active');
+        }
     }
 
     function ocultarTodas() {
@@ -102,6 +109,19 @@
             el.style.display = ''; // restaura display por defecto
             el.classList.remove('d-none');
         }
+        // En móviles, intentar centrar el círculo activo
+        try {
+            const cont = document.querySelector('#step-progress-mobile .step-progress-nav-mobile');
+            if (cont) {
+                const activo = document.querySelector('#step-progress-mobile li.active');
+                if (activo) {
+                    const rect = activo.getBoundingClientRect();
+                    const contRect = cont.getBoundingClientRect();
+                    const scrollLeft = cont.scrollLeft + (rect.left - contRect.left) - (contRect.width / 2) + (rect.width / 2);
+                    cont.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+                }
+            }
+        } catch (e) { /* noop */ }
     }
 
     function mostrarSeccionActual() {

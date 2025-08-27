@@ -661,6 +661,17 @@ function cambiarPaso(paso) {
         const circulo = paso.querySelector('.step-circle');
         // SIEMPRE establecer como actual el paso seleccionado
         circulo.setAttribute('data-status', 'actual');
+
+        // Intentar centrar el activo en la barra móvil
+        try {
+            const cont = document.querySelector('#step-progress-mobile .step-progress-nav-mobile');
+            if (cont) {
+                const rect = paso.getBoundingClientRect();
+                const contRect = cont.getBoundingClientRect();
+                const left = cont.scrollLeft + (rect.left - contRect.left) - (contRect.width / 2) + (rect.width / 2);
+                cont.scrollTo({ left, behavior: 'smooth' });
+            }
+        } catch (e) { /* noop */ }
     }
 }
 
@@ -868,6 +879,26 @@ function mostrarSeccionActual(estadosCaptura) {
             console.log('- ID:', sec.id, 'Classes:', sec.className);
         });
     }
+
+    // Centrar el paso activo inicial en la barra móvil
+    try {
+        const cont = document.querySelector('#step-progress-mobile .step-progress-nav-mobile');
+        let activo = document.querySelector('#step-progress-mobile li.active');
+        if (!activo) {
+            // Si no hay activo aún, activar el que corresponda a seccionAMostrar
+            const candidato = document.querySelector(`#step-progress-mobile li[data-step="${seccionAMostrar}"]`);
+            if (candidato) {
+                candidato.classList.add('active');
+                activo = candidato;
+            }
+        }
+        if (cont && activo) {
+            const rect = activo.getBoundingClientRect();
+            const contRect = cont.getBoundingClientRect();
+            const left = cont.scrollLeft + (rect.left - contRect.left) - (contRect.width / 2) + (rect.width / 2);
+            cont.scrollTo({ left, behavior: 'auto' });
+        }
+    } catch (e) { /* noop */ }
 }
 
 // Función para mover a la siguiente sección después de guardar

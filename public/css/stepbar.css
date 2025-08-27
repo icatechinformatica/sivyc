@@ -86,31 +86,63 @@
         top: 60px; /* mantener debajo del header principal */
         z-index: 2;
         background: #fff;
-        padding: .25rem 0;
+        padding: .5rem 0; /* padding moderado para evitar recortes sin consumir altura */
         border-bottom: 1px solid rgba(0,0,0,.05);
     }
     .step-progress-nav-mobile {
         display: flex !important;
         flex-direction: row;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start !important;
         -webkit-overflow-scrolling: touch;
-        overflow-x: auto;
+            overflow-x: auto;
         overflow-y: hidden;
         gap: .25rem;
-        padding: 0 .5rem;
+        padding: 0 .75rem; /* más espacio a los lados para el primer/último ítem */
         margin: 0;
+            scroll-padding-left: .5rem;
+            scroll-padding-right: .5rem;
+            scroll-snap-type: x proximity;
+        width: 100%;
+    }
+    .step-progress-nav-mobile::before,
+    .step-progress-nav-mobile::after {
+        content: "";
+        flex: 0 0 .5rem; /* separador en extremos para evitar recortes */
     }
     .step-progress-nav-mobile .list-group-item {
         background: transparent;
         padding: .25rem .35rem !important;
         border: none !important;
         flex: 0 0 auto; /* evita estirar */
+            scroll-snap-align: start;
     }
+        /* Neutralizar ajustes de Bootstrap list-group-horizontal que recortan el primer item */
+        .step-progress-nav-mobile.list-group-horizontal > .list-group-item {
+            margin-left: 0 !important;
+            margin-right: 0 !important;
+        }
+        .step-progress-nav-mobile > .list-group-item:first-child {
+            margin-left: .5rem !important;
+        }
+        .step-progress-nav-mobile > .list-group-item:last-child {
+            margin-right: .25rem !important;
+        }
     @media (max-width: 767.98px) {
         .step-progress-nav-mobile .step-circle {
             height: 36px;
             width: 36px;
             font-size: 1rem;
+            min-width: 36px;
+            min-height: 36px;
+        }
+    }
+    @media (max-width: 575.98px) {
+        .step-progress-nav-mobile .step-circle {
+            height: 32px;
+            width: 32px;
+            font-size: .95rem;
+            min-width: 32px;
+            min-height: 32px;
         }
     }
