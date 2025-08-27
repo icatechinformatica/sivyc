@@ -275,7 +275,7 @@ class ESupreController extends Controller
             ->limit(1)
             ->first();
 
-        $tipop = $data[0]['modinstructor'];
+        $tipop = $data[0]->modinstructor;
 
 
         $body_html['supre'] = '<div align=right> <b>Unidad de Capacitación '. $unidad->ubicacion.'</b> </div>
@@ -348,7 +348,7 @@ class ESupreController extends Controller
                         <td scope="col"><small style="font-size: 10px;">CLAVE DEL GRUPO</small></td>
                         <td scope="col" ><small style="font-size: 10px;">ZONA ECÓNOMICA</small></td>
                         <td scope="col"><small style="font-size: 10px;">HSM (horas)</small></td>';
-                        if($data[0]['fecha_apertura'] <  '2023-10-12') {
+                        if($data[0]->fecha_apertura <  '2023-10-12') {
                             $body_html['tabla'] = $body_html['tabla']. '<td scope="col" ><small style="font-size: 10px;">IMPORTE POR HORA</small></td>';
                             if($tipop == 'HONORARIOS'){$body_html['tabla'] = $body_html['tabla'].'<td scope="col"><small style="font-size: 10px;">IVA 16%</small></td>';}
                             $body_html['tabla'] = $body_html['tabla'].'<td scope="col" ><small style="font-size: 10px;">PARTIDA/ CONCEPTO</small></td>
@@ -377,7 +377,7 @@ class ESupreController extends Controller
                             <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->clave.'</small></td>
                             <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->ze.'</small></td>
                             <td scope="col" class="text-center"><small style="font-size: 10px;">'.$item->dura.'</small></td>';
-                            if($data[0]['fecha_apertura'] <  '2023-10-12') {
+                            if($data[0]->fecha_apertura <  '2023-10-12') {
                                 $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->importe_hora, 2, '.', ',') .'</td>';
                                 if($item->modinstructor == 'HONORARIOS'){$body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">'. number_format($item->iva, 2, '.', ',').'</td>';}
                                 $body_html['tabla'] = $body_html['tabla'].'<td scope="col" class="text-center"><small style="font-size: 10px;">';

@@ -105,7 +105,7 @@ class validacionDtaController extends Controller {
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
         // $dateNow = $fechaEntregaActual->termino . "-" . $anioActual;
         $mesInformar = $mesComparador = $mesEntrega = $fechaEntregaFormatoT = $diasParaEntrega= null;
-        if(isset($fechaEntregaActual)){  
+        if(isset($fechaEntregaActual)){
             $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
             // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
             $terminoExplode = explode('-',$fechaEntregaActual->termino);
@@ -152,9 +152,9 @@ class validacionDtaController extends Controller {
         $mesActual = $meses[($fecha->format('n'))];
         $fechaEntregaActual = \DB::table('calendario_formatot')->select('termino', 'mes_informar','mes_entrega')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
         // $dateNow = $fechaEntregaActual->fecha_entrega . "-" . $anioActual;
-        
+
         $mesInformar = $mesEntrega = $fechaEntregaFormatoT = $diasParaEntrega= null;
-        if(isset($fechaEntregaActual)){  
+        if(isset($fechaEntregaActual)){
             $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1];
             // $convertfEAc = date_create_from_format('d-m-Y', $fechaEntregaActual->termino);
             $terminoExplode = explode('-',$fechaEntregaActual->termino);
