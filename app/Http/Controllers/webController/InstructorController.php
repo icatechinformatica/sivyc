@@ -82,9 +82,11 @@ class InstructorController extends Controller
             if($tipoInstructor=='nombre_curso'){
                 $buscando = explode(' - ', $busquedaInstructor);
                 if (isset($buscando[0]) && is_numeric($buscando[0])){
-                    $data = $data->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
-                    ->where('especialidad_instructor_curso.activo','true')
-                    ->where('curso_id', $buscando[0]);
+                    $data = $data->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $buscando[0]);
+                    // ->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
+                    // ->where('especialidad_instructor_curso.activo','true')
+                    // ->where('curso_id', $buscando[0]);
+                    // dd($buscando);
                 }else $message = "SELECCIONE UNA OPCIÓN DE LA LISTA DE CURSOS";
 
             }

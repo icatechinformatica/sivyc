@@ -332,15 +332,22 @@ class aperturaController extends Controller
 
 
 
-    public function store(Request $request, \Illuminate\Validation\Factory $validate)
-    {
+    public function store(Request $request, \Illuminate\Validation\Factory $validate){
         $message = 'Operación fallida, vuelva a intentar..';
-        if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
+        if($request->folio_grupo) {
+            $munidad = $request->munidad;
+            $folio_grupo = $request->folio_grupo;
 
-            $result =  DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(
-                ['folio_grupo' => $_SESSION['folio_grupo']],
+            if(DB::table('tbl_cursos')->where('munidad', $munidad)->where('folio_grupo','!=',$folio_grupo)->exists()) $munidad = Null;             
+
+            $result =  DB::table('tbl_cursos')->where('clave', '0')->whereNull('status_curso')
+                ->where(function ($q) {
+                    $q->whereIn('status_solicitud', ['RETORNO'])
+                    ->orWhereNull('status_solicitud');
+                })            
+                ->where('folio_grupo', $folio_grupo)->update(                
                 [
-                    'munidad' => $request->munidad,
+                    'munidad' => $munidad,
                     'plantel' => $request->plantel,
                     'programa' => $request->programa,
                     'nota' => $request->observaciones,
@@ -350,7 +357,8 @@ class aperturaController extends Controller
                     'status_solicitud' =>null
                 ]
             );
-            if ($result) $message = 'Operación Exitosa!!';
+            if(!$munidad)$message = 'El memorádum No. '.$request->munidad.' ya está asignado a otro grupo. Verifique e intente de nuevo.';            
+            elseif($result) $message = 'Operación Exitosa!!';
         }
         return redirect('solicitud/apertura')->with('message', $message);
     }
