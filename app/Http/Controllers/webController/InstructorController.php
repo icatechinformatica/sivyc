@@ -4943,5 +4943,46 @@ class InstructorController extends Controller
 
         return $callback;
     }
+
+    public function reenvio_wsp($idins)
+    {
+        $dataInstructor = instructor::Where('id', $idins)->First();
+        $dataInstructor->instructor = $dataInstructor->nombre . ' ' . $dataInstructor->apellidoPaterno . ' ' . $dataInstructor->apellidoMaterno;
+        //envio de credenciales de instructor para Efirma
+        $userInstructor = DB::Connection('mysql')->Table('users')->Where('curp', $dataInstructor->curp)->First();//se checa si existe el usuario
+        if(is_null($userInstructor)) {
+            $userId = DB::Connection('mysql')->Table('users')->InsertGetId([
+                'name' => $dataInstructor->instructor,
+                'email' => $dataInstructor->correo,
+                'password' => Hash::make($dataInstructor->rfc), // Always hash passwords!
+                'created_at' => now(),
+                'updated_at' => now(),
+                'tipo_usuario' => '3',
+                'curp' => $dataInstructor->curp,
+                'id_sivyc' => $dataInstructor->id
+            ]);
+            //end of create user
+        } else {
+            DB::Connection('mysql')->Table('users')
+                ->where('curp', $dataInstructor->curp)
+                ->update(['password' => Hash::make($dataInstructor->rfc)]);
+        }
+        $infowhats = [
+            'nombre' => $dataInstructor->instructor,
+            'correo' => $dataInstructor->correo,
+            'pwd' => $dataInstructor->rfc,
+            'telefono' => $dataInstructor->telefono,
+            'sexo' => $dataInstructor->sexo
+        ];
+
+        $response = $this->whatsapp_alta_usuario_msg($infowhats, app(WhatsAppService::class));
+
+        if (isset($response['status']) && $response['status'] === false) {
+            // Handle the error as you wish
+            return back()->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+        }
+        return back()->with('success', 'Mensaje de WhatsApp enviado correctamente.');
+        // termina el envio de mensaje de WhatsApp
+    }
 }
 
