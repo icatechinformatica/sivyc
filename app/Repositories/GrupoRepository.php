@@ -53,16 +53,18 @@ class GrupoRepository implements GrupoRepositoryInterface
                         $unidadQuery->where('unidad', 'LIKE', "%{$busqueda}%");
                     })
 
-                    // Búsqueda por instructor (nombre solo, concatenado normal y concatenado inverso)
-                    ->orWhereHas('instructor', function ($instructorQuery) use ($busqueda) {
-                        $instructorQuery->where('nombre', 'LIKE', "%{$busqueda}%")
-                            ->orWhere(DB::raw("CONCAT(nombre, ' ', apellidoPaterno, ' ', apellidoMaterno)"), 'LIKE', "%{$busqueda}%")
-                            ->orWhere(DB::raw("CONCAT(apellidoPaterno, ' ', apellidoMaterno, ' ', nombre)"), 'LIKE', "%{$busqueda}%");
-                    })
+                    // ! Búsqueda por instructor (nombre solo, concatenado normal y concatenado inverso) IMPLEMENTAR CUANDO SE TENGA LA TABLA COMPLETA
+                    // ->orWhereHas('instructor', function ($instructorQuery) use ($busqueda) {
+                    //     $instructorQuery->where('nombre', 'LIKE', "%{$busqueda}%")
+                    //         ->orWhere(DB::raw("CONCAT(nombre, ' ', apellidoPaterno, ' ', apellidoMaterno)"), 'LIKE', "%{$busqueda}%")
+                    //         ->orWhere(DB::raw("CONCAT(apellidoPaterno, ' ', apellidoMaterno, ' ', nombre)"), 'LIKE', "%{$busqueda}%");
+                    // })
 
-                    // Búsqueda por estatus
+                    // Búsqueda por estatus (sólo estatus actual)
                     ->orWhereHas('estatus', function ($estatusQuery) use ($busqueda) {
-                        $estatusQuery->where('estatus', 'LIKE', "%{$busqueda}%");
+                        $estatusQuery
+                            ->where('estatus', 'LIKE', "%{$busqueda}%")
+                            ->where('tbl_grupo_estatus.es_ultimo_estatus', true);
                     });
             });
         }
@@ -99,9 +101,11 @@ class GrupoRepository implements GrupoRepositoryInterface
                             ->orWhere(DB::raw("CONCAT(apellidoPaterno, ' ', apellidoMaterno, ' ', nombre)"), 'LIKE', "%{$busqueda}%");
                     })
 
-                    // Búsqueda por estatus
+                    // Búsqueda por estatus (sólo estatus actual)
                     ->orWhereHas('estatus', function ($estatusQuery) use ($busqueda) {
-                        $estatusQuery->where('estatus', 'LIKE', "%{$busqueda}%");
+                        $estatusQuery
+                            ->where('estatus', 'LIKE', "%{$busqueda}%")
+                            ->where('tbl_grupo_estatus.es_ultimo_estatus', true);
                     });
             });
         }

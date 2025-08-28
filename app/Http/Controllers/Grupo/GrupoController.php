@@ -47,7 +47,7 @@ class GrupoController extends Controller
 
         try {
             $registrosPorPagina = $request->get('per_page', 15);
-            $busqueda = $request->get('busqueda');
+            $busqueda = $request->get('valor_buscar');
             $grupos = $this->grupoService->obtenerGrupos($registrosPorPagina, $busqueda);
             return view('grupos.index', compact('grupos'));
         } catch (\Exception $e) {
