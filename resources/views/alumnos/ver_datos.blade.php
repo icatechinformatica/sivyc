@@ -25,7 +25,7 @@
 @php
     $documentos = $esNuevoRegistro ? [] : json_decode($datos->archivos_documentos ?? '[]', true);
     $datosCerss = $esNuevoRegistro ? [] : json_decode($datos->cerss ?? '[]', true);
-    
+
     // Obtener grupos vulnerables seleccionados del alumno
     $gruposVulnerablesSeleccionados = [];
     if (!$esNuevoRegistro && $datos) {
@@ -39,52 +39,52 @@
 </div>
 
 <div class="card card-body" id="formulario-alumno">
-    {{-- Formulario de Datos Personales --}}
     <div class="row">
-        <!-- Step Progress y contenido principal -->
-        <div class="col-md-3 d-none d-md-block">
+        {{-- * Stepbar  --}}
+        <div class="col-12 col-md-3">
             <nav id="step-progress" class="nav-sticky">
-                <ul class="list-group list-group-flush step-progress-nav">
+                <ul class="list-group list-group-flush step-progress-nav" role="tablist" aria-label="Progreso de registro de alumno">
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="datos-personales">
-                        <span class="step-circle mr-2">1</span>
-                        <span class="fw-bold text-black text-uppercase">DATOS PERSONALES</span>
+                        <span class="step-circle mr-2" data-status="actual">1</span>
+                        <span class="step-label fw-bold text-black text-uppercase">DATOS PERSONALES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="domicilio_section">
-                        <span class="step-circle mr-2">2</span>
-                        <span class="fw-bold text-uppercase">DOMICILIO</span>
+                        <span class="step-circle mr-2" data-status="restante">2</span>
+                        <span class="step-label fw-bold text-uppercase">DOMICILIO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="contacto">
-                        <span class="step-circle mr-2">3</span>
-                        <span class="fw-bold text-uppercase">CONTACTO</span>
+                        <span class="step-circle mr-2" data-status="restante">3</span>
+                        <span class="step-label fw-bold text-uppercase">CONTACTO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="grupos-vulnerables">
-                        <span class="step-circle mr-2">4</span>
-                        <span class="fw-bold text-uppercase">GRUPOS VULNERABLES</span>
+                        <span class="step-circle mr-2" data-status="restante">4</span>
+                        <span class="step-label fw-bold text-uppercase">GRUPOS VULNERABLES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="capacitacion">
-                        <span class="step-circle mr-2">5</span>
-                        <span class="fw-bold text-uppercase">CAPACITACIÓN</span>
+                        <span class="step-circle mr-2" data-status="restante">5</span>
+                        <span class="step-label fw-bold text-uppercase">CAPACITACIÓN</span>
                     </li>
-                    <li class="list-group-item py-3 d-flex align-items-center" data-step="empleado">
-                        <span class="step-circle mr-2">6</span>
-                        <span class="fw-bold text-uppercase">EMPLEADO</span>
+                    <li class="list-group-item py-3 d-flex align-items-center" data-step="laboral">
+                        <span class="step-circle mr-2" data-status="restante">6</span>
+                        <span class="step-label fw-bold text-uppercase">LABORAL</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="cerss">
-                        <span class="step-circle mr-2">7</span>
-                        <span class="fw-bold text-uppercase">CERSS</span>
+                        <span class="step-circle mr-2" data-status="restante">7</span>
+                        <span class="step-label fw-bold text-uppercase">CERSS</span>
                     </li>
                 </ul>
             </nav>
         </div>
-        <div class="col-md-9">
-            {{--  * Sección: Datos personales  --}}
+        <div class="col-md-9 px-0">
+            {{-- * Sección: Datos personales --}}
             {!! html()->form()->id('form-datos-personales')->open() !!}
             {{ html()->hidden('id_usuario_captura', auth()->user()->id) }}
-            <div class="col-12 mb-4 step-section" id="datos-personales">
+            <div class="col-12 mb-4 step-section px-0" id="datos-personales">
                 <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-person-vcard mr-2"></i>Datos personales</h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                    <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-person-vcard mr-2"></i>Datos personales
+                    </h5>
+                    <div class="row px-0">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('CURP')->for('curp') !!}
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -102,7 +102,7 @@
                                 </div>
                                 {!! html()->file('documento_curp')->class('form-control')->id('documento_curp')->attribute('aria-label', 'Adjuntar Documento CURP')->attribute('aria-describedby', 'documento-curp-addon') !!}
                             </div>
-                            
+
                                 {{-- Input para mostrar el documento CURP existente --}}
                                 @if(!empty($documentos['curp']))
                                     <small class="form-text text-muted mt-1">
@@ -136,7 +136,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="primer-apellido-addon"><i class="bi bi-person-lines-fill"></i></span>
                                 </div>
-                                {!! html()->text('primer_apellido')->class('form-control')->id('primer_apellido')->attribute('aria-label', 'Primer Apellido')->attribute('aria-describedby', 'primer-apellido-addon') 
+                                {!! html()->text('primer_apellido')->class('form-control')->id('primer_apellido')->attribute('aria-label', 'Primer Apellido')->attribute('aria-describedby', 'primer-apellido-addon')
                                         ->value(!$esNuevoRegistro ? $datos->apellido_paterno : '') !!}
                             </div>
                         </div>
@@ -146,7 +146,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="segundo-apellido-addon"><i class="bi bi-person-lines-fill"></i></span>
                                 </div>
-                                {!! html()->text('segundo_apellido')->class('form-control')->id('segundo_apellido')->attribute('aria-label', 'Segundo Apellido')->attribute('aria-describedby', 'segundo-apellido-addon') 
+                                {!! html()->text('segundo_apellido')->class('form-control')->id('segundo_apellido')->attribute('aria-label', 'Segundo Apellido')->attribute('aria-describedby', 'segundo-apellido-addon')
                                 ->value(!$esNuevoRegistro ? $datos->apellido_materno : '') !!}
                             </div>
                         </div>
@@ -156,7 +156,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="entidad-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
-                                {!! html()->select('entidad_de_nacimiento_select', [null => 'SELECCIONE LA ENTIDAD'] + $entidades->pluck('nombre', 'id')->toArray())->class('form-control')->id('entidad_de_nacimiento_select')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon') 
+                                {!! html()->select('entidad_de_nacimiento_select', [null => 'SELECCIONE LA ENTIDAD'] + $entidades->pluck('nombre', 'id')->toArray())->class('form-control')->id('entidad_de_nacimiento_select')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon')
                                             ->value(!$esNuevoRegistro ? $datos->entidad_de_nacimiento : '') !!}
                                 {!! html()->text('entidad_de_nacimiento')->class('form-control')->id('entidad_de_nacimiento')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon') !!}
 
@@ -168,7 +168,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-addon"><i class="bi bi-calendar-date"></i></span>
                                 </div>
-                                {!! html()->text('fecha_de_nacimiento')->class('form-control')->id('fecha_de_nacimiento')->attribute('aria-label', 'Fecha de Nacimiento')->attribute('aria-describedby', 'fecha-addon') 
+                                {!! html()->text('fecha_de_nacimiento')->class('form-control')->id('fecha_de_nacimiento')->attribute('aria-label', 'Fecha de Nacimiento')->attribute('aria-describedby', 'fecha-addon')
                                     ->value(!$esNuevoRegistro ? $datos->fecha_nacimiento : '') !!}
                             </div>
                         </div>
@@ -179,7 +179,7 @@
                                     <span class="input-group-text" id="sexo-addon"><i class="bi bi-gender-ambiguous"></i></span>
                                 </div>
 
-                                {!! html()->select('sexo_select', [null => 'SELECCIONE EL SEXO'] + $sexos->pluck('sexo', 'id')->toArray())->class('form-control')->id('sexo_select')->attribute('aria-label', 'Sexo')->attribute('aria-describedby', 'sexo-addon') 
+                                {!! html()->select('sexo_select', [null => 'SELECCIONE EL SEXO'] + $sexos->pluck('sexo', 'id')->toArray())->class('form-control')->id('sexo_select')->attribute('aria-label', 'Sexo')->attribute('aria-describedby', 'sexo-addon')
                                             ->value(!$esNuevoRegistro ? $datos->sexo->id : '') !!}
                                 {!! html()->text('sexo_input')->id('sexo_input')->class('form-control')
                                     ->value(!$esNuevoRegistro ? $datos->sexo->sexo : '') !!}
@@ -191,7 +191,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nacionalidad-addon"><i class="bi bi-flag"></i></span>
                                 </div>
-                                {!! html()->select('nacionalidad_select', [null => 'SELECCIONE LA NACIONALIDAD'] + $nacionalidades->pluck('nacionalidad', 'id_nacionalidad')->toArray())->class('form-control')->id('nacionalidad_select')->attribute('aria-label', 'Nacionalidad')->attribute('aria-describedby', 'nacionalidad-addon') 
+                                {!! html()->select('nacionalidad_select', [null => 'SELECCIONE LA NACIONALIDAD'] + $nacionalidades->pluck('nacionalidad', 'id_nacionalidad')->toArray())->class('form-control')->id('nacionalidad_select')->attribute('aria-label', 'Nacionalidad')->attribute('aria-describedby', 'nacionalidad-addon')
                                             ->value(!$esNuevoRegistro ? $datos->nacionalidad->id_nacionalidad : '') !!}
                                 {!! html()->text('nacionalidad_input')->id('nacionalidad_input')->class('form-control')
                                     ->value(!$esNuevoRegistro ? $datos->nacionalidad->nacionalidad : '') !!}
@@ -208,7 +208,7 @@
                                     ->id('estado_civil_select')
                                     ->attribute('aria-label', 'Estado Civil')
                                     ->attribute('aria-describedby', 'estado-civil-addon')
-                                    ->attribute('required', true) 
+                                    ->attribute('required', true)
                                     ->value(!$esNuevoRegistro ? $datos->estadoCivil->id : '') !!}
                             </div>
                         </div>
@@ -223,7 +223,7 @@
             {{-- * Formulario de Domicilio --}}
             {!! html()->form()->id('form-domicilio')->open() !!}
             <div class="col-12 mb-4 step-section" id="domicilio_section">
-                <div class="p-3 mb-2">
+                <div class="px-0 py-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-house-door mr-2"></i>Domicilio</h5>
                     <div class="row">
                         <div class="col-md-4 mb-3">
@@ -272,7 +272,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="localidad-addon"><i class="bi bi-geo"></i></span>
                                 </div>
-                                {!! html()->text('localidad')->class('form-control')->id('localidad')->attribute('aria-label', 'Localidad')->attribute('aria-describedby', 'localidad-addon') 
+                                {!! html()->text('localidad')->class('form-control')->id('localidad')->attribute('aria-label', 'Localidad')->attribute('aria-describedby', 'localidad-addon')
                                             ->value($esNuevoRegistro ? '' : $datos->clave_localidad) !!}
                             </div>
                         </div>
@@ -282,7 +282,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="cp-addon"><i class="bi bi-mailbox"></i></span>
                                 </div>
-                                {!! html()->text('codigo_postal')->class('form-control')->id('codigo_postal')->attribute('aria-label', 'Código Postal')->attribute('aria-describedby', 'cp-addon') 
+                                {!! html()->text('codigo_postal')->class('form-control')->id('codigo_postal')->attribute('aria-label', 'Código Postal')->attribute('aria-describedby', 'cp-addon')
                                             ->value($esNuevoRegistro ? '' : $datos->cp) !!}
                             </div>
                         </div>
@@ -292,7 +292,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="domicilio-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
-                                {!! html()->text('domicilio')->class('form-control')->id('domicilio')->attribute('aria-label', 'Domicilio')->attribute('aria-describedby', 'domicilio-addon') 
+                                {!! html()->text('domicilio')->class('form-control')->id('domicilio')->attribute('aria-label', 'Domicilio')->attribute('aria-describedby', 'domicilio-addon')
                                             ->value($esNuevoRegistro ? '' : $datos->domicilio) !!}
                             </div>
                         </div>
@@ -302,7 +302,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="colonia-addon"><i class="bi bi-signpost"></i></span>
                                 </div>
-                                {!! html()->text('colonia')->class('form-control')->id('colonia')->attribute('aria-label', 'Colonia')->attribute('aria-describedby', 'colonia-addon') 
+                                {!! html()->text('colonia')->class('form-control')->id('colonia')->attribute('aria-label', 'Colonia')->attribute('aria-describedby', 'colonia-addon')
                                         ->value($esNuevoRegistro ? '' : $datos->colonia) !!}
                             </div>
                         </div>
@@ -317,7 +317,7 @@
             {{-- * Formulario de Contacto --}}
             {!! html()->form()->id('form-contacto')->open() !!}
             <div class="col-12 mb-4 step-section" id="contacto">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-telephone mr-2"></i>Contacto</h5>
                     <div class="row">
                         <div class="col-md-6 mb-3">
@@ -380,7 +380,7 @@
                 </div>
             </div>
             {!! html()->form()->close() !!}
-            
+
             {{-- * Formulario de Grupos Vulnerables --}}
             {!! html()->form()->id('form-grupos-vulnerables')->open() !!}
             <div class="col-12 mb-4 step-section" id="grupos-vulnerables">
@@ -398,7 +398,7 @@
                         @php
                             $gruposChunks = $gruposVulnerables->chunk(ceil($gruposVulnerables->count() / 3));
                         @endphp
-                        
+
                         @foreach($gruposChunks as $chunk)
                             <div class="col-md-4">
                                 @foreach($chunk as $grupo)
@@ -426,9 +426,8 @@
             {{-- * Formulario de Capacitación --}}
             {!! html()->form()->id('form-capacitacion')->open() !!}
             <div class="col-12 mb-4 step-section" id="capacitacion">
-                <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-info-circle mr-2"></i>DE LA CAPACITACIÓN
-                    </h5>
+                <div class="py-3 px-0 mb-2">
+                    <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-info-circle mr-2"></i>DE LA CAPACITACIÓN </h5>
                     <div class="row">
                         <div class="col-md-3 mb-3">
                             {!! html()->label('ULTIMO GRADO DE ESTUDIOS')->for('ultimo_grado_estudios') !!}
@@ -439,7 +438,7 @@
                                 {!! html()->select('ultimo_grado_estudios', ['' => 'SELECCIONE EL GRADO'] + $gradoEstudios->pluck('grado_estudio', 'id_grado_estudio')->toArray())
                                             ->class('form-control')->id('ultimo_grado_estudios')
                                             ->attribute('aria-label', 'Ultimo Grado de Estudios')
-                                            ->attribute('aria-describedby', 'grado-estudios-addon') 
+                                            ->attribute('aria-describedby', 'grado-estudios-addon')
                                             ->value(!$esNuevoRegistro && $datos->gradoEstudio ? $datos->gradoEstudio->id_grado_estudio : '') !!}
                             </div>
                         </div>
@@ -519,10 +518,10 @@
             </div>
             {!! html()->form()->close() !!}
 
-            {{-- * Formulario de Alumno Empleado --}}
-            {!! html()->form()->id('form-empleado')->open() !!}
-            <div class="col-12 mb-4 step-section" id="empleado">
-                <div class="p-3 mb-2">
+            {{-- * Formulario de Alumno Laboral --}}
+            {!! html()->form()->id('form-laboral')->open() !!}
+            <div class="col-12 mb-4 step-section" id="laboral">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-file-earmark-text"></i> ¿Está empleado el aspirante?</h5>
                     <div class="form-check mb-3">
                         {!! html()->checkbox('empleado_aspirante')->id('empleado_aspirante')->checked(!$esNuevoRegistro ? $datos->empleado : false)->class('form-check-input') !!}
@@ -560,7 +559,7 @@
             {{-- * Formulario de CERSS --}}
             {!! html()->form()->id('form-cerss')->open() !!}
             <div class="col-12 mb-4 step-section" id="cerss">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-shield-lock"></i> ¿El aspirante pertenece a algún CERSS?</h5>
                     <div class="form-check mb-3">
                         {!! html()->checkbox('aspirante_cerss')->id('aspirante_cerss')->checked(!$esNuevoRegistro && !empty($datosCerss['aspirante_cerss']) && $datosCerss['aspirante_cerss'] == '1') !!}

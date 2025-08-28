@@ -511,6 +511,17 @@ function cambiarPaso(paso) {
         const circulo = paso.querySelector('.step-circle');
         // SIEMPRE establecer como actual el paso seleccionado
         circulo.setAttribute('data-status', 'actual');
+
+        // Intentar centrar el activo en la barra móvil
+        try {
+            const cont = document.querySelector('#step-progress .step-progress-nav') || document.querySelector('.step-progress-nav');
+            if (cont) {
+                const rect = paso.getBoundingClientRect();
+                const contRect = cont.getBoundingClientRect();
+                const left = cont.scrollLeft + (rect.left - contRect.left) - (contRect.width / 2) + (rect.width / 2);
+                cont.scrollTo({ left, behavior: 'smooth' });
+            }
+        } catch (e) { /* noop */ }
     }
 }
 
@@ -712,6 +723,26 @@ function mostrarSeccionActual(estadosCaptura) {
             console.log('- ID:', sec.id, 'Classes:', sec.className);
         });
     }
+
+    // Centrar el paso activo inicial en la barra móvil
+    try {
+        const cont = document.querySelector('#step-progress .step-progress-nav') || document.querySelector('.step-progress-nav');
+        let activo = document.querySelector('.step-progress-nav li.active');
+        if (!activo) {
+            // Si no hay activo aún, activar el que corresponda a seccionAMostrar
+            const candidato = document.querySelector(`.step-progress-nav li[data-step="${seccionAMostrar}"]`);
+            if (candidato) {
+                candidato.classList.add('active');
+                activo = candidato;
+            }
+        }
+        if (cont && activo) {
+            const rect = activo.getBoundingClientRect();
+            const contRect = cont.getBoundingClientRect();
+            const left = cont.scrollLeft + (rect.left - contRect.left) - (contRect.width / 2) + (rect.width / 2);
+            cont.scrollTo({ left, behavior: 'auto' });
+        }
+    } catch (e) { /* noop */ }
 }
 
 // Función para mover a la siguiente sección después de guardar
@@ -724,7 +755,7 @@ function moverSiguienteSeccion(seccionActual) {
         // Actualizar estados globales
         // Marcar la sección actual como completada
         window.estadosCaptura[seccionActual] = { estado: true };
-        
+
         // Aplicar nuevos estados (esto calculará automáticamente cuál debe ser "actual")
         aplicarEstadosPasos(window.estadosCaptura);
 
@@ -748,7 +779,7 @@ function moverSiguienteSeccion(seccionActual) {
         // Si es la última sección, marcarla como completada también
         window.estadosCaptura[seccionActual] = { estado: true };
         aplicarEstadosPasos(window.estadosCaptura);
-        
+
         const notyf = new Notyf({
             position: { x: 'right', y: 'top' },
             duration: 5000,
