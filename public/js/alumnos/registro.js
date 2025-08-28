@@ -664,7 +664,7 @@ function cambiarPaso(paso) {
 
         // Intentar centrar el activo en la barra móvil
         try {
-            const cont = document.querySelector('#step-progress-mobile .step-progress-nav-mobile');
+            const cont = document.querySelector('#step-progress .step-progress-nav') || document.querySelector('.step-progress-nav');
             if (cont) {
                 const rect = paso.getBoundingClientRect();
                 const contRect = cont.getBoundingClientRect();
@@ -882,11 +882,11 @@ function mostrarSeccionActual(estadosCaptura) {
 
     // Centrar el paso activo inicial en la barra móvil
     try {
-        const cont = document.querySelector('#step-progress-mobile .step-progress-nav-mobile');
-        let activo = document.querySelector('#step-progress-mobile li.active');
+        const cont = document.querySelector('#step-progress .step-progress-nav') || document.querySelector('.step-progress-nav');
+        let activo = document.querySelector('.step-progress-nav li.active');
         if (!activo) {
             // Si no hay activo aún, activar el que corresponda a seccionAMostrar
-            const candidato = document.querySelector(`#step-progress-mobile li[data-step="${seccionAMostrar}"]`);
+            const candidato = document.querySelector(`.step-progress-nav li[data-step="${seccionAMostrar}"]`);
             if (candidato) {
                 candidato.classList.add('active');
                 activo = candidato;

@@ -87,9 +87,9 @@
         });
 
         // Si no hay ningún activo explícito, marcar el primero visible como activo para el centrado móvil
-        const anyActive = document.querySelector('#step-progress-mobile li.active');
+        const anyActive = document.querySelector('.step-progress-nav li.active');
         if (!anyActive) {
-            const first = document.querySelector('#step-progress-mobile li');
+            const first = document.querySelector('.step-progress-nav li');
             if (first) first.classList.add('active');
         }
     }
@@ -111,9 +111,9 @@
         }
         // En móviles, intentar centrar el círculo activo
         try {
-            const cont = document.querySelector('#step-progress-mobile .step-progress-nav-mobile');
+            const cont = document.querySelector('#step-progress .step-progress-nav') || document.querySelector('.step-progress-nav');
             if (cont) {
-                const activo = document.querySelector('#step-progress-mobile li.active');
+                const activo = document.querySelector('.step-progress-nav li.active');
                 if (activo) {
                     const rect = activo.getBoundingClientRect();
                     const contRect = cont.getBoundingClientRect();

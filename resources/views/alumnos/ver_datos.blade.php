@@ -40,80 +40,51 @@ if (!$esNuevoRegistro && $datos) {
 </div>
 
 <div class="card card-body" id="formulario-alumno">
-    {{-- Formulario de Datos Personales --}}
     <div class="row">
-        {{-- * Stepbar móvil superior (solo círculos) --}}
-        <div class="col-12 d-block d-md-none">
-            <nav id="step-progress-mobile" class="nav-sticky-mobile">
-                <ul class="list-group list-group-horizontal step-progress-nav step-progress-nav-mobile flex-nowrap overflow-auto" role="tablist" aria-label="Progreso de registro de alumno">
-                    <li class="list-group-item py-2 px-1" data-step="datos-personales">
-                        <span class="step-circle" data-status="actual">1</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="domicilio_section">
-                        <span class="step-circle" data-status="restante">2</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="contacto">
-                        <span class="step-circle" data-status="restante">3</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="grupos-vulnerables">
-                        <span class="step-circle" data-status="restante">4</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="capacitacion">
-                        <span class="step-circle" data-status="restante">5</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="laboral">
-                        <span class="step-circle" data-status="restante">6</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="cerss">
-                        <span class="step-circle" data-status="restante">7</span>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        <!-- Step Progress y contenido principal -->
-        <div class="col-md-3 d-none d-md-block">
+        {{-- * Stepbar  --}}
+        <div class="col-12 col-md-3">
             <nav id="step-progress" class="nav-sticky">
-                <ul class="list-group list-group-flush step-progress-nav">
+                <ul class="list-group list-group-flush step-progress-nav" role="tablist" aria-label="Progreso de registro de alumno">
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="datos-personales">
-                        <span class="step-circle mr-2">1</span>
-                        <span class="fw-bold text-black text-uppercase">DATOS PERSONALES</span>
+                        <span class="step-circle mr-2" data-status="actual">1</span>
+                        <span class="step-label fw-bold text-black text-uppercase">DATOS PERSONALES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="domicilio_section">
-                        <span class="step-circle mr-2">2</span>
-                        <span class="fw-bold text-uppercase">DOMICILIO</span>
+                        <span class="step-circle mr-2" data-status="restante">2</span>
+                        <span class="step-label fw-bold text-uppercase">DOMICILIO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="contacto">
-                        <span class="step-circle mr-2">3</span>
-                        <span class="fw-bold text-uppercase">CONTACTO</span>
+                        <span class="step-circle mr-2" data-status="restante">3</span>
+                        <span class="step-label fw-bold text-uppercase">CONTACTO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="grupos-vulnerables">
-                        <span class="step-circle mr-2">4</span>
-                        <span class="fw-bold text-uppercase">GRUPOS VULNERABLES</span>
+                        <span class="step-circle mr-2" data-status="restante">4</span>
+                        <span class="step-label fw-bold text-uppercase">GRUPOS VULNERABLES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="capacitacion">
-                        <span class="step-circle mr-2">5</span>
-                        <span class="fw-bold text-uppercase">CAPACITACIÓN</span>
+                        <span class="step-circle mr-2" data-status="restante">5</span>
+                        <span class="step-label fw-bold text-uppercase">CAPACITACIÓN</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="laboral">
-                        <span class="step-circle mr-2">6</span>
-                        <span class="fw-bold text-uppercase">LABORAL</span>
+                        <span class="step-circle mr-2" data-status="restante">6</span>
+                        <span class="step-label fw-bold text-uppercase">LABORAL</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="cerss">
-                        <span class="step-circle mr-2">7</span>
-                        <span class="fw-bold text-uppercase">CERSS</span>
+                        <span class="step-circle mr-2" data-status="restante">7</span>
+                        <span class="step-label fw-bold text-uppercase">CERSS</span>
                     </li>
                 </ul>
             </nav>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 px-0">
             {{-- * Sección: Datos personales --}}
             {!! html()->form()->id('form-datos-personales')->open() !!}
             {{ html()->hidden('id_usuario_captura', auth()->user()->id) }}
-            <div class="col-12 mb-4 step-section" id="datos-personales">
+            <div class="col-12 mb-4 step-section px-0" id="datos-personales">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-person-vcard mr-2"></i>Datos personales
                     </h5>
-                    <div class="row">
+                    <div class="row px-0">
                         <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('CURP')->for('curp') !!}
                             <div class="input-group mb-3 w-100">
@@ -248,7 +219,7 @@ if (!$esNuevoRegistro && $datos) {
             {{-- * Formulario de Domicilio --}}
             {!! html()->form()->id('form-domicilio')->open() !!}
             <div class="col-12 mb-4 step-section" id="domicilio_section">
-                <div class="p-3 mb-2">
+                <div class="px-0 py-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-house-door mr-2"></i>Domicilio</h5>
                     <div class="row">
                         <div class="col-12 col-md-4 mb-3">
@@ -331,7 +302,7 @@ if (!$esNuevoRegistro && $datos) {
             {{-- * Formulario de Contacto --}}
             {!! html()->form()->id('form-contacto')->open() !!}
             <div class="col-12 mb-4 step-section" id="contacto">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-telephone mr-2"></i>Contacto</h5>
                     <div class="row">
                         <div class="col-12 col-md-6 mb-3">
@@ -437,7 +408,7 @@ if (!$esNuevoRegistro && $datos) {
             {{-- * Formulario de Capacitación --}}
             {!! html()->form()->id('form-capacitacion')->open() !!}
             <div class="col-12 mb-4 step-section" id="capacitacion">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-info-circle mr-2"></i>DE LA CAPACITACIÓN </h5>
                     <div class="row">
                         <div class="col-12 col-md-4 mb-3">
@@ -514,7 +485,7 @@ if (!$esNuevoRegistro && $datos) {
             {{-- * Formulario de Alumno Laboral --}}
             {!! html()->form()->id('form-laboral')->open() !!}
             <div class="col-12 mb-4 step-section" id="laboral">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-file-earmark-text"></i> ¿Está empleado el aspirante?</h5>
                     <div class="form-check mb-3">
                         {!! html()->checkbox('empleado_aspirante')->id('empleado_aspirante')->checked(!$esNuevoRegistro ? $datos->empleado : false)->class('form-check-input') !!}
@@ -552,7 +523,7 @@ if (!$esNuevoRegistro && $datos) {
             {{-- * Formulario de CERSS --}}
             {!! html()->form()->id('form-cerss')->open() !!}
             <div class="col-12 mb-4 step-section" id="cerss">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-shield-lock"></i> ¿El aspirante pertenece a algún CERSS?</h5>
                     <div class="form-check mb-3">
                         {!! html()->checkbox('aspirante_cerss')->id('aspirante_cerss')->checked(!$esNuevoRegistro && !empty($datosCerss['aspirante_cerss']) && $datosCerss['aspirante_cerss'] == '1') !!}

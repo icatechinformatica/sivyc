@@ -6,16 +6,22 @@
 <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css">
 <link rel="stylesheet" href="{{ asset('css/grupos/agenda_fullcalendar.css') }}">
+<link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
 <style>
     /* Estilos scoped para header de Grupos */
     .header-grupos .obs-badge {
-        background: #ffffff; /* warning light */
-        color: #850404;      /* warning text */
+        background: #ffffff;
+        /* warning light */
+        color: #850404;
+        /* warning text */
         border: 2.2px dashed #ff0000;
         border-radius: 9999px;
-        -webkit-appearance: none; /* normaliza botón si se usa <button> */
+        -webkit-appearance: none;
+        /* normaliza botón si se usa <button> */
         appearance: none;
     }
+
     .header-grupos .obs-text {
         display: inline-block;
         max-width: 36ch;
@@ -24,62 +30,135 @@
         text-overflow: ellipsis;
         vertical-align: middle;
     }
+
     @media (min-width: 768px) {
-        .header-grupos .obs-text { max-width: 158ch; }
+        .header-grupos .obs-text {
+            max-width: 158ch;
+        }
     }
-    .header-grupos .badges-wrap > .badge { margin-right: .5rem; }
-    .header-grupos .badges-wrap > .badge:last-child { margin-right: 0; }
-    .header-grupos .title-wrap h5 { line-height: 1.2; }
+
+    .header-grupos .badges-wrap>.badge {
+        margin-right: .5rem;
+    }
+
+    .header-grupos .badges-wrap>.badge:last-child {
+        margin-right: 0;
+    }
+
+    .header-grupos .title-wrap h5 {
+        line-height: 1.2;
+    }
+
     /* Evita que el bloque central empuje los badges en md+ */
     @media (min-width: 768px) {
-        .header-grupos .obs-container { min-width: 0; }
+        .header-grupos .obs-container {
+            min-width: 0;
+        }
     }
-    .header-grupos i.obs-icon { font-size: 1rem; }
-    .header-grupos .obs-badge .obs-icon { margin-right: .35rem; }
-    .header-grupos .obs-badge small { line-height: 1; }
-    .header-grupos .obs-badge:hover { filter: brightness(0.98); }
-    .header-grupos .obs-badge:focus { outline: 2px solid #ffe08a; outline-offset: 2px; }
-    .header-grupos .obs-badge { cursor: pointer; }
-    .header-grupos .title-wrap, .header-grupos .obs-container, .header-grupos .badges-wrap { flex-shrink: 0; }
-    .header-grupos .obs-container { flex: 1 1 auto; }
+
+    .header-grupos i.obs-icon {
+        font-size: 1rem;
+    }
+
+    .header-grupos .obs-badge .obs-icon {
+        margin-right: .35rem;
+    }
+
+    .header-grupos .obs-badge small {
+        line-height: 1;
+    }
+
+    .header-grupos .obs-badge:hover {
+        filter: brightness(0.98);
+    }
+
+    .header-grupos .obs-badge:focus {
+        outline: 2px solid #ffe08a;
+        outline-offset: 2px;
+    }
+
+    .header-grupos .obs-badge {
+        cursor: pointer;
+    }
+
+    .header-grupos .title-wrap,
+    .header-grupos .obs-container,
+    .header-grupos .badges-wrap {
+        flex-shrink: 0;
+    }
+
+    .header-grupos .obs-container {
+        flex: 1 1 auto;
+    }
 
     /* Inputs full-width en móvil dentro de esta vista */
     .step-section .form-group .form-control,
     .step-section .mb-2 .form-control,
     .step-section select.form-control,
-    .step-section textarea.form-control { width: 100%; }
+    .step-section textarea.form-control {
+        width: 100%;
+    }
 
     /* Ajuste específico para el buscador de CURP en móviles */
     @media (max-width: 767.98px) {
-        #alumnos .input-group { width: 100% !important; }
-        #alumnos .input-group .form-control { flex: 1 1 auto; min-width: 0; }
+        #alumnos .input-group {
+            width: 100% !important;
+        }
+
+        #alumnos .input-group .form-control {
+            flex: 1 1 auto;
+            min-width: 0;
+        }
     }
+
     /* Mantener un ancho cómodo en escritorio para el buscador de CURP */
     @media (min-width: 768px) {
-        #alumnos .input-group { max-width: 400px; }
+        #alumnos .input-group {
+            max-width: 400px;
+        }
     }
 
     /* Reducir paddings/márgenes anidados en móvil para mejor aprovechamiento del ancho */
     @media (max-width: 767.98px) {
+
         /* Header compacto */
-        .header-grupos { padding: .5rem .75rem !important; }
+        .header-grupos {
+            padding: .5rem .75rem !important;
+        }
 
         /* Card body general más compacto en esta vista */
-        .card.card-body { padding: .75rem !important; }
+        .card.card-body {
+            padding: .75rem !important;
+        }
 
         /* Secciones: reducir separación vertical y padding interno */
-        .step-section.mb-4 { margin-bottom: 1rem !important; }
-        .step-section > .p-3 { padding: .75rem !important; }
+        .step-section.mb-4 {
+            margin-bottom: 1rem !important;
+        }
+
+        .step-section>.p-3 {
+            padding: .75rem !important;
+        }
 
         /* Evitar doble gutter en columnas de sección, respetando px-0 cuando exista */
-        .step-section:not(.px-0) { padding-left: .5rem !important; padding-right: .5rem !important; }
+        .step-section:not(.px-0) {
+            padding-left: .5rem !important;
+            padding-right: .5rem !important;
+        }
 
-        /* Stepbar móvil aún más compacto */
-        .step-progress-nav-mobile .list-group-item { padding: .25rem .25rem !important; }
+        /* Stepbar móvil aún más compacto (barra unificada) */
+        .step-progress-nav .list-group-item {
+            padding: .25rem .25rem !important;
+        }
 
         /* Títulos y separaciones internas un poco más compactas */
-        .step-section h5 { margin-bottom: .75rem !important; }
-        .step-section .d-flex.justify-content-end { margin-top: .75rem !important; }
+        .step-section h5 {
+            margin-bottom: .75rem !important;
+        }
+
+        .step-section .d-flex.justify-content-end {
+            margin-top: .75rem !important;
+        }
     }
 </style>
 @endpush
@@ -89,7 +168,8 @@
     <div class="col-md-12 d-flex flex-column flex-md-row align-items-start align-items-md-center w-100">
         <!-- Título -->
         <div class="title-wrap mb-2 mb-md-0 order-1">
-            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span></h5>
+            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' :
+                    'Edición' }}</span></h5>
         </div>
 
         @php $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? ''); @endphp
@@ -104,23 +184,22 @@
         </div>
         @endif
 
-    @if (!$esNuevoRegistro && isset($grupo))
+        @if (!$esNuevoRegistro && isset($grupo))
         @php($estatus = $grupo->estatusActual())
-            <!-- Badges a la derecha -->
-            <div class="badges-wrap d-flex flex-wrap align-items-center order-2 order-md-3 ml-md-auto">
-                <span class="badge badge-pill badge-light text-uppercase" style="font-weight: 600;">
-                    <i class="fa fa-hashtag mr-1" aria-hidden="true"></i>{{ $grupo->clave_grupo }}
-                </span>
-                @if ($estatus)
+        <!-- Badges a la derecha -->
+        <div class="badges-wrap d-flex flex-wrap align-items-center order-2 order-md-3 ml-md-auto">
+            <span class="badge badge-pill badge-light text-uppercase" style="font-weight: 600;">
+                <i class="fa fa-hashtag mr-1" aria-hidden="true"></i>{{ $grupo->clave_grupo }}
+            </span>
+            @if ($estatus)
             <span class="badge badge-pill"
-              style="background-color: {{ $estatus->color ?? '#6c757d' }}; color: #fff; font-weight: 600;"
-              data-estatus-actual-id="{{ $estatus->id }}"
-              data-estatus-actual-text="{{ $estatus->estatus }}"
-              data-estatus-actual-color="{{ $estatus->color ?? '#6c757d' }}">
-                        <i class="fa fa-info-circle mr-1" aria-hidden="true"></i>{{ $estatus->estatus }}
-                    </span>
-                @endif
-            </div>
+                style="background-color: {{ $estatus->color ?? '#6c757d' }}; color: #fff; font-weight: 600;"
+                data-estatus-actual-id="{{ $estatus->id }}" data-estatus-actual-text="{{ $estatus->estatus }}"
+                data-estatus-actual-color="{{ $estatus->color ?? '#6c757d' }}">
+                <i class="fa fa-info-circle mr-1" aria-hidden="true"></i>{{ $estatus->estatus }}
+            </span>
+            @endif
+        </div>
         @endif
     </div>
 </div>
@@ -128,58 +207,33 @@
 
 <div class="card card-body">
     <div class="row">
-        {{-- * Stepbar móvil superior (solo círculos) --}} 
-        <div class="col-12 d-block d-md-none">
-            <nav id="step-progress-mobile" class="nav-sticky-mobile">
-                <ul class="list-group list-group-horizontal step-progress-nav step-progress-nav-mobile flex-nowrap overflow-auto" role="tablist" aria-label="Progreso de registro">
-                    <li class="list-group-item py-2 px-1" data-step="info_general">
-                        <span class="step-circle" data-status="actual">1</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="ubicacion">
-                        <span class="step-circle" data-status="restante">2</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="organismo">
-                        <span class="step-circle" data-status="restante">3</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="opciones">
-                        <span class="step-circle" data-status="restante">4</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="agenda">
-                        <span class="step-circle" data-status="restante">5</span>
-                    </li>
-                    <li class="list-group-item py-2 px-1" data-step="alumnos">
-                        <span class="step-circle" data-status="restante">6</span>
-                    </li>
-                </ul>
-            </nav>
-        </div>
-        {{-- * Barra de pasos lateral --}}
-        <div class="col-md-3 d-none d-md-block">
+        {{-- * Stepbar --}}
+        <div class="col-12 col-md-3">
             <nav id="step-progress" class="nav-sticky">
-                <ul class="list-group list-group-flush step-progress-nav">
+                <ul class="list-group list-group-flush step-progress-nav" role="tablist" aria-label="Progreso de registro">
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="info_general">
                         <span class="step-circle mr-2" data-status="actual">1</span>
-                        <span class="fw-bold text-black">Información general</span>
+                        <span class="step-label fw-bold text-black">Información general</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="ubicacion">
                         <span class="step-circle mr-2" data-status="restante">2</span>
-                        <span class="fw-bold">Ubicación</span>
+                        <span class="step-label fw-bold">Ubicación</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="organismo">
                         <span class="step-circle mr-2" data-status="restante">3</span>
-                        <span class="fw-bold">Organismo Publico</span>
+                        <span class="step-label fw-bold">Organismo Publico</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="opciones">
                         <span class="step-circle mr-2" data-status="restante">4</span>
-                        <span class="fw-bold">Opciones</span>
+                        <span class="step-label fw-bold">Opciones</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="agenda">
                         <span class="step-circle mr-2" data-status="restante">5</span>
-                        <span class="fw-bold">Agenda</span>
+                        <span class="step-label fw-bold">Agenda</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="alumnos">
                         <span class="step-circle mr-2" data-status="restante">6</span>
-                        <span class="fw-bold">Alumnos</span>
+                        <span class="step-label fw-bold">Alumnos</span>
                     </li>
                 </ul>
             </nav>
@@ -198,29 +252,29 @@
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('IMPARTICIÓN', 'imparticion')->class('form-label mb-1') }}
                             {{ html()->select('imparticion', [null => 'SELECCIONE EL TIPO DE IMPARTICIÓN'] + $tiposImparticion->pluck('imparticion', 'id')->toArray())->class('form-control')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
                         </div>
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('MODALIDAD', 'modalidad')->class('form-label mb-1') }}
                             {{ html()->select('modalidad', [null => 'SELECCIONAR MODALIDAD'] + $modalidades->pluck('modalidad', 'id')->toArray())->class('form-control')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_modalidad) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_modalidad) }}
                         </div>
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('UNIDAD/ACCIÓN MÓVIL', 'unidad_accion_movil')->class('form-label mb-1') }}
                             {{ html()->select('unidad_accion_movil', [null => 'SELECCIONAR'] + $unidades->pluck('unidad', 'id')->toArray())->class('form-control')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_unidad) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_unidad) }}
                         </div>
                     </div>
                     <div class="row my-1">
                         <div class="form-group col-md-3 mb-1">
                             {{ html()->label('SERVICIO', 'servicio')->class('form-label mb-1') }}
                             {{ html()->select('servicio', [null => 'SELECCIONAR'] + $servicios->pluck('servicio', 'id')->toArray())->class('form-control ')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_servicio) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_servicio) }}
                         </div>
                         <div class="form-group col-md-9 mb-1">
                             {{ html()->label('CURSO', 'curso')->class('form-label mb-1') }}
                             {{ html()->select('curso', [null => 'SELECCIONA CURSO'] + $cursos->pluck('nombre_curso', 'id')->toArray())->class('form-control ')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_curso) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_curso) }}
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
@@ -238,15 +292,15 @@
                         <div class="form-group col-md-6 mb-1">
                             {{ html()->label('MUNICIPIO', 'municipio')->class('form-label mb-1') }}
                             {{ html()->select('municipio', [null => 'SELECCIONAR'] + $municipios->pluck('muni', 'id')->toArray())->class('form-control')->id('municipio-select')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_municipio) }}
+                            ->value($esNuevoRegistro ? null : $grupo->id_municipio) }}
                         </div>
                         <div class="form-group col-md-6 mb-1">
                             {{ html()->label('LOCALIDAD', 'localidad')->class('form-label mb-1') }}
                             @if ($esNuevoRegistro)
-                                {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO PRIMERO'])->class('form-control')->id('localidad-select')->disabled()->required() }}
+                            {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO PRIMERO'])->class('form-control')->id('localidad-select')->disabled()->required() }}
                             @else
-                                {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO'] + $localidades->pluck('localidad', 'id')->toArray())->class('form-control')->id('localidad-select')->disabled($esNuevoRegistro)->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_localidad) }}
+                            {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO'] + $localidades->pluck('localidad', 'id')->toArray())->class('form-control')->id('localidad-select')->disabled($esNuevoRegistro)->required()
+                                ->value($esNuevoRegistro ? null : $grupo->id_localidad) }}
                             @endif
                         </div>
                     </div>
@@ -270,7 +324,9 @@
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('CÓDIGO POSTAL', 'codigo_postal')->class('form-label mb-1') }}
-                        {{ html()->number('codigo_postal')->class('form-control')->maxlength(5)->minlength(5)->required() }}
+                        {{
+                        html()->number('codigo_postal')->class('form-control')->maxlength(5)->minlength(5)->required()
+                        }}
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('REFERENCIAS ADICIONALES', 'referencias')->class('form-label mb-1') }}
@@ -291,7 +347,7 @@
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('ORGANISMO PUBLICO', 'organismo_publico')->class('form-label mb-1') }}
                             {{ html()->select('organismo_publico', ['' => 'SELECCIONAR'] + $organismos_publicos->pluck('organismo', 'id')->toArray())->class('form-control')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_organismo_publico) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_organismo_publico) }}
                         </div>
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('NOMBRE DEL REPRESENTANTE', 'nombre_representante')->class('form-label mb-1') }}
@@ -319,12 +375,12 @@
                             <div class="mb-2">
                                 {{ html()->label('MEDIO VIRTUAL', 'medio_virtual')->class('form-label mb-1') }}
                                 {{ html()->select('medio_virtual', [ '' => 'SELECCIONAR', 1 => 'VIRTUAL 1', 2 => 'VIRTUAL 2'])->class('form-control ')->disabled(!$esNuevoRegistro && !$grupo->id_imparticion == 2)
-                                        ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
+                                    ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('ENLACE VIRTUAL', 'enlace_virtual')->class('form-label mb-1') }}
                                 {{ html()->text('enlace_virtual')->class('form-control ')->disabled(!$esNuevoRegistro && !$grupo->id_imparticion == 2)
-                                        ->value($esNuevoRegistro ? null : $grupo->link_virtual) }}
+                                    ->value($esNuevoRegistro ? null : $grupo->link_virtual) }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('CONVENIO ESPECIFICO', 'convenio_especifico')->class('form-label') }}
@@ -337,8 +393,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        {{ html()->button('Guardar')->class('btn btn-primary float-end
-                        guardar-seccion')->id('guardar_opciones') }}
+                        {{ html()->button('Guardar')->class('btn btn-primary float-end guardar-seccion')->id('guardar_opciones') }}
                     </div>
                     {{ html()->form()->close() }}
                 </div>
@@ -366,25 +421,25 @@
             {{-- * Sección: Alumnos --}}
             <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
                 <div class="card card-body mt-3 shadow-none p-0">
-                    {{-- Mensajes flash para asignación/eliminación de alumnos --}} 
+                    {{-- Mensajes flash para asignación/eliminación de alumnos --}}
                     <div class="my-2">
                         @if (session('success'))
-                            <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+                        <div class="alert alert-success" role="alert">{{ session('success') }}</div>
                         @endif
                         @if (session('error'))
-                            <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+                        <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
                         @endif
                         @if (session('info'))
-                            <div class="alert alert-info" role="alert">{{ session('info') }}</div>
+                        <div class="alert alert-info" role="alert">{{ session('info') }}</div>
                         @endif
                         @if ($errors->any())
-                            <div class="alert alert-danger" role="alert">
-                                <ul class="mb-0 pl-3">
-                                    @foreach ($errors->all() as $error)
-                                        <li>{{ $error }}</li>
-                                    @endforeach
-                                </ul>
-                            </div>
+                        <div class="alert alert-danger" role="alert">
+                            <ul class="mb-0 pl-3">
+                                @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
                         @endif
                     </div>
                     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
@@ -408,7 +463,8 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th colspan="6" class="text-right">
-                                        <a href="{{ route('grupos.asignar.alumnos', $grupo) }}" class="btn btn-sm btn-primary">Ver tabla detallada</a>
+                                        <a href="{{ route('grupos.asignar.alumnos', $grupo) }}"
+                                            class="btn btn-sm btn-primary">Ver tabla detallada</a>
                                     </th>
                                 </tr>
                                 <tr>
@@ -437,7 +493,8 @@
                                         <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}">
                                             @csrf
                                             <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
-                                            <button class="btn btn-danger btn-sm" type="submit" name="action" value="eliminar">Eliminar</button>
+                                            <button class="btn btn-danger btn-sm" type="submit" name="action"
+                                                value="eliminar">Eliminar</button>
                                         </form>
                                     </td>
                                 </tr>
@@ -476,12 +533,6 @@
 
 @include('grupos.observacionTurnado')
 @include('grupos.observacionVer')
-
-{{-- * CSS --}}
-@push('content_css_sign')
-<link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
-@endpush
 
 
 {{-- * JS --}}
