@@ -105,7 +105,7 @@ class GrupoController extends Controller
         $esNuevoRegistro = true;
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
         $ultimaSeccion = null; // No hay avance todavía
-        $esEditable = false;
+        $esEditable = true;
 
         return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro', 'ultimaSeccion', 'esEditable'));
     }

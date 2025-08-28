@@ -191,6 +191,7 @@
             <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span></h5>
         </div>
 
+        @if(isset($grupo))
         @php $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? ''); @endphp
         @if(!empty($obsTexto))
         <!-- Observación (truncada con tooltip) -->
@@ -201,6 +202,7 @@
                 <small class="obs-text">{{ $obsTexto }}</small>
             </button>
         </div>
+        @endif
         @endif
 
         @if (!$esNuevoRegistro && isset($grupo))
@@ -463,18 +465,18 @@
                     </div>
                     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
                         <div class="flex-grow-1">
+                            @if(!$esNuevoRegistro && isset($grupo))
                             <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo) }}">
                                 @csrf
                                 <div class="input-group" style="width: 400px;">
-                                    @if (!$esNuevoRegistro && $grupo)
                                     <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
-                                    @endif
                                     <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18" required style="flex: 1 1 auto; min-width: 0;" value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
                                     <div class="input-group-append accion-alumnos">
                                         <button class="btn btn-primary mr-2 rounded" type="submit" name="action" value="agregar">Agregar</button>
                                     </div>
                                 </div>
                             </form>
+                            @endif
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -482,8 +484,9 @@
                             <thead class="thead-dark">
                                 <tr>
                                     <th colspan="6" class="text-right">
-                                        <a href="{{ route('grupos.asignar.alumnos', $grupo) }}"
-                                            class="btn btn-sm btn-primary">Ver tabla detallada</a>
+                                        @if(!$esNuevoRegistro && isset($grupo))
+                                        <a href="{{ route('grupos.asignar.alumnos', $grupo) }}" class="btn btn-sm btn-primary">Ver tabla detallada</a>
+                                        @endif
                                     </th>
                                 </tr>
                                 <tr>
@@ -527,9 +530,9 @@
                         <div class="row col-md-12 justify-content-end">
                             <p class="mx-4">Turnar a:</p>
                             @foreach ($grupo->estatusAdyacentes() as $estatus)
-                            @if($estatus->id != $ultimoEstatus->id)
-                            <button class="btn btn-md rounded turnar-btn" style="background-color: {{ $estatus->color }}; color: white; font-weight: 600; font-size: 0.95rem;" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}">{{ $estatus->estatus }}</button>
-                            @endif
+                                @if($estatus->id != $ultimoEstatus->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
+                                <button class="btn btn-md rounded turnar-btn" style="background-color: {{ $estatus->color }}; color: white; font-weight: 600; font-size: 0.95rem;" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}">{{ $estatus->estatus }}</button>
+                                @endif
                             @endforeach
                         </div>
                     </div>
