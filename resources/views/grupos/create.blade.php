@@ -160,16 +160,35 @@
             margin-top: .75rem !important;
         }
     }
+
+    /* --- Modo solo lectura: aplica estilos suaves a los campos --- */
+    .modo-solo-lectura .step-section .form-control,
+    .modo-solo-lectura .step-section select.form-control,
+    .modo-solo-lectura .step-section textarea.form-control {
+        background-color: #f8f9fa;
+        color: #6c757d;
+        cursor: not-allowed;
+    }
+    .modo-solo-lectura .step-section .select2-selection,
+    .modo-solo-lectura .step-section .select2-selection__rendered {
+        background-color: #f8f9fa !important;
+        color: #6c757d !important;
+        cursor: not-allowed !important;
+    }
+    /* Oculta botones de guardado en modo solo lectura */
+    .modo-solo-lectura .guardar-seccion { display: none !important; }
+    /* Oculta acciones de edición de alumnos (agregar/eliminar) en modo solo lectura */
+    .modo-solo-lectura .accion-alumnos { display: none !important; }
 </style>
 @endpush
 
 @section('content')
+<div id="grupos-wrapper" class="{{ $esEditable ? '' : 'modo-solo-lectura' }}" data-es-editable="{{ $esEditable ? '1' : '0' }}">
 <div class="card-header rounded-lg shadow d-flex align-items-center header-grupos">
     <div class="col-md-12 d-flex flex-column flex-md-row align-items-start align-items-md-center w-100">
         <!-- Título -->
         <div class="title-wrap mb-2 mb-md-0 order-1">
-            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' :
-                    'Edición' }}</span></h5>
+            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span></h5>
         </div>
 
         @php $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? ''); @endphp
@@ -278,7 +297,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
-                        {{ html()->button('Guardar Info. General')->class( 'btn btn-primary float-end rounded')->id('guardar_info_general')->type('button') }}
+                        {{ html()->button('Guardar Info. General')->class( 'btn btn-primary float-end rounded guardar-seccion')->id('guardar_info_general')->type('button') }}
                     </div>
                     {{ html()->form()->close() }}
                 </div>
@@ -451,7 +470,7 @@
                                     <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
                                     @endif
                                     <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18" required style="flex: 1 1 auto; min-width: 0;" value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
-                                    <div class="input-group-append">
+                                    <div class="input-group-append accion-alumnos">
                                         <button class="btn btn-primary mr-2 rounded" type="submit" name="action" value="agregar">Agregar</button>
                                     </div>
                                 </div>
@@ -493,7 +512,7 @@
                                         <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}">
                                             @csrf
                                             <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
-                                            <button class="btn btn-danger btn-sm" type="submit" name="action"
+                                            <button class="btn btn-danger btn-sm accion-alumnos" type="submit" name="action"
                                                 value="eliminar">Eliminar</button>
                                         </form>
                                     </td>
@@ -534,6 +553,8 @@
 @include('grupos.observacionTurnado')
 @include('grupos.observacionVer')
 
+</div> {{-- /#grupos-wrapper --}}
+
 
 {{-- * JS --}}
 @push('script_sign')
@@ -560,6 +581,7 @@
     // Configuración para Agenda del Grupo
     window.GrupoAgenda = {
         grupoId: @json(isset($grupo) ? $grupo->id : null),
+    editable: @json($esEditable),
         // Horas máximas del curso (decimal). Usado para calcular horas restantes en la UI.
         maxHoras: @json(isset($grupo) && isset($grupo->curso) ? $grupo->curso->horas : null),
         // Plantillas de rutas (coinciden con routes/web.php)
@@ -578,6 +600,26 @@
             }
         }
     };
+</script>
+<script>
+    // Modo solo lectura global basado en $esEditable
+    (function() {
+        var wrapper = document.getElementById('grupos-wrapper');
+        if (!wrapper) return;
+        var esEditable = wrapper.getAttribute('data-es-editable') === '1';
+        if (esEditable) return;
+
+        // Deshabilitar campos de formulario en todas las secciones
+        var selectors = '#grupos-wrapper .step-section input, #grupos-wrapper .step-section select, #grupos-wrapper .step-section textarea';
+        wrapper.querySelectorAll(selectors).forEach(function(el) {
+            try { el.disabled = true; } catch (e) {}
+        });
+
+        // Ocultar todos los botones de guardado de sección (incluye el de Info. General)
+        wrapper.querySelectorAll('.guardar-seccion').forEach(function(btn) {
+            btn.style.display = 'none';
+        });
+    })();
 </script>
 <script src="{{ asset('js/grupos/stepbar.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>

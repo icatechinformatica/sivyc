@@ -36,10 +36,28 @@ class GrupoEstatusService
 
         // ? Si el actual es final no se permite
         if ($estatusActual->final) {
+            $tieneAllAccess = auth()->user()->roles->contains('especial', 'all-access');
+
+            if ($tieneAllAccess) {
+                return [
+                    'ok' => true,
+                    'mensaje' => 'Transición permitida para usuarios con acceso total.'
+                ];
+            }
             return [
                 'ok' => false,
                 'mensaje' => 'No es posible cambiar el estatus porque el actual es final.'
             ];
+        }
+
+        // ? Validar que el registro de grupo este completo
+        if ($grupo->seccion_captura !== 'agenda') {
+            if (!$this->permitirRevision($grupo)) {
+                return [
+                    'ok' => false,
+                    'mensaje' => 'Para enviar a Revisión se requiere completar el registro del grupo.'
+                ];
+            }
         }
 
         // ? Validar transición a REVISIÓN
@@ -108,7 +126,7 @@ class GrupoEstatusService
             return response()->json(['error' => $validacion['mensaje']], 400);
         }
 
-    // La observación del turnado se almacena en la pivote tbl_grupo_estatus (campo 'observaciones').
+        // La observación del turnado se almacena en la pivote tbl_grupo_estatus (campo 'observaciones').
 
         // Persistir cambio en transacción
         DB::transaction(function () use ($grupo, $estatusActual, $nuevo_estatus_id, $estatusDestino, $seccion, $observacion) {

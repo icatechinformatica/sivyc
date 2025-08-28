@@ -22,7 +22,7 @@
                                     <div id="fc-seleccion-detalle" class="small text-black">Ninguno</div>
                                     <div class="mt-2 d-flex gap-2">
                                         <button id="btn-agenda-eliminar-periodo" type="button"
-                                            class="btn btn-outline-danger btn-sm" disabled>
+                                            class="btn btn-outline-danger btn-sm" {{ $esEditable ? '' : 'disabled' }}>
                                             Eliminar periodo seleccionado
                                         </button>
                                     </div>
@@ -31,12 +31,12 @@
                             <div class="d-flex px-2">
                                 <div>
                                     <input type="color" id="color_fondo" name="color_fondo" value="#ff0000"
-                                        class="select-color">
+                                        class="select-color" {{ $esEditable ? '' : 'disabled' }}>
                                     <span class="ml-2">Color de fondo</span>
                                 </div>
                                 <div class="ml-2">
                                     <input type="color" id="color_texto" name="color_texto" value="#ff0000"
-                                        class="select-color">
+                                        class="select-color" {{ $esEditable ? '' : 'disabled' }}>
                                     <span class="ml-2">Color del texo</span>
                                 </div>
                             </div>
@@ -47,22 +47,22 @@
                                         <label for="agenda_hora_inicio" class="mb-1 small text-muted">Hora
                                             inicio</label>
                                         <input type="time" id="agenda_hora_inicio" class="form-control form-control-sm"
-                                            value="08:00">
+                                            value="08:00" {{ $esEditable ? '' : 'disabled' }}>
                                     </div>
                                     <div class="form-group mb-3">
                                         <label for="agenda_hora_fin" class="mb-1 small text-muted">Hora fin</label>
                                         <input type="time" id="agenda_hora_fin" class="form-control form-control-sm"
-                                            value="10:00">
+                                            value="10:00" {{ $esEditable ? '' : 'disabled' }}>
                                     </div>
                                     <button id="btn-agenda-aplicar-seleccion" type="button"
-                                        class="btn btn-primary btn-block btn-sm" disabled>
+                                        class="btn btn-primary btn-block btn-sm" {{ $esEditable ? '' : 'disabled' }}>
                                         Aplicar a días seleccionados
                                     </button>
                                     <div class="small text-muted mt-2">
                                         Selecciona uno o varios días en el calendario y luego aplica el horario.
                                     </div>
                                     <div class="form-check mt-1">
-                                        <input class="form-check-input" type="checkbox" value="" id="alimentos">
+                                        <input class="form-check-input" type="checkbox" value="" id="alimentos" {{ $esEditable ? '' : 'disabled' }}>
                                         <label class="form-check-label" for="alimentos">
                                             ¿Incluir hora de alimentos?
                                         </label>

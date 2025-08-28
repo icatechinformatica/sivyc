@@ -1,6 +1,7 @@
 
 ; (function () {
     function getConfig() { return window.GrupoAgenda || {}; }
+    function esEditable() { try { return !!getConfig().editable; } catch (_) { return true; } }
     function getToken() { return (window.registroBladeVars && window.registroBladeVars.csrfToken) || document.querySelector('meta[name="csrf-token"]')?.content; }
 
     let calendar = null;
@@ -257,9 +258,9 @@
                 firstDay: 0, // domingo
                 height: 'auto',
                 buttonText: { today: 'Hoy' },
-                selectable: true,
+                selectable: esEditable(),
                 selectMirror: true,
-                editable: true,
+                editable: esEditable(),
                 eventOverlap: true,
                 // Mostrar eventos como bloques en mes para poder colorear fondo
                 views: {
@@ -284,6 +285,7 @@
                 },
                 // Capturar selección de días; no crear evento inmediatamente
                 select: function (arg) {
+                    if (!esEditable()) { calendar.unselect(); return; }
                     if (!grupoId) { calendar.unselect(); return; }
                     // Guardar tanto los Date nativos como sus strings
                     selectedRange = { start: arg.start, end: arg.end, startStr: arg.startStr, endStr: arg.endStr };
@@ -319,13 +321,20 @@
                             }
                         }
                         if (btnDel) {
-                            btnDel.disabled = !evt.id;
-                            btnDel.dataset.agendaId = evt.id || '';
+                            // Mantener deshabilitado en modo solo lectura
+                            if (!esEditable()) {
+                                btnDel.disabled = true;
+                                btnDel.dataset.agendaId = '';
+                            } else {
+                                btnDel.disabled = !evt.id;
+                                btnDel.dataset.agendaId = evt.id || '';
+                            }
                         }
                     } catch (_) { /* noop */ }
                 },
                 // Drag & drop con validación de horas máximas
                 eventDrop: function (info) {
+                    if (!esEditable()) { info.revert(); return; }
                     if (esConector(info.event)) { info.revert(); return; }
                     const maxHoras = obtenerMaxHoras();
                     if (isFinite(maxHoras)) {
@@ -341,6 +350,7 @@
                     actualizarIndicadoresAgenda();
                 },
                 eventResize: function (info) {
+                    if (!esEditable()) { info.revert(); return; }
                     if (esConector(info.event)) { info.revert(); return; }
                     const maxHoras = obtenerMaxHoras();
                     if (isFinite(maxHoras)) {
@@ -385,6 +395,7 @@
 
         // Botón: aplicar horario al rango seleccionado
         $(document).on('click', '#btn-agenda-aplicar-seleccion', function () {
+            if (!esEditable()) return; // bloquear creación en modo solo lectura
             const cfg = getConfig();
             const routes = cfg.routes || {};
             const grupoId = cfg.grupoId;
@@ -468,6 +479,7 @@
 
     // Botón eliminar periodo seleccionado
     $(document).on('click', '#btn-agenda-eliminar-periodo', function () {
+        if (!esEditable()) return; // bloquear eliminación en modo solo lectura
         const routes = getConfig().routes || {};
         const grupoId = getConfig().grupoId;
         const btn = this;

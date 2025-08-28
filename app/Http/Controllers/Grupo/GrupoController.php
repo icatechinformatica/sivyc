@@ -74,7 +74,9 @@ class GrupoController extends Controller
         $ultimoEstatus = $grupo->estatusActual();
         $ultimaSeccion = $grupo->seccion_captura ?? null;
 
-        $compactObject = compact('grupo', 'tiposImparticion', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion');
+        $esEditable = $ultimoEstatus->estatus == 'EN CAPTURA' ? true : false;
+
+        $compactObject = compact('grupo', 'tiposImparticion', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion', 'esEditable');
 
         if (!empty($curp)) {
             # si no está vacio el grupo procedemos a cargarlo en el compact
@@ -103,7 +105,9 @@ class GrupoController extends Controller
         $esNuevoRegistro = true;
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
         $ultimaSeccion = null; // No hay avance todavía
-        return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro', 'ultimaSeccion'));
+        $esEditable = false;
+
+        return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro', 'ultimaSeccion', 'esEditable'));
     }
 
     public function getLocalidades($municipioId)
