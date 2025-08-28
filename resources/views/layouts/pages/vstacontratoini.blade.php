@@ -192,11 +192,11 @@
                                         </button>
                                     @endcan
                                     @if($itemData->permiso_editar == TRUE)
-                                        @can('folio.especialedit')
+                                        {{-- @can('folio.especialedit')
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
-                                        @endcan
+                                        @endcan --}}
                                         @can('supre.upload_supre')
                                             <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                                 data-toggle="modal" data-placement="top"
@@ -241,11 +241,11 @@
                                         </button>
                                     @endcan
                                     @if($itemData->permiso_editar == TRUE)
-                                        @can('folio.especialedit')
+                                        {{-- @can('folio.especialedit')
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
-                                        @endcan
+                                        @endcan --}}
                                         @can('supre.upload_supre')
                                             <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                                 data-toggle="modal" data-placement="top"
@@ -271,11 +271,11 @@
                                         </button>
                                     @endcan
                                     @if($itemData->permiso_editar == TRUE)
-                                        @can('folio.especialedit')
+                                        {{-- @can('folio.especialedit')
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
-                                        @endcan
+                                        @endcan --}}
                                         @can('supre.upload_supre')
                                             <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                                 data-toggle="modal" data-placement="top"
