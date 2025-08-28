@@ -59,7 +59,6 @@ class vbgruposController extends Controller
                 $result =  DB::table('tbl_cursos')->where('id',$id)->whereNull('status_curso');
                 if($estado == true)
                     $result->update(['vb_dg' => $estado, 'turnado' => 'DGA']);
-                    $result->update(['vb_dg' => $estado, 'turnado' => 'DGA']);
                 else
                     $result->update(['vb_dg' => $estado, 'turnado' => 'VoBo']);
                 if($result){

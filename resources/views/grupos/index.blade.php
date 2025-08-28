@@ -35,11 +35,13 @@
 @section('content')
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-8">
-        <span>Registro de grupos | Unidad: {{ auth()->user()->unidad->unidad }}</span>
+        <span>Registro de grupos {{ !is_null(auth()->user()->unidad) ? "| Unidad: " . auth()->user()->unidad->unidad : '' }}</span>
     </div>
     <div class="col-md-4 d-flex justify-content-end">
         {{-- * INPUT NUEVO GRUPO --}}
-        <a href="{{ route('grupos.crear') }}" class="btn btn-success">Nuevo Grupo</a>
+        @can('crear.nuevo.grupo)')
+            <a href="{{ route('grupos.crear') }}" class="btn btn-success">Nuevo Grupo</a>
+        @endcan
     </div>
 </div>
 <div class="card card-body">

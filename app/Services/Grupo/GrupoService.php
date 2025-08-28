@@ -33,7 +33,7 @@ class GrupoService
             }
         }
 
-        if ($tieneAllAccess) {
+        if ($tieneAllAccess OR is_null($usuario->unidad)) {
             if ($busqueda) {
                 return $this->grupoRepository->buscarPaginado($busqueda, $registrosPorPagina);
             }
