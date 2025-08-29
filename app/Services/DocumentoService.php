@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use App\Factories\ElectronicDocumentFactory;
 use PDF;
 use Illuminate\Support\Facades\DB;
+use App\Utilities\MyUtility;
 
 class DocumentoService
 {

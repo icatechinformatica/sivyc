@@ -71,6 +71,5 @@ use App\Http\Controllers\DocumentoElectronico\PlantillaController;
 
 // });
 // return (new EFirmaService())->setBody($param);
-Route::get('/servicio/archivo/electronico/{id}', [PlantillaController::class, 'edit'])->name('archivo.electronico.show');
 Route::get('/servicio/archivo/electronico', [PlantillaController::class, 'index'])->name('archivo.electronico.index');
 Route::get('/servicio/electronico/{id}', [PlantillaController::class, 'loadFile'])->name('archivo.electronico.load');
