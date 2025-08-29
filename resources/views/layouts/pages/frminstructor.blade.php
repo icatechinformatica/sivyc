@@ -362,7 +362,7 @@
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputrfc">RFC/Constancia Fiscal</label>
-                    <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true">
+                    <input name='rfc' id='rfc' type="text" class="form-control" aria-required="true" required>
                 </div>
                 <div class="form-group col-md-3">
                     <label for="inputhonorarios">Regimen</label>
