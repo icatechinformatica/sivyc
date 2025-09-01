@@ -82,9 +82,11 @@ class InstructorController extends Controller
             if($tipoInstructor=='nombre_curso'){
                 $buscando = explode(' - ', $busquedaInstructor);
                 if (isset($buscando[0]) && is_numeric($buscando[0])){
-                    $data = $data->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
-                    ->where('especialidad_instructor_curso.activo','true')
-                    ->where('curso_id', $buscando[0]);
+                    $data = $data->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $buscando[0]);
+                    // ->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
+                    // ->where('especialidad_instructor_curso.activo','true')
+                    // ->where('curso_id', $buscando[0]);
+                    // dd($buscando);
                 }else $message = "SELECCIONE UNA OPCIÓN DE LA LISTA DE CURSOS";
 
             }
@@ -332,43 +334,48 @@ class InstructorController extends Controller
     public function guardar_instructor(Request $request)
     {
         // dd($request);
-        $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
-        if(is_null($verify) == TRUE)
-        {
-            $saveInstructor = new instructor();
-            $save_preinstructor = new pre_instructor();
-            $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
-            if ($uid['id'] === null) {
-                # si es nulo entra una vez y se le asigna un valor
-                $id = 1;
-            } else {
-                # entra pero no se le asigna valor
-                $id = $uid->id + 1;
+        try {
+            $verify = instructor::WHERE('curp','=', $request->curp)->FIRST();
+            if(is_null($verify) == TRUE)
+            {
+                $saveInstructor = new instructor();
+                $save_preinstructor = new pre_instructor();
+                $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+                if ($uid['id'] === null) {
+                    # si es nulo entra una vez y se le asigna un valor
+                    $id = 1;
+                } else {
+                    # entra pero no se le asigna valor
+                    $id = $uid->id + 1;
+                }
+                $instructor = $this->guardado_ins($saveInstructor, $request, $id);
+                unset($instructor->data_especialidad);
+                unset($instructor->data_perfil);
+
+                $pre_instructor  = $this->guardado_ins($save_preinstructor, $request, $id);
+                $pre_instructor->id_oficial = $instructor->id;
+                $pre_instructor->registro_activo = TRUE;
+
+                // dd($instructor);
+                $pre_instructor->save();
+                $instructor->save();
+
+                $newa = (array) $instructor;
+                $this->new_history($newa, $instructor, 'creacion de instructor por parte de la unidad');
+
+                return redirect()->route('instructor-crear-p2',['id' => $instructor->id])
+                    ->with('success','Información basica agregada');
+
             }
-            $instructor = $this->guardado_ins($saveInstructor, $request, $id);
-            unset($instructor->data_especialidad);
-            unset($instructor->data_perfil);
-
-            $pre_instructor  = $this->guardado_ins($save_preinstructor, $request, $id);
-            $pre_instructor->id_oficial = $instructor->id;
-            $pre_instructor->registro_activo = TRUE;
-
-            // dd($instructor);
-            $pre_instructor->save();
-            $instructor->save();
-
-            $newa = (array) $instructor;
-            $this->new_history($newa, $instructor, 'creacion de instructor por parte de la unidad');
-
-            return redirect()->route('instructor-crear-p2',['id' => $instructor->id])
-                ->with('success','Información basica agregada');
-
-        }
-        else
-        {
-            $clave_instructor = instructor::WHERE('curp', '=', $request->curp)->VALUE('numero_control');
-            $mensaje = "Lo sentimos, la curp ".$request->curp." asociada a este registro ya se encuentra en la base de datos al instructor con clave ".$clave_instructor.".";
-            return redirect('/instructor/crear')->withErrors($mensaje);
+            else
+            {
+                $clave_instructor = instructor::WHERE('curp', '=', $request->curp)->VALUE('numero_control');
+                $mensaje = "Lo sentimos, la curp ".$request->curp." asociada a este registro ya se encuentra en la base de datos al instructor con clave ".$clave_instructor.".";
+                return redirect('/instructor/crear')->withErrors($mensaje);
+            }
+        } catch (\Throwable $e) {
+        \Log::error('Error al intentar guardar el instructor: ' . $e->getMessage(), ['exception' => $e]);
+        return back()->withErrors('Ocurrió un error inesperado: ' . $e->getMessage())->withInput();
         }
     }
 
@@ -1924,63 +1931,69 @@ class InstructorController extends Controller
     public function save_ins(Request $request)
     {
         // dd($request);
-        $arrperf = $arresp = [];
-        $modInstructor = NULL;
-        $userId = Auth::user()->id;
-        $modInstructor = pre_instructor::find($request->id);
-        $extract_inf = instructor::find($request->id);
-        if(!isset($modInstructor))
-        {
-            $modInstructor = new pre_instructor();
-            $modInstructor->id_oficial = $request->id;
-            $modInstructor->archivo_ine = $extract_inf->archivo_ine;
-            $modInstructor->archivo_domicilio = $extract_inf->archivo_domicilio;
-            $modInstructor->archivo_curp = $extract_inf->archivo_curp;
-            $modInstructor->archivo_alta = $extract_inf->archivo_alta;
-            $modInstructor->archivo_bancario = $extract_inf->archivo_bancario;
-            $modInstructor->archivo_fotografia = $extract_inf->archivo_fotografia;
-            $modInstructor->archivo_estudios = $extract_inf->archivo_estudios;
-            $modInstructor->archivo_otraid = $extract_inf->archivo_otraid;
-            $modInstructor->archivo_rfc = $extract_inf->archivo_rfc;
-            $modInstructor->numero_control = $extract_inf->numero_control;
-            $modInstructor->registro_activo = TRUE;
-        }
-        $pre_instructor = $this->guardado_ins($modInstructor, $request, $request->id);
-        $pre_instructor->registro_activo = TRUE;
-        $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
-        $old = $pre_instructor->apellidoPaterno . ' ' . $pre_instructor->apellidoMaterno . ' ' . $pre_instructor->nombre;
-
-        $extract_inf->save();
-
-
-        if($pre_instructor->status == 'RETORNO' || $pre_instructor->status == 'VALIDADO')
-        {
-            $pre_instructor->status = 'EN CAPTURA';
-        }
-        //PROCESO DE PREVENCION EN CAMBIO DE NUMERO DE REVISIONES VACIOS
-        $pre_instructor->save();
-        if($pre_instructor->turnado == 'UNIDAD')
-        {
-            $nrev = $this->new_revision($pre_instructor->id);
-            if($nrev != $pre_instructor->nrevision)
+        try {
+            $arrperf = $arresp = [];
+            $modInstructor = NULL;
+            $userId = Auth::user()->id;
+            $modInstructor = pre_instructor::find($request->id);
+            $extract_inf = instructor::find($request->id);
+            if(!isset($modInstructor))
             {
-                $pre_instructor->nrevision = $nrev;
-                $nrevisiontext = 'Se ha generado un nuevo numero de revisión: ' . $pre_instructor->nrevision;
+                $modInstructor = new pre_instructor();
+                $modInstructor->id_oficial = $request->id;
+                $modInstructor->archivo_ine = $extract_inf->archivo_ine;
+                $modInstructor->archivo_domicilio = $extract_inf->archivo_domicilio;
+                $modInstructor->archivo_curp = $extract_inf->archivo_curp;
+                $modInstructor->archivo_alta = $extract_inf->archivo_alta;
+                $modInstructor->archivo_bancario = $extract_inf->archivo_bancario;
+                $modInstructor->archivo_fotografia = $extract_inf->archivo_fotografia;
+                $modInstructor->archivo_estudios = $extract_inf->archivo_estudios;
+                $modInstructor->archivo_otraid = $extract_inf->archivo_otraid;
+                $modInstructor->archivo_rfc = $extract_inf->archivo_rfc;
+                $modInstructor->numero_control = $extract_inf->numero_control;
+                $modInstructor->registro_activo = TRUE;
             }
-            else
+            $pre_instructor = $this->guardado_ins($modInstructor, $request, $request->id);
+            $pre_instructor->registro_activo = TRUE;
+            $new = $request->apellido_paterno . ' ' . $request->apellido_materno . ' ' . $request->nombre;
+            $old = $pre_instructor->apellidoPaterno . ' ' . $pre_instructor->apellidoMaterno . ' ' . $pre_instructor->nombre;
+
+            $extract_inf->save();
+
+
+            if($pre_instructor->status == 'RETORNO' || $pre_instructor->status == 'VALIDADO')
             {
-                $nrevisiontext = 'Modificaciones agregadas al numero de revisión: ' . $pre_instructor->nrevision;
+                $pre_instructor->status = 'EN CAPTURA';
             }
+            //PROCESO DE PREVENCION EN CAMBIO DE NUMERO DE REVISIONES VACIOS
+            $pre_instructor->save();
+            if($pre_instructor->turnado == 'UNIDAD')
+            {
+                $nrev = $this->new_revision($pre_instructor->id);
+                if($nrev != $pre_instructor->nrevision)
+                {
+                    $pre_instructor->nrevision = $nrev;
+                    $nrevisiontext = 'Se ha generado un nuevo numero de revisión: ' . $pre_instructor->nrevision;
+                }
+                else
+                {
+                    $nrevisiontext = 'Modificaciones agregadas al numero de revisión: ' . $pre_instructor->nrevision;
+                }
+            }
+            $pre_instructor->save();
+
+            Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
+            tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
+            tbl_curso::where('id_instructor', '=', $request->id)->update(['curp' => $request->curp]);
+
+
+            return redirect()->route('instructor-inicio')
+                    ->with('success', $nrevisiontext);
+
+        } catch (\Throwable $e) {
+            \Log::error('Error al intentar guardar el instructor: ' . $e->getMessage(), ['exception' => $e]);
+            return back()->withErrors('Ocurrió un error inesperado: ' . $e->getMessage())->withInput();
         }
-        $pre_instructor->save();
-
-        Inscripcion::where('instructor', '=', $old)->update(['instructor' => $new]);
-        tbl_curso::where('nombre', '=', $old)->update(['nombre' => $new]);
-        tbl_curso::where('id_instructor', '=', $request->id)->update(['curp' => $request->curp]);
-
-
-        return redirect()->route('instructor-inicio')
-                ->with('success', $nrevisiontext);
     }
 
     public function expdoc_save(Request $request) //expdoc_save(Request $request)
@@ -4940,6 +4953,47 @@ class InstructorController extends Controller
          $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
+    }
+
+    public function reenvio_wsp($idins)
+    {
+        $dataInstructor = instructor::Where('id', $idins)->First();
+        $dataInstructor->instructor = $dataInstructor->nombre . ' ' . $dataInstructor->apellidoPaterno . ' ' . $dataInstructor->apellidoMaterno;
+        //envio de credenciales de instructor para Efirma
+        $userInstructor = DB::Connection('mysql')->Table('users')->Where('curp', $dataInstructor->curp)->First();//se checa si existe el usuario
+        if(is_null($userInstructor)) {
+            $userId = DB::Connection('mysql')->Table('users')->InsertGetId([
+                'name' => $dataInstructor->instructor,
+                'email' => $dataInstructor->correo,
+                'password' => Hash::make($dataInstructor->rfc), // Always hash passwords!
+                'created_at' => now(),
+                'updated_at' => now(),
+                'tipo_usuario' => '3',
+                'curp' => $dataInstructor->curp,
+                'id_sivyc' => $dataInstructor->id
+            ]);
+            //end of create user
+        } else {
+            DB::Connection('mysql')->Table('users')
+                ->where('curp', $dataInstructor->curp)
+                ->update(['password' => Hash::make($dataInstructor->rfc)]);
+        }
+        $infowhats = [
+            'nombre' => $dataInstructor->instructor,
+            'correo' => $dataInstructor->correo,
+            'pwd' => $dataInstructor->rfc,
+            'telefono' => $dataInstructor->telefono,
+            'sexo' => $dataInstructor->sexo
+        ];
+
+        $response = $this->whatsapp_alta_usuario_msg($infowhats, app(WhatsAppService::class));
+
+        if (isset($response['status']) && $response['status'] === false) {
+            // Handle the error as you wish
+            return back()->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+        }
+        return back()->with('success', 'Mensaje de WhatsApp enviado correctamente.');
+        // termina el envio de mensaje de WhatsApp
     }
 }
 
