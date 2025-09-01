@@ -277,7 +277,7 @@ class GrupoController extends Controller
 
         try {
             $this->grupoService->guardarCostosYTipoExoneracion($grupo, $costos, $cuotaGeneral);
-            return redirect()->route('grupos.editar', $grupo->id)->with('success', 'Costos actualizados.');
+            return redirect()->back()->with('success', 'Costos actualizados.');
         } catch (\Throwable $e) {
             Log::error('Error al guardar costos de alumnos: ' . $e->getMessage());
             return redirect()->route('grupos.editar', $grupo->id)->with('error', 'No se pudieron actualizar los costos.');

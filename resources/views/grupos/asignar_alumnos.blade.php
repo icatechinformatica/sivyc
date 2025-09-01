@@ -70,9 +70,9 @@
                     <div class="input-group input-group-sm mr-2" style="width: 160px;">
                         <input id="cuota" name="cuota_general" type="number" step="0.01" min="0" class="form-control"
                             placeholder="0.00" data-num-alumnos="{{ $numAlumnos }}"
-                            data-per-share="{{ !is_null($perShare) ? number_format($perShare, 2, '.', '') : '' }}"
-                            data-costo-curso="{{ !is_null($costoCurso) ? number_format($costoCurso, 2, '.', '') : '' }}"
-                            value="{{ $todosSinCosto && !is_null($perShare) ? number_format($perShare, 2, '.', '') : '' }}"
+                            data-per-share="{{ !is_null($perShare) ? number_format((float) $perShare, 2, '.', '') : '' }}"
+                            data-costo-curso="{{ !is_null($costoCurso) ? number_format((float) $costoCurso, 2, '.', '') : '' }}"
+                            value="{{ $todosSinCosto && !is_null($perShare) ? number_format((float) $perShare, 2, '.', '') : '' }}"
                             aria-label="Cuota general">
                     </div>
                     <button type="submit" class="btn btn-primary btn-sm"> <i class="fa fa-save mr-1"></i> Guardar </button>
