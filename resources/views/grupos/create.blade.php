@@ -8,178 +8,7 @@
 <link rel="stylesheet" href="{{ asset('css/grupos/agenda_fullcalendar.css') }}">
 <link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
-<style>
-    /* Estilos scoped para header de Grupos */
-    .header-grupos .obs-badge {
-        background: #ffffff;
-        /* warning light */
-        color: #850404;
-        /* warning text */
-        border: 2.2px dashed #ff0000;
-        border-radius: 9999px;
-        -webkit-appearance: none;
-        /* normaliza botón si se usa <button> */
-        appearance: none;
-    }
-
-    .header-grupos .obs-text {
-        display: inline-block;
-        max-width: 36ch;
-        white-space: nowrap;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: middle;
-    }
-
-    @media (min-width: 768px) {
-        .header-grupos .obs-text {
-            max-width: 158ch;
-        }
-    }
-
-    .header-grupos .badges-wrap>.badge {
-        margin-right: .5rem;
-    }
-
-    .header-grupos .badges-wrap>.badge:last-child {
-        margin-right: 0;
-    }
-
-    .header-grupos .title-wrap h5 {
-        line-height: 1.2;
-    }
-
-    /* Evita que el bloque central empuje los badges en md+ */
-    @media (min-width: 768px) {
-        .header-grupos .obs-container {
-            min-width: 0;
-        }
-    }
-
-    .header-grupos i.obs-icon {
-        font-size: 1rem;
-    }
-
-    .header-grupos .obs-badge .obs-icon {
-        margin-right: .35rem;
-    }
-
-    .header-grupos .obs-badge small {
-        line-height: 1;
-    }
-
-    .header-grupos .obs-badge:hover {
-        filter: brightness(0.98);
-    }
-
-    .header-grupos .obs-badge:focus {
-        outline: 2px solid #ffe08a;
-        outline-offset: 2px;
-    }
-
-    .header-grupos .obs-badge {
-        cursor: pointer;
-    }
-
-    .header-grupos .title-wrap,
-    .header-grupos .obs-container,
-    .header-grupos .badges-wrap {
-        flex-shrink: 0;
-    }
-
-    .header-grupos .obs-container {
-        flex: 1 1 auto;
-    }
-
-    /* Inputs full-width en móvil dentro de esta vista */
-    .step-section .form-group .form-control,
-    .step-section .mb-2 .form-control,
-    .step-section select.form-control,
-    .step-section textarea.form-control {
-        width: 100%;
-    }
-
-    /* Ajuste específico para el buscador de CURP en móviles */
-    @media (max-width: 767.98px) {
-        #alumnos .input-group {
-            width: 100% !important;
-        }
-
-        #alumnos .input-group .form-control {
-            flex: 1 1 auto;
-            min-width: 0;
-        }
-    }
-
-    /* Mantener un ancho cómodo en escritorio para el buscador de CURP */
-    @media (min-width: 768px) {
-        #alumnos .input-group {
-            max-width: 400px;
-        }
-    }
-
-    /* Reducir paddings/márgenes anidados en móvil para mejor aprovechamiento del ancho */
-    @media (max-width: 767.98px) {
-
-        /* Header compacto */
-        .header-grupos {
-            padding: .5rem .75rem !important;
-        }
-
-        /* Card body general más compacto en esta vista */
-        .card.card-body {
-            padding: .75rem !important;
-        }
-
-        /* Secciones: reducir separación vertical y padding interno */
-        .step-section.mb-4 {
-            margin-bottom: 1rem !important;
-        }
-
-        .step-section>.p-3 {
-            padding: .75rem !important;
-        }
-
-        /* Evitar doble gutter en columnas de sección, respetando px-0 cuando exista */
-        .step-section:not(.px-0) {
-            padding-left: .5rem !important;
-            padding-right: .5rem !important;
-        }
-
-        /* Stepbar móvil aún más compacto (barra unificada) */
-        .step-progress-nav .list-group-item {
-            padding: .25rem .25rem !important;
-        }
-
-        /* Títulos y separaciones internas un poco más compactas */
-        .step-section h5 {
-            margin-bottom: .75rem !important;
-        }
-
-        .step-section .d-flex.justify-content-end {
-            margin-top: .75rem !important;
-        }
-    }
-
-    /* --- Modo solo lectura: aplica estilos suaves a los campos --- */
-    .modo-solo-lectura .step-section .form-control,
-    .modo-solo-lectura .step-section select.form-control,
-    .modo-solo-lectura .step-section textarea.form-control {
-        background-color: #f8f9fa;
-        color: #6c757d;
-        cursor: not-allowed;
-    }
-    .modo-solo-lectura .step-section .select2-selection,
-    .modo-solo-lectura .step-section .select2-selection__rendered {
-        background-color: #f8f9fa !important;
-        color: #6c757d !important;
-        cursor: not-allowed !important;
-    }
-    /* Oculta botones de guardado en modo solo lectura */
-    .modo-solo-lectura .guardar-seccion { display: none !important; }
-    /* Oculta acciones de edición de alumnos (agregar/eliminar) en modo solo lectura */
-    .modo-solo-lectura .accion-alumnos { display: none !important; }
-</style>
+<link rel="stylesheet" href="{{ asset('css/grupos/detalles.css') }}">
 @endpush
 
 @section('content')
@@ -453,15 +282,6 @@
                         @if (session('info'))
                         <div class="alert alert-info" role="alert">{{ session('info') }}</div>
                         @endif
-                        @if ($errors->any())
-                        <div class="alert alert-danger" role="alert">
-                            <ul class="mb-0 pl-3">
-                                @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                        @endif
                     </div>
                     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
                         <div class="flex-grow-1">
@@ -483,9 +303,15 @@
                         <table class="table table-bordered table-striped table-hover">
                             <thead class="thead-dark">
                                 <tr>
-                                    <th colspan="6" class="text-right">
+                                    <th colspan="3">
+                                        <div class="d-flex">
+                                            <p class="my-auto">Tipo de pago: <span id="tipo-exoneracion" class="tipo-exo-badge tipo-{{ strtolower(preg_replace('/\s+/', '-', trim($grupo->exoneracion->tipo_exoneracion))) }}">
+                                                {{ $grupo->exoneracion->tipo_exoneracion }}</span></p>
+                                        </div>
+                                    </th>
+                                    <th colspan="3" class="text-right">
                                         @if(!$esNuevoRegistro && isset($grupo))
-                                        <a href="{{ route('grupos.asignar.alumnos', $grupo) }}" class="btn btn-sm btn-primary">Ver tabla detallada</a>
+                                        <a href="{{ route('grupos.ver.listado.alumnos', $grupo) }}" class="btn btn-sm btn-primary">Ver tabla detallada</a>
                                         @endif
                                     </th>
                                 </tr>

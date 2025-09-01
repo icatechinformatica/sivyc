@@ -6,61 +6,11 @@
 <link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css">
 <link rel="stylesheet" href="{{ asset('css/grupos/agenda_fullcalendar.css') }}">
-<style>
-    /* Destacar el tipo de exoneración/pago */
-    #tipo-exoneracion.tipo-exo-badge {
-        display: inline-block;
-        font-weight: 800;
-        font-size: 0.9rem;
-        letter-spacing: .5px;
-        padding: .2rem;
-        border-radius: 8px;
-        text-transform: uppercase;
-        min-width: 9rem;
-        text-align: center;
-    }
-
-    #tipo-exoneracion.tipo-ordinario {
-        background: #e5fde3;
-        color: #0da137;
-        border: 1px solid #92f990;
-    }
-
-    #tipo-exoneracion.tipo-exoneracion {
-        background: #fffdeb;
-        color: #b7931c;
-        border: 1px solid #efee9a;
-    }
-
-    #tipo-exoneracion.tipo-reduccion {
-        background: #e0e0ff;
-        color: #1b00e6;
-        border: 1px solid #808bff;
-    }
-
-    .exo-pulse {
-        animation: exoPulse 1.2s ease-out 1;
-    }
-
-    @keyframes exoPulse {
-        0% {
-            transform: scale(0.98);
-            box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.12);
-        }
-
-        60% {
-            transform: scale(1.02);
-        }
-
-        100% {
-            transform: scale(1);
-        }
-    }
-</style>
+<link rel="stylesheet" href="{{ asset('css/grupos/detalles.css') }}">
 @endpush
 
 @section('content')
-<div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
+<div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center mb-0">
     <div class="col-md-8">
         <span>Grupos / Asignar Alumnos</span>
     </div>
@@ -72,44 +22,50 @@
     </div>
 </div>
 
-<div class="row mb-3 px-5">
+{{-- <div class="row mb-3 px-5">
     <div class="d-flex">
         <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn-regresar">
             <i class="fa fa-arrow-left mr-2"></i> Regresar
         </a>
     </div>
+</div> --}}
+
+{{-- Mensajes flash para asignación/eliminación de alumnos --}}
+<div class="row px-3 py-0 mx-0 my-2 ">
+    <div class="col-12 my-2">
+        @if (session('success'))
+            <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+            @endif
+            @if (session('error'))
+            <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+            @endif
+            @if (session('info'))
+            <div class="alert alert-info" role="alert">{{ session('info') }}</div>
+        @endif
+    </div>
 </div>
 
-<div class="card card-body mt-3">
+<div class="card card-body mt-0">
     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
 
-        <div class="flex-grow-1">
+        <div class="col-md-9 flex-grow-1 px-0">
             <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo->id) }}">
                 @csrf
-                <div class="input-group">
-                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18"
-                        required>
+                <div class="input-group w-50">
+                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18" required>
                     <div class="input-group-append">
-                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
-                            value="agregar">Agregar</button>
+                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action" value="agregar">Agregar</button>
                     </div>
                 </div>
             </form>
         </div>
 
-        <div class="ml-auto d-flex align-items-center p-0 m-0">
-            @php
-            $numAlumnos = $grupo->alumnos->count();
-            $costoCurso = optional($grupo->curso)->costo;
-            $perShare = ($numAlumnos > 0 && !is_null($costoCurso)) ? ($costoCurso / $numAlumnos) : null;
-            $todosSinCosto = $grupo->alumnos->every(function($a){ return is_null($a->pivot->costo); });
-            @endphp
-            <form id="form-costos" class="form-inline justify-content-end" method="POST"
-                action="{{ route('grupos.alumnos.costos', $grupo->id) }}">
+        <div class="ml-auto d-flex align-items-center p-0 m-0 col-md-3">
+            <form id="form-costos" class="form-inline justify-content-end" method="POST" action="{{ route('grupos.alumnos.costos', $grupo->id) }}">
                 @csrf
-                <div class="d-flex align-items-end">
-                    <div class="d-flex flex-column text-right mr-2">
-                        <label for="cuota" class="font-weight-bold mb-1">Cuota general</label>
+                <div class="d-flex align-items-center">
+                    <div class="d-flex mr-2">
+                        <label for="cuota" class="font-weight-bold my-auto">Cuota general</label>
                     </div>
                     <div class="input-group input-group-sm mr-2" style="width: 160px;">
                         <input id="cuota" name="cuota_general" type="number" step="0.01" min="0" class="form-control"
@@ -119,9 +75,7 @@
                             value="{{ $todosSinCosto && !is_null($perShare) ? number_format($perShare, 2, '.', '') : '' }}"
                             aria-label="Cuota general">
                     </div>
-                    <button type="submit" class="btn btn-primary btn-sm">
-                        <i class="fa fa-save mr-1"></i> Guardar
-                    </button>
+                    <button type="submit" class="btn btn-primary btn-sm"> <i class="fa fa-save mr-1"></i> Guardar </button>
                 </div>
             </form>
         </div>
@@ -187,8 +141,7 @@
                     <td class="text-center align-middle">
                         <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}" class="">
                             @csrf
-                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}"> <button
-                                class="btn btn-danger btn-sm rounded p-2" type="submit" name="action" value="eliminar">
+                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}"> <button class="btn btn-danger btn-sm rounded p-2" type="submit" name="action" value="eliminar">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>
@@ -269,10 +222,10 @@
             var $span = $('#tipo-exoneracion');
             $span.text(tipo);
             // actualizar clases visuales
-            $span.removeClass('tipo-ordinario tipo-exoneracion tipo-reduccion exo-pulse');
+            $span.removeClass('tipo-pago-ordinario tipo-exoneracion tipo-reduccion-de-cuota exo-pulse');
             if (tipo === 'EXONERACION') $span.addClass('tipo-exoneracion');
-            else if (tipo === 'REDUCCION DE CUOTA') $span.addClass('tipo-reduccion');
-            else $span.addClass('tipo-ordinario');
+            else if (tipo === 'REDUCCION DE CUOTA') $span.addClass('tipo-reduccion-de-cuota');
+            else $span.addClass('tipo-pago-ordinario');
 
             var prev = $span.data('prev-tipo');
             if (prev !== tipo) {

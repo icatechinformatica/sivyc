@@ -199,4 +199,9 @@ class Grupo extends Model
     {
         return $this->belongsTo(ServicioCurso::class, 'id_servicio');
     }
+
+    public function exoneracion()
+    {
+        return $this->belongsTo(Exoneraciones::class, 'id_tipo_exoneracion');
+    }
 }

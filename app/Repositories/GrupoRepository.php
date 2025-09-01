@@ -21,7 +21,7 @@ class GrupoRepository implements GrupoRepositoryInterface
     public function obtenerTodos($registrosPorPagina)
     {
         return $this->grupo
-            ->with(['curso', 'unidad', 'instructor', 'estatus'])
+            ->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])
             ->orderBy('id', 'desc')
             ->paginate($registrosPorPagina);
     }
@@ -29,7 +29,7 @@ class GrupoRepository implements GrupoRepositoryInterface
     {
         return $this->grupo
             ->where('id_unidad', auth()->user()->unidad->id)
-            ->with(['curso', 'unidad', 'instructor', 'estatus'])
+            ->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])
             ->orderBy('id', 'desc')
             ->paginate($registrosPorPagina);
     }
@@ -69,7 +69,7 @@ class GrupoRepository implements GrupoRepositoryInterface
             });
         }
 
-        return $query->with(['curso', 'unidad', 'instructor', 'estatus'])
+        return $query->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])
             ->orderBy('id', 'desc')
             ->paginate($registrosPorPagina);
     }
@@ -110,7 +110,7 @@ class GrupoRepository implements GrupoRepositoryInterface
             });
         }
 
-        return $query->with(['curso', 'unidad', 'instructor', 'estatus'])
+        return $query->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])
             ->orderBy('id', 'desc')
             ->paginate($registrosPorPagina);
     }
@@ -131,7 +131,7 @@ class GrupoRepository implements GrupoRepositoryInterface
 
     public function obtenerPorId($id)
     {
-        return $this->grupo->with(['curso', 'unidad', 'instructor', 'estatus'])->find($id);
+        return $this->grupo->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])->find($id);
     }
 
     public function actualizarEstatus($grupoId, $nombreEstatus)

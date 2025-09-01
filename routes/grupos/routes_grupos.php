@@ -20,8 +20,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos', 'as' => 'grupos.']
     Route::get('/organismo/{organismoId}', [GrupoController::class, 'getOrganismoInfo'])->name('organismo.info');
     Route::post('/guardar/seccion/grupo', [GrupoController::class, 'guardarSeccionGrupo'])->name('guardar.seccion.grupo');
 
-    // Asignación de alumnos (parámetro de grupo opcional para compatibilidad)
-    Route::match(['get', 'post'], '/asignar/alumnos/{grupo?}', [GrupoController::class, 'asignarAlumnos'])->name('asignar.alumnos');
+    Route::get('/ver/alumnos/{grupo?}', [GrupoController::class, 'verListadoAlumnos'])->name('ver.listado.alumnos');
+    Route::post('/asignar/alumnos/{grupo?}', [GrupoController::class, 'asignarAlumnos'])->name('asignar.alumnos');
 
     // Rutas de Agenda del Grupo (preinscripción)
     Route::get('{grupo}/agenda', [GrupoController::class, 'getAgenda'])->name('agenda.index');

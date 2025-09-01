@@ -187,14 +187,19 @@ class GrupoController extends Controller
         }
     }
 
+    public function verListadoAlumnos(Request $request, Grupo $grupo)
+    {
+        $numAlumnos = $grupo->alumnos->count();
+        $costoCurso = optional($grupo->curso)->costo;
+        $perShare = ($numAlumnos > 0 && !is_null($costoCurso)) ? ($costoCurso / $numAlumnos) : null;
+        $todosSinCosto = $grupo->alumnos->every(function ($a) {
+            return is_null($a->pivot->costo);
+        });
+        return view('grupos.asignar_alumnos', ['grupo' => $grupo, 'numAlumnos' => $numAlumnos, 'costoCurso' => $costoCurso, 'perShare' => $perShare, 'todosSinCosto' => $todosSinCosto]);
+    }
+
     public function asignarAlumnos(Request $request, Grupo $grupo)
     {
-        // Vista simple opcional si es GET
-        if (!$request->isMethod('post')) {
-            return view('grupos.asignar_alumnos', [
-                'grupo' => $grupo,
-            ]);
-        }
         $grupoId = $grupo->id;
         $curp = strtoupper(trim($request->input('curp')));
 
@@ -222,8 +227,7 @@ class GrupoController extends Controller
         $edadAlumno = Carbon::parse($alumno->fecha_nacimiento)->diffInYears($fechaReferencia);
 
         if ($edadAlumno < 15) {
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('error', 'El alumno debe tener al menos 15 años para ser asignado a este grupo.');
+            return redirect()->route('grupos.editar', $grupoId)->with('error', 'El alumno debe tener al menos 15 años para ser asignado a este grupo.');
         }
 
         // * Evitar duplicados 
@@ -242,12 +246,11 @@ class GrupoController extends Controller
                 'medio_entero' => $alumno->medio_entero,
                 'medio_confirmacion' => $alumno->medio_confirmacion,
             ]);
+
             // eliminar variable de sesión si existe
             session()->forget('grupo_id');
-            // Actualiza estatus de sección
-            // $this->grupoService->actualizarEstatusGrupo($grupoId, 'alumnos'); // ! PENDIENTE REVISAR
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('success', 'Alumno agregado al grupo.');
+            // return redirect()->route('grupos.editar', $grupoId)->with('success', 'Alumno agregado al grupo.');
+            return redirect()->back()->with('success', 'Alumno agregado al grupo.');
         } catch (\Throwable $e) {
             Log::error('Error asignando alumno al grupo', [
                 'grupo_id' => $grupoId,
@@ -290,14 +293,13 @@ class GrupoController extends Controller
             $grupo = Grupo::findOrFail($grupo_id);
             $alumno = Alumno::findOrFail($request->input('alumno_id'));
             $grupo->alumnos()->detach($alumno->id);
-            return redirect()->route('grupos.editar', $grupo->id)->with('success', 'Alumno eliminado del grupo.');
+            return redirect()->back()->with('success', 'Alumno eliminado del grupo.');
         } catch (\Throwable $e) {
             Log::error('Error al eliminar alumno del grupo', [
                 'grupo_id' => $grupo_id,
                 'error' => $e->getMessage(),
             ]);
-            return redirect()->route('grupos.editar', $grupo_id)
-                ->with('error', 'No se pudo eliminar el alumno del grupo.');
+            return redirect()->route('grupos.editar', $grupo_id)->with('error', 'No se pudo eliminar el alumno del grupo.');
         }
     }
 
