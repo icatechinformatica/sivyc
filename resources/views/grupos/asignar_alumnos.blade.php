@@ -11,7 +11,12 @@
 
 @section('content')
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center mb-0">
-    <div class="col-md-8">
+    <div class="col-md-8 d-flex align-items-center">
+        <a href="{{ route('grupos.editar', $grupo->id) }}"
+           class="btn btn-outline-light btn-sm d-inline-flex align-items-center px-2 py-1 mr-3"
+           title="Regresar a editar grupo" aria-label="Regresar a editar grupo">
+            <i class="fa fa-arrow-left mr-1"></i>
+        </a>
         <span>Grupos / Asignar Alumnos</span>
     </div>
     <div class="d-flex align-items-center">
@@ -22,13 +27,7 @@
     </div>
 </div>
 
-{{-- <div class="row mb-3 px-5">
-    <div class="d-flex">
-        <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn-regresar">
-            <i class="fa fa-arrow-left mr-2"></i> Regresar
-        </a>
-    </div>
-</div> --}}
+
 
 {{-- Mensajes flash para asignación/eliminación de alumnos --}}
 <div class="row px-3 py-0 mx-0 my-2 ">
@@ -47,7 +46,6 @@
 
 <div class="card card-body mt-0">
     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
-
         <div class="col-md-9 flex-grow-1 px-0">
             <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo->id) }}">
                 @csrf
@@ -79,8 +77,8 @@
                 </div>
             </form>
         </div>
-
     </div>
+
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover">
 
