@@ -515,8 +515,7 @@
                                         <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}">
                                             @csrf
                                             <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
-                                            <button class="btn btn-danger btn-sm accion-alumnos" type="submit" name="action"
-                                                value="eliminar">Eliminar</button>
+                                            <button class="btn btn-danger btn-sm accion-alumnos" type="submit" name="action" value="eliminar"><i class="fas fa-trash"></i></button>
                                         </form>
                                     </td>
                                 </tr>

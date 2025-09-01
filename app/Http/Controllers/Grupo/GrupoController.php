@@ -259,6 +259,29 @@ class GrupoController extends Controller
     }
 
     /**
+     * Guardar costos de alumnos en el grupo (tabla pivote tbl_alumno_grupo)
+     */
+    public function guardarCostosAlumnos(Request $request, Grupo $grupo)
+    {
+        $request->validate([
+            'costos' => 'array',
+            'costos.*' => 'nullable|numeric|min:0',
+            'cuota_general' => 'nullable|numeric|min:0',
+        ]);
+
+        $costos = $request->input('costos', []);
+        $cuotaGeneral = $request->input('cuota_general');
+
+        try {
+            $this->grupoService->guardarCostosYTipoExoneracion($grupo, $costos, $cuotaGeneral);
+            return redirect()->route('grupos.editar', $grupo->id)->with('success', 'Costos actualizados.');
+        } catch (\Throwable $e) {
+            Log::error('Error al guardar costos de alumnos: ' . $e->getMessage());
+            return redirect()->route('grupos.editar', $grupo->id)->with('error', 'No se pudieron actualizar los costos.');
+        }
+    }
+
+    /**
      * Eliminar un alumno del grupo
      */
     public function eliminarAlumno(Request $request, $grupo_id)
