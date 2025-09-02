@@ -97,17 +97,10 @@
                         <td class="text-center">
                             <span class="status-cell">
                             <span class="badge status-badge" style="background-color: {{ $grupo->estatusActual()->color ?? '#6c757d' }}" data-estatus-actual-id="{{ $grupo->estatusActual()->id }}">{{ $grupo->estatusActual()->estatus ?? 'SIN ASIGNAR' }}</span>
-                            @php
-                                $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? '');
-                            @endphp
+                            @php $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? ''); @endphp
                             @if(!empty($obsTexto))
                                 <span class="obs-icon-wrapper">
-                                    <i class="bi bi-exclamation-circle-fill obs-pending obs-icon"
-                                       title="Observación pendiente: haz clic para ver"
-                                       role="button"
-                                       tabindex="0"
-                                       aria-label="Ver observación pendiente"
-                                       data-observacion="{{ $obsTexto }}"></i>
+                                    <i class="bi bi-exclamation-circle-fill obs-pending obs-icon" title="Observación pendiente: haz clic para ver" role="button" tabindex="0" aria-label="Ver observación pendiente" data-observacion="{{ $obsTexto }}"></i>
                                 </span>
                             @endif
                             </span>

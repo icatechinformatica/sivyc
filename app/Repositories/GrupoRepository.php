@@ -177,4 +177,28 @@ class GrupoRepository implements GrupoRepositoryInterface
             throw new \Exception('Error al actualizar el estatus del grupo: ' . $e->getMessage());
         }
     }
+
+    public function obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad)
+    {
+        $vista_db = 'vista_cursos';
+        $query = DB::table($vista_db)
+            ->where('id_tipo_curso', $id_imparticion)
+            ->where('id_modalidad_curso', $id_modalidad)
+            ->where('id_categoria_formacion', $id_servicio);
+
+        // unidades_necesitan es un arreglo JSON de IDs de unidad, debemos verificar que contenga la unidad solicitada
+        // Intentamos como número y como cadena para ser resilientes ante tipos en el JSON
+        $idUnidadInt = is_numeric($id_unidad) ? (int) $id_unidad : $id_unidad;
+        $query->where(function ($q) use ($idUnidadInt, $id_unidad) {
+            $q->whereJsonContains('unidades_necesitan', $idUnidadInt);
+            // En caso de que estén guardados como strings en el JSON
+            if ((string)$idUnidadInt !== (string)$id_unidad) {
+                $q->orWhereJsonContains('unidades_necesitan', (string) $id_unidad);
+            } else {
+                $q->orWhereJsonContains('unidades_necesitan', (string) $idUnidadInt);
+            }
+        });
+
+        return $query->get();
+    }
 }

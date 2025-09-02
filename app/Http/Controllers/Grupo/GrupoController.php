@@ -92,7 +92,8 @@ class GrupoController extends Controller
         if ($request->id) {
             return redirect()->route('grupos.editar', $request->id);
         }
-        $cursos = curso::limit(100)->get();
+        // $cursos = $this->grupoService->obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
+        $cursos = collect(); // ? Se inicia una coleccion vacia para que seleccione los campos dinamicamente
         $tiposImparticion = ImparticionCurso::all();
         $modalidades = ModalidadCurso::all();
         $unidadUsuario = auth()->user()->unidad;
@@ -100,11 +101,11 @@ class GrupoController extends Controller
         $unidades = Unidad::where('ubicacion', $unidad_disponible)->get();
         $servicios = ServicioCurso::all();
 
-        $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
-        $localidades = []; // Inicialmente vacío
+        $municipios = Municipio::where('id_estado', 7)->get(); // ? CHIAPAS FIJO
+        $localidades = [];
         $esNuevoRegistro = true;
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
-        $ultimaSeccion = null; // No hay avance todavía
+        $ultimaSeccion = null;
         $esEditable = true;
 
         return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro', 'ultimaSeccion', 'esEditable'));
@@ -118,6 +119,28 @@ class GrupoController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al obtener localidades: ' . $e->getMessage());
             return response()->json(['error' => 'Error al obtener localidades'], 500);
+        }
+    }
+
+    public function getCursosDisponibles(Request $request)
+    {
+        try {
+            // Soportar IDs nuevos y antiguos desde el body/query
+            $id_imparticion = $request->input('id_imparticion', $request->input('id_tipo_curso'));
+            $id_modalidad   = $request->input('id_modalidad', $request->input('id_modalidad_curso'));
+            $id_servicio    = $request->input('id_servicio', $request->input('id_categoria_formacion'));
+            $id_unidad      = $request->input('id_unidad');
+
+            if (is_null($id_imparticion) || is_null($id_modalidad) || is_null($id_servicio) || is_null($id_unidad)) {
+                return response()->json(['error' => 'Esperando los demás datos'], 400);
+            }
+
+            $cursos = $this->grupoService->obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
+            return response()->json($cursos);
+
+        } catch (\Exception $e) {
+            Log::error('Error al obtener cursos: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al obtener cursos'], 500);
         }
     }
 

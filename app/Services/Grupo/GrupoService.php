@@ -48,6 +48,11 @@ class GrupoService
         return $this->grupoRepository->obtenerTodosPorUnidad($registrosPorPagina);
     }
 
+    public function obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad)
+    {
+        return $this->grupoRepository->obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
+    }
+
     public function obtenerGrupoPorId($id)
     {
         return $this->grupoRepository->obtenerPorId($id);

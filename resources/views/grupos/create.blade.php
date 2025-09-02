@@ -16,22 +16,24 @@
 <div class="card-header rounded-lg shadow d-flex align-items-center header-grupos">
     <div class="col-md-12 d-flex flex-column flex-md-row align-items-start align-items-md-center w-100">
         <!-- Título -->
-        <div class="title-wrap mb-2 mb-md-0 order-1">
+        <div class="col-md-8 d-flex align-items-center">
+            <a href="{{ route('grupos.index') }}" class="btn btn-outline-light btn-sm d-inline-flex align-items-center px-2 py-1 mr-3" title="Regresar a ver grupos" aria-label="Regresar a ver grupos">
+                <i class="fa fa-arrow-left mr-1"></i>
+            </a>
             <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span></h5>
         </div>
 
         @if(isset($grupo))
         @php $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? ''); @endphp
-        @if(!empty($obsTexto))
-        <!-- Observación (truncada con tooltip) -->
-        <div class="obs-container d-flex align-items-center order-3 order-md-2 my-1 my-md-0 mx-md-3">
-            <button type="button" class="obs-badge d-inline-flex align-items-center px-2 py-1 btn btn-link p-0 obs-icon"
-                aria-label="Ver observación completa" data-observacion="{{ $obsTexto }}">
-                <i class="bi bi-exclamation-circle-fill mr-1" tabindex="0" aria-hidden="true"></i>
-                <small class="obs-text">{{ $obsTexto }}</small>
-            </button>
-        </div>
-        @endif
+            @if(!empty($obsTexto))
+            <!-- Observación (truncada con tooltip) -->
+            <div class="obs-container d-flex align-items-center order-3 order-md-2 my-1 my-md-0 mx-md-3">
+                <button type="button" class="obs-badge d-inline-flex align-items-center px-2 py-1 btn btn-link p-0 obs-icon" aria-label="Ver observación completa" data-observacion="{{ $obsTexto }}">
+                    <i class="bi bi-exclamation-circle-fill mr-1" tabindex="0" aria-hidden="true"></i>
+                    <small class="obs-text">{{ $obsTexto }}</small>
+                </button>
+            </div>
+            @endif
         @endif
 
         @if (!$esNuevoRegistro && isset($grupo))
@@ -106,7 +108,7 @@
                         </div>
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('MODALIDAD', 'modalidad')->class('form-label mb-1') }}
-                            {{ html()->select('modalidad', [null => 'SELECCIONAR MODALIDAD'] + $modalidades->pluck('modalidad', 'id')->toArray())->class('form-control')->required()
+                            {{ html()->select('modalidad', [null => 'SELECCIONAR MODALIDAD'] + $modalidades->pluck('modalidad_curso', 'id_modalidad_curso')->toArray())->class('form-control')->required()
                                 ->value($esNuevoRegistro ? null : $grupo->id_modalidad) }}
                         </div>
                         <div class="form-group col-md-4 mb-1">
@@ -133,6 +135,7 @@
                     {{ html()->form()->close() }}
                 </div>
             </div>
+
             {{-- * Sección: Ubicación --> --}}
             <div class="col-12 mb-4 step-section" id="ubicacion" style="display:none;">
                 {{ html()->form('POST')->id('ubicacion_form')->open() }}
@@ -188,6 +191,7 @@
                 </div>
                 {{ html()->form()->close() }}
             </div>
+
             {{-- * Sección: ORGANISMO PUBLICO --}}
             <div class="col-12 mb-4 step-section" id="organismo" style="display:none;">
                 {{ html()->form('POST')->id('organismo_form')->open() }}
@@ -270,6 +274,7 @@
 
             {{-- * Sección: Alumnos --}}
             <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
+                @if(!$esNuevoRegistro && isset($grupo))
                 <div class="card card-body mt-3 shadow-none p-0">
                     {{-- Mensajes flash para asignación/eliminación de alumnos --}}
                     <div class="my-2">
@@ -285,7 +290,6 @@
                     </div>
                     <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
                         <div class="flex-grow-1">
-                            @if(!$esNuevoRegistro && isset($grupo))
                             <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo) }}">
                                 @csrf
                                 <div class="input-group" style="width: 400px;">
@@ -296,7 +300,6 @@
                                     </div>
                                 </div>
                             </form>
-                            @endif
                         </div>
                     </div>
                     <div class="table-responsive">
@@ -305,14 +308,13 @@
                                 <tr>
                                     <th colspan="3">
                                         <div class="d-flex">
-                                            <p class="my-auto">Tipo de pago: <span id="tipo-exoneracion" class="tipo-exo-badge tipo-{{ strtolower(preg_replace('/\s+/', '-', trim($grupo->exoneracion->tipo_exoneracion))) }}">
-                                                {{ $grupo->exoneracion->tipo_exoneracion }}</span></p>
+                                            @if ($grupo->exoneracion)
+                                            <p class="my-auto">Tipo de pago: <span id="tipo-exoneracion" class="ml-2 tipo-exo-badge tipo-{{ strtolower(preg_replace('/\s+/', '-', trim($grupo->exoneracion->tipo_exoneracion))) }}"> {{ $grupo->exoneracion->tipo_exoneracion }}</span></p>
+                                            @endif
                                         </div>
                                     </th>
                                     <th colspan="3" class="text-right">
-                                        @if(!$esNuevoRegistro && isset($grupo))
                                         <a href="{{ route('grupos.ver.listado.alumnos', $grupo) }}" class="btn btn-sm btn-primary">Ver tabla detallada</a>
-                                        @endif
                                     </th>
                                 </tr>
                                 <tr>
@@ -350,7 +352,6 @@
                             </tbody>
                         </table>
                     </div>
-                    @if (!$esNuevoRegistro && isset($grupo))
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div class="row col-md-12 justify-content-end">
                             <p class="mx-4">Turnar a:</p>
@@ -361,8 +362,8 @@
                             @endforeach
                         </div>
                     </div>
-                    @endif
                 </div>
+                @endif
             </div>
         </div>
     </div>

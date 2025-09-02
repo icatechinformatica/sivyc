@@ -136,7 +136,7 @@
             }
         }
         mostrarSeccion(idMostrar);
-        console.log('[Stepbar][Init] Sección mostrada:', idMostrar);
+        // console.log('[Stepbar][Init] Sección mostrada:', idMostrar);
     }
 
     function moverSiguienteSeccion(seccionActual) {
@@ -150,12 +150,12 @@
         if (siguiente) {
             ocultarTodas();
             mostrarSeccion(siguiente);
-            console.log('[Stepbar] Cambio automático a sección:', siguiente, '(desde', seccionActual, ')');
+            // console.log('[Stepbar] Cambio automático a sección:', siguiente, '(desde', seccionActual, ')');
         } else {
             // fin
             const notyf = window.Notyf ? new Notyf({ position: { x: 'right', y: 'top' }, duration: 5000 }) : null;
             if (notyf) { notyf.open({ type: 'success', className: 'notyf-success', message: '¡Registro de grupo completado!' }); }
-            console.log('[Stepbar] Registro finalizado. Última sección completada:', seccionActual);
+            // console.log('[Stepbar] Registro finalizado. Última sección completada:', seccionActual);
         }
     }
 
@@ -170,7 +170,7 @@
             ocultarTodas();
             mostrarSeccion(seccion);
             aplicarEstadosPasos();
-            console.log('[Stepbar] Cambio manual a sección:', seccion);
+            // console.log('[Stepbar] Cambio manual a sección:', seccion);
         });
     });
 
