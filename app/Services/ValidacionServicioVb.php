@@ -503,5 +503,85 @@ class ValidacionServicioVb
     }
 
 
+    ## Validacion de instructor unico
+    public function consulta_instructor_unico($curso, $ejercicio)
+    {
+        $query = DB::table('instructores')
+            ->select(
+                'instructores.id',
+                DB::raw('CONCAT("apellidoPaterno", ' . "' '" . ' ,"apellidoMaterno",' . "' '" . ',instructores.nombre) as instructor'),
+            )
+            // ->rightJoin('instructores','t.id_instructor','=','instructores.id')
+            ->join('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
+            // ->join('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+            ->join('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+
+            ->where('instructores.id', $curso->id_instructor)
+            ->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $curso->id_curso)
+            ->where('estado', true)
+            ->where('instructores.status', '=', 'VALIDADO')
+            ->where('instructores.nombre', '!=', '')
+            ->where('especialidad_instructores.especialidad_id', $curso->id_especialidad)
+            ->where('fecha_validacion', '<', $curso->inicio)
+            ->where(DB::raw("(fecha_validacion + INTERVAL '1 year')::timestamp::date"), '>=', $curso->termino);
+
+        if ($curso->curso_alfa == true) {
+            $query->where('instructores.instructor_alfa', '=', true);
+        }
+        return $query
+            ->orderBy('instructor')
+            ->get();
+    }
+
+    public function filtros_instructor($data, $agenda, $ejercicio) {
+        try {
+
+            ## Consulta general de instructores
+            $instructor = $this->consulta_instructor_unico($data, $ejercicio);
+
+            if (count($instructor) == 0) {
+                return [[], 'No se encontraron instructores disponibles para este curso'];
+            }
+
+            //Primer criterio
+            $respuesta8Horas = $this->InstNoRebase8Horas($instructor, $agenda);
+            if (count($respuesta8Horas) > 0) {
+
+                //Segundo Criterio
+                $respuesta40Horas = $this->InstNoRebase40HorasSem($respuesta8Horas, $data->folio_grupo);
+                if (count($respuesta40Horas) > 0) {
+
+                    //Tercer criterio
+                    $respuestaTraslape = $this->InstNoTraslapeFechaHoraConOtroCurso($respuesta40Horas, $agenda);
+                    if (count($respuestaTraslape) >0 ) {
+
+                        //Cuarto Criterio
+                        $respuesta150dias = $this->InstValida150Dias($respuestaTraslape, $data->folio_grupo);
+                        if (count($respuesta150dias) > 0 ) {
+
+                            return [$respuesta150dias , '']; //Retornamos la respuesta
+
+                        }else{
+                            return [[], 'No se encontraron Instructores, Rebasan los 150 dias'];
+                        }
+                    }else{
+                        return [[], 'No se encontraron Instructores, Traslapa con otros cursos'];
+                    }
+
+                }else{
+                    return [[], 'No se encontraron Instructores, Rebasan las 40 Horas por Semana'];
+                }
+
+            }else{
+                return [[], 'No se encontraron Instructores, Rebasan las 8 Horas Diarias'];
+            }
+
+        } catch (\Throwable $th) {
+            return [[], 'Error: '.$th->getMessage()];
+        }
+    }
+
+
+
 
 }
