@@ -40,9 +40,9 @@ class ValidacionServicioVb
                         ->where('agenda.id_instructor', $ins->id)
                         ->whereDate('agenda.start', '<=', $fechaStr)
                         ->whereDate('agenda.end', '>=', $fechaStr)
-                        ->where(function ($query) {
-                            $query->where('tbl_cursos.status_curso', '=', 'AUTORIZADO')
-                                ->orWhere('tbl_cursos.vb_dg', '=', true);
+                        ->where(function ($query) use($value) {
+                            $query->where('tbl_cursos.status_curso', '<>', 'CANCELADO')
+                                ->orWhere('tbl_cursos.folio_grupo', '<>', $value->id_curso);
                         })
                         ->get();
                     $minutosTotales = 0;
