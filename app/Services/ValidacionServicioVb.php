@@ -528,9 +528,7 @@ class ValidacionServicioVb
         if ($curso->curso_alfa == true) {
             $query->where('instructores.instructor_alfa', '=', true);
         }
-        return $query
-            ->orderBy('instructor')
-            ->get();
+        return $query->get();
     }
 
     public function filtros_instructor($data, $agenda, $ejercicio) {
@@ -540,7 +538,7 @@ class ValidacionServicioVb
             $instructor = $this->consulta_instructor_unico($data, $ejercicio);
 
             if (count($instructor) == 0) {
-                return [[], 'No se encontraron instructores disponibles para este curso'];
+                return [[], 'EL INSTRUCTOR NO CUMPLE CON LOS REQUISITOS PARA IMPARTIR EL CURSO'];
             }
 
             //Primer criterio
@@ -562,18 +560,18 @@ class ValidacionServicioVb
                             return [$respuesta150dias , '']; //Retornamos la respuesta
 
                         }else{
-                            return [[], 'No se encontraron Instructores, Rebasan los 150 dias'];
+                            return [[], 'INSTRUCTOR NO VALIDO, REBASA LOS 150 DIAS'];
                         }
                     }else{
-                        return [[], 'No se encontraron Instructores, Traslapa con otros cursos'];
+                        return [[], 'INSTRUCTOR NO VALIDO, TRASLAPA CON OTROS CURSOS ASIGNADOS'];
                     }
 
                 }else{
-                    return [[], 'No se encontraron Instructores, Rebasan las 40 Horas por Semana'];
+                    return [[], 'INSTRUCTOR NO VALIDO, REBASA LAS 40 HORAS POR SEMANA'];
                 }
 
             }else{
-                return [[], 'No se encontraron Instructores, Rebasan las 8 Horas Diarias'];
+                return [[], 'INSTRUCTOR NO VALIDO, REBASA LAS 8 HORAS DIARIAS'];
             }
 
         } catch (\Throwable $th) {
