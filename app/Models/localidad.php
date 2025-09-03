@@ -15,4 +15,9 @@ class localidad extends Model
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
+
+    public function municipio()
+    {
+        return $this->belongsTo(Municipio::class, 'clave_municipio', 'id');
+    }
 }

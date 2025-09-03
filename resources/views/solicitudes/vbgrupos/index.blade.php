@@ -137,6 +137,7 @@
         <div id="mensajeInstructor" style="display: none;">
             <div class="alert alert-warning alert-dismissible fade show" role="alert">
                 <button type="button" class="close" onclick="$('#mensajeInstructor').hide();">
+                <button type="button" class="close" onclick="$('#mensajeInstructor').hide();">
                     <span aria-hidden="true">&times;</span>
                 </button>
                 <strong id="textoMensajeInstructor"></strong>
@@ -151,10 +152,11 @@
                 <i class="fa fa-credit-card ml-1" aria-hidden="true"></i>
             </a>
         </div>
-        {{ Form::open(['route' => 'solicitudes.vb.grupos', 'method' => 'post', 'id'=>'frm']) }}
+    {!! html()->form('POST', route('solicitudes.vb.grupos'))->id('frm')->open() !!}
+        @csrf
             <div class="row form-inline">
                 <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-left">
-                    {{ Form::text('clave', $clave ?? '', ['id'=>'clave', 'class' => 'form-control', 'placeholder' => 'GRUPO / MEMORÁNDUM / CURSO / INSTRUCTOR / UNIDAD', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 60]) }}
+            {!! html()->text('clave', $clave ?? '')->id('clave')->class('form-control')->placeholder('CURSO / INSTRUCTOR / UNIDAD')->attribute('aria-label', 'CLAVE DEL CURSO')->required()->attribute('size', 60) !!}
                 </div>
                 <div class="d-flex flex-lg-row flex-column col-12 col-md-6 col-sm-12 justify-content-end pr-4">
                     @foreach ($estatus as $key => $value)
@@ -201,9 +203,9 @@
                         <!--Body-->
                         <div class="modal_body">
                             <div class="alert alert-dismissible fade show p-2 text-left" role="alert">
-                                {{ Form::hidden('id_curso', '',['id'=>'id_curso']) }}
+                                {!! html()->hidden('id_curso', '')->id('id_curso') !!}
                                 <h6>MOTIVO:</h6>
-                                {{ Form::textarea('motivo',old('motivo'), ['id'=>'motivo', 'class' => 'form-control mt-2', 'placeholder' => 'Describir el motivo del rechazo.', 'rows' => 3]) }}
+                                {!! html()->textarea('motivo', old('motivo'))->id('motivo')->class('form-control mt-2')->placeholder('Describir el motivo del rechazo.')->attribute('rows', 3) !!}
                                 <div class="modal-footer flex-center">
                                     <button class="btn btn-danger" id="rechazar" onclick="rechazar()">RECHAZAR</button>
                                 </div>
@@ -214,7 +216,7 @@
             </div>
             {{-- FIN Modal RECHAZAR --}}
 
-        {!! Form::close() !!}
+    {!! html()->form()->close() !!}
 
         {{-- Modal elegir instructor --}}
         <div class="modal fade" id="modalElegirInstruc" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -365,7 +367,22 @@
                                     width: '100%',
                                     placeholder: "Seleccionar Instructor"
                                 });
+                                // Inicializar o reinicializar Select2
+                                $(".sel_instructor").select2({
+                                    dropdownParent: $('#modalElegirInstruc'), // Importante si el select está en un modal
+                                    width: '100%',
+                                    placeholder: "Seleccionar Instructor"
+                                });
 
+                                $("#val_folio_grupo").val(folio_grupo);
+                                $("#modalElegirInstruc").modal("show");
+                            }else{
+                                // if (data.instructores.length === 0) {
+                                $('#textoMensajeInstructor').text(data.mensaje);
+                                $('#mensajeInstructor').show();
+                                return;
+                                // }
+                            }
                                 $("#val_folio_grupo").val(folio_grupo);
                                 $("#modalElegirInstruc").modal("show");
                             }else{

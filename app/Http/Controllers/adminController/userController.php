@@ -2,13 +2,19 @@
 
 namespace App\Http\Controllers\adminController;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\User;
-use App\Models\Permission;
-use App\Models\Rol;
 use App\Models\Unidad;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use Icatech\PermisoRolMenu\Models\Rol;
+use Icatech\PermisoRolMenu\Models\Permiso;
+use App\Services\Funcionario\CreateUserService as FuncionarioCreateUserService;
+use App\Services\Instructor\CreateUserService as InstructorCreateUserService;
+use App\Services\Usuario\ListadoUsuariosService;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Google\Service\DriveActivity\Create;
 
 class userController extends Controller
 {
@@ -19,10 +25,12 @@ class userController extends Controller
      */
     public function index(Request $request)
     {
-        //
-        $tipo='nombres';
-        $busqueda=strtoupper($request->busquedaPersonal);
-        $usuarios = User::busquedapor($tipo,$busqueda)->PAGINATE(20);
+        $tipo = 'nombres';
+        $busqueda = $request->busquedaPersonal ? strtoupper($request->busquedaPersonal) : '';
+        
+        // Cargar la relación polimórfica para obtener los nombres
+        $usuarios = User::with('registro')->busquedapor($tipo, $busqueda)->paginate(20);
+        // dd($usuarios->toArray());
         return view('layouts.pages_admin.users_permisions', compact('usuarios'));
     }
 
@@ -50,12 +58,12 @@ class userController extends Controller
         $user = User::where('email', '=', $request->get('emailInput'))->first();
         $curpuser = User::where('curp', '=', $request->get('curpInput'))->first();
 
-        if($user){
+        if ($user) {
             return redirect()->back()->withErrors([
                 sprintf('EL CORREO ELECTRÓNICO %s YA SE ENCUENTRA REGISTRADO EN EL SISTEMA', $request->get('emailInput'))
             ]);
         }
-        if($curpuser){
+        if ($curpuser) {
             return redirect()->back()->withErrors([
                 sprintf('LA CURP %s YA SE ENCUENTRA REGISTRADO EN EL SISTEMA', $request->get('curpInput'))
             ]);
@@ -76,7 +84,6 @@ class userController extends Controller
             // si funciona redireccionamos
             return redirect()->route('usuario_permisos.index')->with('success', 'NUEVO USUARIO AGREGADO!');
         }
-
     }
 
     /**
@@ -102,12 +109,29 @@ class userController extends Controller
      */
     public function edit($id)
     {
-        //
         $iduser = base64_decode($id);
         $usuario = User::findOrfail($iduser);
         $ubicaciones = Unidad::groupBy('ubicacion')->GET(['ubicacion']);
-        $ubicacion = Unidad::Select('unidad','ubicacion')->Where('id',$usuario->unidad)->First();
-        $unidades = Unidad::Select('id','unidad')->Where('ubicacion',$ubicacion->ubicacion)->Get();
+        // Verificar si el usuario tiene unidad asignada y si existe en la tabla
+        $ubicacion = null;
+        $unidades = collect();
+        // dd($usuario->unidad);
+        if ($usuario->unidad) {
+            $ubicacion = Unidad::Select('unidad', 'ubicacion')->Where('id', $usuario->unidad)->First();
+        }
+        
+        // Si no se encontró ubicación por unidad directa, intentar obtenerla del registro polimórfico
+        if (!$ubicacion && $usuario->registro) {
+            $ubicacionNombre = $usuario->ubicacion; // Usa el accessor
+            if ($ubicacionNombre) {
+                $ubicacion = (object) ['ubicacion' => $ubicacionNombre, 'unidad' => null];
+            }
+        }
+        
+        // Solo buscar unidades si tenemos una ubicación válida
+        if ($ubicacion && $ubicacion->ubicacion) {
+            $unidades = Unidad::Select('id', 'unidad')->Where('ubicacion', $ubicacion->ubicacion)->Get();
+        }
         return view('layouts.pages_admin.users_profile', compact('usuario', 'ubicaciones', 'ubicacion', 'unidades'));
     }
 
@@ -151,23 +175,18 @@ class userController extends Controller
             // $usuario = User::WHERE('id', $idUsuario)->First();dd($usuario, $arrayUser);
             // dd($usuario);
             return redirect()->route('usuario_permisos.index')
-                    ->with('success', 'USUARIO ACTUALIZADO EXTIOSAMENTE!');
+                ->with('success', 'USUARIO ACTUALIZADO EXTIOSAMENTE!');
         }
-
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
         //
     }
 
-    public function updateRol(Request $request, $id){
+    public function updateRol(Request $request, $id)
+    {
         // roles usuarios
         $idUsuario = base64_decode($id);
         $usuario = User::findOrfail($idUsuario);
@@ -188,15 +207,113 @@ class userController extends Controller
         $user = User::find($userId);
         if ($user) {
             $user->activo = $isActive;
-            if($isActive) {
-                $user->password = str_replace('BAJA','',$user->password);
+            if ($isActive) {
+                $user->password = str_replace('BAJA', '', $user->password);
             } else {
-                $user->password = 'BAJA'.$user->password;
+                $user->password = 'BAJA' . $user->password;
             }
             $user->save();
             return response()->json(['success' => true]);
         }
 
         return response()->json(['success' => false], 404);
+    }
+
+    public function gestorPermisosUsuarios($id)
+    {
+        $idUsuario = base64_decode($id);
+        $usuario = User::with(['roles.permisos', 'permissions'])->findOrfail($idUsuario);
+        $permisos = Permiso::all();
+        return view('layouts.pages_admin.gestor_usuario_permisos', compact('usuario', 'permisos', 'idUsuario'));
+    }
+
+    public function updatePermisosUsuario(Request $request, $id)
+    {
+        $idUsuario = base64_decode($id);
+        $usuario = User::findOrFail($idUsuario);
+
+        // Obtén los permisos enviados desde el formulario
+        $permisosSeleccionados = $request->input('permisos', []);
+
+        // Sincroniza los permisos (elimina los que no están y agrega los nuevos)
+        $usuario->permissions()->sync($permisosSeleccionados);
+
+        return redirect()->route('usuarios.permisos.index', ['id' => $id])
+            ->with('success', 'Permisos actualizados correctamente.');
+    }
+
+
+    public function listadoUsuarios(ListadoUsuariosService $listadoService)
+    {
+        try {
+            $pagActual = request()->get('page', 1);
+            $registros = $listadoService->execute($pagActual);
+            return view('layouts.pages_admin.users_listado', compact('registros'));
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Error al obtener el listado de usuarios']);
+        }
+    }
+
+    public function altaUsuarioFuncionario(Request $request, FuncionarioCreateUserService $service)
+    {
+        // Solo validaciones HTTP básicas
+        $request->validate([
+            'id_funcionario' => 'required|integer'
+        ], [
+            'id_funcionario.required' => 'El ID del funcionario es requerido.',
+            'id_funcionario.integer' => 'El ID del funcionario debe ser un número válido.'
+        ]);
+
+        try {
+            $data = $request->only(['id_funcionario']);
+            $result = $service->execute($data);
+            return redirect()->route('usuarios.alta.funcionarios-instructores')->with('success', 'Usuario funcionario creado exitosamente.');
+                
+        } catch (\InvalidArgumentException $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);    
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function altaUsuarioInstructor(Request $request, InstructorCreateUserService $service)
+    {
+        // Solo validaciones HTTP básicas
+        $request->validate([
+            'id_instructor' => 'required|integer'
+        ], [
+            'id_instructor.required' => 'El ID del instructor es requerido.',
+            'id_instructor.integer' => 'El ID del instructor debe ser un número válido.'
+        ]);
+
+        try {
+            $data = $request->only(['id_instructor']);
+            $result = $service->execute($data);
+            return redirect()->route('usuarios.alta.funcionarios-instructores')->with('success', 'Usuario instructor creado exitosamente.');
+                
+        } catch (\InvalidArgumentException $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);    
+        } catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function toggleActivo(Request $request)
+    {
+        $request->validate([
+            'usuario_id' => 'required|integer|exists:tblz_usuarios,id'
+        ]);
+
+        $userId = $request->input('usuario_id');
+        $user = User::find($userId);
+        
+        if (!$user) {
+            return response()->json(['success' => false], 404);
+        }
+
+        $user->activo = !$user->activo;
+        $user->save();
+        
+        return response()->json(['success' => true, 'activo' => $user->activo]);
     }
 }

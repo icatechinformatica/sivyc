@@ -14,4 +14,20 @@ class Municipio extends Model
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
+
+    public function alumunos()
+    {
+        return $this->hasMany(Alumno::class, 'id_municipio', 'id');
+    }
+
+    public function localidades()
+    {
+        return $this->hasMany(localidad::class, 'clave_municipio', 'id');
+    }
+
+    public function estado()
+    {
+        return $this->belongsTo(Estado::class, 'id_estado', 'id');
+    }
+
 }

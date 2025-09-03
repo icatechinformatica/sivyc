@@ -1,0 +1,144 @@
+.permiso-checkbox:disabled+label {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.permiso-checkbox:disabled {
+    cursor: not-allowed;
+}
+
+.custom-control-input:disabled:checked+.custom-control-label::before {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
+
+.custom-control-input:disabled+.custom-control-label::before {
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+li:has(.permiso-checkbox:disabled) {
+    background-color: rgba(108, 117, 125, 0.05);
+    border-radius: 4px;
+    padding: 4px;
+}
+
+.custom-control-input:not(:disabled):hover+.custom-control-label::before {
+    border-color: #5e72e4;
+    box-shadow: 0 0 0 0.1rem rgba(94, 114, 228, 0.25);
+}
+
+.text-info {
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+/* Efectos hover para elementos del menú */
+.menu-item {
+    transition: all 0.2s ease-in-out;
+    border-radius: 6px;
+    margin-bottom: 4px;
+    padding: 4px 0px 4px 8px;
+    position: relative;
+}
+
+.menu-item:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: transparent;
+    transition: background-color 0.2s ease;
+    border-radius: 0 2px 2px 0;
+}
+
+.menu-item:hover {
+    background-color: rgba(94, 114, 228, 0.08);
+    /* transform: translateX(2px); */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover específico para elementos con permisos bloqueados */
+.menu-item:has(.permiso-checkbox:disabled):hover {
+    background-color: rgba(108, 117, 125, 0.12);
+    /* transform: translateX(1px); */
+}
+
+/* Hover para el contenedor principal de cada elemento */
+.menu-item-content:hover {
+    border-radius: 4px;
+}
+
+/* Hover para el nombre del menú */
+.menu-name {
+    transition: color 0.2s ease;
+}
+
+.menu-item:hover .menu-name {
+    color: #5e72e4;
+    font-weight: 600;
+}
+
+/* Hover para elementos deshabilitados - diferente estilo */
+.menu-item:has(.permiso-checkbox:disabled):hover .menu-name {
+    color: #6c757d;
+    font-weight: 500;
+}
+
+/* Efecto hover para botones de colapso */
+.collapse-btn {
+    transition: all 0.2s ease;
+    border-radius: 50%;
+}
+
+.collapse-btn:hover {
+    background-color: rgba(94, 114, 228, 0.15) !important;
+    /* transform: scale(1.1); */
+}
+
+.collapse-btn:hover i {
+    color: #5e72e4;
+}
+
+/* Colores específicos por nivel para el borde izquierdo al hover */
+.tree-level-0.menu-item:hover:before {
+    background-color: #5e72e4; /* Azul principal para nivel 0 */
+}
+
+.tree-level-1.menu-item:hover:before {
+    background-color: #f5365c; /* Rojo para nivel 4 */
+}
+
+.tree-level-2.menu-item:hover:before {
+    background-color: #2dce89; /* Verde para nivel 2 */
+}
+
+.tree-level-3.menu-item:hover:before {
+    background-color: #fb6340; /* Naranja para nivel 3 */
+}
+
+.tree-level-4.menu-item:hover:before {
+    background-color: #11cdef; /* Cyan para nivel 1 */ 
+}
+
+/* Fallback para niveles adicionales */
+.menu-item:hover:before {
+    background-color: #8965e0; /* Púrpura como fallback */
+}
+
+/* Efecto hover para checkboxes habilitados */
+.menu-item:hover .custom-control-input:not(:disabled)+.custom-control-label::before {
+    border-color: #5e72e4;
+    box-shadow: 0 0 0 0.1rem rgba(94, 114, 228, 0.25);
+}
+
+/* Efecto de fade para las leyendas */
+.text-info {
+    transition: opacity 0.2s ease;
+}
+
+.menu-item:hover .text-info {
+    opacity: 0.9;
+}

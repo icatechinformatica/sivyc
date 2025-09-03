@@ -47,7 +47,7 @@
             <div class="col-lg-12 margin-tb">
                 <div class="pull-left">
                     <h2>Contratos</h2>
-                    {!! Form::open(['route' => 'contrato-inicio', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
+                    {!! html()->form('GET', route('contrato-inicio'))->class('form-inline')->open() !!}
                         <select name="ejercicio" class="form-control mr-sm-2" id="ejercicio">
                             @foreach ($array_ejercicio as $cad)
                                 <option value="{{$cad}}" @if($año_pointer == $cad) selected @endif>{{$cad}}</option>
@@ -87,24 +87,23 @@
                             </select>
                         </Div>
                         <div id="divcampo" name="divcampo">
-                            {!! Form::text('busquedaPorContrato', null, ['class' => 'form-control mr-sm-2', 'placeholder' => 'BUSCAR', 'aria-label' => 'BUSCAR', 'value' => 1]) !!}
+                            {!! html()->text('busquedaPorContrato')
+                                ->class('form-control mr-sm-2')
+                                ->placeholder('BUSCAR')
+                                ->attribute('aria-label', 'BUSCAR')
+                                ->value(1) !!}
                         </div>
                         <Div id="divstat" name="divstat">
                             <select name="tipo_status" class="form-control mr-sm-2" id="tipo_status">
                                 <option value="">BUSQUEDA POR STATUS</option>
                                 <option value="Validado">SUFICIENCIA VALIDADA</option>
                                 <option value="Capturando">CAPTURANDO</option>
-                                {{-- <option value="Validando_Contrato">CONTRATO EN REVISION</option>
-                                <option value="Contratado">CONTRATO VALIDADO</option>
-                                <option value="Contrato_Rechazado">CONTRATO RECHAZADO</option>
-                                <option value="Verificando_Pago">VERIFICANDO PAGO</option> --}}
                                 <option value="Pago_Verificado">PAGO VERIFICADO</option>
-                                {{-- <option value="Pago_Rechazado">PAGO RECHAZADO</option> --}}
                                 <option value="Finalizado">FINALIZADO</option>
                             </select>
                         </Div>
-                        <button class="btn btn-outline-info my-2 my-sm-0" type="submit">BUSCAR</button>
-                    {!! Form::close() !!}
+                        {!! html()->button('BUSCAR')->class('btn btn-outline-info my-2 my-sm-0')->type('submit') !!}
+                    {!! html()->form()->close() !!}
                 </div>
                 <br>
                 <div class="pull-right">
@@ -325,8 +324,8 @@
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="8">
-                            {{ $querySupre->appends(request()->query())->links() }}
+                        <td colspan="10" class="text-center">
+                            {{ $querySupre->appends(request()->query())->links('pagination::bootstrap-5') }}
                         </td>
                     </tr>
                 </tfoot>

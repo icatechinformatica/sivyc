@@ -16,4 +16,9 @@ class estado_civil extends Model
 
     protected $hidden = ['created_at', 'updated_at'];
 
+    public function alumnos(): HasMany
+    {
+        return $this->hasMany(Alumno::class, 'estado_civil_id');
+    }
+
 }

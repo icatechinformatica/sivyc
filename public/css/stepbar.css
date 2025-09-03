@@ -1,0 +1,188 @@
+    .step-circle {
+        display: inline-block;
+        height: 44px;
+        width: 44px;
+        border-radius: 50%;
+        border: 2px solid #e075ab;
+    }
+
+    .step-circle[data-status="terminado"] {
+        background: #c90166;
+        border-color: #c90166;
+        color: #fff;
+    }
+
+    .step-circle[data-status="actual"] {
+        background: #008878;
+        border-color: #008878;
+        color: #fff;
+    }
+
+    .step-circle[data-status="restante"] {
+        border-color: #e075ab;
+        background: transparent;
+        color: #e075ab;
+    }
+
+    .step-circle[data-status="pendiente"] {
+        border-color: #ccc;
+        background: transparent;
+        color: #ccc;
+    }
+
+    .step-progress-nav .list-group-item {
+        user-select: none;
+        border: none !important;
+    }
+
+    .step-progress-nav .list-group-item.active {
+        font-weight: bold;
+        color: #000;
+        background: none;
+        cursor: pointer;
+    }
+
+    .step-progress-nav .list-group-item .step-circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.2em;
+    }
+
+    .step-progress-nav .list-group-item.active .step-circle {
+        color: #fff;
+    }
+
+    .step-progress-nav .list-group-item.disabled {
+        opacity: 0.5;
+        pointer-events: none;
+        cursor: not-allowed;
+    }
+
+    .step-progress-nav .list-group-item.completed {
+        cursor: pointer;
+    }
+
+    .step-progress-nav .list-group-item.current {
+        font-weight: bold;
+        cursor: pointer;
+    }
+
+    .card.card-body,
+    .row {
+        overflow: visible !important;
+    }
+
+    .nav-sticky {
+            position: sticky;
+            top: 60px;
+            z-index: 1;
+        }
+
+        /* --- Stepbar única responsive --- */
+        /* Desktop: lista vertical (estilos actuales) */
+        @media (min-width: 768px) {
+            .step-progress-nav {
+                display: block;
+            }
+            .step-progress-nav .list-group-item {
+                display: flex;
+                align-items: center;
+            }
+            .step-label { display: inline; }
+        }
+
+        /* Móvil: barra superior horizontal y scrolleable, solo círculos */
+        @media (max-width: 767.98px) {
+            #step-progress,
+            #step-progress-mobile { /* compat: markup antiguo */
+                position: sticky;
+                top: 60px; /* debajo del header */
+                z-index: 2;
+                background: #fff;
+                padding: .5rem 0;
+                border-bottom: 1px solid rgba(0,0,0,.05);
+            }
+            .step-progress-nav,
+            .step-progress-nav-mobile { /* compat: markup antiguo */
+                display: flex !important;
+                flex-direction: row;
+                align-items: center;
+                justify-content: flex-start !important;
+                -webkit-overflow-scrolling: touch;
+                overflow-x: auto;
+                overflow-y: hidden;
+                gap: .25rem;
+                padding: 0 .75rem;
+                margin: 0;
+                scroll-padding-left: .5rem;
+                scroll-padding-right: .5rem;
+                scroll-snap-type: x proximity;
+                width: 100%;
+            }
+            /* Espaciadores laterales flexibles: centran cuando hay pocos items y no estorban cuando hay muchos */
+            .step-progress-nav::before,
+            .step-progress-nav::after,
+            .step-progress-nav-mobile::before,
+            .step-progress-nav-mobile::after { /* compat */
+                content: "";
+                flex: 1 1 auto;
+                min-width: .5rem; /* padding mínimo en extremos */
+                pointer-events: none;
+            }
+            .step-progress-nav .list-group-item,
+            .step-progress-nav-mobile .list-group-item { /* compat */
+                background: transparent;
+                padding: .25rem .35rem !important;
+                border: none !important;
+                flex: 0 0 auto;
+                scroll-snap-align: start;
+            }
+            /* quitar texto en móvil, mostrar solo el círculo */
+            .step-progress-nav .step-label {
+                position: absolute;
+                width: 1px;
+                height: 1px;
+                padding: 0;
+                margin: -1px;
+                overflow: hidden;
+                clip: rect(0, 0, 0, 0);
+                border: 0;
+                white-space: nowrap;
+            }
+            .step-progress-nav .step-circle {
+                height: 36px;
+                width: 36px;
+                font-size: 1rem;
+                min-width: 36px;
+                min-height: 36px;
+            }
+            /* compat: ajustar círculos si usan clase antigua */
+            .step-progress-nav-mobile .step-circle {
+                height: 36px;
+                width: 36px;
+                font-size: 1rem;
+                min-width: 36px;
+                min-height: 36px;
+            }
+        }
+        @media (max-width: 575.98px) {
+            .step-progress-nav .step-circle {
+                height: 32px;
+                width: 32px;
+                font-size: .95rem;
+                min-width: 32px;
+                min-height: 32px;
+            }
+            .step-progress-nav-mobile .step-circle { /* compat */
+                height: 32px;
+                width: 32px;
+                font-size: .95rem;
+                min-width: 32px;
+                min-height: 32px;
+            }
+        }
+
+        /* Compatibilidad: conservar clase contenedor antiguo */
+        .nav-sticky-mobile { position: sticky; top: 60px; z-index: 2; background: #fff; }

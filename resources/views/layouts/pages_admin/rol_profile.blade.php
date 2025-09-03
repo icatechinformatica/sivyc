@@ -29,14 +29,14 @@
                           <div class="col-lg-6">
                             <div class="form-group">
                               <label class="form-control-label" for="rolNameUpdate">NOMBRE</label>
-                              <input type="text" id="rolNameUpdate" name="rolNameUpdate" class="form-control" value="{{ $rol->name }}" >
+                              <input type="text" id="rolNameUpdate" name="rolNameUpdate" class="form-control" value="{{ $rol->nombre }}" >
                             </div>
                           </div>
 
                           <div class="col-lg-6">
                             <div class="form-group">
-                              <label class="form-control-label" for="rolSlugUpdate">SLUG</label>
-                              <input type="text" id="rolSlugUpdate" name="rolSlugUpdate" class="form-control" readonly value="{{ $rol->slug }}">
+                              <label class="form-control-label" for="rolSlugUpdate">RUTA CORTA</label>
+                              <input type="text" id="rolSlugUpdate" name="rolSlugUpdate" class="form-control" readonly value="{{ $rol->ruta_corta }}" >
                             </div>
                           </div>
 
@@ -50,7 +50,7 @@
                           <div class="col-md-12">
                             <div class="form-group">
                               <label class="form-control-label" for="rolDescripcionUpdate">DESCRIPCIÓN</label>
-                              <textarea rows="4" class="form-control" name="rolDescripcionUpdate" name="rolDescripcionUpdate">{{ $rol->description }}</textarea>
+                              <textarea rows="4" class="form-control" name="rolDescripcionUpdate" name="rolDescripcionUpdate">{{ $rol->descripcion }}</textarea>
                             </div>
                           </div>
                           <input type="submit" value="Modificar" class="btn btn-sm btn-warning">

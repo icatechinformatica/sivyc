@@ -6,6 +6,10 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 trait catUnidades
 {
+    /* @Comentario de Christopher Sauceda
+     * @Fecha 2023-10-20
+     * Obtiene y filtra las unidades disponibles para un usuario basándose en su rol y unidad asignada
+     */
     protected function unidades_user($rol){
         $id_user = Auth::user()->id;
         $id_unidad= Auth::user()->unidad;

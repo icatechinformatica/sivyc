@@ -14,4 +14,14 @@ class pais extends Model
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
+
+    public function alumnos()
+    {
+        return $this->hasMany(Alumno::class, 'id_pais');
+    }
+
+    public function estados()
+    {
+        return $this->hasMany(Estado::class, 'id_pais');
+    }
 }

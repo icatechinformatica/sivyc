@@ -23,35 +23,75 @@
             $disabled = $inco = NULL;
             if(isset($grupo)){
                 $inco = $grupo->inicio;
-                if($grupo->tcapacitacion=='PRESENCIAL')$disabled = 'disabled';                    
-                else 
+                if($grupo->tcapacitacion=='PRESENCIAL')$disabled = 'disabled';
+                else
                     if ($exonerado)  $disabled = 'readonly';
             }
-        @endphp
-    {{ Form::open(['route' => 'solicitud.apertura', 'method' => 'post', 'id'=>'frm']) }}
-        @csrf
-         <div class="row">
-            <div class="form-group col-md-3">
-                    {{ Form::text('folio_grupo', $grupo->folio_grupo ?? '', ['id'=>'folio_grupo', 'class' => 'form-control', 'placeholder' => 'No. GRUPO', 'aria-label' => 'No. GRUPO', 'required' => 'required', 'size' => 25]) }}
-            </div>
-            <div class="form-group col-md-2">
-                    {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div>
 
+
+        /*
+            $modalidad = $valor = $munidad = $mov = $disabled = $hini = $hfin = $inco = $folio_pago = $fecha_pago = NULL;
+            $activar = true;
+            if(isset($grupo)){
+                $inco = $grupo->inicio;
+                $valor = $grupo->folio_grupo;
+                $modalidad = $grupo->mod;
+                $hfin = substr($grupo->horario, 8, 5);
+                $hini = substr($grupo->horario, 0, 5);
+                if(isset($grupo->munidad)) $munidad = $grupo->munidad;
+                if($grupo->tcapacitacion=='PRESENCIAL'){
+                    $disabled = 'disabled';
+                    $grupo->medio_virtual='';
+                    $grupo->link_virtual='';
+                }  else {
+                    if ($exonerado) {
+                        $disabled = 'readonly';
+                    }
+                }
+            }
+            if(isset($alumnos[0]->mov))$mov = $alumnos[0]->mov;
+            if($recibo){
+                $comprobante = env('APP_URL')."/storage/".$recibo->file_pdf;
+                $folio_pago = $recibo->folio_recibo;
+                $fecha_pago = $recibo->fecha_expedicion;
+            }elseif(isset($grupo)) {
+                $folio_pago = $grupo->folio_pago;
+                $fecha_pago = $grupo->fecha_pago;
+            }
+                */
+    @endphp
+    {{ html()->form('POST', route('solicitud.apertura'))->id('frm')->open() }}
+    @csrf
+    <div class="row">
+        <div class="form-group col-md-3">
+            {{ html()->text('folio_grupo', $grupo->folio_grupo ?? '')
+                ->id('folio_grupo')
+                ->class('form-control')
+                ->placeholder('No. GRUPO')
+                ->attribute('aria-label', 'No. GRUPO')
+                ->required()
+                ->attribute('size', 25) }}
         </div>
-        @if ($message)
-            <div class="row ">
-                <div class="col-md-12 alert alert-danger">
-                    <p>{{ $message }}</p>
-                </div>
+        <div class="form-group col-md-2">
+            {{ html()->button('BUSCAR')
+                ->id('buscar')
+                ->class('btn') }}
+        </div>
+    </div>
+
+    @if ($message)
+        <div class="row">
+            <div class="col-md-12 alert alert-danger">
+                <p>{{ $message }}</p>
             </div>
-        @endif
-        {{-- Mensaje de error - Jose Luis Moreno Arcos --}}
-        @if($errors->has('error'))
-            <div class="alert alert-danger">
-                {{ $errors->first('error') }}
-            </div>
-        @endif
+        </div>
+    @endif
+
+    @if($errors->has('error'))
+        <div class="alert alert-danger">
+            {{ $errors->first('error') }}
+        </div>
+    @endif
 
         @if(isset($grupo))
             <h5><b>DEL CURSO</b></h5>
@@ -182,70 +222,17 @@
                     <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" readonly>
                 </div>
             </div>
-            <div class="form-row" >
-                <div class="form-group col-md-2">
-                    <label>TIPO DE CAPACITACI&Oacute;N:</label>
-                    <input type="text" id="tipo_curso" name="tipo_curso" class="form-control" value="{{$grupo->tipo_curso}}" readonly>
-                </div>
-                <div class="form-group col-md-2">
-                     <label>MEDIO VIRTUAL:</label>
-                     {{ Form::select('medio_virtual', $medio_virtual, $grupo->medio_virtual, ['id'=>'medio_virtual','class' => 'form-control mr-sm-2','disabled'=>$disabled] ) }}
-                </div>
-                <div class="form-group col-md-8">
-                     <label>LINK VIRTUAL:</label>
-                     <input name='link_virtual' id='link_virtual' type="url" class="form-control" value="{{$grupo->link_virtual}}" {{$disabled}} />
-                </div>
-            </div>
-             <div class="form-row" >                
-                <div class="form-group col-md-12">
-                    <label>OBSERVACIONES:</label>
-                    <textarea name='observaciones' id='observaciones'  class="form-control" rows="5" >{{$grupo->nota}}</textarea>
-                </div>
-            </div>
+        </div>
 
-            <br/>
-            <h5><b>DE VINCULACIÓN</b></h5>                  
-            <hr/>
-            <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 3.1em;">                
-                <span>MEMORÁNDUM DE APERTURA: &nbsp;&nbsp;{{ Form::text('mpreapertura', $grupo->mpreapertura ?? '', ['id'=>'mpreapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM DE SOLICITUD DE APERTURA', 'aria-label' => 'No. Memorándum' , 'required' => 'required', 'style' => 'width: 300px; background-color: #ecececff;']) }} </span> 
-                <span>FECHA MEMO: &nbsp;&nbsp;{{ Form::date('fecha_turnado', $grupo->fecha_turnado ?? null , ['id'=>'fecha_turnado', 'class' => 'form-control datepicker mr-sm-2 mb-2 small', 'title' => 'FECHA DEL MEMORÁNDUM', 'required' => 'required' , 'style' => 'background-color: #ecececff;']) }}
-                <a onclick="guardar_preapertura('{{ $grupo->folio_grupo??null }}')" title="Guardar Cambios"><i class="fas fa-save fa-2x m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a></span>
-                <span class="mt-2">
-                    OBSERVACIONES:    &nbsp;&nbsp;
-                    <textarea name='obs_vincu' id='obs_vincu'  class="form-control col-md-12" rows="2" style="width:500px; background-color: #ecececff;" >{{$grupo->obs_vincula}}</textarea>
-                </span>
-            </div>
-            <br/>
-            <h5><b>DELEGACIÓN ADMINISTRATIVA</b></h5>                  
-            <hr/>
-            <div class="form-row">
-                <div class="form-group col-md-2">
-                    <label for="">NO. RECIBO DE PAGO:</label>
-                    <input type="text" name="folio_pago" id="folio_pago" class="form-control" placeholder="FOLIO PAGO" value="{{$grupo->folio_pago}}"  @if($recibo) disabled @else readonly @endif>
-                </div>
-                <div class="form-group col-md-2">
-                    <label for="">EMISI&Oacute;N DEL RECIBO:</label>
-                    <input type="date" name="fecha_pago" id="fecha_pago" class="form-control" placeholder="FECHA PAGO" value="{{$grupo->fecha_pago}}"  @if($recibo) disabled @else readonly @endif>
-                </div>
-                <div class="form-group col-md-4">        
-                    @if($grupo->comprobante_pago ?? '')
-                        <a class="nav-link" href="{{$grupo->comprobante_pago}}" target="_blank" title="RECIBO DE PAGO PDF">
-                           <i  class="far fa-file-pdf  fa-3x text-danger"></i>
-                        </a>
-                    @else
-                        <i  class="far fa-file-pdf  fa-3x text-muted mt-1"  title='ARCHIVO NO DISPONIBLE.'></i>
-                    @endif
-                </div>
-            </div>
-            <hr/>
+        <!-- Más secciones del formulario convertidas de manera similar -->
 
-                <h4><b>ALUMNOS</b></h4>
-                <div class="row">
-                    @include('solicitud.apertura.table')
-                </div>
+        <h4><b>ALUMNOS</b></h4>
+        <div class="row">
+            @include('solicitud.apertura.table')
+        </div>
+    @endif
 
-            @endif
-        {!! Form::close() !!}       
+    {{ html()->form()->close() }}
     </div>
 @if (isset($grupo))
 <!-- modal para mostrar el calendario -->

@@ -39,6 +39,8 @@ use PDF;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Services\WhatsAppService;
+use Illuminate\Support\Facades\Hash;
+use App\Services\WhatsAppService;
 
 class InstructorController extends Controller
 {

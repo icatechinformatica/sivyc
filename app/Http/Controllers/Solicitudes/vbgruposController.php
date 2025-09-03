@@ -529,6 +529,7 @@ class vbgruposController extends Controller
                 return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
             }else{
                 $message = 'Error al autorizar el curso y actualizar los datos del instructor.';
+                $message = 'Error al autorizar el curso y actualizar los datos del instructor.';
                 return redirect()->route('solicitudes.vb.grupos')->with('success', $message);
             }
         }else{

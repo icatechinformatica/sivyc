@@ -353,7 +353,7 @@
                     {{-- Agregar ckeck bolsa de trabajo  --}}
                     <div class="d-inline-flex p-3 w-100 pl-5 mb-4" style="background-color: #f7d351;">
                         <b>
-                            ¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo? &nbsp;&nbsp;
+                            ¿AUTORIZA SU NÚMERO PARA ALGUNA OPORTUNIDAD EN LA BOLSA DE TRABAJO? &nbsp;&nbsp;
                             <input class="check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true" @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset />
                             &nbsp; SI
                         </b>

@@ -1,7 +1,7 @@
 
 @section('content_script_css')
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />   
-    <style>   
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <style>
         table tr td, table tr th{ font-size: 12px; width: 10%;}
         table tr th{ text-align: center;}
 
@@ -9,7 +9,7 @@
 @endsection
 @extends('theme.sivyc.layout')
 @section('title', 'Preinscripción - Aspirantes | SIVyC Icatech')
-@section('content') 
+@section('content')
     <div class="card-header">
         Presincripción / Aspirantes
     </div>
@@ -20,79 +20,98 @@
                     <p>{{ $message }}</p>
                 </div>
             </div>
-        @endif    
+        @endif
         <div class="row">
-            <div class="col-lg-12 margin-tb form-inline">                
-                {!! Form::open(['route' => 'alumnos.index', 'method' => 'GET', 'class' => 'form-inline' ]) !!}
-                    @csrf                                               
-                    {!! Form::text('busqueda_aspirantepor', $buscar_aspirante, ['class' => 'form-control mr-sm-4 mb-2', 'size' => '50', 'placeholder' => 'NOMBRE/CURP/MATRICULA', 'aria-label' => 'BUSCAR']) !!}                                            
-                    {{ Form::button("<i class='fa fa-search mr-1'></i> BUSCAR", ['type' => 'submit', 'id' => 'buscar','name' => 'BUSCAR', 'class' => 'form-control btn mb-2']) }}
-                {!! Form::close() !!}                
-                @can('alumnos.inscripcion-paso2')                
-                    <a class="form-control btn mb-2" href="{{route('alumnos.valid')}}" ><i class='fa fa-plus mr-1'></i> Nuevo</a>                
+            <div class="col-lg-12 margin-tb form-inline">
+                {!! html()
+                    ->form('GET', route('alumnos.index'))
+                    ->class('form-inline')
+                    ->open() !!}
+
+                    {!! html()
+                        ->text('busqueda_aspirantepor', $buscar_aspirante)
+                        ->class('form-control mr-sm-4 mb-2')
+                        ->attributes([
+                            'size' => '50',
+                            'placeholder' => 'NOMBRE/CURP/MATRICULA',
+                            'aria-label' => 'BUSCAR',
+                        ]) !!}
+
+                    {!! html()
+                        ->button()
+                        ->type('submit')
+                        ->name('BUSCAR')
+                        ->id('buscar')
+                        ->class('form-control btn mb-2')
+                        ->html("<i class='fa fa-search mr-1'></i> BUSCAR") !!}
+
+                {!! html()->closeModelForm() !!}
+
+                @can('alumnos.inscripcion-paso2')
+                    <a class="form-control btn mb-2" href="{{route('alumnos.valid')}}" ><i class='fa fa-plus mr-1'></i> Nuevo</a>
                 @endcan
             </div>
-        </div>        
+        </div>
         @if ($contador > 0)
-        <div class="p-0 m-0 w-100" >          
-            <table class="table table-hover table-responsive w-100"  style="table-layout: fixed; width: 100%;" >
-                <thead>
-                    <tr>
-                        <th scope="col" class="w-40 text-left" >NOMBRE DEL ASPIRANTE</th>
-                        <th scope="col">CURP</th>                                     
-                        <th scope="col">FECHA ACT.</th>
-                        <th scope="col">ACTUALIZADO POR</th>
-                        <th scope="col">CURP/ESTUDIOS/..</th>
-                        @can('alumnos.inscripcion-paso2')
-                            <th scope="col">EDITAR</th>
-                        @endcan
-                        @can('permiso.alu.exo')
-                            <th>CURSO EXTRA</th>
-                        @endcan
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($retrieveAlumnos as $itemData)
+            <div class="p-0 m-0 w-100" >
+                <table class="table table-hover table-responsive w-100"  style="table-layout: fixed; width: 100%;" >
+                    <thead>
                         <tr>
-                            <td scope="row" style="width: 25%">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
-                            <td>{{$itemData->curp}}</td>
-                            <td  class="text-center">{{date('d/m/Y', strtotime($itemData->updated_at))}}</td>
-                            <td class="text-center small" style="width: 20%">{{$itemData->name}}</td>
-                            <td class="text-center">                       
-                                @if($itemData->documento)
-                                    <a class="nav-link pt-0"  href="{{$itemData->documento}}" target="_blank">
-                                          <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
-                                    </a>
-                                @else
-                                    <i  class="far fa-file-pdf  fa-3x text-muted pt-0"  title='ARCHIVO NO DISPONIBLE.'></i>
-                                @endif
-                            </td>
-                            <td  class="text-center">
-                                <a href="{{route('alumnos.valid', ['busqueda' => $itemData->curp])}}">
-                                    <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
-                                </a>
-                            </td>
+                            <th scope="col" class="w-40 text-left" >NOMBRE DEL ASPIRANTE</th>
+                            <th scope="col">CURP</th>
+                            <th scope="col">FECHA ACT.</th>
+                            <th scope="col">ACTUALIZADO POR</th>
+                            <th scope="col">CURP/ESTUDIOS/..</th>
+                            @can('alumnos.inscripcion-paso2')
+                                <th scope="col">EDITAR</th>
+                            @endcan
                             @can('permiso.alu.exo')
-                                <td  class="text-center">
-                                    @if ($itemData->curso_extra)
-                                        <i class="btn btn-success" id="descper" onclick="desactivar('{{$itemData->curp}}');">&nbsp;&nbsp;ACTIVO&nbsp;&nbsp;</i>
-                                    @else
-                                        <i class="btn btn-danger" onclick="activar('{{$itemData->curp}}');">INACTIVO</i>
-                                    @endif
-                                </td>
+                                <th>CURSO EXTRA</th>
                             @endcan
                         </tr>
-                    @endforeach
-                </tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="6">
-                            {{ $retrieveAlumnos->appends(request()->query())->links() }}
-                        </td>
-                    </tr>
-                </tfoot>
-            </table>
-    </div>
+                    </thead>
+                    <tbody>
+                        @foreach ($retrieveAlumnos as $itemData)
+                            <tr>
+                                <td scope="row" style="width: 25%">{{$itemData->apellido_paterno}} {{$itemData->apellido_materno}} {{$itemData->nombre}}</td>
+                                <td>{{$itemData->curp}}</td>
+                                <td  class="text-center">{{date('d/m/Y', strtotime($itemData->updated_at))}}</td>
+                                <td class="text-center small" style="width: 20%">{{$itemData->name}}</td>
+                                <td class="text-center">
+                                    @if($itemData->documento)
+                                        <a class="nav-link pt-0"  href="{{$itemData->documento}}" target="_blank">
+                                            <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
+                                        </a>
+                                    @else
+                                        <i  class="far fa-file-pdf  fa-3x text-muted pt-0"  title='ARCHIVO NO DISPONIBLE.'></i>
+                                    @endif
+                                </td>
+                                <td  class="text-center">
+                                    <a href="{{route('alumnos.valid', ['busqueda' => $itemData->curp])}}">
+                                        <i class="fa fa-edit  fa-2x fa-lg text-success" aria-hidden="true"></i>
+                                    </a>
+                                </td>
+                                @can('permiso.alu.exo')
+                                    <td  class="text-center">
+                                        @if ($itemData->curso_extra)
+                                            <i class="btn btn-success" id="descper" onclick="desactivar('{{$itemData->curp}}');">&nbsp;&nbsp;ACTIVO&nbsp;&nbsp;</i>
+                                        @else
+                                            <i class="btn btn-danger" onclick="activar('{{$itemData->curp}}');">INACTIVO</i>
+                                        @endif
+                                    </td>
+                                @endcan
+                            </tr>
+                        @endforeach
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6">
+                                {{ $retrieveAlumnos->appends(request()->query())->links('pagination::bootstrap-5') }}
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
         @else
             <div class="alert alert-warning" role="alert">
                 <h2>NO HAY ALUMNOS REGISTRADOS!</h2>
@@ -115,19 +134,19 @@
                     @csrf
                     <div class="modal-body">
                         <div class="row d-flex align-items-center">
-                            <div class="col-12">                                
+                            <div class="col-12">
                                 <div class="form-group">
                                     <label for="curp" class="control-label h6">CURP:</label>
                                         <input type="text" id="curpo" name="curpo" class="form-control" readonly>
-                                </div>                                
-                                <div class="form-group"> 
+                                </div>
+                                <div class="form-group">
                                     <label for="motivo" class="control-label h6">DESCRIBA LA JUSTIFICACIÓN:</label>
-                                    <textarea name="motivo" id="motivo" class="form-control"  rows="3"></textarea>                                    
+                                    <textarea name="motivo" id="motivo" class="form-control"  rows="3"></textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer">                        
+                    <div class="modal-footer">
                         <button type="submit" class="btn btn-danger">ACTIVAR</button>
                         <button type="button" class="btn" data-dismiss="modal">CERRAR</button>
                     </div>
@@ -159,7 +178,7 @@
                 </div>
             </div>
             </div>
-            <div class="modal-footer">            
+            <div class="modal-footer">
             <button type="button" class="btn btn-danger" id="btnquitar">QUITAR</button>
             <button type="button" class="btn" data-dismiss="modal">CERRAR</button>
             </div>

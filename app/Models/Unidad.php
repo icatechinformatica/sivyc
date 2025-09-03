@@ -11,9 +11,29 @@ class Unidad extends Model
     protected $table = 'tbl_unidades';
 
     protected $fillable = [
-        'id','unidad','cct','dunidad','dgeneral','plantel','academico','vinculacion','dacademico','pdgeneral',
-        'pdacademico', 'pdunidad', 'pacademico', 'pvinculacion', 'jcyc', 'pjcyc', 'ubicacion','direccion',
-        'telefono','correo','coordenadas','codigo_postal','order_poa'
+        'id',
+        'unidad',
+        'cct',
+        'dunidad',
+        'dgeneral',
+        'plantel',
+        'academico',
+        'vinculacion',
+        'dacademico',
+        'pdgeneral',
+        'pdacademico',
+        'pdunidad',
+        'pacademico',
+        'pvinculacion',
+        'jcyc',
+        'pjcyc',
+        'ubicacion',
+        'direccion',
+        'telefono',
+        'correo',
+        'coordenadas',
+        'codigo_postal',
+        'order_poa'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -33,21 +53,22 @@ class Unidad extends Model
                     case 'unidad':
                         # el tipo
                         return $query->WHERE('unidad', '=', $buscar);
-                        break;
                     case 'cct':
                         # unidad de capacitacion
                         return $query->WHERE('cct', 'LIKE', $buscar);
-                        break;
                     case 'director':
                         # fecha
                         return $query->WHERE('dunidad', 'LIKE', $buscar);
-                        break;
                     case 'ubicacion':
                         # fecha
                         return $query->WHERE('ubicacion', '=', $buscar);
-                        break;
                 }
             }
         }
+    }
+
+    public function grupos()
+    {
+        return $this->hasMany(Grupo::class, 'id_unidad');
     }
 }
