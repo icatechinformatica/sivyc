@@ -23,7 +23,7 @@ use Hamcrest\Core\HasToString;
 class ftcontroller extends Controller {
 
     public function index(Request $request) {
-        // obtener el año actual --        
+        // obtener el año actual --
         $anio_actual = Carbon::now()->year;
         $anio=$request->get("anio");
         $id_user = Auth::user()->id;
@@ -126,7 +126,7 @@ class ftcontroller extends Controller {
         $fechaEntregaActual = \DB::Table('calendario_formatot')->whereDate('inicio', '<=', $fecha)->whereDate('termino', '>=', $fecha)->first();
         // $dateNow = $fechaEntregaActual->fecha_entrega."-".$anioActual;
         $mesInformar = $mesComparador = $termino = $mesEntrega = $fechaEntregaFormatoT = null;
-        if(isset($fechaEntregaActual)){        
+        if(isset($fechaEntregaActual)){
             $mesInformar = explode(' ', $fechaEntregaActual->mes_informar)[1]; // obtenemos del array meses el mes de reporte a entregar
             $mesComparador = Carbon::now()->month;
 

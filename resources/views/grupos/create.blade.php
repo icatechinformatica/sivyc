@@ -6,45 +6,86 @@
 <link rel="stylesheet" href="{{ asset('css/global.css') }}" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.css">
 <link rel="stylesheet" href="{{ asset('css/grupos/agenda_fullcalendar.css') }}">
+<link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
+<link rel="stylesheet" href="{{ asset('css/grupos/detalles.css') }}">
 @endpush
 
 @section('content')
-<div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
-    <div class="col-md-8">
-        <span>Grupos / {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span>
+<div id="grupos-wrapper" class="{{ $esEditable ? '' : 'modo-solo-lectura' }}" data-es-editable="{{ $esEditable ? '1' : '0' }}">
+<div class="card-header rounded-lg shadow d-flex align-items-center header-grupos">
+    <div class="col-md-12 d-flex flex-column flex-md-row align-items-start align-items-md-center w-100">
+        <!-- Título -->
+        <div class="col-md-8 d-flex align-items-center">
+            <a href="{{ route('grupos.index') }}" class="btn btn-outline-light btn-sm d-inline-flex align-items-center px-2 py-1 mr-3" title="Regresar a ver grupos" aria-label="Regresar a ver grupos">
+                <i class="fa fa-arrow-left mr-1"></i>
+            </a>
+            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span></h5>
+        </div>
+
+        @if(isset($grupo))
+        @php $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? ''); @endphp
+            @if(!empty($obsTexto))
+            <!-- Observación (truncada con tooltip) -->
+            <div class="obs-container d-flex align-items-center order-3 order-md-2 my-1 my-md-0 mx-md-3">
+                <button type="button" class="obs-badge d-inline-flex align-items-center px-2 py-1 btn btn-link p-0 obs-icon" aria-label="Ver observación completa" data-observacion="{{ $obsTexto }}">
+                    <i class="bi bi-exclamation-circle-fill mr-1" tabindex="0" aria-hidden="true"></i>
+                    <small class="obs-text">{{ $obsTexto }}</small>
+                </button>
+            </div>
+            @endif
+        @endif
+
+        @if (!$esNuevoRegistro && isset($grupo))
+        @php($estatus = $grupo->estatusActual())
+        <!-- Badges a la derecha -->
+        <div class="badges-wrap d-flex flex-wrap align-items-center order-2 order-md-3 ml-md-auto">
+            <span class="badge badge-pill badge-light text-uppercase" style="font-weight: 600;">
+                <i class="fa fa-hashtag mr-1" aria-hidden="true"></i>{{ $grupo->clave_grupo }}
+            </span>
+            @if ($estatus)
+            <span class="badge badge-pill"
+                style="background-color: {{ $estatus->color ?? '#6c757d' }}; color: #fff; font-weight: 600;"
+                data-estatus-actual-id="{{ $estatus->id }}" data-estatus-actual-text="{{ $estatus->estatus }}"
+                data-estatus-actual-color="{{ $estatus->color ?? '#6c757d' }}">
+                <i class="fa fa-info-circle mr-1" aria-hidden="true"></i>{{ $estatus->estatus }}
+            </span>
+            @endif
+        </div>
+        @endif
     </div>
 </div>
 
 
 <div class="card card-body">
     <div class="row">
-        {{-- * Barra de pasos lateral --}}
-        <div class="col-md-3 d-none d-md-block">
+        {{-- * Stepbar --}}
+        <div class="col-12 col-md-3">
             <nav id="step-progress" class="nav-sticky">
-                <ul class="list-group list-group-flush step-progress-nav">
+                <ul class="list-group list-group-flush step-progress-nav" role="tablist" aria-label="Progreso de registro">
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="info_general">
                         <span class="step-circle mr-2" data-status="actual">1</span>
-                        <span class="fw-bold text-black">Información general</span>
+                        <span class="step-label fw-bold text-black">Información general</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="ubicacion">
                         <span class="step-circle mr-2" data-status="restante">2</span>
-                        <span class="fw-bold">Ubicación</span>
+                        <span class="step-label fw-bold">Ubicación</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="organismo">
                         <span class="step-circle mr-2" data-status="restante">3</span>
-                        <span class="fw-bold">Organismo Publico</span>
+                        <span class="step-label fw-bold">Organismo Publico</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="opciones">
                         <span class="step-circle mr-2" data-status="restante">4</span>
-                        <span class="fw-bold">Opciones</span>
+                        <span class="step-label fw-bold">Opciones</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="agenda">
                         <span class="step-circle mr-2" data-status="restante">5</span>
-                        <span class="fw-bold">Agenda</span>
+                        <span class="step-label fw-bold">Agenda</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="alumnos">
                         <span class="step-circle mr-2" data-status="restante">6</span>
-                        <span class="fw-bold">Alumnos</span>
+                        <span class="step-label fw-bold">Alumnos</span>
                     </li>
                 </ul>
             </nav>
@@ -55,45 +96,46 @@
         @endif
         <div class="col-md-9">
             {{-- * Sección: Información general --> --}}
-            <div class="col-12 mb-4 step-section" id="info_general">
+            <div class="col-md-12 mb-4 step-section px-0" id="info_general">
                 {{ html()->form('POST')->id('info_general_form')->open() }}
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3">Información general</h5>
-                    <div class="row my-1">
+                    <div class="row my-1 px-0">
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('IMPARTICIÓN', 'imparticion')->class('form-label mb-1') }}
                             {{ html()->select('imparticion', [null => 'SELECCIONE EL TIPO DE IMPARTICIÓN'] + $tiposImparticion->pluck('imparticion', 'id')->toArray())->class('form-control')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
                         </div>
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('MODALIDAD', 'modalidad')->class('form-label mb-1') }}
-                            {{ html()->select('modalidad', [null => 'SELECCIONAR MODALIDAD'] + $modalidades->pluck('modalidad', 'id')->toArray())->class('form-control')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_modalidad) }}
+                            {{ html()->select('modalidad', [null => 'SELECCIONAR MODALIDAD'] + $modalidades->pluck('modalidad_curso', 'id_modalidad_curso')->toArray())->class('form-control')->required()
+                                ->value($esNuevoRegistro ? null : $grupo->id_modalidad) }}
                         </div>
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('UNIDAD/ACCIÓN MÓVIL', 'unidad_accion_movil')->class('form-label mb-1') }}
                             {{ html()->select('unidad_accion_movil', [null => 'SELECCIONAR'] + $unidades->pluck('unidad', 'id')->toArray())->class('form-control')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_unidad) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_unidad) }}
                         </div>
                     </div>
                     <div class="row my-1">
                         <div class="form-group col-md-3 mb-1">
                             {{ html()->label('SERVICIO', 'servicio')->class('form-label mb-1') }}
                             {{ html()->select('servicio', [null => 'SELECCIONAR'] + $servicios->pluck('servicio', 'id')->toArray())->class('form-control ')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_servicio) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_servicio) }}
                         </div>
                         <div class="form-group col-md-9 mb-1">
                             {{ html()->label('CURSO', 'curso')->class('form-label mb-1') }}
                             {{ html()->select('curso', [null => 'SELECCIONA CURSO'] + $cursos->pluck('nombre_curso', 'id')->toArray())->class('form-control ')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_curso) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_curso) }}
                         </div>
                     </div>
                     <div class="d-flex justify-content-end mt-3">
-                        {{ html()->button('Guardar Info. General')->class( 'btn btn-primary float-end rounded')->id('guardar_info_general')->type('button') }}
+                        {{ html()->button('Guardar Info. General')->class( 'btn btn-primary float-end rounded guardar-seccion')->id('guardar_info_general')->type('button') }}
                     </div>
                     {{ html()->form()->close() }}
                 </div>
             </div>
+
             {{-- * Sección: Ubicación --> --}}
             <div class="col-12 mb-4 step-section" id="ubicacion" style="display:none;">
                 {{ html()->form('POST')->id('ubicacion_form')->open() }}
@@ -103,15 +145,15 @@
                         <div class="form-group col-md-6 mb-1">
                             {{ html()->label('MUNICIPIO', 'municipio')->class('form-label mb-1') }}
                             {{ html()->select('municipio', [null => 'SELECCIONAR'] + $municipios->pluck('muni', 'id')->toArray())->class('form-control')->id('municipio-select')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_municipio) }}
+                            ->value($esNuevoRegistro ? null : $grupo->id_municipio) }}
                         </div>
                         <div class="form-group col-md-6 mb-1">
                             {{ html()->label('LOCALIDAD', 'localidad')->class('form-label mb-1') }}
                             @if ($esNuevoRegistro)
-                                {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO PRIMERO'])->class('form-control')->id('localidad-select')->disabled()->required() }}
+                            {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO PRIMERO'])->class('form-control')->id('localidad-select')->disabled()->required() }}
                             @else
-                                {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO'] + $localidades->pluck('localidad', 'id')->toArray())->class('form-control')->id('localidad-select')->disabled($esNuevoRegistro)->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_localidad) }}
+                            {{ html()->select('localidad', ['' => 'SELECCIONAR MUNICIPIO'] + $localidades->pluck('localidad', 'id')->toArray())->class('form-control')->id('localidad-select')->disabled($esNuevoRegistro)->required()
+                                ->value($esNuevoRegistro ? null : $grupo->id_localidad) }}
                             @endif
                         </div>
                     </div>
@@ -135,7 +177,9 @@
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('CÓDIGO POSTAL', 'codigo_postal')->class('form-label mb-1') }}
-                        {{ html()->number('codigo_postal')->class('form-control')->maxlength(5)->minlength(5)->required() }}
+                        {{
+                        html()->number('codigo_postal')->class('form-control')->maxlength(5)->minlength(5)->required()
+                        }}
                     </div>
                     <div class="form-group mb-1">
                         {{ html()->label('REFERENCIAS ADICIONALES', 'referencias')->class('form-label mb-1') }}
@@ -147,6 +191,7 @@
                 </div>
                 {{ html()->form()->close() }}
             </div>
+
             {{-- * Sección: ORGANISMO PUBLICO --}}
             <div class="col-12 mb-4 step-section" id="organismo" style="display:none;">
                 {{ html()->form('POST')->id('organismo_form')->open() }}
@@ -156,7 +201,7 @@
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('ORGANISMO PUBLICO', 'organismo_publico')->class('form-label mb-1') }}
                             {{ html()->select('organismo_publico', ['' => 'SELECCIONAR'] + $organismos_publicos->pluck('organismo', 'id')->toArray())->class('form-control')->required()
-                                    ->value($esNuevoRegistro ? null : $grupo->id_organismo_publico) }}
+                                ->value($esNuevoRegistro ? null : $grupo->id_organismo_publico) }}
                         </div>
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('NOMBRE DEL REPRESENTANTE', 'nombre_representante')->class('form-label mb-1') }}
@@ -184,12 +229,12 @@
                             <div class="mb-2">
                                 {{ html()->label('MEDIO VIRTUAL', 'medio_virtual')->class('form-label mb-1') }}
                                 {{ html()->select('medio_virtual', [ '' => 'SELECCIONAR', 1 => 'VIRTUAL 1', 2 => 'VIRTUAL 2'])->class('form-control ')->disabled(!$esNuevoRegistro && !$grupo->id_imparticion == 2)
-                                        ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
+                                    ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('ENLACE VIRTUAL', 'enlace_virtual')->class('form-label mb-1') }}
                                 {{ html()->text('enlace_virtual')->class('form-control ')->disabled(!$esNuevoRegistro && !$grupo->id_imparticion == 2)
-                                        ->value($esNuevoRegistro ? null : $grupo->link_virtual) }}
+                                    ->value($esNuevoRegistro ? null : $grupo->link_virtual) }}
                             </div>
                             <div class="mb-2">
                                 {{ html()->label('CONVENIO ESPECIFICO', 'convenio_especifico')->class('form-label') }}
@@ -202,8 +247,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        {{ html()->button('Guardar')->class('btn btn-primary float-end
-                        guardar-seccion')->id('guardar_opciones') }}
+                        {{ html()->button('Guardar')->class('btn btn-primary float-end guardar-seccion')->id('guardar_opciones') }}
                     </div>
                     {{ html()->form()->close() }}
                 </div>
@@ -228,81 +272,100 @@
                 {{ html()->form()->close() }}
             </div>
 
-                {{-- * Sección: Alumnos --}}
-                <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
-                    <div class="card card-body mt-3 shadow-none p-0">
-                        <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
-                            <div class="flex-grow-1">
-                                <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos') }}">
-                                    @csrf
-                                    <div class="input-group" style="width: 400px;">
-                                        @if (!$esNuevoRegistro && $grupo)
-                                            <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
-                                        @endif
-                                        <input type="text" name="curp" class="form-control"
-                                            placeholder="Ingrese CURP" maxlength="18" required
-                                            style="flex: 1 1 auto; min-width: 0;"
-                                            value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-primary mr-2 rounded" type="submit" name="action"
-                                                value="agregar">Agregar</button>
-                                        </div>
+            {{-- * Sección: Alumnos --}}
+            <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
+                @if(!$esNuevoRegistro && isset($grupo))
+                <div class="card card-body mt-3 shadow-none p-0">
+                    {{-- Mensajes flash para asignación/eliminación de alumnos --}}
+                    <div class="my-2">
+                        @if (session('success'))
+                        <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+                        @endif
+                        @if (session('error'))
+                        <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+                        @endif
+                        @if (session('info'))
+                        <div class="alert alert-info" role="alert">{{ session('info') }}</div>
+                        @endif
+                    </div>
+                    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
+                        <div class="flex-grow-1">
+                            <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo) }}">
+                                @csrf
+                                <div class="input-group align-items-center" style="width: 400px;">
+                                    <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
+                                    <input type="text" name="curp" class="form-control rounded h-90" placeholder="Ingrese CURP" maxlength="18" required style="flex: 1 1 auto; min-width: 0;" value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
+                                    <div class="input-group-append accion-alumnos">
+                                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action" value="agregar">Agregar</button>
                                     </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="table-responsive">
-                            <table class="table table-bordered table-striped table-hover">
-                                <thead class="thead-dark">
-                                    <tr>
-                                        <th>Curp</th>
-                                        <th>Matrícula</th>
-                                        <th>Nombre</th>
-                                        <th>Sexo</th>
-                                        <th>Edad</th>
-                                        <th>Eliminar</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
-                                        <tr>
-                                            <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
-                                        </tr>
-                                    @else
-                                        @foreach ($grupo->alumnos as $alumno)
-                                            <tr>
-                                                <td>{{ $alumno->curp }}</td>
-                                                <td>{{ $alumno->matricula }}</td>
-                                                <td>{{ $alumno->nombreCompleto() }}</td>
-                                                <td>{{ $alumno->sexo->sexo }}</td>
-                                                <td>{{ $alumno->edad }}</td>
-                                                <td>
-                                                    <form method="POST" action="">
-                                                        @csrf
-                                                        <input type="hidden" name="alumno_id"
-                                                            value="{{ $alumno->id }}">
-                                                        <button class="btn btn-danger btn-sm" type="submit"
-                                                            name="action" value="eliminar">Eliminar</button>
-                                                    </form>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="row col-md-12 justify-content-end">
-                            <p class="mx-4">Turnar a:</p>
-                            @foreach ($grupo->estatusAdyacentes() as $estatus)
-                                @if($estatus->id != $ultimoEstatus->id)
-                                    <button class="btn btn-sm turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
-                                @endif
-                            @endforeach
+                                </div>
+                            </form>
                         </div>
                     </div>
-                    @endif
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped table-hover">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th colspan="3">
+                                        <div class="d-flex">
+                                            @if ($grupo->exoneracion)
+                                            <p class="my-auto">Tipo de pago: <span id="tipo-exoneracion" class="ml-2 tipo-exo-badge tipo-{{ strtolower(preg_replace('/\s+/', '-', trim($grupo->exoneracion->tipo_exoneracion))) }}"> {{ $grupo->exoneracion->tipo_exoneracion }}</span></p>
+                                            @endif
+                                        </div>
+                                    </th>
+                                    <th colspan="3" class="text-right">
+                                        <a href="{{ route('grupos.ver.listado.alumnos', $grupo) }}" class="btn btn-sm btn-primary rounded">Ver tabla detallada</a>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th>Curp</th>
+                                    <th>Matrícula</th>
+                                    <th>Nombre</th>
+                                    <th>Sexo</th>
+                                    <th>Edad</th>
+                                    <th>Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
+                                <tr>
+                                    <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
+                                </tr>
+                                @else
+                                @foreach ($grupo->alumnos as $alumno)
+                                <tr>
+                                    <td>{{ $alumno->curp }}</td>
+                                    <td>{{ $alumno->matricula }}</td>
+                                    <td>{{ $alumno->nombreCompleto() }}</td>
+                                    <td>{{ $alumno->sexo->sexo }}</td>
+                                    <td>{{ $alumno->edad }}</td>
+                                    <td class="text-center">
+                                        <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}">
+                                            @csrf
+                                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
+                                            <button class="btn btn-danger btn-sm accion-alumnos rounded" type="submit" name="action" value="eliminar"><i class="fas fa-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                @endforeach
+                                @endif
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <div class="row col-md-12 justify-content-end">
+                            <div class="d-flex align-items-center justify-content-center">
+                                <p class="mr-4 h-auto">Turnar a:</p>
+                                @foreach ($grupo->estatusAdyacentes() as $estatus)
+                                    @if($estatus->id != $ultimoEstatus->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
+                                    <button class="btn btn-md rounded turnar-btn" style="background-color: {{ $estatus->color }}; color: white; font-weight: 600; font-size: 0.95rem;" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}">{{ $estatus->estatus }}</button>
+                                    @endif
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -317,11 +380,11 @@
 @if (!$esNuevoRegistro && isset($grupo) && $grupo->id)
 @include('grupos.partials.modal_fullcalendar')
 @endif
-{{-- * CSS --}}
-@push('content_css_sign')
-<link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
-@endpush
+
+@include('grupos.observacionTurnado')
+@include('grupos.observacionVer')
+
+</div> {{-- /#grupos-wrapper --}}
 
 
 {{-- * JS --}}
@@ -335,41 +398,59 @@
 @endif
 <script>
     // Variables globales para la obtención de la CURP JS
-            window.registroBladeVars = {
-                esNuevoRegistro: {{ $esNuevoRegistro ? 'true' : 'false' }},
-                csrfToken: '{{ csrf_token() }}',
-            };
-</script>
-<script>
+    window.registroBladeVars = {
+        esNuevoRegistro: {{ $esNuevoRegistro ? 'true' : 'false' }},
+        csrfToken: '{{ csrf_token() }}',
+    };
+
     // Variables específicas para la stepbar de grupos.
-            // Se pasa únicamente la última sección finalizada ($ultimaSeccion) como string.
-            window.gruposStepVars = {
-                ultimaSeccion: @json($ultimaSeccion ?? null),
-                ordenSecciones: ['info_general', 'ubicacion', 'organismo', 'opciones', 'agenda', 'alumnos']
-            };
+    window.gruposStepVars = {
+        ultimaSeccion: @json($ultimaSeccion ?? null),
+        ordenSecciones: ['info_general', 'ubicacion', 'organismo', 'opciones', 'agenda', 'alumnos']
+    };
+    
+    // Configuración para Agenda del Grupo
+    window.GrupoAgenda = {
+        grupoId: @json(isset($grupo) ? $grupo->id : null),
+    editable: @json($esEditable),
+        // Horas máximas del curso (decimal). Usado para calcular horas restantes en la UI.
+        maxHoras: @json(isset($grupo) && isset($grupo->curso) ? $grupo->curso->horas : null),
+        // Plantillas de rutas (coinciden con routes/web.php)
+        routes: {
+            index: function(grupoId) {
+                return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null;
+            },
+            store: function(grupoId) {
+                return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null;
+            },
+            update: function(grupoId, agendaId) {
+                return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null;
+            },
+            destroy: function(grupoId, agendaId) {
+                return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null;
+            }
+        }
+    };
 </script>
 <script>
-    // Configuración para Agenda del Grupo
-            window.GrupoAgenda = {
-                grupoId: @json(isset($grupo) ? $grupo->id : null),
-                // Horas máximas del curso (decimal). Usado para calcular horas restantes en la UI.
-                maxHoras: @json(isset($grupo) && isset($grupo->curso) ? $grupo->curso->horas : null),
-                // Plantillas de rutas (coinciden con routes/web.php)
-                routes: {
-                    index: function(grupoId) {
-                        return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null;
-                    },
-                    store: function(grupoId) {
-                        return grupoId ? '{{ url('grupos') }}/' + grupoId + '/agenda' : null;
-                    },
-                    update: function(grupoId, agendaId) {
-                        return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null;
-                    },
-                    destroy: function(grupoId, agendaId) {
-                        return (grupoId && agendaId) ? '{{ url('grupos') }}/' + grupoId + '/agenda/' + agendaId : null;
-                    }
-                }
-            };
+    // Modo solo lectura global basado en $esEditable
+    (function() {
+        var wrapper = document.getElementById('grupos-wrapper');
+        if (!wrapper) return;
+        var esEditable = wrapper.getAttribute('data-es-editable') === '1';
+        if (esEditable) return;
+
+        // Deshabilitar campos de formulario en todas las secciones
+        var selectors = '#grupos-wrapper .step-section input, #grupos-wrapper .step-section select, #grupos-wrapper .step-section textarea';
+        wrapper.querySelectorAll(selectors).forEach(function(el) {
+            try { el.disabled = true; } catch (e) {}
+        });
+
+        // Ocultar todos los botones de guardado de sección (incluye el de Info. General)
+        wrapper.querySelectorAll('.guardar-seccion').forEach(function(btn) {
+            btn.style.display = 'none';
+        });
+    })();
 </script>
 <script src="{{ asset('js/grupos/stepbar.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.18/index.global.min.js"></script>

@@ -78,9 +78,7 @@ class Grupo extends Model
      */
     public function estatusActual()
     {
-        return $this->estatus()
-            ->orderBy('tbl_grupo_estatus.fecha_cambio', 'desc')
-            ->first();
+        return $this->estatus()->orderBy('tbl_grupo_estatus.fecha_cambio', 'desc')->first();
     }
 
     /**
@@ -185,5 +183,25 @@ class Grupo extends Model
     {
         return $this->belongsToMany(Alumno::class, 'tbl_alumno_grupo', 'grupo_id', 'alumno_id')
             ->withPivot('costo', 'comprobante_pago', 'tinscripcion', 'abrinscri', 'folio_pago', 'fecha_pago', 'id_folio');
+    }
+
+    public function fecha_inicio()
+    {
+        return Agenda::where('id_grupo', $this->id)->orderBy('fecha_inicio', 'asc')->value('fecha_inicio');
+    }
+
+    public function fecha_fin()
+    {
+        return Agenda::where('id_grupo', $this->id)->orderBy('fecha_fin', 'desc')->value('fecha_fin');
+    }
+
+    public function servicio()
+    {
+        return $this->belongsTo(ServicioCurso::class, 'id_servicio');
+    }
+
+    public function exoneracion()
+    {
+        return $this->belongsTo(Exoneraciones::class, 'id_tipo_exoneracion');
     }
 }

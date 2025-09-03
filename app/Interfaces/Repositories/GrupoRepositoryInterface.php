@@ -11,4 +11,5 @@ interface GrupoRepositoryInterface
     public function actualizarOrCrear(array $datos);
     public function obtenerPorId($id);
     public function actualizarEstatus($grupoId, $nombreEstatus);
+    public function obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
 }

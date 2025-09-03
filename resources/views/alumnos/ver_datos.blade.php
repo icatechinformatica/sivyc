@@ -29,15 +29,9 @@ $datosCerss = $esNuevoRegistro ? [] : json_decode($datos->cerss ?? '[]', true);
 // Obtener grupos vulnerables seleccionados del alumno
 $gruposVulnerablesSeleccionados = [];
 if (!$esNuevoRegistro && $datos) {
-$gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vulnerable')->toArray();
+    $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vulnerable')->toArray();
 }
 @endphp
-
-@if (isset($grupoId))
-<div class="alert alert-info">
-    Grupo asignado: {{ $grupoId }}
-</div>
-@endif
 
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-12">
@@ -46,68 +40,67 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
 </div>
 
 <div class="card card-body" id="formulario-alumno">
-    {{-- Formulario de Datos Personales --}}
     <div class="row">
-        <!-- Step Progress y contenido principal -->
-        <div class="col-md-3 d-none d-md-block">
+        {{-- * Stepbar  --}}
+        <div class="col-12 col-md-3">
             <nav id="step-progress" class="nav-sticky">
-                <ul class="list-group list-group-flush step-progress-nav">
+                <ul class="list-group list-group-flush step-progress-nav" role="tablist" aria-label="Progreso de registro de alumno">
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="datos-personales">
-                        <span class="step-circle mr-2">1</span>
-                        <span class="fw-bold text-black text-uppercase">DATOS PERSONALES</span>
+                        <span class="step-circle mr-2" data-status="actual">1</span>
+                        <span class="step-label fw-bold text-black text-uppercase">DATOS PERSONALES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="domicilio_section">
-                        <span class="step-circle mr-2">2</span>
-                        <span class="fw-bold text-uppercase">DOMICILIO</span>
+                        <span class="step-circle mr-2" data-status="restante">2</span>
+                        <span class="step-label fw-bold text-uppercase">DOMICILIO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="contacto">
-                        <span class="step-circle mr-2">3</span>
-                        <span class="fw-bold text-uppercase">CONTACTO</span>
+                        <span class="step-circle mr-2" data-status="restante">3</span>
+                        <span class="step-label fw-bold text-uppercase">CONTACTO</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="grupos-vulnerables">
-                        <span class="step-circle mr-2">4</span>
-                        <span class="fw-bold text-uppercase">GRUPOS VULNERABLES</span>
+                        <span class="step-circle mr-2" data-status="restante">4</span>
+                        <span class="step-label fw-bold text-uppercase">GRUPOS VULNERABLES</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="capacitacion">
-                        <span class="step-circle mr-2">5</span>
-                        <span class="fw-bold text-uppercase">CAPACITACIÓN</span>
+                        <span class="step-circle mr-2" data-status="restante">5</span>
+                        <span class="step-label fw-bold text-uppercase">CAPACITACIÓN</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="laboral">
-                        <span class="step-circle mr-2">6</span>
-                        <span class="fw-bold text-uppercase">LABORAL</span>
+                        <span class="step-circle mr-2" data-status="restante">6</span>
+                        <span class="step-label fw-bold text-uppercase">LABORAL</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="cerss">
-                        <span class="step-circle mr-2">7</span>
-                        <span class="fw-bold text-uppercase">CERSS</span>
+                        <span class="step-circle mr-2" data-status="restante">7</span>
+                        <span class="step-label fw-bold text-uppercase">CERSS</span>
                     </li>
                 </ul>
             </nav>
         </div>
-        <div class="col-md-9">
+        <div class="col-md-9 px-0">
             {{-- * Sección: Datos personales --}}
             {!! html()->form()->id('form-datos-personales')->open() !!}
             {{ html()->hidden('id_usuario_captura', auth()->user()->id) }}
-            <div class="col-12 mb-4 step-section" id="datos-personales">
+            <div class="col-12 mb-4 step-section px-0" id="datos-personales">
                 <div class="p-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-person-vcard mr-2"></i>Datos personales
                     </h5>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
+                    <div class="row px-0">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('CURP')->for('curp') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="curp-addon"><i class="bi bi-credit-card-2-front"></i></span>
                                 </div>
                                 {{ html()->text('curp')->class('form-control')->id('curp')->isReadonly(true)->value($esNuevoRegistro ? $curp : $datos->curp) }}
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Adjuntar Documento CURP')->for('documento_curp') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="documento-curp-addon"><i class="bi bi-file-earmark-text"></i></span>
                                 </div>
-                                {!! html()->file('documento_curp')->class('form-control')->id('documento_curp')->attribute('aria-label', 'Adjuntar Documento CURP')->attribute('aria-describedby', 'documento-curp-addon') !!}
+                                {!! html()->file('documento_curp')->class('form-control')->id('documento_curp')->attribute('aria-label', 'Adjuntar Documento CURP')->attribute('aria-describedby', 'documento-curp-addon')->attribute('accept', '.pdf,application/pdf') !!}
                             </div>
 
                             {{-- * Input para mostrar el documento CURP existente --}}
@@ -118,9 +111,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                             </small>
                             @endif
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Fecha de Expedición CURP')->for('fecha_documento_curp') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-curp-addon"><i class="bi bi-calendar"></i></span>
                                 </div>
@@ -128,18 +121,18 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value(!$esNuevoRegistro && !empty($documentos['curp']['fecha_expedicion']) ? date('Y-m-d', strtotime($documentos['curp']['fecha_expedicion'])) : '' ) !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Nombre')->for('nombre_s') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nombre-addon"><i class="bi bi-person"></i></span>
                                 </div>
                                 {!! html()->text('nombre_s')->class('form-control')->id('nombre_s')->attribute('aria-label', 'Nombre')->value(!$esNuevoRegistro ? $datos->nombre : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Primer Apellido')->for('primer_apellido') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="primer-apellido-addon"><i
                                             class="bi bi-person-lines-fill"></i></span>
@@ -150,9 +143,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                 'primer-apellido-addon')->value(!$esNuevoRegistro ? $datos->apellido_paterno : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Segundo Apellido')->for('segundo_apellido') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="segundo-apellido-addon"><i class="bi bi-person-lines-fill"></i></span>
                                 </div>
@@ -160,9 +153,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value(!$esNuevoRegistro ? $datos->apellido_materno : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Entidad de Nacimiento')->for('entidad_de_nacimiento_select') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="entidad-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
@@ -172,9 +165,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
 
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Fecha de Nacimiento')->for('fecha_de_nacimiento') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-addon"><i class="bi bi-calendar-date"></i></span>
                                 </div>
@@ -182,9 +175,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value(!$esNuevoRegistro ? $datos->fecha_nacimiento : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Sexo')->for('sexo') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="sexo-addon"><i class="bi bi-gender-ambiguous"></i></span>
                                 </div>
@@ -194,9 +187,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                 {!! html()->text('sexo_input')->id('sexo_input')->class('form-control')->value(!$esNuevoRegistro ? $datos->sexo->sexo : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('Nacionalidad')->for('nacionalidad_select') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="nacionalidad-addon"><i class="bi bi-flag"></i></span>
                                 </div>
@@ -206,9 +199,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value(!$esNuevoRegistro ? $datos->nacionalidad->nacionalidad : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Estado Civil')->for('estado_civil') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="estado-civil-addon"><i class="bi bi-people"></i></span>
                                 </div>
@@ -226,21 +219,21 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
             {{-- * Formulario de Domicilio --}}
             {!! html()->form()->id('form-domicilio')->open() !!}
             <div class="col-12 mb-4 step-section" id="domicilio_section">
-                <div class="p-3 mb-2">
+                <div class="px-0 py-3 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-house-door mr-2"></i>Domicilio</h5>
                     <div class="row">
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('País')->for('pais') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="pais-addon"><i class="bi bi-globe2"></i></span>
                                 </div>
                                 {!! html()->select('pais_select', [null => 'SELECCIONE EL PAÍS'] + $paises->pluck('nombre', 'id')->toArray())->class('form-control')->id('pais_select')->value(!$esNuevoRegistro && $datos->pais ? $datos->pais->id : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Estado')->for('estado') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="estado-addon"><i class="bi bi-map"></i></span>
                                 </div>
@@ -248,9 +241,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value(!$esNuevoRegistro && $datos->estado ? $datos->estado->id : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Municipio')->for('municipio') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="municipio-addon"><i class="bi bi-building"></i></span>
                                 </div>
@@ -258,9 +251,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                     ->value(!$esNuevoRegistro && $datos->municipio ? $datos->municipio->id : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Localidad')->for('localidad') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="localidad-addon"><i class="bi bi-geo"></i></span>
                                 </div>
@@ -268,9 +261,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value($esNuevoRegistro ? '' : $datos->clave_localidad) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Código Postal')->for('codigo_postal') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="cp-addon"><i class="bi bi-mailbox"></i></span>
                                 </div>
@@ -278,9 +271,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value($esNuevoRegistro ? '' : $datos->cp) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Domicilio')->for('domicilio') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="domicilio-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
@@ -288,9 +281,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value($esNuevoRegistro ? '' : $datos->domicilio) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Colonia')->for('colonia') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="colonia-addon"><i class="bi bi-signpost"></i></span>
                                 </div>
@@ -309,12 +302,12 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
             {{-- * Formulario de Contacto --}}
             {!! html()->form()->id('form-contacto')->open() !!}
             <div class="col-12 mb-4 step-section" id="contacto">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-telephone mr-2"></i>Contacto</h5>
                     <div class="row">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Teléfono Casa')->for('telefono_casa') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tel-casa-addon"><i class="bi bi-telephone"></i></span>
                                 </div>
@@ -322,9 +315,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                     ->value($esNuevoRegistro ? '' : $datos->telefono_casa) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Teléfono Celular')->for('telefono_celular') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="tel-cel-addon"><i class="bi bi-phone"></i></span>
                                 </div>
@@ -332,9 +325,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                     ->value($esNuevoRegistro ? '' : $datos->telefono_celular) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Correo Electrónico')->for('correo_electronico') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="correo-addon"><i class="bi bi-envelope"></i></span>
                                 </div>
@@ -342,9 +335,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value($esNuevoRegistro ? '' : $datos->correo) !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Facebook')->for('facebook') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="facebook-addon"><i class="bi bi-facebook"></i></span>
                                 </div>
@@ -357,8 +350,7 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                         <div class="col-md-12">
                             <div class="mb-3 d-flex align-items-center"
                                 style="background: #fffbe6; border: 2px solid #ffe58f; border-radius: 8px; padding: 12px;">
-                                {!! html()->label('¿Usted autoriza dar su número de celular para alguna oportunidad en
-                                la Bolsa de Trabajo?')->for('autoriza_bolsa_trabajo')->class('fw-bold me-3
+                                {!! html()->label('¿AUTORIZA SU NÚMERO PARA ALGUNA OPORTUNIDAD EN LA BOLSA DE TRABAJO?')->for('autoriza_bolsa_trabajo')->class('fw-bold me-3
                                 mb-0')->style('color: #ad8b00; font-size: 1.1em;') !!}
                                 <div class="form-check ml-2">
                                     {!! html()->checkbox('autoriza_bolsa_trabajo', false, 1)->class('form-check-input')->id('autoriza_bolsa_trabajo')
@@ -416,26 +408,26 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
             {{-- * Formulario de Capacitación --}}
             {!! html()->form()->id('form-capacitacion')->open() !!}
             <div class="col-12 mb-4 step-section" id="capacitacion">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-info-circle mr-2"></i>DE LA CAPACITACIÓN </h5>
                     <div class="row">
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('ULTIMO GRADO DE ESTUDIOS')->for('ultimo_grado_estudios') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="grado-estudios-addon"><i class="bi bi-book"></i></span>
+                                    <span class="input-group-text" id="grado-estudios-addon"><i class="bi bi-mortarboard"></i></span>
                                 </div>
                                 {!! html()->select('ultimo_grado_estudios', ['' => 'SELECCIONE EL GRADO'] + $gradoEstudios->pluck('grado_estudio', 'id_grado_estudio')->toArray() )->class('form-control')->id('ultimo_grado_estudios')->attribute('aria-label', 'Ultimo Grado de Estudios')->attribute('aria-describedby', 'grado-estudios-addon')
                                         ->value(!$esNuevoRegistro && $datos->gradoEstudio ? $datos->gradoEstudio->id_grado_estudio : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-5 mb-3">
                             {!! html()->label('DOCUMENTO DEL ULTIMO GRADO DE ESTUDIOS')->for('documento_ultimo_grado') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
-                                    <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-file-earmark-text"></i></span>
+                                    <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-award"></i></span>
                                 </div>
-                                {!! html()->file('documento_ultimo_grado')->class('form-control')->id('documento_ultimo_grado')->attribute('aria-label', 'Documento del Ultimo Grado de Estudios')->attribute('aria-describedby', 'documento-grado-addon') !!}
+                                {!! html()->file('documento_ultimo_grado')->class('form-control')->id('documento_ultimo_grado')->attribute('aria-label', 'Documento del Ultimo Grado de Estudios')->attribute('aria-describedby', 'documento-grado-addon')->attribute('accept', '.pdf,application/pdf') !!}
                             </div>
                             @if (!empty($documentos['ultimo_grado_estudio']))
                             <small class="form-text text-muted mt-1">
@@ -443,9 +435,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                             </small>
                             @endif
                         </div>
-                        <div class="col-md-3 mb-3">
+                        <div class="col-12 col-md-3 mb-3">
                             {!! html()->label('FECHA DEL DOCUMENTO')->for('fecha_documento_ultimo_grado') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="fecha-documento-addon"><i class="bi bi-calendar"></i></span>
                                 </div>
@@ -453,9 +445,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value(!$esNuevoRegistro && !empty($documentos['ultimo_grado_estudio']['fecha_expedicion']) ? date('Y-m-d', strtotime($documentos['ultimo_grado_estudio']['fecha_expedicion'])) : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-9 mb-3">
+                        <div class="col-12 col-md-9 mb-3">
                             {!! html()->label('MEDIO POR EL QUE SE ENTERO DEL SISTEMA')->for('medio_enterado_sistema') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="medio-enterado-addon"><i class="bi bi-megaphone"></i></span>
                                 </div>
@@ -463,9 +455,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                         ->value(!$esNuevoRegistro && !empty($datos->medio_entero) ? $datos->medio_entero : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-9 mb-3">
+                        <div class="col-12 col-md-9 mb-3">
                             {!! html()->label('MOTIVOS DE ELECCIÓN DEL SISTEMA DE CAPACITACIÓN')->for('motivo_eleccion_capacitacion') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="motivo-eleccion-addon"><i class="bi bi-list-check"></i></span>
                                 </div>
@@ -473,9 +465,9 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
                                     ->value(!$esNuevoRegistro && !empty($datos->sistema_capacitacion_especificar) ? $datos->sistema_capacitacion_especificar : '') !!}
                             </div>
                         </div>
-                        <div class="col-md-9 mb-3">
+                        <div class="col-12 col-md-9 mb-3">
                             {!! html()->label('MEDIO DE CONFIRMACIÓN')->for('medio_confirmacion') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="medio-confirmacion-addon"><i class="bi bi-chat-dots"></i></span>
                                 </div>
@@ -493,36 +485,36 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
             {{-- * Formulario de Alumno Laboral --}}
             {!! html()->form()->id('form-laboral')->open() !!}
             <div class="col-12 mb-4 step-section" id="laboral">
-                <div class="p-3 mb-2">
+                <div class="py-3 px-0 mb-2">
                     <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-file-earmark-text"></i> ¿Está empleado el aspirante?</h5>
                     <div class="form-check mb-3">
                         {!! html()->checkbox('empleado_aspirante')->id('empleado_aspirante')->checked(!$esNuevoRegistro ? $datos->empleado : false)->class('form-check-input') !!}
                         {!! html()->label('Si el aspirante es empleado, marcar esta casilla.')->for('empleado_aspirante')->class('form-check-label ml-2') !!}
                     </div>
-                    <div class="row mt-3 d-none" id="datos-empleo">
-                        <div class="col-md-4 mb-3">
+                    <div class="row mt-3 d-none" id="datos-laboral">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Empresa donde trabaja')->for('empresa_trabaja') !!}
                             {!! html()->text('empresa_trabaja')->class('form-control')->id('empresa_trabaja')->placeholder('Nombre de la empresa')
                                     ->value($esNuevoRegistro ? '' : $datos->empresa_trabaja) !!}
                         </div>
-                        <div class="col-md-4 mb-3">
+                        <div class="col-12 col-md-4 mb-3">
                             {!! html()->label('Puesto')->for('puesto_trabajo') !!}
                             {!! html()->text('puesto_trabajo')->class('form-control')->id('puesto_trabajo')->placeholder('Puesto que desempeña')
                                 ->value($esNuevoRegistro ? '' : $datos->puesto_empresa) !!}
                         </div>
-                        <div class="col-md-2 mb-3">
+                        <div class="col-12 col-md-2 mb-3">
                             {!! html()->label('Antigüedad')->for('antiguedad_trabajo') !!}
                             {!! html()->text('antiguedad_trabajo')->class('form-control')->id('antiguedad_trabajo')->placeholder('Años/Meses')
                                     ->value($esNuevoRegistro ? '' : $datos->antiguedad) !!}
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('Dirección de la empresa')->for('direccion_trabajo') !!}
                             {!! html()->text('direccion_trabajo')->class('form-control')->id('direccion_trabajo')->placeholder('Dirección completa')
                                     ->value($esNuevoRegistro ? '' : $datos->direccion_empresa) !!}
                         </div>
                     </div>
                     <div class="col-md-12 d-flex justify-content-end">
-                        {{ html()->button('Guardar empleo')->class('btn btn-primary float-end')->id('validar-empleo')->type('button') }}
+                        {{ html()->button('Guardar Laboral')->class('btn btn-primary float-end')->id('validar-empleo')->type('button') }}
                     </div>
                 </div>
             </div>
@@ -531,22 +523,21 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
             {{-- * Formulario de CERSS --}}
             {!! html()->form()->id('form-cerss')->open() !!}
             <div class="col-12 mb-4 step-section" id="cerss">
-                <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-shield-lock"></i> ¿El aspirante
-                        pertenece a algún CERSS?</h5>
+                <div class="py-3 px-0 mb-2">
+                    <h5 class="fw-bold border-bottom pb-1 mb-3"><i class="bi bi-shield-lock"></i> ¿El aspirante pertenece a algún CERSS?</h5>
                     <div class="form-check mb-3">
                         {!! html()->checkbox('aspirante_cerss')->id('aspirante_cerss')->checked(!$esNuevoRegistro && !empty($datosCerss['aspirante_cerss']) && $datosCerss['aspirante_cerss'] == '1') !!}
                         {!! html()->label('Si el aspirante pertenece a algún CERSS, marcar esta casilla.')->for('aspirante_cerss')->class('form-check-label ml-2') !!}
                     </div>
                     <div class="row mt-3" id="datos-cerss">
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('NUMERO DE EXPEDIENTE')->for('numero_expediente') !!}
                             {!! html()->text('numero_expediente')->class('form-control')->id('numero_expediente')->placeholder('Número de expediente')
                                 ->value(!$esNuevoRegistro && !empty($datosCerss['numero_expediente']) ? $datosCerss['numero_expediente'] : '') !!}
                         </div>
-                        <div class="col-md-6 mb-3">
+                        <div class="col-12 col-md-6 mb-3">
                             {!! html()->label('FICHA CERSS')->for('documento_ficha_cerss') !!}
-                            <div class="input-group mb-3">
+                            <div class="input-group mb-3 w-100">
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="documento-grado-addon"><i class="bi bi-file-earmark-text"></i></span>
                                 </div>
@@ -565,14 +556,17 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
 
                         @if ($secciones && $secciones->id == 5)
                             @if (isset($grupoId))
+                                {{-- vamos a cambiar la forma en como se envia los datos al grupo --}}
                                 <div class="col-md-12 d-flex justify-content-end mt-5">
-                                    <a href="{{ route('grupos.editar', ['id' => $grupoId, 'curp' => base64_encode($datos->curp)]) }}" class="btn btn-warning float-start"
-                                        id="enviarGrupo">Cargar en Grupo</a>
+                                    <a href="#" class="btn btn-warning float-start"
+                                        id="enviarGrupo"
+                                        onclick="event.preventDefault(); enviarGrupoCurp('{{ $grupoId }}', '{{ $datos->curp }}');">
+                                            Cargar en Grupo
+                                    </a>
                                 </div>
                             @else
                                 <div class="col-md-12 d-flex justify-content-end mt-5">
-                                    <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start"
-                                        id="regresar-inicio">Regresar al inicio</a>
+                                    <a href="{{ route('alumnos.consulta.alumno') }}" class="btn btn-secondary float-start" id="regresar-inicio">Regresar al inicio</a>
                                 </div>
                             @endif
 
@@ -614,5 +608,27 @@ $gruposVulnerablesSeleccionados = $datos->gruposVulnerables->pluck('id_grupo_vul
 <script src="{{ asset('js/alumnos/consulta.js') }}"></script>
 <script src="{{ asset('js/alumnos/registro_validaciones.js') }}"></script>
 <script src="{{ asset('js/alumnos/registro.js') }}"></script>
+<script type="text/javascript">
+    function enviarGrupoCurp(grupoId, curp)
+    {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = '{{ route('grupos.asignar.alumnos') }}';
 
+        // CSRF Token
+        let csrf = document.createElement('input');
+        csrf.type = 'hidden';
+        csrf.name = '_token';
+        csrf.value = '{{ csrf_token() }}';
+        form.appendChild(csrf);
+
+        form.innerHTML += `
+            <input type="hidden" name="grupo_id" value="${grupoId}">
+            <input type="hidden" name="curp" value="${curp}">
+        `;
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+</script>
 @endpush

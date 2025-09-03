@@ -33,7 +33,7 @@ class GrupoService
             }
         }
 
-        if ($tieneAllAccess) {
+        if ($tieneAllAccess OR is_null($usuario->unidad)) {
             if ($busqueda) {
                 return $this->grupoRepository->buscarPaginado($busqueda, $registrosPorPagina);
             }
@@ -46,6 +46,11 @@ class GrupoService
         }
 
         return $this->grupoRepository->obtenerTodosPorUnidad($registrosPorPagina);
+    }
+
+    public function obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad)
+    {
+        return $this->grupoRepository->obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
     }
 
     public function obtenerGrupoPorId($id)
@@ -275,5 +280,76 @@ class GrupoService
         $grupo->save();
 
         return $folio;
+    }
+
+    /**
+     * Guardar costos de alumnos en el pivote y actualizar id_tipo_exoneracion del grupo.
+     * Reglas:
+     * - Si alguno tiene costo 0 => EXONERACION (3)
+     * - Si la suma de las cuotas de todos los alumnos es menor al costo total del curso => REDUCCION (2)
+     * - En otro caso => PAGO ORDINARIO (1)
+     * Además: si nadie tiene costo actualmente y se provee cuota_general, usarla para autollenar valores faltantes.
+     */
+    public function guardarCostosYTipoExoneracion(Grupo $grupo, array $costos, $cuotaGeneral = null)
+    {
+        // Obtener costos actuales del pivote
+        $alumnos = $grupo->alumnos()->get();
+        $ningunoTieneCostoActual = $alumnos->every(function ($a) {
+            $v = $a->pivot->costo;
+            return $v === null || $v === '';
+        });
+
+        // Preparar updates
+        $updates = [];
+        foreach ($alumnos as $alumno) {
+            $id = $alumno->id;
+            $valor = array_key_exists($id, $costos) ? $costos[$id] : null;
+
+            if ($ningunoTieneCostoActual && ($valor === null || $valor === '')) {
+                $valor = $cuotaGeneral;
+            }
+
+            if ($valor === '' || $valor === null) {
+                continue;
+            }
+
+            $updates[$id] = ['costo' => (float) $valor];
+        }
+
+        // Persistir cambios de costos
+        foreach ($updates as $alumnoId => $valores) {
+            $grupo->alumnos()->updateExistingPivot($alumnoId, $valores, false);
+        }
+
+        // Recalcular tipo de exoneración del grupo
+        $alumnosRefrescados = $grupo->alumnos()->get();
+        $cuotas = $alumnosRefrescados->map(function ($a) {
+            $v = $a->pivot->costo;
+            return is_null($v) ? null : (float) $v;
+        })->filter(function ($v) { return $v !== null; })->values();
+
+        // Obtener costo total del curso
+        $costoCurso = $grupo->curso->costo ?? null;
+
+        $tol = 0.01;
+        $tipoId = 1; // Ordinario por defecto
+
+        // Exoneración si algún alumno tiene costo ≈ 0
+        if ($cuotas->some(function ($v) use ($tol) { return abs($v) < $tol; })) {
+            $tipoId = 3; // Exoneración
+        } else {
+            // Reducción si la suma total de cuotas es menor al costo del curso (con tolerancia)
+            $sumCuotas = $cuotas->sum();
+            $hasAnyValue = $cuotas->isNotEmpty();
+            if (!is_null($costoCurso) && $hasAnyValue && ($sumCuotas + $tol) < (float) $costoCurso) {
+                $tipoId = 2; // Reducción
+            }
+        }
+
+        // Guardar en grupo
+        $grupo->id_tipo_exoneracion = $tipoId;
+        $grupo->save();
+
+        return $grupo->fresh(['alumnos']);
     }
 }

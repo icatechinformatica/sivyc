@@ -21,7 +21,7 @@ class GrupoRepository implements GrupoRepositoryInterface
     public function obtenerTodos($registrosPorPagina)
     {
         return $this->grupo
-            ->with(['curso', 'unidad', 'instructor', 'estatus'])
+            ->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])
             ->orderBy('id', 'desc')
             ->paginate($registrosPorPagina);
     }
@@ -29,7 +29,7 @@ class GrupoRepository implements GrupoRepositoryInterface
     {
         return $this->grupo
             ->where('id_unidad', auth()->user()->unidad->id)
-            ->with(['curso', 'unidad', 'instructor', 'estatus'])
+            ->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])
             ->orderBy('id', 'desc')
             ->paginate($registrosPorPagina);
     }
@@ -53,21 +53,23 @@ class GrupoRepository implements GrupoRepositoryInterface
                         $unidadQuery->where('unidad', 'LIKE', "%{$busqueda}%");
                     })
 
-                    // Búsqueda por instructor (nombre solo, concatenado normal y concatenado inverso)
-                    ->orWhereHas('instructor', function ($instructorQuery) use ($busqueda) {
-                        $instructorQuery->where('nombre', 'LIKE', "%{$busqueda}%")
-                            ->orWhere(DB::raw("CONCAT(nombre, ' ', apellidoPaterno, ' ', apellidoMaterno)"), 'LIKE', "%{$busqueda}%")
-                            ->orWhere(DB::raw("CONCAT(apellidoPaterno, ' ', apellidoMaterno, ' ', nombre)"), 'LIKE', "%{$busqueda}%");
-                    })
+                    // ! Búsqueda por instructor (nombre solo, concatenado normal y concatenado inverso) IMPLEMENTAR CUANDO SE TENGA LA TABLA COMPLETA
+                    // ->orWhereHas('instructor', function ($instructorQuery) use ($busqueda) {
+                    //     $instructorQuery->where('nombre', 'LIKE', "%{$busqueda}%")
+                    //         ->orWhere(DB::raw("CONCAT(nombre, ' ', apellidoPaterno, ' ', apellidoMaterno)"), 'LIKE', "%{$busqueda}%")
+                    //         ->orWhere(DB::raw("CONCAT(apellidoPaterno, ' ', apellidoMaterno, ' ', nombre)"), 'LIKE', "%{$busqueda}%");
+                    // })
 
-                    // Búsqueda por estatus
+                    // Búsqueda por estatus (sólo estatus actual)
                     ->orWhereHas('estatus', function ($estatusQuery) use ($busqueda) {
-                        $estatusQuery->where('estatus', 'LIKE', "%{$busqueda}%");
+                        $estatusQuery
+                            ->where('estatus', 'LIKE', "%{$busqueda}%")
+                            ->where('tbl_grupo_estatus.es_ultimo_estatus', true);
                     });
             });
         }
 
-        return $query->with(['curso', 'unidad', 'instructor', 'estatus'])
+        return $query->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])
             ->orderBy('id', 'desc')
             ->paginate($registrosPorPagina);
     }
@@ -99,14 +101,16 @@ class GrupoRepository implements GrupoRepositoryInterface
                             ->orWhere(DB::raw("CONCAT(apellidoPaterno, ' ', apellidoMaterno, ' ', nombre)"), 'LIKE', "%{$busqueda}%");
                     })
 
-                    // Búsqueda por estatus
+                    // Búsqueda por estatus (sólo estatus actual)
                     ->orWhereHas('estatus', function ($estatusQuery) use ($busqueda) {
-                        $estatusQuery->where('estatus', 'LIKE', "%{$busqueda}%");
+                        $estatusQuery
+                            ->where('estatus', 'LIKE', "%{$busqueda}%")
+                            ->where('tbl_grupo_estatus.es_ultimo_estatus', true);
                     });
             });
         }
 
-        return $query->with(['curso', 'unidad', 'instructor', 'estatus'])
+        return $query->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])
             ->orderBy('id', 'desc')
             ->paginate($registrosPorPagina);
     }
@@ -127,7 +131,7 @@ class GrupoRepository implements GrupoRepositoryInterface
 
     public function obtenerPorId($id)
     {
-        return $this->grupo->with(['curso', 'unidad', 'instructor', 'estatus'])->find($id);
+        return $this->grupo->with(['curso', 'unidad', 'instructor', 'estatus', 'exoneracion'])->find($id);
     }
 
     public function actualizarEstatus($grupoId, $nombreEstatus)
@@ -172,5 +176,29 @@ class GrupoRepository implements GrupoRepositoryInterface
             Log::error('Error al actualizar el estatus del grupo: ' . $e->getMessage());
             throw new \Exception('Error al actualizar el estatus del grupo: ' . $e->getMessage());
         }
+    }
+
+    public function obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad)
+    {
+        $vista_db = 'vista_cursos';
+        $query = DB::table($vista_db)
+            ->where('id_tipo_curso', $id_imparticion)
+            ->where('id_modalidad_curso', $id_modalidad)
+            ->where('id_categoria_formacion', $id_servicio);
+
+        // unidades_necesitan es un arreglo JSON de IDs de unidad, debemos verificar que contenga la unidad solicitada
+        // Intentamos como número y como cadena para ser resilientes ante tipos en el JSON
+        $idUnidadInt = is_numeric($id_unidad) ? (int) $id_unidad : $id_unidad;
+        $query->where(function ($q) use ($idUnidadInt, $id_unidad) {
+            $q->whereJsonContains('unidades_necesitan', $idUnidadInt);
+            // En caso de que estén guardados como strings en el JSON
+            if ((string)$idUnidadInt !== (string)$id_unidad) {
+                $q->orWhereJsonContains('unidades_necesitan', (string) $id_unidad);
+            } else {
+                $q->orWhereJsonContains('unidades_necesitan', (string) $idUnidadInt);
+            }
+        });
+
+        return $query->get();
     }
 }

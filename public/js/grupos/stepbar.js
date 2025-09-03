@@ -38,18 +38,22 @@
                 siguienteIndex = i; break;
             }
         }
-        const todasCompletadas = ORDEN.every(s => estadosCaptura[s] && estadosCaptura[s].estado);
 
-    navItems.forEach((item, i) => {
+        // Reset visual de todos los items (móvil y lateral)
+        navItems.forEach((item) => {
             item.classList.remove('completed', 'current', 'disabled', 'active', 'actual');
             const circle = item.querySelector('.step-circle');
             if (circle) circle.removeAttribute('data-status');
         });
 
-        navItems.forEach((item, i) => {
-            const sec = ORDEN[i];
+    // Aplicar estado por cada item según su data-step
+        navItems.forEach((item) => {
+            const sec = item.getAttribute('data-step');
+            if (!sec) return;
+            const idx = ORDEN.indexOf(sec);
             const circle = item.querySelector('.step-circle');
-            const completada = !!(estadosCaptura[sec] && estadosCaptura[sec].estado);
+            const completada = idx > -1 && !!(estadosCaptura[sec] && estadosCaptura[sec].estado);
+
             // Caso: selección manual prevalece (sin importar estado)
             if (pasoSeleccionado && pasoSeleccionado === sec) {
                 item.classList.add('active', 'actual');
@@ -57,11 +61,12 @@
                 item.style.pointerEvents='auto'; item.style.opacity='1';
                 return; // saltar resto
             }
+
             if (completada) {
                 item.classList.add('completed');
                 if (circle) circle.setAttribute('data-status', 'terminado');
                 item.style.pointerEvents = 'auto'; item.style.opacity = '1';
-            } else if (i === siguienteIndex) {
+            } else if (idx === siguienteIndex) {
                 // Es la primera pendiente
                 if (!pasoSeleccionado) {
                     // Caso normal: se muestra como actual
@@ -80,6 +85,13 @@
                 item.style.pointerEvents = 'none'; item.style.opacity = '0.5';
             }
         });
+
+        // Si no hay ningún activo explícito, marcar el primero visible como activo para el centrado móvil
+        const anyActive = document.querySelector('.step-progress-nav li.active');
+        if (!anyActive) {
+            const first = document.querySelector('.step-progress-nav li');
+            if (first) first.classList.add('active');
+        }
     }
 
     function ocultarTodas() {
@@ -97,6 +109,19 @@
             el.style.display = ''; // restaura display por defecto
             el.classList.remove('d-none');
         }
+        // En móviles, intentar centrar el círculo activo
+        try {
+            const cont = document.querySelector('#step-progress .step-progress-nav') || document.querySelector('.step-progress-nav');
+            if (cont) {
+                const activo = document.querySelector('.step-progress-nav li.active');
+                if (activo) {
+                    const rect = activo.getBoundingClientRect();
+                    const contRect = cont.getBoundingClientRect();
+                    const scrollLeft = cont.scrollLeft + (rect.left - contRect.left) - (contRect.width / 2) + (rect.width / 2);
+                    cont.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+                }
+            }
+        } catch (e) { /* noop */ }
     }
 
     function mostrarSeccionActual() {
@@ -111,7 +136,7 @@
             }
         }
         mostrarSeccion(idMostrar);
-        console.log('[Stepbar][Init] Sección mostrada:', idMostrar);
+        // console.log('[Stepbar][Init] Sección mostrada:', idMostrar);
     }
 
     function moverSiguienteSeccion(seccionActual) {
@@ -125,12 +150,12 @@
         if (siguiente) {
             ocultarTodas();
             mostrarSeccion(siguiente);
-            console.log('[Stepbar] Cambio automático a sección:', siguiente, '(desde', seccionActual, ')');
+            // console.log('[Stepbar] Cambio automático a sección:', siguiente, '(desde', seccionActual, ')');
         } else {
             // fin
             const notyf = window.Notyf ? new Notyf({ position: { x: 'right', y: 'top' }, duration: 5000 }) : null;
             if (notyf) { notyf.open({ type: 'success', className: 'notyf-success', message: '¡Registro de grupo completado!' }); }
-            console.log('[Stepbar] Registro finalizado. Última sección completada:', seccionActual);
+            // console.log('[Stepbar] Registro finalizado. Última sección completada:', seccionActual);
         }
     }
 
@@ -145,7 +170,7 @@
             ocultarTodas();
             mostrarSeccion(seccion);
             aplicarEstadosPasos();
-            console.log('[Stepbar] Cambio manual a sección:', seccion);
+            // console.log('[Stepbar] Cambio manual a sección:', seccion);
         });
     });
 

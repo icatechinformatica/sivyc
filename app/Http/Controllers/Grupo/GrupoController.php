@@ -8,7 +8,6 @@ use App\Models\curso;
 use App\Models\Grupo;
 use App\Models\Alumno;
 use App\Models\Unidad;
-use App\Models\Estatus;
 use App\Models\localidad;
 use App\Models\Municipio;
 use Illuminate\Http\Request;
@@ -18,21 +17,29 @@ use App\Models\ImparticionCurso;
 use App\Models\organismosPublicos;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Services\Grupo\GrupoEstatusService;
 use App\Services\Grupo\GrupoService;
-use Google\Service\ServiceControl\Auth;
+use App\Services\Grupo\AgendaService;
 use Illuminate\Support\Facades\Validator;
+use App\Services\Unidades\UnidadesService;
+use App\Services\Grupo\GrupoEstatusService;
+use App\Services\Municipio\MunicipioService;
 
 class GrupoController extends Controller
 {
 
     protected $grupoService;
     protected $grupoEstatusService;
+    protected $unidadesService;
+    protected $municipiosService;
+    protected $agendaService;
 
-    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService)
+    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService, UnidadesService $unidadesService, MunicipioService $municipiosService, AgendaService $agendaService)
     {
         $this->grupoService = $grupoService;
         $this->grupoEstatusService = $grupoEstatusService;
+        $this->unidadesService = $unidadesService;
+        $this->municipiosService = $municipiosService;
+        $this->agendaService = $agendaService;
     }
 
     public function index(Request $request)
@@ -40,7 +47,7 @@ class GrupoController extends Controller
 
         try {
             $registrosPorPagina = $request->get('per_page', 15);
-            $busqueda = $request->get('busqueda');
+            $busqueda = $request->get('valor_buscar');
             $grupos = $this->grupoService->obtenerGrupos($registrosPorPagina, $busqueda);
             return view('grupos.index', compact('grupos'));
         } catch (\Exception $e) {
@@ -53,25 +60,23 @@ class GrupoController extends Controller
     {
         $esNuevoRegistro = false;
         $grupo = $this->grupoService->obtenerGrupoPorId($id);
-        
-        $cursos = curso::limit(100)->get(); // ? Variable que se pasa al BLade
 
+        $cursos = curso::limit(100)->get(); // ! Variable que se pasa al BLade
         $tiposImparticion = ImparticionCurso::all(); // ? Variable que se pasa al BLade
-
         $modalidades = ModalidadCurso::all(); // ? Variable que se pasa al BLade
-
-        // $unidades = $this->unidadesService->obtenerUnidadesPorUsuario();
-
-        $unidadUsuario = auth()->user()->unidad;
-        $unidad_disponible = $unidadUsuario?->unidad;
-        $unidades = Unidad::where('ubicacion', $unidad_disponible)->get();
         $servicios = ServicioCurso::all();
         $localidades = localidad::where('clave_municipio', $grupo->id_municipio)->get();
-        $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
+
+        $unidades = $this->unidadesService->obtenerUnidadesPorUsuario();
+        $municipios = $this->municipiosService->municipiosPorUnidadDisponible($grupo);
+
         $ultimoEstatus = $grupo->estatusActual();
         $ultimaSeccion = $grupo->seccion_captura ?? null;
-        $compactObject = compact('tiposImparticion', 'grupo', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion');
+
+        $esEditable = $ultimoEstatus->estatus == 'EN CAPTURA' ? true : false;
+
+        $compactObject = compact('grupo', 'tiposImparticion', 'modalidades',  'cursos',  'unidades',  'municipios',  'servicios',  'localidades',  'organismos_publicos',  'esNuevoRegistro',  'ultimoEstatus', 'ultimaSeccion', 'esEditable');
 
         if (!empty($curp)) {
             # si no está vacio el grupo procedemos a cargarlo en el compact
@@ -87,7 +92,8 @@ class GrupoController extends Controller
         if ($request->id) {
             return redirect()->route('grupos.editar', $request->id);
         }
-        $cursos = curso::limit(100)->get();
+        // $cursos = $this->grupoService->obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
+        $cursos = collect(); // ? Se inicia una coleccion vacia para que seleccione los campos dinamicamente
         $tiposImparticion = ImparticionCurso::all();
         $modalidades = ModalidadCurso::all();
         $unidadUsuario = auth()->user()->unidad;
@@ -95,12 +101,14 @@ class GrupoController extends Controller
         $unidades = Unidad::where('ubicacion', $unidad_disponible)->get();
         $servicios = ServicioCurso::all();
 
-        $municipios = Municipio::where('id_estado', 7)->get(); // CHIAPAS FIJO
-        $localidades = []; // Inicialmente vacío
+        $municipios = Municipio::where('id_estado', 7)->get(); // ? CHIAPAS FIJO
+        $localidades = [];
         $esNuevoRegistro = true;
         $organismos_publicos = organismosPublicos::orderBy('organismo', 'asc')->get();
-        $ultimaSeccion = null; // No hay avance todavía
-        return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro', 'ultimaSeccion'));
+        $ultimaSeccion = null;
+        $esEditable = true;
+
+        return view('grupos.create', compact('tiposImparticion', 'modalidades', 'cursos', 'unidades', 'municipios', 'servicios', 'localidades', 'organismos_publicos', 'esNuevoRegistro', 'ultimaSeccion', 'esEditable'));
     }
 
     public function getLocalidades($municipioId)
@@ -111,6 +119,43 @@ class GrupoController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al obtener localidades: ' . $e->getMessage());
             return response()->json(['error' => 'Error al obtener localidades'], 500);
+        }
+    }
+
+    public function getCursosDisponibles(Request $request)
+    {
+        try {
+            // Soportar IDs nuevos y antiguos desde el body/query
+            $id_imparticion = $request->input('id_imparticion', $request->input('id_tipo_curso'));
+            $id_modalidad   = $request->input('id_modalidad', $request->input('id_modalidad_curso'));
+            $id_servicio    = $request->input('id_servicio', $request->input('id_categoria_formacion'));
+            $id_unidad      = $request->input('id_unidad');
+
+            if (is_null($id_imparticion) || is_null($id_modalidad) || is_null($id_servicio) || is_null($id_unidad)) {
+                return response()->json(['error' => 'Esperando los demás datos'], 400);
+            }
+
+            $cursos = $this->grupoService->obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
+            return response()->json($cursos);
+
+        } catch (\Exception $e) {
+            Log::error('Error al obtener cursos: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al obtener cursos'], 500);
+        }
+    }
+
+    /**
+     * Devuelve los municipios disponibles para la unidad seleccionada (por nombre de unidad)
+     */
+    public function getMunicipiosByUnidad(Request $request)
+    {
+        try {
+            $nombreUnidad = $request->query('unidad');
+            $municipios = $this->municipiosService->municipiosPorNombreUnidad($nombreUnidad);
+            return response()->json($municipios);
+        } catch (\Exception $e) {
+            Log::error('Error al obtener municipios por unidad: ' . $e->getMessage());
+            return response()->json(['error' => 'Error al obtener municipios'], 500);
         }
     }
 
@@ -165,39 +210,25 @@ class GrupoController extends Controller
         }
     }
 
-    public function asignarAlumnos(Request $request)
+    public function verListadoAlumnos(Request $request, Grupo $grupo)
     {
-        // Vista simple opcional si es GET
-        if (!$request->isMethod('post')) {
-            return view('grupos.asignar_alumnos');
-        }
+        $numAlumnos = $grupo->alumnos->count();
+        $costoCurso = optional($grupo->curso)->costo;
+        $perShare = ($numAlumnos > 0 && !is_null($costoCurso)) ? ($costoCurso / $numAlumnos) : null;
+        $todosSinCosto = $grupo->alumnos->every(function ($a) {
+            return is_null($a->pivot->costo);
+        });
+        return view('grupos.asignar_alumnos', ['grupo' => $grupo, 'numAlumnos' => $numAlumnos, 'costoCurso' => $costoCurso, 'perShare' => $perShare, 'todosSinCosto' => $todosSinCosto]);
+    }
 
-        // POST: asignar por CURP
-        $validator = Validator::make($request->all(), [
-            'grupo_id' => 'required|exists:tbl_grupos,id',
-            'curp' => 'required|string|size:18',
-        ], [
-            'curp.size' => 'La CURP debe tener 18 caracteres.'
-        ]);
-
-        if ($validator->fails()) {
-            $gid = $request->input('grupo_id');
-            return redirect()->route('grupos.editar', $gid)
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $grupoId = (int) $request->input('grupo_id');
+    public function asignarAlumnos(Request $request, Grupo $grupo)
+    {
+        $grupoId = $grupo->id;
         $curp = strtoupper(trim($request->input('curp')));
 
-        $grupo = Grupo::find($grupoId);
-        if (!$grupo) {
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('error', 'Grupo no encontrado.');
-        }
+        // * Verificar la existencia del grupo (ya viene inyectado)
 
-        // verifica la existencia del alumno por CURP
-
+        // * Verifica la existencia del alumno por CURP 
         $alumno = Alumno::where('curp', $curp)->first();
         if (!$alumno) {
             return redirect()->route('grupos.editar', $grupoId)
@@ -207,47 +238,91 @@ class GrupoController extends Controller
                 ->with('grupo_id', $grupoId);
         }
 
-        // Evitar duplicados
+        // * Verificar que el registro del alumno este completo
+
+        if (!$alumno->registroCompleto()) {
+            return redirect()->route('grupos.editar', $grupoId)->with('error', 'El registro del alumno no está completo.');
+        }
+
+        // * Verificar que el alumno tenga 15 años a la fecha de inicio del grupo.
+        $fechaInicioGrupo = $grupo->fecha_inicio();
+        $fechaReferencia = $fechaInicioGrupo ? Carbon::parse($fechaInicioGrupo) : Carbon::now();
+        $edadAlumno = Carbon::parse($alumno->fecha_nacimiento)->diffInYears($fechaReferencia);
+
+        if ($edadAlumno < 15) {
+            return redirect()->route('grupos.editar', $grupoId)->with('error', 'El alumno debe tener al menos 15 años para ser asignado a este grupo.');
+        }
+
+        // * Evitar duplicados 
         $existe = $grupo->alumnos()->where('tbl_alumnos.id', $alumno->id)->exists();
         if ($existe) {
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('info', 'El alumno ya está asignado a este grupo.');
+            return redirect()->route('grupos.editar', $grupoId)->with('info', 'El alumno ya está asignado a este grupo.');
         }
 
         try {
-            $grupo->alumnos()->attach($alumno->id);
-            // Actualiza estatus de sección
-            // $this->grupoService->actualizarEstatusGrupo($grupoId, 'alumnos'); // ! PENDIENTE REVISAR
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('success', 'Alumno agregado al grupo.');
+
+            $idsGruposVulnerables = $alumno->gruposVulnerables()->pluck('grupo_vulnerable_id')->toArray();
+
+            $grupo->alumnos()->attach($alumno->id, [
+                'id_ultimo_grado' => $alumno->id_ultimo_grado_estudios,
+                'grupos_vulnerables' => json_encode($idsGruposVulnerables),
+                'medio_entero' => $alumno->medio_entero,
+                'medio_confirmacion' => $alumno->medio_confirmacion,
+            ]);
+
+            // eliminar variable de sesión si existe
+            session()->forget('grupo_id');
+            // return redirect()->route('grupos.editar', $grupoId)->with('success', 'Alumno agregado al grupo.');
+            return redirect()->back()->with('success', 'Alumno agregado al grupo.');
         } catch (\Throwable $e) {
             Log::error('Error asignando alumno al grupo', [
                 'grupo_id' => $grupoId,
                 'alumno_id' => $alumno->id,
                 'error' => $e->getMessage(),
             ]);
-            return redirect()->route('grupos.editar', $grupoId)
-                ->with('error', 'No se pudo agregar el alumno al grupo.');
+            return redirect()->route('grupos.editar', $grupoId)->with('error', 'No se pudo agregar el alumno al grupo.');
+        }
+    }
+
+    /**
+     * Guardar costos de alumnos en el grupo (tabla pivote tbl_alumno_grupo)
+     */
+    public function guardarCostosAlumnos(Request $request, Grupo $grupo)
+    {
+        $request->validate([
+            'costos' => 'array',
+            'costos.*' => 'nullable|numeric|min:0',
+            'cuota_general' => 'nullable|numeric|min:0',
+        ]);
+
+        $costos = $request->input('costos', []);
+        $cuotaGeneral = $request->input('cuota_general');
+
+        try {
+            $this->grupoService->guardarCostosYTipoExoneracion($grupo, $costos, $cuotaGeneral);
+            return redirect()->back()->with('success', 'Costos actualizados.');
+        } catch (\Throwable $e) {
+            Log::error('Error al guardar costos de alumnos: ' . $e->getMessage());
+            return redirect()->route('grupos.editar', $grupo->id)->with('error', 'No se pudieron actualizar los costos.');
         }
     }
 
     /**
      * Eliminar un alumno del grupo
      */
-    public function eliminarAlumno(Grupo $grupo, Alumno $alumno)
+    public function eliminarAlumno(Request $request, $grupo_id)
     {
         try {
+            $grupo = Grupo::findOrFail($grupo_id);
+            $alumno = Alumno::findOrFail($request->input('alumno_id'));
             $grupo->alumnos()->detach($alumno->id);
-            return redirect()->route('grupos.editar', $grupo->id)
-                ->with('success', 'Alumno eliminado del grupo.');
+            return redirect()->back()->with('success', 'Alumno eliminado del grupo.');
         } catch (\Throwable $e) {
             Log::error('Error al eliminar alumno del grupo', [
-                'grupo_id' => $grupo->id,
-                'alumno_id' => $alumno->id,
+                'grupo_id' => $grupo_id,
                 'error' => $e->getMessage(),
             ]);
-            return redirect()->route('grupos.editar', $grupo->id)
-                ->with('error', 'No se pudo eliminar el alumno del grupo.');
+            return redirect()->route('grupos.editar', $grupo_id)->with('error', 'No se pudo eliminar el alumno del grupo.');
         }
     }
 
@@ -257,16 +332,7 @@ class GrupoController extends Controller
     public function getAgenda(Grupo $grupo)
     {
         try {
-            $eventos = $grupo->fechasAgenda()->get()->map(function ($item) {
-                $start = Carbon::parse($item->fecha_inicio . ' ' . $item->hora_inicio);
-                $end = Carbon::parse($item->fecha_fin . ' ' . $item->hora_fin);
-                return [
-                    'id' => $item->id,
-                    'title' => 'Sesión',
-                    'start' => $start->toIso8601String(),
-                    'end' => $end->toIso8601String(),
-                ];
-            });
+            $eventos = $this->agendaService->obtenerEventosFullcalendar($grupo->id);
             return response()->json($eventos);
         } catch (\Exception $e) {
             Log::error('Error al obtener agenda: ' . $e->getMessage());
@@ -281,10 +347,11 @@ class GrupoController extends Controller
     {
         // return response()->json(['message' => 'Hora inicio: ' . $request->input('start') . ' Hora fin: ' . $request->input('end')], 201);
         try {
-            $data = $request->only(['start', 'end']);
+            $data = $request->only(['start', 'end', 'hora_alimentos']);
             $validator = Validator::make($data, [
                 'start' => 'required|date',
                 'end' => 'required|date|after:start',
+                'hora_alimentos' => 'sometimes|boolean',
             ]);
             if ($validator->fails()) {
                 return response()->json(['message' => 'Datos inválidos', 'errors' => $validator->errors()], 422);
@@ -292,29 +359,9 @@ class GrupoController extends Controller
 
             $start = Carbon::parse($data['start']);
             $end = Carbon::parse($data['end']);
+            $horaAlimentos = (bool) ($data['hora_alimentos'] ?? false);
 
-            // Caso: si start y end caen en el mismo día, es un periodo de 1 día.
-            // Si no, se considera un periodo multi-día, y guardaremos un solo registro desde start hasta end.
-
-            // Validar traslape (end exclusivo)
-            $existeTraslape = Agenda::where('id_grupo', $grupo->id)
-                ->where(function ($q) use ($start, $end) {
-                    $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
-                        ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
-                })
-                ->exists();
-
-            if ($existeTraslape) {
-                return response()->json(['message' => 'El horario seleccionado se traslapa con otro existente.'], 422);
-            }
-
-            $agenda = Agenda::create([
-                'id_grupo' => $grupo->id,
-                'fecha_inicio' => $start->toDateString(),
-                'hora_inicio' => $start->format('H:i:s'),
-                'fecha_fin' => $end->toDateString(),
-                'hora_fin' => $end->format('H:i:s'),
-            ]);
+            $agenda = $this->agendaService->crear($grupo->id, $start, $end, $horaAlimentos);
 
             return response()->json([
                 'id' => $agenda->id,
@@ -322,6 +369,8 @@ class GrupoController extends Controller
                 'start' => Carbon::parse($agenda->fecha_inicio . ' ' . $agenda->hora_inicio)->toIso8601String(),
                 'end' => Carbon::parse($agenda->fecha_fin . ' ' . $agenda->hora_fin)->toIso8601String(),
             ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
         } catch (\Exception $e) {
             Log::error('Error al crear evento de agenda: ' . $e->getMessage());
             return response()->json(['message' => 'Error al crear evento'], 500);
@@ -338,39 +387,28 @@ class GrupoController extends Controller
                 return response()->json(['message' => 'No encontrado'], 404);
             }
 
-            $data = $request->only(['start', 'end']);
+            $data = $request->only(['start', 'end', 'hora_alimentos']);
             $validator = Validator::make($data, [
                 'start' => 'required|date',
                 'end' => 'required|date|after:start',
+                'hora_alimentos' => 'sometimes|boolean',
             ]);
+
+
+
             if ($validator->fails()) {
                 return response()->json(['message' => 'Datos inválidos', 'errors' => $validator->errors()], 422);
             }
 
             $start = Carbon::parse($data['start']);
             $end = Carbon::parse($data['end']);
+            $horaAlimentos = (bool) ($data['hora_alimentos'] ?? false);
 
-            // Validar traslape con otros eventos, excluyendo el actual
-            $existeTraslape = Agenda::where('id_grupo', $grupo->id)
-                ->where('id', '<>', $agenda->id)
-                ->where(function ($q) use ($start, $end) {
-                    $q->whereRaw("CONCAT(fecha_inicio, ' ', hora_inicio) < ?", [$end->format('Y-m-d H:i:s')])
-                        ->whereRaw("CONCAT(fecha_fin, ' ', hora_fin) > ?", [$start->format('Y-m-d H:i:s')]);
-                })
-                ->exists();
-
-            if ($existeTraslape) {
-                return response()->json(['message' => 'El horario seleccionado se traslapa con otro existente.'], 422);
-            }
-
-            $agenda->update([
-                'fecha_inicio' => $start->toDateString(),
-                'hora_inicio' => $start->format('H:i:s'),
-                'fecha_fin' => $end->toDateString(),
-                'hora_fin' => $end->format('H:i:s'),
-            ]);
+            $this->agendaService->actualizar($agenda->id, $grupo->id, $start, $end, $horaAlimentos);
 
             return response()->json(['message' => 'Actualizado']);
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
         } catch (\Exception $e) {
             Log::error('Error al actualizar evento de agenda: ' . $e->getMessage());
             return response()->json(['message' => 'Error al actualizar evento'], 500);
@@ -386,7 +424,7 @@ class GrupoController extends Controller
             if ($agenda->id_grupo !== $grupo->id) {
                 return response()->json(['message' => 'No encontrado'], 404);
             }
-            $agenda->delete();
+            $this->agendaService->eliminar($agenda->id);
             return response()->json(['message' => 'Eliminado']);
         } catch (\Exception $e) {
             Log::error('Error al eliminar evento de agenda: ' . $e->getMessage());
@@ -400,6 +438,7 @@ class GrupoController extends Controller
 
             $grupo = Grupo::find($request->grupo_id);
             $nuevo_estatus_id = $request->estatus_id;
+            $observacion = $request->observacion;
 
             if (!$grupo) {
                 return response()->json(['message' => 'Grupo no encontrado'], 404);
@@ -407,7 +446,7 @@ class GrupoController extends Controller
 
             // Retornar la respuesta correspondiente del servicio (incluye códigos 200/400/404)
             $seccion = $request->input('seccion');
-            return $this->grupoEstatusService->cambiarEstatus($grupo, (int) $nuevo_estatus_id, $seccion);
+            return $this->grupoEstatusService->cambiarEstatus($grupo, (int) $nuevo_estatus_id, $seccion, $observacion);
         } catch (\Exception $e) {
             Log::error('Error al turnar grupo: ' . $e->getMessage());
             return response()->json(['message' => 'Error al turnar grupo'], 500);

@@ -1,3 +1,133 @@
+// Utilidades para obtener valores soportando IDs nuevos y antiguos
+function firstNonEmpty(selectorList) {
+    for (const sel of selectorList) {
+        const $el = $(sel);
+        if ($el.length) {
+            const val = $el.val();
+            if (val !== undefined && val !== null && String(val).trim() !== '') {
+                return val;
+            }
+        }
+    }
+    return null;
+}
+
+function getSelectedUnitsArray() {
+    // IDs nuevos: #unidades_necesitan (posible multiselect)
+    const $multi = $('#unidades_necesitan');
+    if ($multi.length) {
+        const vals = $multi.val();
+        if (Array.isArray(vals) && vals.length > 0) {
+            return vals.filter(v => v !== '' && v !== null);
+        }
+        if (typeof vals === 'string' && vals) {
+            return [vals];
+        }
+    }
+    // ID antiguo: #unidad_accion_movil (single)
+    const single = firstNonEmpty(['#unidad_accion_movil']);
+    return single ? [single] : [];
+}
+
+function getFiltroParams() {
+    // Mapear IDs nuevos a los parámetros esperados por el backend
+    // id_imparticion <= id_tipo_curso (nuevo) | #imparticion (antiguo)
+    const id_imparticion = firstNonEmpty(['#id_tipo_curso', '#imparticion']);
+    // id_modalidad <= id_modalidad_curso (nuevo) | #modalidad (antiguo)
+    const id_modalidad = firstNonEmpty(['#id_modalidad_curso', '#modalidad']);
+    // id_servicio <= id_categoria_formacion (nuevo) | #servicio (antiguo)
+    const id_servicio = firstNonEmpty(['#id_categoria_formacion', '#servicio']);
+    // id_unidad|es <= #unidades_necesitan[] (nuevo, puede ser arreglo) | #unidad_accion_movil (antiguo)
+    const unidades = getSelectedUnitsArray();
+
+    return { id_imparticion, id_modalidad, id_servicio, unidades };
+}
+
+function setCursosLoading($select, texto = 'Cargando cursos...') {
+    $select.prop('disabled', true).html(`<option value="">${texto}</option>`);
+}
+
+function resetCursos($select, texto = 'SELECCIONA CURSO') {
+    $select.prop('disabled', false).html(`<option value="">${texto}</option>`);
+}
+
+function fillCursos($select, cursos, selectedValue) {
+    resetCursos($select);
+    cursos.forEach(c => {
+        const value = c.id_curso;
+        const label = c.curso;
+        const selected = selectedValue && String(selectedValue) === String(value) ? ' selected' : '';
+        $select.append(`<option value="${value}"${selected}>${label}</option>`);
+    });
+}
+
+// Cargar cursos dinámicamente a partir de los filtros
+function cargarCursosDesdeFiltros() {
+    const $cursoSelect = $('#curso').length ? $('#curso') : $('#id_curso');
+    if (!$cursoSelect.length) return; // No hay select de cursos en la vista
+
+    const { id_imparticion, id_modalidad, id_servicio, unidades } = getFiltroParams();
+
+    // Validaciones mínimas
+    if (!id_imparticion || !id_modalidad || !id_servicio || !Array.isArray(unidades) || unidades.length === 0) {
+        resetCursos($cursoSelect, 'Seleccione filtros');
+        return;
+    }
+
+    setCursosLoading($cursoSelect);
+
+    // Realizar una petición por unidad y unir resultados sin duplicados
+    const requests = unidades.map((id_unidad) => $.ajax({
+        url: '/grupos/cursos/disponibles',
+        method: 'POST',
+        dataType: 'json',
+        headers: { 'X-CSRF-TOKEN': (window.registroBladeVars && window.registroBladeVars.csrfToken) ? window.registroBladeVars.csrfToken : $('meta[name="csrf-token"]').attr('content') },
+        data: { id_imparticion, id_modalidad, id_servicio, id_unidad }
+    }));
+
+    $.when.apply($, requests)
+        .done(function () {
+            // Normalizar arreglo de respuestas para 1 o muchas unidades
+            const responses = (requests.length === 1)
+                ? [arguments[0]] // [data, textStatus, jqXHR]
+                : Array.from(arguments).map(a => a[0]);
+
+            // Unir y deduplicar por id
+            const mapa = new Map();
+            responses.forEach(data => {
+                const lista = Array.isArray(data) ? data : (data && data.data ? data.data : []);
+                lista.forEach(c => {
+                    const id = c.id ?? c.id_curso ?? c.value;
+                    if (id !== undefined && !mapa.has(id)) mapa.set(id, c);
+                });
+            });
+
+            const cursos = Array.from(mapa.values());
+            if (cursos.length === 0) {
+                resetCursos($cursoSelect, 'Sin cursos disponibles');
+                return;
+            }
+
+            // Mantener selección previa si existía
+            const previo = $cursoSelect.val();
+            fillCursos($cursoSelect, cursos, previo);
+            $cursoSelect.prop('disabled', false);
+        })
+        .fail(function (xhr) {
+            console.error('Error al obtener cursos:', xhr?.responseText || xhr?.statusText || xhr);
+            resetCursos($cursoSelect, 'Error al cargar');
+        });
+}
+
+// Enlazar cambios en los filtros (IDs nuevos) y retrocompatibilidad (IDs antiguos)
+$(document).on('change', '#id_tipo_curso, #id_modalidad_curso, #id_categoria_formacion, #unidades_necesitan', cargarCursosDesdeFiltros);
+$(document).on('change', '#imparticion, #modalidad, #servicio, #unidad_accion_movil', cargarCursosDesdeFiltros);
+
+// Auto-carga inicial si ya hay valores preseleccionados
+$(document).ready(function () {
+    try { cargarCursosDesdeFiltros(); } catch (e) { /* noop */ }
+});
+
 // ! Seccion Informacion general
 $("#guardar_info_general").on('click', function (e) {
     e.preventDefault();
@@ -7,11 +137,19 @@ $("#guardar_info_general").on('click', function (e) {
             formData.append('id_grupo', $('#id_grupo').val());
         }
         formData.append('seccion', 'info_general');
-        formData.append('id_imparticion', $('#imparticion').val());
-        formData.append('id_modalidad', $('#modalidad').val());
-        formData.append('id_unidad', $('#unidad_accion_movil').val());
-        formData.append('id_servicio', $('#servicio').val());
-        formData.append('id_curso', $('#curso').val());
+        // Leer desde IDs nuevos y mantener compatibilidad
+        const id_imparticion = firstNonEmpty(['#id_tipo_curso', '#imparticion']);
+        const id_modalidad = firstNonEmpty(['#id_modalidad_curso', '#modalidad']);
+        const id_servicio = firstNonEmpty(['#id_categoria_formacion', '#servicio']);
+        const unidadesSel = getSelectedUnitsArray();
+        const id_unidad = unidadesSel.length ? unidadesSel[0] : '';
+        const id_curso = firstNonEmpty(['#curso', '#id_curso']);
+
+        formData.append('id_imparticion', id_imparticion ?? '');
+        formData.append('id_modalidad', id_modalidad ?? '');
+        formData.append('id_unidad', id_unidad ?? '');
+        formData.append('id_servicio', id_servicio ?? '');
+        formData.append('id_curso', id_curso ?? '');
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
     }
@@ -67,8 +205,9 @@ $("#guardar_opciones").on('click', function (e) {
         formData.append('convenio_especifico', $('#convenio_especifico').val());
         formData.append('fecha_convenio', $('#fecha_convenio').val());
         formData.append('_token', registroBladeVars.csrfToken);
-        formData.append('id_imparticion', $('#imparticion').val());
-        if ($('#imparticion').val() == 2) {
+    const id_imparticion_opt = firstNonEmpty(['#id_tipo_curso', '#imparticion']);
+    formData.append('id_imparticion', id_imparticion_opt);
+    if (String(id_imparticion_opt) == '2') {
             formData.append('medio_virtual', $('#medio_virtual').val());
             formData.append('enlace_virtual', $('#enlace_virtual').val());
         }
@@ -133,6 +272,44 @@ $('#municipio-select').on('change', function () {
 // ! Inicializar localidades al cargar la página si hay municipio preseleccionado
 const municipioPreseleccionado = $('#municipio-select').val();
 const localidadPreseleccionada = $('#localidad-select').val();
+
+// ! Filtro dinámico de municipios por unidad (cuando cambia Unidad/Acción móvil)
+$('#unidad_accion_movil').on('change', function () {
+    const unidadNombre = $(this).find('option:selected').text().trim();
+    const municipioSelect = $('#municipio-select');
+    const localidadSelect = $('#localidad-select');
+
+    // Resetear localidad
+    localidadSelect.html('<option value="">SELECCIONAR MUNICIPIO PRIMERO</option>').prop('disabled', true);
+
+    if (!unidadNombre) {
+        municipioSelect.html('<option value="">SELECCIONAR</option>');
+        return;
+    }
+
+    municipioSelect.prop('disabled', true).html('<option value="">Cargando municipios...</option>');
+    $.ajax({
+        url: '/grupos/municipios',
+        method: 'GET',
+        data: { unidad: unidadNombre },
+        dataType: 'json',
+        success: function (data) {
+            municipioSelect.html('<option value="">SELECCIONAR</option>');
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(function (mun) {
+                    municipioSelect.append('<option value="' + mun.id + '">' + (mun.muni || mun.nombre || mun.descripcion || ('Municipio #' + mun.id)) + '</option>');
+                });
+            } else {
+                municipioSelect.html('<option value="">Sin municipios</option>');
+            }
+            municipioSelect.prop('disabled', false);
+        },
+        error: function (xhr) {
+            console.error('Error obteniendo municipios:', xhr.responseText || xhr.statusText);
+            municipioSelect.html('<option value="">Error al cargar</option>').prop('disabled', false);
+        }
+    });
+});
 
 // ! Relleno automático de representante al seleccionar organismo público
 $('#organismo_publico').on('change', function () {

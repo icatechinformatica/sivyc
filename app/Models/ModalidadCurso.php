@@ -9,7 +9,7 @@ class ModalidadCurso extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_aux_modalidades';
+    protected $table = 'tbl_aux_modalidad_curso';
 
     protected $fillable = ['modalidad'];
 

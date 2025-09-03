@@ -5,16 +5,43 @@
 @push('content_css_sign')
 <link rel="stylesheet" href="{{asset('css/global.css') }}" />
 <link rel="stylesheet" href="{{ asset('css/grupos/agenda_fullcalendar.css') }}" />
+<style>
+     /* ? Icono de "Observación Pendiente" */
+    .obs-pending {
+        color: #dc3545;
+        font-size: 1.25rem;
+        vertical-align: middle;
+        cursor: pointer;
+        animation: obs-pulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes obs-pulse {
+        0% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(220,53,69,.3)); }
+        50% { transform: scale(1.15); filter: drop-shadow(0 0 .5rem rgba(220,53,69,.65)); }
+        100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(220,53,69,.3)); }
+    }
+    .obs-pending:focus { outline: 2px dashed #dc3545; outline-offset: 2px; }
+    .obs-icon-wrapper { display: inline-flex; align-items: center; gap: .25rem; }
+    .obs-badge { font-size: .7rem; background-color: #dc3545; }
+    /* Contenedor de estado dentro del td para armonizar alineación/espaciado */
+    .status-cell { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; flex-wrap: nowrap; min-height: 1.5rem; }
+    .status-badge { display: inline-flex; align-items: center; line-height: 1; }
+    @media (prefers-reduced-motion: reduce) {
+        .obs-pending { animation: none; }
+    }
+</style>
 @endpush
 
 @section('content')
 <div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center">
     <div class="col-md-8">
-        <span>Registro de grupos | Unidad: {{ auth()->user()->unidad->unidad }}</span>
+        <span>Registro de grupos {{ !is_null(auth()->user()->unidad) ? "| Unidad: " . auth()->user()->unidad->unidad : '' }}</span>
     </div>
     <div class="col-md-4 d-flex justify-content-end">
         {{-- * INPUT NUEVO GRUPO --}}
-        <a href="{{ route('grupos.crear') }}" class="btn btn-success">Nuevo Grupo</a>
+        @can('crear.nuevo.grupo)')
+            <a href="{{ route('grupos.crear') }}" class="btn btn-success">Nuevo Grupo</a>
+        @endcan
     </div>
 </div>
 <div class="card card-body">
@@ -61,30 +88,38 @@
             </thead>
             <tbody>
                 @forelse($grupos as $grupo)
-                @if(auth()->user()->can('ver-cursos-todos') || auth()->user()->id == $grupo->id_usuario_captura)
-                <tr>
-                    <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
-                    <td>{{ $grupo->curso->nombre_curso }}</td>
-                    <td>{{ $grupo->unidad->unidad }}</td>
-                    <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
-                    <td class="text-center">
-                        <span class="badge {{ $grupo->estatus->last()->estatus == 'EN CAPTURA' ? 'bg-warning' : 'bg-success' }}">{{ $grupo->estatus->last()->estatus ?? 'SIN ASIGNAR' }}</span>
-                    </td>
-                    <td class="text-center">
-                        @foreach ($grupo->estatusAdyacentes() as $estatus)
-                            @if($estatus->id != $grupo->estatusActual()->id)
-                                <button class="btn btn-sm btn-info turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}"> {{ $estatus->estatus }}</button>
+                    @if(auth()->user()->can('ver-cursos-todos') || auth()->user()->id == $grupo->id_usuario_captura)
+                    <tr>
+                        <td>{{ $grupo->clave_grupo ?? 'SIN ASIGNAR' }}</td>
+                        <td>{{ $grupo->curso->nombre_curso }}</td>
+                        <td>{{ $grupo->unidad->unidad }}</td>
+                        <td>{{ $grupo->instructor->nombre ?? 'SIN ASIGNAR' }}</td>
+                        <td class="text-center">
+                            <span class="status-cell">
+                            <span class="badge status-badge" style="background-color: {{ $grupo->estatusActual()->color ?? '#6c757d' }}" data-estatus-actual-id="{{ $grupo->estatusActual()->id }}">{{ $grupo->estatusActual()->estatus ?? 'SIN ASIGNAR' }}</span>
+                            @php $obsTexto = trim($grupo->estatusActual()->pivot->observaciones ?? ''); @endphp
+                            @if(!empty($obsTexto))
+                                <span class="obs-icon-wrapper">
+                                    <i class="bi bi-exclamation-circle-fill obs-pending obs-icon" title="Observación pendiente: haz clic para ver" role="button" tabindex="0" aria-label="Ver observación pendiente" data-observacion="{{ $obsTexto }}"></i>
+                                </span>
                             @endif
-                        @endforeach
-                    </td>
-                    <td class="text-center">
-                        <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded"
-                            title="Editar">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                    </td>
-                </tr>
-                @endif
+                            </span>
+                        </td>
+                        <td class="text-center">
+                            @foreach ($grupo->estatusAdyacentes() as $estatus)
+                                @if($estatus->id != $grupo->estatusActual()->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
+                                    <button class="btn btn-sm turnar-btn" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}" style="background-color: {{ $estatus->color ?? '#007bff' }}; color: #fff;"> {{ $estatus->estatus }}</button>
+                                @endif
+                            @endforeach
+                        </td>
+                        <td class="text-center">
+                            <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded"
+                                title="Editar">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    @endif
                 @empty
                 <tr>
                     <td colspan="5" class="text-center">
@@ -100,11 +135,13 @@
         </table>
     </div>
 
-    <!-- Enlaces de paginación -->
+    {{-- Enlaces de paginación  --}}
     <div class="d-flex justify-content-center">
         {{ $grupos->appends(request()->query())->links('pagination::bootstrap-4') }}
     </div>
 </div>
+@include('grupos.observacionTurnado')
+@include('grupos.observacionVer')
 @endsection
 
 @push('script_sign')

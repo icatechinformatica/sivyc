@@ -190,6 +190,10 @@ return [
         App\Providers\PreinscripcionServiceProvider::class,
         App\Providers\AlumnoServiceProvider::class,
         App\Providers\EstatusServiceProvider::class,
+        App\Providers\UnidadServiceProvider::class,
+        App\Providers\MunicipioServiceProvider::class,
+        App\Providers\AgendaServiceProvider::class,
+
     ],
 
     /*
@@ -241,7 +245,7 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        // 'PDF' => Barryvdh\DomPDF\Facade::class,
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
     ],
 

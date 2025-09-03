@@ -1,6 +1,7 @@
 
 ; (function () {
     function getConfig() { return window.GrupoAgenda || {}; }
+    function esEditable() { try { return !!getConfig().editable; } catch (_) { return true; } }
     function getToken() { return (window.registroBladeVars && window.registroBladeVars.csrfToken) || document.querySelector('meta[name="csrf-token"]')?.content; }
 
     let calendar = null;
@@ -17,6 +18,51 @@
         const hh = String(h).padStart(2, '0');
         const mm = String(m).padStart(2, '0');
         return `${hh}:${mm}`;
+    }
+
+    // Horas máximas del curso como número decimal (p.ej. 40)
+    function obtenerMaxHoras() {
+        let maxHoras = parseFloat(getConfig().maxHoras);
+        if (!isFinite(maxHoras)) {
+            const $horasMaximas = document.getElementById('fc-horas-maximas');
+            if ($horasMaximas && $horasMaximas.textContent) {
+                maxHoras = horaADecimal(($horasMaximas.textContent || '').trim());
+            }
+        }
+        return isFinite(maxHoras) ? maxHoras : NaN;
+    }
+
+    // Cálculo de minutos de un evento múltiples días según franja diaria [start.hora, end.hora]
+    function minutosEvento(evt) {
+        const s = evt.start;
+        const e = evt.end || evt.start;
+        if (!(s instanceof Date) || !(e instanceof Date)) return 0;
+        const MS_PER_DAY = 24 * 60 * 60 * 1000;
+        const ds = new Date(s.getFullYear(), s.getMonth(), s.getDate());
+        const de = new Date(e.getFullYear(), e.getMonth(), e.getDate());
+        const dias = Math.max(1, Math.round((de - ds) / MS_PER_DAY) + 1);
+        const minsDia = Math.max(0, (e.getHours() * 60 + e.getMinutes()) - (s.getHours() * 60 + s.getMinutes()));
+        return dias * minsDia;
+    }
+
+    function minutosTotalesAgenda(cal) {
+        const eventos = (cal?.getEvents?.() || []).filter(function (e) { return !esConector(e); });
+        return eventos.reduce((acc, evt) => acc + minutosEvento(evt), 0);
+    }
+
+    // Minutos que aportaría una selección al aplicar horario HH:MM por día, desde start hasta endExclusive
+    function minutosDeSeleccion(startDate, endDateExclusive, horaInicio, horaFin) {
+        try {
+            const lastDay = new Date(endDateExclusive);
+            lastDay.setDate(lastDay.getDate() - 1);
+            if (lastDay < startDate) return 0;
+            const minsDia = Math.max(0, (parseInt(horaFin.slice(0,2))*60 + parseInt(horaFin.slice(3,5))) - (parseInt(horaInicio.slice(0,2))*60 + parseInt(horaInicio.slice(3,5))));
+            const MS_PER_DAY = 24 * 60 * 60 * 1000;
+            const ds = new Date(startDate.getFullYear(), startDate.getMonth(), startDate.getDate());
+            const de = new Date(lastDay.getFullYear(), lastDay.getMonth(), lastDay.getDate());
+            const dias = Math.max(1, Math.round((de - ds) / MS_PER_DAY) + 1);
+            return minsDia * dias;
+        } catch (_) { return 0; }
     }
 
     function horaADecimal(hhmm) {
@@ -212,9 +258,9 @@
                 firstDay: 0, // domingo
                 height: 'auto',
                 buttonText: { today: 'Hoy' },
-                selectable: true,
+                selectable: esEditable(),
                 selectMirror: true,
-                editable: true,
+                editable: esEditable(),
                 eventOverlap: true,
                 // Mostrar eventos como bloques en mes para poder colorear fondo
                 views: {
@@ -239,6 +285,7 @@
                 },
                 // Capturar selección de días; no crear evento inmediatamente
                 select: function (arg) {
+                    if (!esEditable()) { calendar.unselect(); return; }
                     if (!grupoId) { calendar.unselect(); return; }
                     // Guardar tanto los Date nativos como sus strings
                     selectedRange = { start: arg.start, end: arg.end, startStr: arg.startStr, endStr: arg.endStr };
@@ -274,14 +321,50 @@
                             }
                         }
                         if (btnDel) {
-                            btnDel.disabled = !evt.id;
-                            btnDel.dataset.agendaId = evt.id || '';
+                            // Mantener deshabilitado en modo solo lectura
+                            if (!esEditable()) {
+                                btnDel.disabled = true;
+                                btnDel.dataset.agendaId = '';
+                            } else {
+                                btnDel.disabled = !evt.id;
+                                btnDel.dataset.agendaId = evt.id || '';
+                            }
                         }
                     } catch (_) { /* noop */ }
                 },
-                // Drag & drop
-                eventDrop: function (info) { if (esConector(info.event)) { info.revert(); return; } persistMoveOrResize(info); actualizarIndicadoresAgenda(); },
-                eventResize: function (info) { if (esConector(info.event)) { info.revert(); return; } persistMoveOrResize(info); actualizarIndicadoresAgenda(); },
+                // Drag & drop con validación de horas máximas
+                eventDrop: function (info) {
+                    if (!esEditable()) { info.revert(); return; }
+                    if (esConector(info.event)) { info.revert(); return; }
+                    const maxHoras = obtenerMaxHoras();
+                    if (isFinite(maxHoras)) {
+                        const minutos = minutosTotalesAgenda(calendar);
+                        if (minutos > maxHoras * 60 + 0.5) { // tolerancia mínima
+                            alert('La modificación excede las horas máximas del curso.');
+                            info.revert();
+                            actualizarIndicadoresAgenda();
+                            return;
+                        }
+                    }
+                    persistMoveOrResize(info);
+                    actualizarIndicadoresAgenda();
+                },
+                eventResize: function (info) {
+                    if (!esEditable()) { info.revert(); return; }
+                    if (esConector(info.event)) { info.revert(); return; }
+                    const maxHoras = obtenerMaxHoras();
+                    if (isFinite(maxHoras)) {
+                        const minutos = minutosTotalesAgenda(calendar);
+                        if (minutos > maxHoras * 60 + 0.5) {
+                            alert('La modificación excede las horas máximas del curso.');
+                            info.revert();
+                            actualizarIndicadoresAgenda();
+                            return;
+                        }
+                    }
+                    persistMoveOrResize(info);
+                    actualizarIndicadoresAgenda();
+                },
                 // Cambios directos sobre props del evento
                 eventAdd: function () { actualizarIndicadoresAgenda(); },
                 eventChange: function () { actualizarIndicadoresAgenda(); },
@@ -312,6 +395,7 @@
 
         // Botón: aplicar horario al rango seleccionado
         $(document).on('click', '#btn-agenda-aplicar-seleccion', function () {
+            if (!esEditable()) return; // bloquear creación en modo solo lectura
             const cfg = getConfig();
             const routes = cfg.routes || {};
             const grupoId = cfg.grupoId;
@@ -320,6 +404,8 @@
 
             const horaInicio = document.getElementById('agenda_hora_inicio')?.value || '08:00';
             const horaFin = document.getElementById('agenda_hora_fin')?.value || '10:00';
+
+            const incluirHoraAlimentos = document.getElementById('alimentos')?.checked ? 1 : 0;
             // Validaciones básicas
             if (!/^\d{2}:\d{2}$/.test(horaInicio) || !/^\d{2}:\d{2}$/.test(horaFin)) { alert('Formato de hora inválido.'); return; }
             if (horaInicio >= horaFin) { alert('La hora fin debe ser mayor que la hora inicio.'); return; }
@@ -336,6 +422,18 @@
             const lastDay = new Date(endDateExclusive);
             lastDay.setDate(lastDay.getDate() - 1);
             if (lastDay < startDate) { alert('No hay días seleccionados.'); return; }
+
+            // Validación de horas máximas antes de enviar
+            const maxHoras = obtenerMaxHoras();
+            if (isFinite(maxHoras)) {
+                const minutosActuales = minutosTotalesAgenda(calendar);
+                const minutosNuevos = minutosDeSeleccion(startDate, endDateExclusive, horaInicio, horaFin);
+                if (minutosActuales + minutosNuevos > maxHoras * 60 + 0.5) {
+                    const restante = Math.max(0, maxHoras * 60 - minutosActuales);
+                    alert('La selección excede las horas máximas del curso. Restantes: ' + decimalAHora(restante/60));
+                    return;
+                }
+            }
             const y1 = startDate.getFullYear();
             const m1 = String(startDate.getMonth() + 1).padStart(2, '0');
             const d1 = String(startDate.getDate()).padStart(2, '0');
@@ -350,7 +448,7 @@
             $btn.prop('disabled', true).text('Aplicando...');
 
             // Enviar un solo registro por periodo
-            const payload = { start: startISO, end: endISO };
+            const payload = { start: startISO, end: endISO, hora_alimentos: incluirHoraAlimentos };
             $.ajax({
                 url: routes.store(grupoId),
                 method: 'POST',
@@ -381,6 +479,7 @@
 
     // Botón eliminar periodo seleccionado
     $(document).on('click', '#btn-agenda-eliminar-periodo', function () {
+        if (!esEditable()) return; // bloquear eliminación en modo solo lectura
         const routes = getConfig().routes || {};
         const grupoId = getConfig().grupoId;
         const btn = this;

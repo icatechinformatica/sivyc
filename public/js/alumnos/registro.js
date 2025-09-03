@@ -131,10 +131,10 @@ validar_laboral.on('click', function () {
     const id_usuario_captura = $('#id_usuario_captura').val();
     const checkEmpleado = $('#empleado_aspirante').is(':checked');
     if (checkEmpleado) {
-        if ($('#form-empleado').valid()) {
+        if ($('#form-laboral').valid()) {
             const formData = new FormData();
             formData.append('curp', $('#curp').val());
-            formData.append('seccion', 'empleado');
+            formData.append('seccion', 'laboral');
             formData.append('empleado_aspirante', 1);
             formData.append('nombre_empresa', $('#empresa_trabaja').val());
             formData.append('puesto_trabajo', $('#puesto_trabajo').val());
@@ -148,7 +148,7 @@ validar_laboral.on('click', function () {
         // Solo enviar el check en false
         const formData = new FormData();
         formData.append('curp', $('#curp').val());
-        formData.append('seccion', 'empleado');
+        formData.append('seccion', 'laboral');
         formData.append('empleado_aspirante', 0);
         formData.append('id_usuario_realizo', id_usuario_captura);
         formData.append('_token', registroBladeVars.csrfToken);
@@ -464,7 +464,6 @@ function obtenerDatosCurp(curp) {
         },
         success: function (response) {
             if (response.success) {
-                console.log(response.data);
                 const notyf = new Notyf({
                     position: { x: 'right', y: 'top' },
                     dismissible: true,
@@ -516,7 +515,6 @@ const guardarSeccion = (formData) => {
         processData: false,
         contentType: false,
         success: function (response) {
-            console.log('Respuesta del servidor:', response);
             if (response.success) {
                 const notyf = new Notyf({
                     position: { x: 'right', y: 'top' },
@@ -536,7 +534,7 @@ const guardarSeccion = (formData) => {
                     'contacto': 'contacto',
                     'grupos_vulnerables': 'grupos-vulnerables',
                     'capacitacion': 'capacitacion',
-                    'empleado': 'empleado',
+                    'laboral': 'laboral',
                     'cerss': 'cerss'
                 };
 
@@ -557,7 +555,7 @@ const guardarSeccion = (formData) => {
 
 // ! Despliega la captura de datos en la seccion de EMPLEADO
 var chkEmpleado = document.getElementById('empleado_aspirante');
-var datos = document.getElementById('datos-empleo');
+var datos = document.getElementById('datos-laboral');
 if (chkEmpleado && datos) {
     function toggleDatosEmpleo() {
         datos.classList.toggle('d-none', !chkEmpleado.checked);
@@ -663,6 +661,17 @@ function cambiarPaso(paso) {
         const circulo = paso.querySelector('.step-circle');
         // SIEMPRE establecer como actual el paso seleccionado
         circulo.setAttribute('data-status', 'actual');
+
+        // Intentar centrar el activo en la barra móvil
+        try {
+            const cont = document.querySelector('#step-progress .step-progress-nav') || document.querySelector('.step-progress-nav');
+            if (cont) {
+                const rect = paso.getBoundingClientRect();
+                const contRect = cont.getBoundingClientRect();
+                const left = cont.scrollLeft + (rect.left - contRect.left) - (contRect.width / 2) + (rect.width / 2);
+                cont.scrollTo({ left, behavior: 'smooth' });
+            }
+        } catch (e) { /* noop */ }
     }
 }
 
@@ -672,7 +681,7 @@ const secciones = [
     'contacto',
     'grupos-vulnerables',
     'capacitacion',
-    'empleado',
+    'laboral',
     'cerss'
 ];
 
@@ -694,7 +703,7 @@ function generarEstadosCaptura(seccionesFinalizadas) {
         'contacto': 'contacto',
         'grupos_vulnerables': 'grupos-vulnerables',
         'capacitacion': 'capacitacion',
-        'empleado': 'empleado',
+        'laboral': 'laboral',
         'cerss': 'cerss'
     };
 
@@ -765,30 +774,32 @@ function aplicarEstadosPasos(estadosCaptura) {
     }
 
     // PRIMERO: Limpiar todos los estados
-    pasos.forEach((paso, index) => {
+    pasos.forEach((paso) => {
         paso.classList.remove('completed', 'current', 'disabled', 'active');
         const circulo = paso.querySelector('.step-circle');
-        circulo.removeAttribute('data-status');
+        circulo && circulo.removeAttribute('data-status');
     });
 
-    // SEGUNDO: Aplicar los nuevos estados
-    pasos.forEach((paso, index) => {
-        const seccion = secciones[index];
+    // SEGUNDO: Aplicar los nuevos estados mapeando por data-step
+    pasos.forEach((paso) => {
+        const dataStep = paso.getAttribute('data-step');
+        if (!dataStep) return;
+        const idx = secciones.indexOf(dataStep);
         const circulo = paso.querySelector('.step-circle');
-        const isEnabled = estadosCaptura[seccion]?.estado || false;
+        const isEnabled = estadosCaptura[dataStep]?.estado || false;
 
         if (isEnabled) {
             // Esta sección está completada/terminada
             paso.classList.add('completed');
-            circulo.setAttribute('data-status', 'terminado');
+            circulo && circulo.setAttribute('data-status', 'terminado');
 
             // Habilitar click para poder regresar
             paso.style.pointerEvents = 'auto';
             paso.style.opacity = '1';
-        } else if (index === siguienteSeccionIndex) {
+        } else if (idx === siguienteSeccionIndex) {
             // Esta es la siguiente sección disponible (actual)
             paso.classList.add('current', 'active');
-            circulo.setAttribute('data-status', 'actual');
+            circulo && circulo.setAttribute('data-status', 'actual');
 
             // Habilitar click
             paso.style.pointerEvents = 'auto';
@@ -796,7 +807,7 @@ function aplicarEstadosPasos(estadosCaptura) {
         } else {
             // Paso bloqueado/pendiente
             paso.classList.add('disabled');
-            circulo.setAttribute('data-status', 'pendiente');
+            circulo && circulo.setAttribute('data-status', 'pendiente');
 
             // Deshabilitar click
             paso.style.pointerEvents = 'none';
@@ -804,15 +815,19 @@ function aplicarEstadosPasos(estadosCaptura) {
         }
     });
 
-    // Si todas las secciones están completadas, marcar la última como actual
+    // Si todas las secciones están completadas, marcar la última como actual en ambas barras
     const todasCompletadas = secciones.every(seccion => estadosCaptura[seccion]?.estado);
     if (todasCompletadas) {
-        const ultimoPaso = pasos[pasos.length - 1];
-        const ultimoCirculo = ultimoPaso.querySelector('.step-circle');
-
-        ultimoPaso.classList.remove('completed');
-        ultimoPaso.classList.add('current', 'active');
-        ultimoCirculo.setAttribute('data-status', 'actual');
+        const ultimaSeccion = secciones[secciones.length - 1];
+        pasos.forEach((paso) => {
+            const dataStep = paso.getAttribute('data-step');
+            if (dataStep === ultimaSeccion) {
+                const circulo = paso.querySelector('.step-circle');
+                paso.classList.remove('completed');
+                paso.classList.add('current', 'active');
+                circulo && circulo.setAttribute('data-status', 'actual');
+            }
+        });
     }
 }
 
@@ -864,6 +879,26 @@ function mostrarSeccionActual(estadosCaptura) {
             console.log('- ID:', sec.id, 'Classes:', sec.className);
         });
     }
+
+    // Centrar el paso activo inicial en la barra móvil
+    try {
+        const cont = document.querySelector('#step-progress .step-progress-nav') || document.querySelector('.step-progress-nav');
+        let activo = document.querySelector('.step-progress-nav li.active');
+        if (!activo) {
+            // Si no hay activo aún, activar el que corresponda a seccionAMostrar
+            const candidato = document.querySelector(`.step-progress-nav li[data-step="${seccionAMostrar}"]`);
+            if (candidato) {
+                candidato.classList.add('active');
+                activo = candidato;
+            }
+        }
+        if (cont && activo) {
+            const rect = activo.getBoundingClientRect();
+            const contRect = cont.getBoundingClientRect();
+            const left = cont.scrollLeft + (rect.left - contRect.left) - (contRect.width / 2) + (rect.width / 2);
+            cont.scrollTo({ left, behavior: 'auto' });
+        }
+    } catch (e) { /* noop */ }
 }
 
 // Función para mover a la siguiente sección después de guardar
