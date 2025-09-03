@@ -172,7 +172,7 @@
             <div class="form-group col-md-3">
                 {{ Form::button('ENVIAR PRELIMINAR '.$g->option.' >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }}
             </div>
-        @elseif (($opt=='ARC01'&& ($grupos[0]->status_solicitud=='VALIDADO') OR ($opt=='ARC02' && $grupos[0]->status_solicitud_arc02=='VALIDADO')) AND is_null($grupos[0]->status_curso)) 
+        @elseif (($opt=='ARC01'&& ($grupos[0]->status_solicitud=='VALIDADO') OR ($opt=='ARC02' && $grupos[0]->status_solicitud_arc02=='VALIDADO')) AND is_null($grupos[0]->file_arc02)) 
             @if(Auth::user()->roles[0]->slug=='admin')
                 <div class="form-group col-md-12 p-2 pl-3 bg-light">
                     <h5> USUARIO ADMINISTRADOR </h5>
