@@ -123,9 +123,17 @@ class Reporterf001Repository implements Reporterf001Interface
         ]);
     }
 
-    public function sentRF001Format($unidad)
+    public function sentRF001Format($unidad, $memorandum = null)
     {
-        return (new Rf001Model())->where('id_unidad', '=', $unidad)->paginate(10 ?? 5);
+        $query = (new Rf001Model())->where('id_unidad', '=', $unidad);
+
+        if (!empty($memorandum)) {
+            $query->where(function($q) use ($memorandum) {
+                $q->where('memorandum', 'LIKE', "%$memorandum%");
+            });
+        }
+
+        return $query->orderBy('id', 'DESC')->paginate(10 ?? 5);
     }
 
     public function getDetailRF001Format($concentrado)

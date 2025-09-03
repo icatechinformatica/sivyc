@@ -373,7 +373,8 @@ class Rf001Controller extends Controller
         // si se necesita generar el dato
         // aplicar el filtro sólo para memorandum
         $unidad = Auth::user()->unidad;
-        $data = $this->rfoo1Repository->sentRF001Format($unidad);
+        $memorandum = $request->input('memorandum'); // Obtén el valor del input
+        $data = $this->rfoo1Repository->sentRF001Format($unidad, $memorandum);
         return view('reportes.rf001.formatos', compact('data'))->render();
     }
 
