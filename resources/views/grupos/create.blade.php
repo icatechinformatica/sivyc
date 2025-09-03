@@ -292,9 +292,9 @@
                         <div class="flex-grow-1">
                             <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo) }}">
                                 @csrf
-                                <div class="input-group" style="width: 400px;">
+                                <div class="input-group align-items-center" style="width: 400px;">
                                     <input type="hidden" name="grupo_id" value="{{ $grupo->id }}">
-                                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18" required style="flex: 1 1 auto; min-width: 0;" value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
+                                    <input type="text" name="curp" class="form-control rounded h-90" placeholder="Ingrese CURP" maxlength="18" required style="flex: 1 1 auto; min-width: 0;" value="{{ isset($uncodeCurp) ? $uncodeCurp : '' }}">
                                     <div class="input-group-append accion-alumnos">
                                         <button class="btn btn-primary mr-2 rounded" type="submit" name="action" value="agregar">Agregar</button>
                                     </div>
@@ -314,7 +314,7 @@
                                         </div>
                                     </th>
                                     <th colspan="3" class="text-right">
-                                        <a href="{{ route('grupos.ver.listado.alumnos', $grupo) }}" class="btn btn-sm btn-primary">Ver tabla detallada</a>
+                                        <a href="{{ route('grupos.ver.listado.alumnos', $grupo) }}" class="btn btn-sm btn-primary rounded">Ver tabla detallada</a>
                                     </th>
                                 </tr>
                                 <tr>
@@ -339,11 +339,11 @@
                                     <td>{{ $alumno->nombreCompleto() }}</td>
                                     <td>{{ $alumno->sexo->sexo }}</td>
                                     <td>{{ $alumno->edad }}</td>
-                                    <td>
+                                    <td class="text-center">
                                         <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}">
                                             @csrf
                                             <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
-                                            <button class="btn btn-danger btn-sm accion-alumnos" type="submit" name="action" value="eliminar"><i class="fas fa-trash"></i></button>
+                                            <button class="btn btn-danger btn-sm accion-alumnos rounded" type="submit" name="action" value="eliminar"><i class="fas fa-trash"></i></button>
                                         </form>
                                     </td>
                                 </tr>
@@ -354,12 +354,14 @@
                     </div>
                     <div class="d-flex justify-content-between align-items-center mt-3">
                         <div class="row col-md-12 justify-content-end">
-                            <p class="mx-4">Turnar a:</p>
-                            @foreach ($grupo->estatusAdyacentes() as $estatus)
-                                @if($estatus->id != $ultimoEstatus->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
-                                <button class="btn btn-md rounded turnar-btn" style="background-color: {{ $estatus->color }}; color: white; font-weight: 600; font-size: 0.95rem;" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}">{{ $estatus->estatus }}</button>
-                                @endif
-                            @endforeach
+                            <div class="d-flex align-items-center justify-content-center">
+                                <p class="mr-4 h-auto">Turnar a:</p>
+                                @foreach ($grupo->estatusAdyacentes() as $estatus)
+                                    @if($estatus->id != $ultimoEstatus->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
+                                    <button class="btn btn-md rounded turnar-btn" style="background-color: {{ $estatus->color }}; color: white; font-weight: 600; font-size: 0.95rem;" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}">{{ $estatus->estatus }}</button>
+                                    @endif
+                                @endforeach
+                            </div>
                         </div>
                     </div>
                 </div>
