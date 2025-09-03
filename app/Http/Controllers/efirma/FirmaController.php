@@ -178,9 +178,9 @@ class FirmaController extends Controller {
     public function update(Request $request) {
         // dd($request->serieFirmante);
         //verificacion de firmado, debe ser con firma del SAT, de lo contratio se abortara la firma y regresara al modulo anterior
-        if(strlen($request->serieFirmante) != 20){
-            return redirect()->route('firma.inicio')->with('warning', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT. (5)');
-        }
+        // if(strlen($request->serieFirmante) != 20){
+        //     return redirect()->route('firma.inicio')->with('warning', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT. (5)');
+        // }
 
         $documento = DocumentosFirmar::where('id', $request->idFile)->first();
         // dd($documento);
