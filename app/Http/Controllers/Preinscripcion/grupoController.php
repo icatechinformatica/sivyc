@@ -911,7 +911,8 @@ class grupoController extends Controller
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
                                             'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor),
                                             'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel, 'status_solicitud' =>null,'mpreapertura'=>$mapertura,'obs_preapertura'=>$request->observaciones
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel, 'status_solicitud' =>null,'mpreapertura'=>$mapertura,'obs_preapertura'=>$request->observaciones,
+                                            'vb_dg'=>true
                                             //,'programa' => null,'nota' => null,'plantel' => null
                                             ]
                                         );
