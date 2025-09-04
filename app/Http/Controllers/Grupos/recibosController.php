@@ -49,10 +49,10 @@ class recibosController extends Controller
             if($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS', 'DESHACER'=>'DESHACER ASIGNACION'];
             elseif((!$data->status_curso and !in_array($data->status_folio, ['DISPONIBLE','IMPRENTA'])) OR in_array($data->status_folio,['ACEPTADO', 'CARGADO','ASIGNADO'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];            
             
-            if($data->status_folio=="ENVIADO" and $data->status_curso=='CANCELADO') $movimientos = [ 'CANCELAR' => 'CANCELAR'];
-            elseif($data->status_folio=="ENVIADO" and ($data->status_curso OR $data->id_concepto>1)) $movimientos = [ 'SOPORTE' => 'SOLICITUD DE CAMBIO SOPORTES'];
+            if(in_array($data->status_folio, ["REPORTADO","SELLADO","CANCELADO"])) $movimientos = [];
 
-            if($data->status_folio=="REPORTADO") $movimientos = [];
+            if(($data->status_folio!="CANCELADO" and ($data->status_curso=='CANCELADO' OR (!$data->status_curso AND $data->status_folio == 'SELLADO')))  ) $movimientos = [ 'CANCELAR' => 'CANCELAR'];
+            elseif($data->status_folio=="ENVIADO" and ($data->status_curso OR $data->id_concepto>1)) $movimientos = [ 'SOPORTE' => 'SOLICITUD DE CAMBIO SOPORTES'];
         }     
         $path_files = $this->path_files;
         $conceptos = DB::table('cat_conceptos')->WHERE('tipo','CUOTA')->WHERE('activo',true)->ORDERBY('id')->pluck('concepto','id'); 
@@ -81,8 +81,8 @@ class recibosController extends Controller
                             ELSE tc.clave
                             END as clave"),
                         DB::raw("CASE     
-                            WHEN tr.estado_reportado IS NOT NULL THEN 'REPORTADO'
                             WHEN tr.status_folio='CANCELADO' THEN 'CANCELADO' 
+                            WHEN tr.estado_reportado IS NOT NULL THEN 'REPORTADO'                            
                             WHEN tr.status_folio='ENVIADO' OR  tc.comprobante_pago <> 'null' THEN 'ENVIADO'
                             WHEN tr.status_folio='SOPORTE' THEN 'CAMBIO DE SOPORTE'
                             WHEN tr.status_folio='ACEPTADO' THEN 'CAMBIO ACEPTADO'
@@ -398,7 +398,7 @@ class recibosController extends Controller
                     ->select('tc.id as id_curso','tc.folio_grupo','tc.unidad','tu.ubicacion', 'tc.clave','tc.curso','tc.nombre','tc.tipo_curso',
                         'tc.status_curso','tc.inicio', 'tc.termino', 'tc.hini', 'tc.hfin','tc.costo','tc.hombre','tc.mujer','tr.recibide',
                         'tr.fecha_expedicion','tr.recibio','tu.direccion','tu.delegado_administrativo','tr.id as id_recibo',
-                        'tr.importe_letra', 'tr.folio_recibo', 'tr.status_recibo','tc.arc','tc.clave','tr.observaciones','tr.importe',
+                        'tr.importe_letra', 'tr.folio_recibo', 'tr.status_recibo','tc.arc','tc.clave','tr.observaciones','tr.importe','tr.estado_reportado',
                         DB::raw('1 as id_concepto'),'cc.concepto','tc.costo as precio_unitario', 'tr.depositos', 'tc.munidad',
                         DB::raw(" 
                             CASE
@@ -429,8 +429,10 @@ class recibosController extends Controller
                             END) as num_recibo"),
 
                         DB::raw("(
-                            CASE                                
+                            CASE        
+                                WHEN tr.status_folio='CANCELADO' THEN 'CANCELADO'                         
                                 WHEN tc.comprobante_pago IS NOT NULL  THEN 'IMPRENTA'
+                                WHEN tr.estado_reportado = 'SELLADO'  THEN 'SELLADO'
                                 WHEN tr.estado_reportado IS NOT NULL  THEN 'REPORTADO'
                                 WHEN tr.status_folio is null THEN 'DISPONIBLE'
                                 ELSE  tr.status_folio
@@ -451,17 +453,22 @@ class recibosController extends Controller
                         DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
                         DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
                     );
-                    if($request->folio_grupo)
-                        $data = $data->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$request->folio_grupo.'%'); 
-                    else
-                        $data =  $data->where('tc.id',$request->ID);
-
-                        $data = $data->wherein('tc.unidad',$this->unidades)
+                    if($request->folio_grupo) $data = $data->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$request->folio_grupo.'%');                         
+                    else $data =  $data->where('tc.id',$request->ID);
+                    
+                    $valor = $request->folio_grupo;
+                    $data = $data->wherein('tc.unidad',$this->unidades)
                     ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')
-                    ->leftjoin('tbl_recibos as tr', function ($join) use ($request) {                    
+                    ->leftjoin('tbl_recibos as tr', function ($join) use ($request, $valor) {                    
                         $join->on('tr.folio_grupo','=','tc.folio_grupo')
-                        ->where('tr.id_concepto','1');
-                        //->whereNotIn('tr.status_folio',['CANCELADO']); 
+                        ->where('tr.id_concepto','1')
+                        ->where(function ($query) use ($valor) {
+                            $query->where('tr.folio_recibo', $valor)
+                             ->orWhere(function ($q) use ($valor) {
+                                    $q->where('tc.folio_grupo', $valor)
+                                        ->whereNotIn('tr.status_folio',['CANCELADO']);
+                                });
+                            });                        
                     })
                     ->join('tbl_recibos as max', function ($join) {
                             $join->on('max.unidad', '=', 'tu.ubicacion')                    
