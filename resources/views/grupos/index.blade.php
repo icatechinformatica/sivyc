@@ -83,7 +83,7 @@
                     <th>INSTRUCTOR</th>
                     <th class="text-center">ESTATUS</th>
                     <th>Turnar a:</th>
-                    <th class="text-center">Editar</th>
+                    <th class="text-center">Opciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -113,10 +113,14 @@
                             @endforeach
                         </td>
                         <td class="text-center">
-                            <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-warning rounded"
-                                title="Editar">
-                                <i class="fas fa-edit"></i>
+                            <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-sm btn-{{ $grupo->estatusActual()->esEditable ? 'warning' : 'info' }} rounded" title="Editar">
+                                <i class="fas {{ $grupo->estatusActual()->esEditable ? 'fa-edit' : 'fa-eye' }}"></i>    
                             </a>
+                            @if($grupo->alumnos->count() > 0 && auth()->user()->can('grupos.clonar.grupo'))
+                                <button class="btn btn-sm btn-success btn-clonar-grupo" title="Clonar grupo con alumnos" data-grupo-id="{{ $grupo->id }}">
+                                    <i class="fas fa-clone"></i>
+                                </button>
+                            @endif
                         </td>
                     </tr>
                     @endif
@@ -142,6 +146,7 @@
 </div>
 @include('grupos.observacionTurnado')
 @include('grupos.observacionVer')
+@include('grupos.confirmacionClonacion')
 @endsection
 
 @push('script_sign')
@@ -151,4 +156,5 @@
     };
 </script>
 <script src="{{ asset('js/grupos/turnar.js') }}"></script>
+<script src="{{ asset('js/grupos/clonar.js') }}"></script>
 @endpush

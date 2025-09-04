@@ -16,6 +16,7 @@ class Estatus extends Model
         'observacion',
         'turnado_a',
         'final',
+        'esEditable',
     ];
 
     protected $casts = [

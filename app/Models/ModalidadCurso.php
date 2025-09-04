@@ -10,7 +10,7 @@ class ModalidadCurso extends Model
     use HasFactory;
 
     protected $table = 'tbl_aux_modalidad_curso';
-
+    protected $primaryKey = 'id_modalidad_curso';
     protected $fillable = ['modalidad'];
 
 }

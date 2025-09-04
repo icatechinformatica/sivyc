@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class ServicioCurso extends Model
 {
     use HasFactory;
-    protected $table = 'tbl_aux_servicios';
+    protected $table = 'tbl_aux_categorias_formacion';
+
+    protected $primaryKey = 'id_categoria_formacion';
     protected $fillable = ['servicio', 'alumnos_min'];
 
     public function grupo()

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\adminController;
 use App\User;
 use App\Models\Unidad;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use Icatech\PermisoRolMenu\Models\Rol;
@@ -13,8 +12,6 @@ use Icatech\PermisoRolMenu\Models\Permiso;
 use App\Services\Funcionario\CreateUserService as FuncionarioCreateUserService;
 use App\Services\Instructor\CreateUserService as InstructorCreateUserService;
 use App\Services\Usuario\ListadoUsuariosService;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Google\Service\DriveActivity\Create;
 
 class userController extends Controller
 {
@@ -117,7 +114,7 @@ class userController extends Controller
         $unidades = collect();
         // dd($usuario->unidad);
         if ($usuario->unidad) {
-            $ubicacion = Unidad::Select('unidad', 'ubicacion')->Where('id', $usuario->unidad)->First();
+            $ubicacion = Unidad::Select('unidad', 'ubicacion')->Where('id', $usuario->unidad->id)->First();
         }
         
         // Si no se encontró ubicación por unidad directa, intentar obtenerla del registro polimórfico

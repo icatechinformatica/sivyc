@@ -9,6 +9,7 @@ class ImparticionCurso extends Model
 {
     use HasFactory;
 
-    protected $table = 'tbl_aux_imparticiones';
-    protected $fillable = ['imparticion'];
+    protected $table = 'tbl_aux_tipo_curso';
+    protected $primaryKey = 'id_tipo_curso';
+    protected $fillable = ['tipo_curso'];
 }

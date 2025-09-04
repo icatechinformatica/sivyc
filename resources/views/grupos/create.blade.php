@@ -20,7 +20,7 @@
             <a href="{{ route('grupos.index') }}" class="btn btn-outline-light btn-sm d-inline-flex align-items-center px-2 py-1 mr-3" title="Regresar a ver grupos" aria-label="Regresar a ver grupos">
                 <i class="fa fa-arrow-left mr-1"></i>
             </a>
-            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : 'Edición' }}</span></h5>
+            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ {{ $esNuevoRegistro ? 'Registro' : ($esEditable ? 'Edición' : 'Visualización') }}</span></h5>
         </div>
 
         @if(isset($grupo))
@@ -65,27 +65,27 @@
                 <ul class="list-group list-group-flush step-progress-nav" role="tablist" aria-label="Progreso de registro">
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="info_general">
                         <span class="step-circle mr-2" data-status="actual">1</span>
-                        <span class="step-label fw-bold text-black">Información general</span>
+                        <span class="step-label font-weight-bold text-black">Información general</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="ubicacion">
                         <span class="step-circle mr-2" data-status="restante">2</span>
-                        <span class="step-label fw-bold">Ubicación</span>
+                        <span class="step-label font-weight-bold">Ubicación</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="organismo">
                         <span class="step-circle mr-2" data-status="restante">3</span>
-                        <span class="step-label fw-bold">Organismo Publico</span>
+                        <span class="step-label font-weight-bold">Organismo Publico</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="opciones">
                         <span class="step-circle mr-2" data-status="restante">4</span>
-                        <span class="step-label fw-bold">Opciones</span>
+                        <span class="step-label font-weight-bold">Opciones</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="agenda">
                         <span class="step-circle mr-2" data-status="restante">5</span>
-                        <span class="step-label fw-bold">Agenda</span>
+                        <span class="step-label font-weight-bold">Agenda</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="alumnos">
                         <span class="step-circle mr-2" data-status="restante">6</span>
-                        <span class="step-label fw-bold">Alumnos</span>
+                        <span class="step-label font-weight-bold">Alumnos</span>
                     </li>
                 </ul>
             </nav>
@@ -99,11 +99,11 @@
             <div class="col-md-12 mb-4 step-section px-0" id="info_general">
                 {{ html()->form('POST')->id('info_general_form')->open() }}
                 <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3">Información general</h5>
+                    <h5 class="font-weight-bold border-bottom pb-1 mb-3">Información general</h5>
                     <div class="row my-1 px-0">
                         <div class="form-group col-md-4 mb-1">
                             {{ html()->label('IMPARTICIÓN', 'imparticion')->class('form-label mb-1') }}
-                            {{ html()->select('imparticion', [null => 'SELECCIONE EL TIPO DE IMPARTICIÓN'] + $tiposImparticion->pluck('imparticion', 'id')->toArray())->class('form-control')->required()
+                            {{ html()->select('imparticion', [null => 'SELECCIONE EL TIPO DE IMPARTICIÓN'] + $tiposImparticion->pluck('tipo_curso', 'id_tipo_curso')->toArray())->class('form-control')->required()
                                 ->value($esNuevoRegistro ? null : $grupo->id_imparticion) }}
                         </div>
                         <div class="form-group col-md-4 mb-1">
@@ -120,7 +120,7 @@
                     <div class="row my-1">
                         <div class="form-group col-md-3 mb-1">
                             {{ html()->label('SERVICIO', 'servicio')->class('form-label mb-1') }}
-                            {{ html()->select('servicio', [null => 'SELECCIONAR'] + $servicios->pluck('servicio', 'id')->toArray())->class('form-control ')->required()
+                            {{ html()->select('servicio', [null => 'SELECCIONAR'] + $servicios->pluck('categoria_formacion', 'id_categoria_formacion')->toArray())->class('form-control ')->required()
                                 ->value($esNuevoRegistro ? null : $grupo->id_servicio) }}
                         </div>
                         <div class="form-group col-md-9 mb-1">
@@ -140,7 +140,7 @@
             <div class="col-12 mb-4 step-section" id="ubicacion" style="display:none;">
                 {{ html()->form('POST')->id('ubicacion_form')->open() }}
                 <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3">Ubicación</h5>
+                    <h5 class="font-weight-bold border-bottom pb-1 mb-3">Ubicación</h5>
                     <div class="row my-1">
                         <div class="form-group col-md-6 mb-1">
                             {{ html()->label('MUNICIPIO', 'municipio')->class('form-label mb-1') }}
@@ -186,7 +186,7 @@
                         {{ html()->textarea('referencias')->class('form-control')->rows(2) }}
                     </div>
                     <div class="d-flex justify-content-end">
-                        {{ html()->button('Guardar Ubicación')->class('btn btn-primary float-end guardar-seccion')->id('guardar_ubicacion')->type('button') }}
+                        {{ html()->button('Guardar Ubicación')->class('btn btn-primary guardar-seccion')->id('guardar_ubicacion')->type('button') }}
                     </div>
                 </div>
                 {{ html()->form()->close() }}
@@ -196,7 +196,7 @@
             <div class="col-12 mb-4 step-section" id="organismo" style="display:none;">
                 {{ html()->form('POST')->id('organismo_form')->open() }}
                 <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3">Organismo Publico</h5>
+                    <h5 class="font-weight-bold border-bottom pb-1 mb-3">Organismo Publico</h5>
                     <div class="row mt-2">
                         <div class="form-group col-md-12 mb-2">
                             {{ html()->label('ORGANISMO PUBLICO', 'organismo_publico')->class('form-label mb-1') }}
@@ -213,7 +213,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        {{ html()->button('Guardar Organismo')->class('btn btn-primary float-end guardar-seccion')->id('guardar_organismo') }}
+                        {{ html()->button('Guardar Organismo')->class('btn btn-primary guardar-seccion')->id('guardar_organismo') }}
                     </div>
                 </div>
                 {{ html()->form()->close() }}
@@ -223,7 +223,7 @@
             <div class="col-12 mb-4 step-section" id="opciones" style="display:none;">
                 <div class="p-3 mb-2">
                     {{ html()->form('POST')->id('opciones_form')->open() }}
-                    <h5 class="fw-bold border-bottom pb-1 mb-3">Opciones adicionales</h5>
+                    <h5 class="font-weight-bold border-bottom pb-1 mb-3">Opciones adicionales</h5>
                     <div class="row mt-2">
                         <div class="col-md-12">
                             <div class="mb-2">
@@ -247,7 +247,7 @@
                         </div>
                     </div>
                     <div class="d-flex justify-content-end">
-                        {{ html()->button('Guardar')->class('btn btn-primary float-end guardar-seccion')->id('guardar_opciones') }}
+                        {{ html()->button('Guardar')->class('btn btn-primary guardar-seccion')->id('guardar_opciones') }}
                     </div>
                     {{ html()->form()->close() }}
                 </div>
@@ -257,7 +257,7 @@
             <div class="col-12 mb-4 step-section" id="agenda" style="display:none;">
                 {{ html()->form()->id('form-agenda')->open() }}
                 <div class="p-3 mb-2">
-                    <h5 class="fw-bold border-bottom pb-1 mb-3">Agenda</h5>
+                    <h5 class="font-weight-bold border-bottom pb-1 mb-3">Agenda</h5>
                     <div class="form-row mt-2">
                         <div class="form-group col-12">
                             <div class="d-flex justify-content-center align-items-center h-100">
@@ -303,59 +303,134 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-hover">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th colspan="3">
-                                        <div class="d-flex">
-                                            @if ($grupo->exoneracion)
-                                            <p class="my-auto">Tipo de pago: <span id="tipo-exoneracion" class="ml-2 tipo-exo-badge tipo-{{ strtolower(preg_replace('/\s+/', '-', trim($grupo->exoneracion->tipo_exoneracion))) }}"> {{ $grupo->exoneracion->tipo_exoneracion }}</span></p>
+
+                        <div class="d-flex flex-column flex-md-row justify-content-md-between align-items-start align-items-md-center mb-2">
+                            <div class="flex-grow-1 w-100">
+                                <div class="d-flex">
+                                    @if ($grupo->exoneracion)
+                                    <p class="my-auto d-flex flex-column flex-md-row w-100 w-md-auto justify-content-center justify-content-md-start align-items-center text-center text-md-left px-2 py-1" style="font-weight: bolder;">
+                                        <span class="d-inline-block mr-md-2">Tipo de pago</span>
+                                        <span id="tipo-exoneracion" class="tipo-exo-badge tipo-{{ strtolower(preg_replace('/\s+/', '-', trim($grupo->exoneracion->tipo_exoneracion))) }} d-block d-md-inline-block w-100 w-md-auto mt-1 mt-md-0">
+                                            {{ $grupo->exoneracion->tipo_exoneracion }}
+                                        </span>
+                                    </p>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="w-100 text-md-right mt-2 mt-md-0">
+                                <div class="d-flex justify-content-center justify-content-md-end">
+                                    @if($grupo->alumnos->count() > 0 && auth()->user()->can('grupos.clonar.grupo'))
+                                    <button class="btn btn-sm btn-success rounded btn-clonar-grupo mr-1 w-50" title="Clonar grupo con alumnos" data-grupo-id="{{ $grupo->id }}">
+                                        <i class="fas fa-clone mr-1"></i> Clonar grupo
+                                    </button>
+                                    @endif
+                                    <a href="{{ route('grupos.ver.listado.alumnos', $grupo) }}" class="btn btn-sm btn-primary rounded w-50">Ver tabla detallada</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- * Vista de tabla para pantallas medianas y grandes --}}
+                        <div class="d-none d-md-block">
+                            <table class="table table-striped table-hover">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>Curp</th>
+                                        <th>Matrícula</th>
+                                        <th>Nombre</th>
+                                        <th>Sexo</th>
+                                        <th>Edad</th>
+                                        @if($grupo->estatusActual()->esEditable)
+                                            <th>Eliminar</th>
+                                        @endif
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
+                                    <tr>
+                                        <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
+                                    </tr>
+                                    @else
+                                    @foreach ($grupo->alumnos as $alumno)
+                                    <tr>
+                                        <td>{{ $alumno->curp }}</td>
+                                        <td>{{ $alumno->matricula }}</td>
+                                        <td>{{ $alumno->nombreCompleto() }}</td>
+                                        <td>{{ $alumno->sexo->sexo }}</td>
+                                        <td>{{ $alumno->edad }}</td>
+                                        @if($grupo->estatusActual()->esEditable)
+                                        <td class="text-center">
+                                            <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}">
+                                                @csrf
+                                                <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
+                                                <button class="btn btn-danger btn-sm accion-alumnos rounded" type="submit" name="action" value="eliminar"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                        @endif
+                                    </tr>
+                                    @endforeach
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {{-- * Vista de tarjetas para pantallas pequeñas --}}
+                        <div class="d-md-none">
+                            @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
+                            <div class="card-empty">
+                                <div class="card-empty-body text-center">
+                                    <p class="mb-0">No hay alumnos asignados aún</p>
+                                </div>
+                            </div>
+                            @else
+                            @foreach ($grupo->alumnos as $alumno)
+                            <div class="card-alumno">
+                                <div class="card-alumno-body">
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <h6 class="card-alumno-title mb-2 font-weight-bold">{{ $alumno->nombreCompleto() }}</h6>
+                                            <div class="row mb-2">
+                                                <div class="col-6">
+                                                    <small class="text-muted">CURP:</small><br>
+                                                    <span class="font-weight-bold">{{ $alumno->curp }}</span>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="text-muted">Matrícula:</small><br>
+                                                    <span class="font-weight-bold">{{ $alumno->matricula }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="row mb-2">
+                                                <div class="col-6">
+                                                    <small class="text-muted">Sexo:</small><br>
+                                                    <span>{{ $alumno->sexo->sexo }}</span>
+                                                </div>
+                                                <div class="col-6">
+                                                    <small class="text-muted">Edad:</small><br>
+                                                    <span>{{ $alumno->edad }} años</span>
+                                                </div>
+                                            </div>
+                                            @if($grupo->estatusActual()->esEditable)
+                                            <div class="text-right">
+                                                <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}" class="d-inline">
+                                                    @csrf
+                                                    <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
+                                                    <button class="btn btn-danger btn-sm accion-alumnos rounded" type="submit" name="action" value="eliminar">
+                                                        <i class="fas fa-trash mr-1"></i>Eliminar
+                                                    </button>
+                                                </form>
+                                            </div>
                                             @endif
                                         </div>
-                                    </th>
-                                    <th colspan="3" class="text-right">
-                                        <a href="{{ route('grupos.ver.listado.alumnos', $grupo) }}" class="btn btn-sm btn-primary rounded">Ver tabla detallada</a>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th>Curp</th>
-                                    <th>Matrícula</th>
-                                    <th>Nombre</th>
-                                    <th>Sexo</th>
-                                    <th>Edad</th>
-                                    <th>Eliminar</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if (empty($grupo) || empty($grupo->alumnos) || $grupo->alumnos->isEmpty())
-                                <tr>
-                                    <td colspan="6" class="text-center">No hay alumnos asignados aún</td>
-                                </tr>
-                                @else
-                                @foreach ($grupo->alumnos as $alumno)
-                                <tr>
-                                    <td>{{ $alumno->curp }}</td>
-                                    <td>{{ $alumno->matricula }}</td>
-                                    <td>{{ $alumno->nombreCompleto() }}</td>
-                                    <td>{{ $alumno->sexo->sexo }}</td>
-                                    <td>{{ $alumno->edad }}</td>
-                                    <td class="text-center">
-                                        <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}">
-                                            @csrf
-                                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}">
-                                            <button class="btn btn-danger btn-sm accion-alumnos rounded" type="submit" name="action" value="eliminar"><i class="fas fa-trash"></i></button>
-                                        </form>
-                                    </td>
-                                </tr>
-                                @endforeach
-                                @endif
-                            </tbody>
-                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                            @endif
+                        </div>
                     </div>
-                    <div class="d-flex justify-content-between align-items-center mt-3">
-                        <div class="row col-md-12 justify-content-end">
-                            <div class="d-flex align-items-center justify-content-center">
-                                <p class="mr-4 h-auto">Turnar a:</p>
+                    <div class="d-flex row mt-3 p-3">
+                        <div class="col-12">
+                            <div class="d-flex flex-column flex-md-row justify-content-center justify-content-md-end align-items-center w-100 text-center text-md-right">
+                                <p class="mb-2 mb-md-0 font-weight-bold mr-md-2" style="font-size: large">Turnar a</p>
                                 @foreach ($grupo->estatusAdyacentes() as $estatus)
                                     @if($estatus->id != $ultimoEstatus->id && auth()->user()->can($estatus->permisos->pluck('ruta_corta')->toArray()))
                                     <button class="btn btn-md rounded turnar-btn" style="background-color: {{ $estatus->color }}; color: white; font-weight: 600; font-size: 0.95rem;" data-grupo-id="{{ $grupo->id }}" data-estatus-id="{{ $estatus->id }}">{{ $estatus->estatus }}</button>
@@ -383,6 +458,7 @@
 
 @include('grupos.observacionTurnado')
 @include('grupos.observacionVer')
+@include('grupos.confirmacionClonacion')
 
 </div> {{-- /#grupos-wrapper --}}
 
@@ -458,6 +534,7 @@
 <script src="{{ asset('js/grupos/registro.js') }}"></script>
 <script src="{{ asset('js/grupos/agenda.js') }}"></script>
 <script src="{{ asset('js/grupos/turnar.js') }}"></script>
+<script src="{{ asset('js/grupos/clonar.js') }}"></script>
 @endpush
 
 @endsection

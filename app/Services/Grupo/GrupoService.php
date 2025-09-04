@@ -2,12 +2,13 @@
 
 namespace App\Services\Grupo;
 
+use App\Models\Grupo;
+use App\Models\Unidad;
 use App\Models\Estatus;
 use App\Models\Municipio;
 use App\Repositories\GrupoRepository;
+use Illuminate\Support\Facades\Crypt;
 use App\Interfaces\Repositories\GrupoRepositoryInterface;
-use App\Models\Grupo;
-use App\Models\Unidad;
 
 class GrupoService
 {
@@ -33,7 +34,7 @@ class GrupoService
             }
         }
 
-        if ($tieneAllAccess OR is_null($usuario->unidad)) {
+        if ($tieneAllAccess or is_null($usuario->unidad)) {
             if ($busqueda) {
                 return $this->grupoRepository->buscarPaginado($busqueda, $registrosPorPagina);
             }
@@ -79,10 +80,10 @@ class GrupoService
     public function guardarInfoGeneral($datos, $id_grupo = null)
     {
         $infoGeneral = [
-            'id_imparticion' => $datos['id_imparticion'],
-            'id_modalidad' => $datos['id_modalidad'],
+            'id_tipo_curso' => $datos['id_tipo_curso'],
+            'id_modalidad_curso' => $datos['id_modalidad_curso'],
             'id_unidad' => $datos['id_unidad'],
-            'id_servicio' => $datos['id_servicio'],
+            'id_categoria_formacion' => $datos['id_categoria_formacion'],
             'id_curso' => $datos['id_curso'],
         ];
 
@@ -98,6 +99,26 @@ class GrupoService
         $this->actualizarEstatusGrupo($id_grupo, 'EN CAPTURA');
         $this->generarFolio($id_grupo);
         return $grupo;
+    }
+
+    public function exportarAlumnosGrupo($grupoAlumnos_id, $id_grupo)
+    {
+        $grupoAlumnos_id = Crypt::decryptString($grupoAlumnos_id);
+        $grupoOrigen = Grupo::find($grupoAlumnos_id);
+        $grupoDestino = Grupo::find($id_grupo);
+
+        if (!$grupoOrigen || !$grupoDestino) {
+            throw new \Exception('Grupo origen o destino no encontrado');
+        }
+
+        $alumnos = $grupoOrigen->alumnos;
+
+        foreach ($alumnos as $alumno) {
+            // Evitar duplicados
+            if (!$grupoDestino->alumnos->contains($alumno->id)) {
+                $grupoDestino->alumnos()->attach($alumno->id);
+            }
+        }
     }
 
     public function guardarUbicacion($datos, $id_grupo = null)
@@ -326,7 +347,9 @@ class GrupoService
         $cuotas = $alumnosRefrescados->map(function ($a) {
             $v = $a->pivot->costo;
             return is_null($v) ? null : (float) $v;
-        })->filter(function ($v) { return $v !== null; })->values();
+        })->filter(function ($v) {
+            return $v !== null;
+        })->values();
 
         // Obtener costo total del curso
         $costoCurso = $grupo->curso->costo ?? null;
@@ -335,7 +358,9 @@ class GrupoService
         $tipoId = 1; // Ordinario por defecto
 
         // Exoneración si algún alumno tiene costo ≈ 0
-        if ($cuotas->some(function ($v) use ($tol) { return abs($v) < $tol; })) {
+        if ($cuotas->some(function ($v) use ($tol) {
+            return abs($v) < $tol;
+        })) {
             $tipoId = 3; // Exoneración
         } else {
             // Reducción si la suma total de cuotas es menor al costo del curso (con tolerancia)
@@ -351,5 +376,36 @@ class GrupoService
         $grupo->save();
 
         return $grupo->fresh(['alumnos']);
+    }
+
+    public function clonarGrupo($grupo_id)
+    {
+        $grupo = Grupo::findOrFail($grupo_id);
+        $nuevoGrupo = $grupo->replicate();
+
+        // ? Columnas que no se clonan exactamente igual
+        $nuevoGrupo->clave_grupo = null;
+        $nuevoGrupo->id_usuario_captura = auth()->id();
+        $nuevoGrupo->asis_finalizado = false;
+        $nuevoGrupo->calif_finalizado = false;
+        $nuevoGrupo->num_revision = null;
+        $nuevoGrupo->num_revision_arc02 = null;
+        $nuevoGrupo->evidencia_fotografica = null;
+        $nuevoGrupo->vb_dg = false;
+        $nuevoGrupo->save();
+
+        // ? Ahora si asginamos folio
+        $this->generarFolio($nuevoGrupo->id);
+
+
+        // ? Clonamos los alumnos N : M
+        foreach ($grupo->alumnos as $alumno) {
+            $nuevoGrupo->alumnos()->attach($alumno->id);
+        }
+
+        // ? Actualizamos estatus
+        $this->actualizarEstatusGrupo($nuevoGrupo->id, 'EN CAPTURA');
+
+        return $nuevoGrupo;
     }
 }

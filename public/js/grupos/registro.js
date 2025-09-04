@@ -145,10 +145,10 @@ $("#guardar_info_general").on('click', function (e) {
         const id_unidad = unidadesSel.length ? unidadesSel[0] : '';
         const id_curso = firstNonEmpty(['#curso', '#id_curso']);
 
-        formData.append('id_imparticion', id_imparticion ?? '');
-        formData.append('id_modalidad', id_modalidad ?? '');
+        formData.append('id_tipo_curso', id_imparticion ?? '');
+        formData.append('id_modalidad_curso', id_modalidad ?? '');
         formData.append('id_unidad', id_unidad ?? '');
-        formData.append('id_servicio', id_servicio ?? '');
+        formData.append('id_categoria_formacion', id_servicio ?? '');
         formData.append('id_curso', id_curso ?? '');
         formData.append('_token', registroBladeVars.csrfToken);
         guardarSeccion(formData);
@@ -381,6 +381,7 @@ const guardarSeccion = (formData) => {
         success: function (response) {
             console.log(response);
             if (response.success) {
+
                 if (!$('#id_grupo').val()) {
                     window.location.href = window.location.pathname + '?id=' + response.grupo_id;
                 }

@@ -92,7 +92,7 @@ class GrupoController extends Controller
         if ($request->id) {
             return redirect()->route('grupos.editar', $request->id);
         }
-        // $cursos = $this->grupoService->obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
+
         $cursos = collect(); // ? Se inicia una coleccion vacia para que seleccione los campos dinamicamente
         $tiposImparticion = ImparticionCurso::all();
         $modalidades = ModalidadCurso::all();
@@ -137,7 +137,6 @@ class GrupoController extends Controller
 
             $cursos = $this->grupoService->obtenerCursosDisponibles($id_imparticion, $id_modalidad, $id_servicio, $id_unidad);
             return response()->json($cursos);
-
         } catch (\Exception $e) {
             Log::error('Error al obtener cursos: ' . $e->getMessage());
             return response()->json(['error' => 'Error al obtener cursos'], 500);
@@ -450,6 +449,22 @@ class GrupoController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al turnar grupo: ' . $e->getMessage());
             return response()->json(['message' => 'Error al turnar grupo'], 500);
+        }
+    }
+
+    public function clonarGrupo(Request $request, $grupo_id)
+    {
+        try {
+
+            $nuevo_grupo = $this->grupoService->clonarGrupo($grupo_id);
+            if(!$nuevo_grupo){
+                return response()->json(['message' => 'No se pudo clonar el grupo'], 500);
+            }
+            return response()->json(['message' => 'Grupo clonado con éxito', 'grupo_id' => $nuevo_grupo->id], 201);
+
+        } catch (\Exception $e) {
+            Log::error('Error al clonar grupo: ' . $e->getMessage());
+            return response()->json(['message' => 'Error al clonar grupo'], 500);
         }
     }
 }

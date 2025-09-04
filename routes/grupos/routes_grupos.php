@@ -31,4 +31,7 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos', 'as' => 'grupos.']
     Route::delete('{grupo}/agenda/{agenda}', [GrupoController::class, 'destroyAgenda'])->name('agenda.destroy');
 
     Route::post('{grupo_id}/turnar', [GrupoController::class, 'turnarGrupo'])->name('turnar');
+
+    Route::post('{grupo_id}/clonar', [GrupoController::class, 'clonarGrupo'])->name('clonar.grupo');
+
 });
