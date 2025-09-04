@@ -391,6 +391,11 @@ class recibosController extends Controller
         if(isset($request->idconcepto) and $request->ID<>"NUEVO") $request->id_concepto = $request->idconcepto;        
         if($request->ID=="NUEVO" and $request->id_concepto==1) $request->ID = null;
 
+        if(!is_numeric($request->ID) AND !is_null($request->ID)){       
+            $request->folio_grupo = $request->ID;
+            $request->ID =null;
+        }           
+
         if($request->ID OR $request->folio_grupo){
             switch($request->id_concepto){
                 case 1: /// PAGO DE CURSO
@@ -452,30 +457,40 @@ class recibosController extends Controller
                             END) as editar"),
                         DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
                         DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
-                    );
-                    if($request->folio_grupo) $data = $data->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$request->folio_grupo.'%');                         
-                    else $data =  $data->where('tc.id',$request->ID);
+                    );                    
+                    
+                    
+                    
+                    if(is_numeric($request->ID) and $request->ID>0) $data =  $data->where('tr.id',$request->ID);
+                    else if($request->folio_grupo) $data = $data->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$request->folio_grupo.'%');
                     
                     $valor = $request->folio_grupo;
+                    $ID = $request->ID;
                     $data = $data->wherein('tc.unidad',$this->unidades)
                     ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')
                     ->leftjoin('tbl_recibos as tr', function ($join) use ($request, $valor) {                    
                         $join->on('tr.folio_grupo','=','tc.folio_grupo')
-                        ->where('tr.id_concepto','1')
-                        ->where(function ($query) use ($valor) {
-                            $query->where('tr.folio_recibo', $valor)
-                             ->orWhere(function ($q) use ($valor) {
-                                    $q->where('tc.folio_grupo', $valor)
-                                        ->whereNotIn('tr.status_folio',['CANCELADO']);
+                        ->where('tr.id_concepto','1');
+                        /*
+                        if($request->folio_grupo){ 
+                            $join->where(function ($query) use ($valor) {
+                                $query->where('tr.folio_recibo', $valor)
+                                ->orWhere(function ($q) use ($valor) {
+                                        $q->where('tc.folio_grupo', $valor)
+                                            ->whereNotIn('tr.status_folio',['CANCELADO']);
+                                    });
                                 });
-                            });                        
+                        }
+                                */
                     })
                     ->join('tbl_recibos as max', function ($join) {
                             $join->on('max.unidad', '=', 'tu.ubicacion')                    
                             ->where('max.num_recibo', '=', DB::raw("(SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and ( status_folio!='CANCELADO' or status_folio is null ))")); 
                     })        
                     ->leftjoin('cat_conceptos as cc','cc.id','=','tr.id_concepto')->first(); //dd($data);
-                    if(!$request->folio_grupo) $request->folio_grupo = $data->folio_grupo;
+                    
+                    if($data->status_folio == 'CANCELADO') $request->folio_grupo = $data->folio_recibo;
+                    elseif(!$request->folio_grupo) $request->folio_grupo = $data->folio_grupo;
                 break;
                 default:
                     $data = DB::table('cat_conceptos as cc')  
