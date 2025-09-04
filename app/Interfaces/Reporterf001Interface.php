@@ -4,7 +4,7 @@ namespace App\Interfaces;
 interface Reporterf001Interface {
     public function index($user);
     public function getReciboQry($unidad);
-    public function sentRF001Format($unidad);
+    public function sentRF001Format($unidad, $memorandum);
     public function getDetailRF001Format($concentrado);
     public function storeData(array $request);
     public function updateFormatoRf001($request, $id);
@@ -26,4 +26,5 @@ interface Reporterf001Interface {
     public function regresarEstadoRecibo($id);
     public function generarPdfMasivo($id);
     public function retornarFinanciero($id, $estado);
+    public function generateRF001Format($request, $user);
 }

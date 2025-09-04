@@ -176,13 +176,20 @@
         @endif
         <div class="col-12" style="margin-bottom: 5px;">
             {{ Form::open(['route' => 'reporte.rf001.sent', 'method' => 'get', 'id' => 'frm', 'enctype' => 'multipart/form-data', 'target' => '_self']) }}
-            <div class="form-row">
+            <div class="form-row align-items-end">
                 <div class="form-group col-md-3">
                     {{ Form::label('lblmemorandum', 'N° MEMORANDUM', ['class' => 'awesome']) }}
-                    {{ Form::text('memorandum', '', ['id' => 'memorandum', 'class' => 'form-control mr-2', 'placeholder' => 'N° MEMORANDUM', 'title' => 'NO. RECIBO / FOLIO DE GRUPO / CLAVE ', 'size' => 25, 'autocomplete' => 'off']) }}
+                    {{ Form::text('memorandum', request('memorandum'), [
+                        'id' => 'memorandum',
+                        'class' => 'form-control mr-2',
+                        'placeholder' => 'Buscar por N° MEMORANDUM, recibo, grupo o clave',
+                        'title' => 'NO. RECIBO / FOLIO DE GRUPO / CLAVE',
+                        'size' => 25,
+                        'autocomplete' => 'off'
+                    ]) }}
                 </div>
-                <div class="form-group col-md-3 pt-4">
-                    {{ Form::submit('FILTRAR', ['id' => 'filtrar', 'class' => 'btn mr-5 mt-1']) }}
+                <div class="form-group col-md-3">
+                    {{ Form::submit('FILTRAR', ['id' => 'filtrar', 'class' => 'btn btn-primary mt-1']) }}
                 </div>
             </div>
             {!! Form::close() !!}
@@ -269,6 +276,13 @@
                                             </td>
                                         @break
 
+                                        @case('CANCELADO ICTI')
+                                            <td
+                                                style="background-color: #210402; width: 15px; text-align: center; vertical-align: middle;">
+                                                <b style="color: #f0f0f0;">{{ ($item->estado === 'CANCELADO ICTI') ? 'CANCELADO' : '' }}</b>
+                                            </td>
+                                        @break
+
                                         @default
                                             <td
                                                 style="background-color: #922b21; width: 15px; text-align: center; vertical-align: middle;">
@@ -328,11 +342,15 @@
                                         @endswitch
                                     </td>
                                     <td class="text-left">
-                                        <a class="nav-link pt-0"
-                                            href="{{ route('reporte.rf001.set.details', ['id' => $item->id]) }}">
-                                            <i class="fa fa-eye fa-2x fa-lg text-grey" aria-hidden="true"
-                                                title="MOSTRAR FORMATO RF001"></i>
-                                        </a>
+                                        @if($item->estado === 'CANCELADO ICTI')
+                                            <span class="nav-link pt-0 text-muted" style="cursor: not-allowed;">
+                                                <i class="fa fa-eye fa-2x fa-lg text-grey" aria-hidden="true" title="NO DISPONIBLE"></i>
+                                            </span>
+                                        @else
+                                            <a class="nav-link pt-0" href="{{ route('reporte.rf001.set.details', ['id' => $item->id]) }}">
+                                                <i class="fa fa-eye fa-2x fa-lg text-grey" aria-hidden="true" title="MOSTRAR FORMATO RF001"></i>
+                                            </a>
+                                        @endif
                                     </td>
                                     <td class="text-left">
                                         @if ($item->estado == 'FIRMADO')
@@ -443,14 +461,6 @@
                     console.error(error.statusText);
                     document.getElementById('loader-overlay').style.display = 'none';
                 }
-            });
-
-            $('#memorandum').on('keyup', function(){
-                let value = $(this).val().toUpperCase();
-                $('#tabla tbody tr').filter(function(){
-                    // Mostrar u ocultar la fila según si contiene el texto ingresado
-                    $(this).toggle($(this).find('td:nth-child(2)').text().toUpperCase().indexOf(value) > -1)
-                });
             });
         });
     </script>
