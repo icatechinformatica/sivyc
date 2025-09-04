@@ -76,7 +76,7 @@
 @section('content')
     @php
         $turnado = $hini = $hfin = $inicio = $termino = $nombre_curso = $organismo = $id_gvulnerable= $checked = null;
-        $ocultar = true;
+        $ocultar = false;
         if(isset($grupo)){
             $turnado = $grupo->turnado_grupo;
             $hini = $grupo->hini;
@@ -88,8 +88,10 @@
             $id_gvulnerable = $grupo->id_gvulnerable;
             if($id_gvulnerable && $grupo->clave !== null ) $checked = 'checked';
             elseif($grupo->clave == null and $es_vulnerable) $checked = 'checked';
-            if($grupo->vb_dg==false and $grupo->clave=='0') $ocultar = true;
-            else $ocultar = false;
+            ///HABILITAR PARA VOBO DG
+                //if($grupo->vb_dg==false and $grupo->clave=='0') $ocultar = true; 
+                //else $ocultar = false;
+            ///FIN HABILITAR VOBO DG
         }
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
@@ -158,6 +160,7 @@
                             @endif
                             @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
                             @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
+                            @if($grupo->dura)<span>DURACIÓN:&nbsp;&nbsp;<strong>{{$grupo->dura}} HORAS</strong></span>@endif
                             @if ($grupo->cgeneral!='0')
                                 <span>CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->cgeneral}}</strong></span>
                                 <span>FECHA CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->fcgen}}</strong></span>
@@ -277,22 +280,12 @@
                 </div>
                 <div class="form-row" @if($ocultar) id="div_instructor" @endif>
                     <div class="form-group col-md-4">
-                        <label>INSTRUCTOR ASIGNADO:</label>
-                        @php
-                            $encontrado = false
-                        @endphp
+                        <label>ASIGNAR INSTRUCTOR:</label>                       
                         <select name="instructor" id="instructor" class="form-control mr-sm--2">
+                            <option value="">SELECCIONAR</option>
                             @foreach ($instructores as $item)
-                                <option value="{{$item->id}}" {{ $item->id == $instructor->id ? 'selected' : '' }}> {{$item->instructor}} </option>
-                                @if ($item->id == $instructor->id)
-                                    @php
-                                        $encontrado = true
-                                    @endphp
-                                @endif
-                            @endforeach
-                            @if (!$encontrado && $instructor)
-                                <option value="{{$instructor->id}}" selected>{{$instructor->instructor}}</option>
-                            @endif
+                                <option value="{{$item->id}}" {{ $item->id == $grupo->id_instructor ? 'selected' : '' }}> {{$item->instructor}} </option>                               
+                            @endforeach                            
                         </select>
                     </div>
                 </div>
@@ -515,15 +508,15 @@
 
                 $("#update").click(function(e){
                     e.preventDefault();
-                    consulta_instructores(folio_g, 'update');
-                    // $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'});
-                    // $('#frm').submit();
+                    //consulta_instructores(folio_g, 'update');
+                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'});
+                    $('#frm').submit();
                 });
                 $("#turnar").click(function(e){
                     e.preventDefault();
-                    consulta_instructores(folio_g, 'turnar');
-                    // $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});
-                    // $('#frm').submit();
+                    //consulta_instructores(folio_g, 'turnar');
+                     $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});
+                     $('#frm').submit();
                 });
                 $("#comprobante").click(function(){ $('#frm').attr('action', "{{route('preinscripcion.grupo.comprobante')}}"); $('#frm').submit(); });
                 $("#btnremplazo").click(function(){if (confirm("Est\u00E1 seguro de ejecutar la acci\u00F3n?")==true) {$('#frm').attr({'action':"{{route('preinscripcion.grupo.remplazar')}}",'target':'_self'}); $('#frm').submit();}});
@@ -859,6 +852,7 @@
                 });
             }
 
+            /* VALIDACIÓN AL INSTRUCTOR CON ALERT
             function consulta_instructores(folio_grupo, tipo){
                 loader('show');
                 if (folio_grupo.length >0){
@@ -871,25 +865,13 @@
                         },
                         success: function(data) {
                             loader('hide');
-                            // console.log(data);
-
-                            if (data.status === 200) {
-                                // alert("si pasa, entonces puede guardar los cambios sin problemas: " + data.instructores.length);
-                                if(tipo == 'update'){
-                                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'});
-                                    $('#frm').submit();
-                                }else if (tipo == 'turnar'){
-                                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});
-                                    $('#frm').submit();
-                                }
+                            if (tipo == 'turnar' && data.status === 200){
+                                $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});
+                                $('#frm').submit();
                             }else{
-                                alert("No se encontraron instructores disponibles para este curso. Favor de comunicarse con Dirección Técnica Académica");
-                                // return;
+                                if(data.status != 200)alert("❌ " +data.mensaje);
                                 if(tipo == 'update'){
                                     $('#frm').attr({'action':"{{route('preinscripcion.grupo.update')}}",'target':'_self'});
-                                    $('#frm').submit();
-                                }else if (tipo == 'turnar'){
-                                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.turnar')}}",'target':'_self'});
                                     $('#frm').submit();
                                 }
                             }
@@ -898,13 +880,13 @@
 
                 }
             }
+            */
 
         function loader(make) {
             if(make == 'hide') make = 'none';
             if(make == 'show') make = 'block';
             document.getElementById('loader-overlay').style.display = make;
         }
-
         </script>
     @endsection
 @endsection

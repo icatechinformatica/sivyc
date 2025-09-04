@@ -110,7 +110,7 @@ class grupoController extends Controller
                 //dd($grupo);
                 $instructores = $this->data_instructores($grupo);
                 //FIN CATALOGOS
-                $instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
+                //$instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
 
 
                 //$grupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->first();
@@ -187,7 +187,7 @@ class grupoController extends Controller
         $programas = $this->programa();
         $planteles = $this->plantel();
         return view('preinscripcion.index', compact('cursos', 'alumnos', 'unidades', 'cerss', 'unidad', 'folio_grupo', 'curso', 'activar',
-            'es_vulnerable', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','edicion_exo','instructores','instructor',
+            'es_vulnerable', 'tinscripcion', 'municipio', 'dependencia', 'localidad','grupo_vulnerable','edicion_exo','instructores',
             'medio_virtual','grupo', 'id_usuario','recibo', 'ValidaInstructorPDF', 'linkPDF', 'recibo_nulo','programas','planteles', 'message'));
     }
 
@@ -226,36 +226,37 @@ class grupoController extends Controller
 
     }
 
-
     private function data_instructores($data){
-        $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
-        ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
-        ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($data->inicio)))
-        ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($data->inicio)))
-        ->havingRaw('count(*) >= 2')
-        ->groupby('i.id');
+        if($data->status_curso !='AUTORIZADO'){        
+            $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
+            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
+            ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($data->inicio)))
+            ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($data->inicio)))
+            ->havingRaw('count(*) >= 2')
+            ->groupby('i.id');
 
-        $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-        ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
-        ->rightJoin('instructores','t.id_instructor','=','instructores.id')
-        ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-        ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-        ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-        //->JOIN('especialidad_instructor_curso','especialidad_instructor_curso.id_especialidad_instructor','=','especialidad_instructores.id')
-        //->WHERE('especialidad_instructor_curso.curso_id',$data->id_curso)
-        //->WHERE('estado',true)
-        //->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-        ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
-        // ->Where('instructor_alfa', true) // nueva linea para instructores alfa 08/05/2025
-        // ->WHERE(DB::raw("datos_alfa->'subproyectos'->>'chiapas puede'"), '=', 'no_voluntario') // nueva linea para instructores alfa 08/05/2025
-        //->where('especialidad_instructor_curso.activo', true)
-        //->WHERE('fecha_validacion','<',$data->inicio)
-        //->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
-        //->whereNotIn('instructores.id', $internos)
-        ->groupBy('t.id_instructor','instructores.id')
-        ->orderBy('instructor')
-        //VOBO ->get();
-        ->limit(1)->get(); //NUEVO
+            $instructores = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
+            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', DB::raw('count(id_curso) as total'))
+            ->rightJoin('instructores','t.id_instructor','=','instructores.id')
+            ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
+            ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
+            ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')            
+            ->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $data->id_curso)
+            ->WHERE('estado',true)
+            ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
+            ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)            
+            ->WHERE('fecha_validacion','<',$data->inicio)
+            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
+            ->whereNotIn('instructores.id', $internos)
+            ->groupBy('t.id_instructor','instructores.id')
+            ->orderBy('instructor')
+            ->get();
+        }else{
+            $instructores = DB::table('instructores')
+            ->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')
+            ->where('id',$data->id_instructor)->limit(1)->get();
+        }
+        //->limit(1)->get(); //VoBo
         return $instructores;
     }
 
@@ -282,6 +283,7 @@ class grupoController extends Controller
                 DB::raw('COALESCE(tc.cgeneral, null) as cgeneral'),
                 DB::raw('COALESCE(tc.fcgen, null) as fcgen'),
                 DB::raw('COALESCE(tc.tipo, null) as tipo'),
+                DB::raw('COALESCE(tc.dura, null) as dura'),
 
                 //DEL GRUPO
                 DB::raw('COALESCE(tc.id_cerss, ar.id_cerss) as id_cerss'),
@@ -621,8 +623,10 @@ class grupoController extends Controller
                             } else {
                                 $url_comprobante = null;
                             }
-                            $id_especialidad = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
-                            $costo_individual = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('costo');
+                            $get_curso =  DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->first();
+                            $id_especialidad = $get_curso->id_especialidad;
+                            $costo_individual = $get_curso->costo;
+
                             $horario = $request->hini . ' A ' . $request->hfin;
                             $id_organismo = DB::table('organismos_publicos')->where('organismo', $request->dependencia)->where('activo', true)->value('id');
                             if (($id_organismo == 358) OR ($request->modalidad=='EXT')) {
@@ -866,7 +870,7 @@ class grupoController extends Controller
                                             'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
                                             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
                                             'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago, 'status_solicitud' =>null
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago, 'status_solicitud' =>null,'vb_dg'=>true
                                         ]);
                                       //  dd($instructor);
                                         if ($result_curso) $message = "Operación Exitosa!!";
@@ -907,7 +911,8 @@ class grupoController extends Controller
                                             'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
                                             'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor),
                                             'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel, 'status_solicitud' =>null,'mpreapertura'=>$mapertura,'obs_preapertura'=>$request->observaciones
+                                            'programa'=>$request->programa, 'plantel'=>$request->plantel, 'status_solicitud' =>null,'mpreapertura'=>$mapertura,'obs_preapertura'=>$request->observaciones,
+                                            'vb_dg'=>true
                                             //,'programa' => null,'nota' => null,'plantel' => null
                                             ]
                                         );
@@ -953,9 +958,19 @@ class grupoController extends Controller
         $_SESSION['folio_grupo'] = NULL;
         return redirect()->route('preinscripcion.grupo');
     }
-    public function turnar()
-    {
-        if ($_SESSION['folio_grupo']) {
+    public function turnar(Request $request) 
+    { 
+        $message = null;
+        $response = $this->consultar_instructores ($request);        
+        $respon = $response->getData(true);
+        $status_inst = $respon['status'];
+        if($status_inst == 500){
+            $message = $respon['mensaje'];
+        }
+        
+
+        if ($_SESSION['folio_grupo'] and !$message) {
+            
             if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                 return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
@@ -997,7 +1012,8 @@ class grupoController extends Controller
                                     $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
                                     if($result){
                                         DB::table('instructores')->where('id',$g->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
-                                        DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->whereNull('fpreapertura')->update(['fpreapertura'=>date('Y-m-d')]);
+                                        //DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->whereNull('fpreapertura')->update(['fpreapertura'=>date('Y-m-d')]); HABILITAR PARA VOBO DG 
+                                        DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->whereNull('fpreapertura')->update(['fpreapertura'=>date('Y-m-d'),'vb_dg'=>true]); //INHABILITAR PARA VOBO DG
 
                                     }else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                                 }
@@ -1014,7 +1030,7 @@ class grupoController extends Controller
                 }
             }
         }
-        return redirect()->route('preinscripcion.grupo');
+        return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);;
     }
 
     public function delete(Request $request)
@@ -2246,37 +2262,54 @@ class grupoController extends Controller
     }
 
     ##Función para la validacion de instructores
-    public function consultar_instructores (Request $request){
-        $folio_grupo = $request->folio_grupo;
-        $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
-        $grupo = DB::table('tbl_cursos')->select('id_curso','inicio', 'id_especialidad', 'termino', 'folio_grupo', 'programa', 'id_instructor', 'tbl_unidades.unidad')
-        ->JOIN('tbl_unidades', 'tbl_unidades.id', '=', 'tbl_cursos.id_unidad')
-        ->where('folio_grupo', $folio_grupo)->first();
+ public function consultar_instructores (Request $request){
+    try {
+            $folio_grupo = $request->folio_grupo;
+            $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
+            $grupo = DB::table('alumnos_registro')->select('id_curso','inicio', 'alumnos_registro.id_especialidad', 'termino', 'folio_grupo', 'id_instructor', 'cursos.curso_alfa')
+            ->JOIN('cursos', 'cursos.id', '=' ,'alumnos_registro.id_curso')
+            ->where('folio_grupo', $folio_grupo)->first();
+            if (!$grupo) {
+                return response()->json([
+                    'status' => 500,
+                    'mensaje' => 'NO SE ENCONTRÓ EL GRUPO SOLICITADO.',
+                ]);
+            }
+            if (count($agenda) === 0) {
+                return response()->json([
+                    'status' => 500,
+                    'mensaje' => 'EL GRUPO NO CUENTA CON UNA AGENDA ASIGNADA.',
+                ]);
+            }
 
-        // list($instructores, $mensaje) = $this->data_instructores($grupo, $agenda);
+            #### Llamamos la validacion de instructor desde el servicio
+            $servicio = (new ValidacionServicioVb());
+            list($instructores, $mensaje) = $servicio->filtros_instructor($grupo, $agenda, $this->ejercicio);
 
-         #### Llamamos la validacion de instructor desde el servicio
-        $servicio = (new ValidacionServicioVb());
-        // $instructores = $servicio->consulta_general_instructores($data, $this->ejercicio);
+            //Validar si el array instructores esta vacio
+            if (count($instructores) === 0) {
+                return response()->json([
+                    'status' => 500,
+                    'mensaje' => $mensaje,
+                ]);
+            }else{
+                return response()->json([
+                    'status' => 200,
+                    'mensaje' => 'El instructor si es valido para este curso.',
+                    'instructores' => $instructores
+                ]);
+            }
 
-        list($instructores, $mensaje) = $servicio->data_validacion_instructores($grupo, $agenda, $this->ejercicio);
 
-        //Validar si el array instructores esta vacio
-        if (count($instructores) === 0) {
+        } catch (\Throwable $th) {
             return response()->json([
                 'status' => 500,
-                'mensaje' => $mensaje,
+                'mensaje' => $th->getMessage(),
             ]);
         }
 
-        return response()->json([
-            'status' => 200,
-            'mensaje' => $mensaje,
-        ]);
 
     }
-
-
     // public function pdf_acta_firm(Request $request) {
     //     $folio_grupo =  $_SESSION['folio_grupo'];
     //     $convenio_esp = DB::table('tbl_cursos')->select('cespecifico')->where('folio_grupo','=',"$folio_grupo")->first();

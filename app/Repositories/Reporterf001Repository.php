@@ -16,6 +16,7 @@ use Vyuldashev\XmlToArray\XmlToArray;
 use Spatie\ArrayToXml\ArrayToXml;
 use App\Models\Tokens_icti;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class Reporterf001Repository implements Reporterf001Interface
 {
@@ -39,9 +40,10 @@ class Reporterf001Repository implements Reporterf001Interface
                 $query->whereNull('tbl_recibos.estado_reportado')
                       ->orWhere('tbl_recibos.estado_reportado', 'GENERADO');
             })
+            ->where('tbl_cursos.status_curso', 'AUTORIZADO')
             ->with('concepto:id,concepto')
             ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato')
-            ->addSelect(\DB::raw("
+            ->addSelect(DB::raw("
                     CASE
                         WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
                         WHEN tbl_recibos.file_pdf <> 'null' THEN tbl_recibos.file_pdf
@@ -60,7 +62,7 @@ class Reporterf001Repository implements Reporterf001Interface
         foreach ($seleccionados as $seleccionado) {
             list($contrato, $numRecibo, $id) = explode("_", $seleccionado);
             # code...
-            $query = \DB::table('tbl_recibos')
+            $query = DB::table('tbl_recibos')
             ->leftjoin('tbl_cursos', 'tbl_recibos.id_curso', '=', 'tbl_cursos.id')
             ->leftjoin('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
             ->select('tbl_recibos.folio_recibo', 'tbl_recibos.unidad as unidad', 'tbl_recibos.importe', 'tbl_recibos.status_folio', 'tbl_recibos.status_recibo', 'cat_conceptos.concepto', 'tbl_recibos.depositos', 'tbl_recibos.importe', 'tbl_recibos.importe_letra', 'tbl_cursos.curso', 'tbl_recibos.descripcion', 'tbl_recibos.num_recibo', 'tbl_recibos.file_pdf')
@@ -121,9 +123,17 @@ class Reporterf001Repository implements Reporterf001Interface
         ]);
     }
 
-    public function sentRF001Format($unidad)
+    public function sentRF001Format($unidad, $memorandum = null)
     {
-        return (new Rf001Model())->where('id_unidad', '=', $unidad)->paginate(10 ?? 5);
+        $query = (new Rf001Model())->where('id_unidad', '=', $unidad);
+
+        if (!empty($memorandum)) {
+            $query->where(function($q) use ($memorandum) {
+                $q->where('memorandum', 'LIKE', "%$memorandum%");
+            });
+        }
+
+        return $query->orderBy('id', 'DESC')->paginate(10 ?? 5);
     }
 
     public function getDetailRF001Format($concentrado)
@@ -135,70 +145,64 @@ class Reporterf001Repository implements Reporterf001Interface
     public function storeData(array $request)
     {
         list($claveContrado, $numeroRecibo, $id, $idConcentrado, $numFolio) = explode("_", $request['elemento']);
+        $registro = Rf001Model::findOrFail($idConcentrado);
+        if (!$registro) {
+            return false;
+        }
 
-        $registro = (new Rf001Model())->findOrFail($idConcentrado);
-        $insertData = [];
-        $dataAdd = [];
+        if ($request['details'] === 'true') {
+            $qry = DB::table('tbl_recibos')
+                ->leftJoin('tbl_cursos', 'tbl_recibos.id_curso', '=', 'tbl_cursos.id')
+                ->leftJoin('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
+                ->select(
+                    'tbl_recibos.folio_recibo', 'tbl_recibos.unidad as unidad', 'tbl_recibos.importe',
+                    'tbl_recibos.status_folio', 'tbl_recibos.status_recibo', 'cat_conceptos.concepto',
+                    'tbl_recibos.depositos', 'tbl_recibos.importe', 'tbl_recibos.importe_letra',
+                    'tbl_cursos.curso', 'tbl_recibos.descripcion', 'tbl_recibos.num_recibo', 'tbl_recibos.file_pdf'
+                )
+                ->where('tbl_recibos.id', $id)
+                ->first();
 
-        if ($registro) {
-
-            if ($request['details'] === 'true') {
-
-                $qry = \DB::table('tbl_recibos')
-                ->leftjoin('tbl_cursos', 'tbl_recibos.id_curso', '=', 'tbl_cursos.id')
-                ->leftjoin('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
-                ->select('tbl_recibos.folio_recibo', 'tbl_recibos.unidad as unidad', 'tbl_recibos.importe', 'tbl_recibos.status_folio', 'tbl_recibos.status_recibo', 'cat_conceptos.concepto', 'tbl_recibos.depositos', 'tbl_recibos.importe', 'tbl_recibos.importe_letra', 'tbl_cursos.curso', 'tbl_recibos.descripcion', 'tbl_recibos.num_recibo', 'tbl_recibos.file_pdf')
-                ->when($id, function ($query, $id) {
-                    return $query->where('tbl_recibos.id', '=', $id);
-                })->first();
-
-                # verdadero
-                // get the actual JSON records
-                 // Obtener el campo JSON y decodificarlo
-                $datosExistentes  = json_decode($registro->movimientos, true);
-                $JsonObj = [
-                    'descripcion' => $qry->descripcion,
-                    'folio' => $qry->folio_recibo,
-                    'curso' => $qry->curso,
-                    'concepto' => $qry->concepto,
-                    'documento' => $qry->file_pdf,
-                    'importe' => $qry->importe,
-                    'importe_letra' => $qry->importe_letra,
-                    'depositos' => $qry->depositos
-                ];
-                // Add a new Json Object to existing Array
-                $datosExistentes[] = $JsonObj;
-                $updateData = [
-                    'movimientos' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE)
-                ];
-                return Rf001Model::where('id', $idConcentrado)->update($updateData);
-            } else {
-                # si es falso -- implica que se tiene que quitar del arreglo json
-                $jsonObject = $registro->movimientos;
-                $arrayDatos = json_decode($jsonObject, true);
-                $objetoBorrar = ['folio' => $numFolio];
-
-                for ($i=0; $i < count($arrayDatos); $i++) {
-                    if (
-                        $arrayDatos[$i]['folio'] == $objetoBorrar['folio']
-                    ) {
-                        unset($arrayDatos[$i]);
-                        $arrayDatos = array_values($arrayDatos);
-                        // dejarlo null
-                        Recibo::where('folio_recibo', '=', $arrayDatos[$i]['folio'])
-                        ->update([
-                            'estado_reportado' => null
-                        ]);
-                        break;
-                    }
-                }
-                $deleteData = [
-                    'movimientos' => json_encode($arrayDatos)
-                ];
-                return Rf001Model::where('id', $idConcentrado)->update($deleteData);
+            if (!$qry) {
+                return false;
             }
 
+            $datosExistentes = json_decode($registro->movimientos, true) ?: [];
+            $datosExistentes[] = [
+                'descripcion' => $qry->descripcion,
+                'folio' => $qry->folio_recibo,
+                'curso' => $qry->curso,
+                'concepto' => $qry->concepto,
+                'documento' => $qry->file_pdf,
+                'importe' => $qry->importe,
+                'importe_letra' => $qry->importe_letra,
+                'depositos' => $qry->depositos
+            ];
+
+            return Rf001Model::where('id', $idConcentrado)
+                ->update(['movimientos' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE)]);
         }
+
+        // Eliminar movimiento
+        $arrayDatos = json_decode($registro->movimientos, true) ?: [];
+        $nuevoArray = [];
+        $folioEliminado = null;
+
+        foreach ($arrayDatos as $item) {
+            if ($item['folio'] == $numFolio) {
+                $folioEliminado = $item['folio'];
+                continue; // No lo agregues al nuevo array
+            }
+            $nuevoArray[] = $item;
+        }
+
+        if ($folioEliminado) {
+            Recibo::where('folio_recibo', $folioEliminado)
+                ->update(['estado_reportado' => null]);
+        }
+
+        return Rf001Model::where('id', $idConcentrado)
+            ->update(['movimientos' => json_encode($nuevoArray, JSON_UNESCAPED_UNICODE)]);
     }
 
     public function updateFormatoRf001($request, $id)
@@ -326,7 +330,7 @@ class Reporterf001Repository implements Reporterf001Interface
         return (new Rf001Model())->where('id', $request->idRf)->update([
             'estado' => 'ENSELLADO',
             'movimiento' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
-            'contador_firma' => \DB::raw('contador_firma + 1'),
+            'contador_firma' => DB::raw('contador_firma + 1'),
             'firmante' => json_encode($curpExistente, JSON_UNESCAPED_UNICODE),
         ]);
     }
@@ -343,7 +347,7 @@ class Reporterf001Repository implements Reporterf001Interface
             ->first();
 
 
-        $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+        $organismoPublico = DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
         // checa si el documento está vacio
         if (is_null($documentoFirma)) {
@@ -387,7 +391,7 @@ class Reporterf001Repository implements Reporterf001Interface
             // fin de la generación
             foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
 
-                $puesto = \DB::table('tbl_funcionarios as funcionarios')
+                $puesto = DB::table('tbl_funcionarios as funcionarios')
                 ->select('funcionarios.cargo')
                 ->join('tbl_organismos as tblOrganismo', 'funcionarios.id_org', '=', 'tblOrganismo.id')
                 ->where(function ($query) {
@@ -540,7 +544,7 @@ class Reporterf001Repository implements Reporterf001Interface
             ->where('tbl_unidades.unidad', $unidad)
             ->with('concepto:id,concepto')
             ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato')
-            ->addSelect(\DB::raw("
+            ->addSelect(DB::raw("
                     CASE
                         WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
                         WHEN tbl_recibos.file_pdf <> 'null' THEN tbl_recibos.file_pdf
@@ -569,7 +573,7 @@ class Reporterf001Repository implements Reporterf001Interface
             ->first();
 
 
-        $organismoPublico = \DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
+        $organismoPublico = DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
         // checa si el documento está vacio
         if (is_null($documentoFirma)) {
@@ -610,7 +614,7 @@ class Reporterf001Repository implements Reporterf001Interface
 
             // fin de la generación
             foreach ($objeto['firmantes']['firmante'][0] as $key=>$moist) {
-                $puesto = \DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
+                $puesto = DB::Table('tbl_funcionarios')->Select('cargo')->Where('curp',$moist['_attributes']['curp_firmante'])->First();
                 if(!is_null($puesto)) {
                     array_push($puestos,$puesto->cargo);
                     // <td height="25px;">{{$search_puesto->cargo}}</td>
@@ -625,28 +629,26 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function updateAndValidateFormatRf001($id, $request) : array
     {
-        $checkDocumento = (new DocumentosFirmar())->where('numero_o_clave', trim($request->get('consecutivo')))->first();
+        $consecutivo = trim($request->get('consecutivo'));
+        $checkDocumento = (new DocumentosFirmar())->where('numero_o_clave', $consecutivo)->first();
         if ($checkDocumento) {
-            # se encuentran coincidencias
-            $msg = "EL FORMATO ".$request->get('consecutivo')." SE ENCUENTRA EN USO Y NO PUEDE SER REMPLAZADO";
-            return ['code' => 0, 'message' => $msg];
-        } else {
-            # no se encuentran incidencias
-            $qry = (new Rf001Model())->where('id', $id)
-                ->update([
-                    'memorandum' => $request->get('consecutivo'),
-                    'periodo_inicio' => $request->get('periodoInicio'),
-                    'periodo_fin' => $request->get('periodoFIn'),
-                    'created_at' => Carbon::now(),
-                ]);
-            return ['code' => 1, 'message' => $qry];
+            // Eliminar el registro en DocumentosFirmar antes de actualizar
+            $checkDocumento->delete();
         }
+        $qry = (new Rf001Model())->where('id', $id)
+            ->update([
+                'memorandum' => $request->get('consecutivo'),
+                'periodo_inicio' => $request->get('periodoInicio'),
+                'periodo_fin' => $request->get('periodoFIn'),
+                'created_at' => Carbon::now(),
+            ]);
+        return ['code' => 1, 'message' => $qry];
 
     }
 
     public function setCcp($idUnidad)
     {
-        return \DB::table('tbl_funcionarios as funcionario')
+        return DB::table('tbl_funcionarios as funcionario')
                 ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
                 ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
                 ->where('funcionario.activo', '=', 'true')
@@ -678,7 +680,7 @@ class Reporterf001Repository implements Reporterf001Interface
             }
             return true;
         } catch (\Throwable $th) {
-            return $th->message();
+            return $th->getMessage();
         }
     }
 

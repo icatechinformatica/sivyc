@@ -43,100 +43,95 @@ class Rf001Controller extends Controller
      */
     public function index(Request $request, $concentrado = null)
     {
-        // Crear una instancia de Carbon para la fecha actual
         $fechaActual = Carbon::now();
         $periodo = $this->obtenerPrimerYUltimoDiaHabil($fechaActual);
+
+        $idRf001 = 0;
+        $getConcentrado = null;
+        $foliosMovimientos = null;
+
+        // Fechas por defecto
+        $periodoInicio = $periodo[0];
+        $periodoFin = $periodo[4];
+        $fechaInicio = $request->get('fechaInicio', $periodoInicio);
+        $fechaFin = $request->get('fechaFin', $periodoFin);
+
         if ($concentrado) {
             $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
             $idRf001 = $concentrado;
             $this->rfoo1Repository->regresarEstadoRecibo($idRf001);
 
-            // Decodificar el JSON
-            $data = json_decode($getConcentrado, true);
-
-            // Obtener los movimientos como un array PHP
-            $movimientos = json_decode($data['movimientos'], true);
-
-            // Extraer los folios de los movimientos
+            // Si $getConcentrado es objeto, accede directo; si es JSON, decodifica
+            $data = is_array($getConcentrado) ? $getConcentrado : json_decode($getConcentrado, true);
+            $movimientos = json_decode($data['movimientos'] ?? '[]', true);
             $foliosMovimientos = array_column($movimientos, 'folio');
 
-            $periodoInicio = ($request->get('fechaInicio') !== null && $request->get('fechaInicio') !== '') ? $request->get('fechaInicio') : $getConcentrado->periodo_inicio;
-            $periodoFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '')? $request->get('fechaFin') : $getConcentrado->periodo_fin;
-
-            $fechaInicio = ($request->get('fechaInicio') !== null && $request->get('fechaInicio') !== '') ? $request->get('fechaInicio') : $getConcentrado->periodo_inicio;
-            $fechaFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '')? $request->get('fechaFin') : $getConcentrado->periodo_fin;
-        }
-        else {
-            $getConcentrado = null;
-            $foliosMovimientos = null;
-            $idRf001 = 0;
-
-            $periodoInicio = ($request->get('fechaInicio') !== null && $request->get('fechaInicio') !== '') ? $request->get('fechaInicio') : $periodo[0];
-            $periodoFin = ($request->get('fechaFin') !== null && $request->get('fechaFin') !== '')? $request->get('fechaFin') : $periodo[4];
-
-            $fechaInicio = $request->get('fechaInicio');
-            $fechaFin = $request->get('fechaFin');
+            $periodoInicio = $request->get('fechaInicio', $getConcentrado->periodo_inicio ?? $periodoInicio);
+            $periodoFin = $request->get('fechaFin', $getConcentrado->periodo_fin ?? $periodoFin);
+            $fechaInicio = $periodoInicio;
+            $fechaFin = $periodoFin;
         }
 
-        // Recuperar los checkboxes seleccionados de los parámetros de consulta
         $selectedCheckboxes = $request->input('seleccionados', []);
+        $user = Auth::user();
+        $idUnidad = $user->unidad;
 
-        $idUnidad = Auth::user()->unidad;
-        $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
-        $unidad = $obtenerUnidad->unidad;
-        // Obtener la URL actual sin los parámetros especificados
-        $filteredUrl = $request->except(['_token', 'ID', 'filtrar', 'idconcepto']);
+        // Solo una consulta a la unidad
+        $obtenerUnidad = DB::table('tbl_unidades')->select('unidad')->where('id', $idUnidad)->first();
+        $unidad = $obtenerUnidad->unidad ?? null;
+
         $folioGrupo = $request->get('folio_grupo');
         $getUnidad = $request->get('unidad');
         $statusRecibo = $request->get('estado');
-        $user = Auth::user();
+
         $datos = $this->rfoo1Repository->index($user);
-        $filters = [];
-        // Formatear la fecha al formato deseado
 
-        $data = $this->rfoo1Repository->getReciboQry($obtenerUnidad->unidad);
-        #nuevo fechas del periodo que se obtiene la información
-        $tipoSolicitud = 'CONCENTRADO'; //declarado vacio para fines prácticos
+        // Consulta base
+        $data = $this->rfoo1Repository->getReciboQry($unidad);
 
 
-        $data->when(!empty($fechaInicio) && !empty($fechaFin), function ($query) use ($fechaInicio, $fechaFin) {
-            return $query->whereRaw("EXISTS (
-                        SELECT 1
-                        FROM jsonb_array_elements(tbl_recibos.depositos) AS deposito
-                        WHERE (deposito->>'fecha')::date BETWEEN ? AND ?
-                    ) ", [$fechaInicio, $fechaFin]);
-        });
+        // Filtros optimizados
+        if (!empty($fechaInicio) && !empty($fechaFin)) {
+            $data->whereRaw("EXISTS (
+                SELECT 1
+                FROM jsonb_array_elements(tbl_recibos.depositos) AS deposito
+                WHERE (deposito->>'fecha')::date BETWEEN ? AND ?
+            )", [$fechaInicio, $fechaFin]);
+        }
 
-        $data->when($request->filled('unidad'), function ($query) use ($request) {
-            return $query->where('tbl_unidades.unidad', $request->get('unidad'));
-        });
+        if (!empty($getUnidad)) {
+            $data->where('tbl_unidades.unidad', $getUnidad);
+        }
 
-        // Filtrado por folio de grupo
-        $data->when(isset($folioGrupo) && $folioGrupo !== '', function ($query) use ($folioGrupo) {
-            return $query->where('tbl_recibos.folio_recibo', '=', trim($folioGrupo));
-        });
+        if (!empty($folioGrupo)) {
+            $data->where('tbl_recibos.folio_recibo', trim($folioGrupo));
+        }
 
-        // Filtrado por estado del recibo
-        $data->when(isset($statusRecibo) && $statusRecibo !== '', function ($query) use ($statusRecibo, &$tipoSolicitud) {
+        $tipoSolicitud = 'CONCENTRADO';
+        if (!empty($statusRecibo)) {
             if ($statusRecibo == 'CANCELADO') {
                 $tipoSolicitud = 'CANCELADO';
             }
-            return $query->where('tbl_recibos.status_folio', '=', trim($statusRecibo));
-        });
+            $data->where('tbl_recibos.status_folio', trim($statusRecibo));
+        }
 
         $query = $data->orderBy('tbl_recibos.id', 'ASC')->paginate(25);
 
         $currentYear = date('Y');
         $path_files = $this->path_files;
 
-        return view('reportes.rf001.index', compact('datos', 'currentYear', 'query', 'idUnidad', 'unidad', 'path_files', 'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes', 'periodoInicio', 'periodoFin', 'fechaInicio', 'fechaFin', 'idRf001', 'tipoSolicitud'))->render();
+        return view('reportes.rf001.index', compact(
+            'datos', 'currentYear', 'query', 'idUnidad', 'unidad', 'path_files',
+            'getConcentrado', 'foliosMovimientos', 'selectedCheckboxes',
+            'periodoInicio', 'periodoFin', 'fechaInicio', 'fechaFin', 'idRf001', 'tipoSolicitud'
+        ))->render();
     }
 
     public function dashboard(Request $request)
     {
         // obtener unidad
         $idUnidad = Auth::user()->unidad;
-        $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
+        $obtenerUnidad = DB::table('tbl_unidades')->where('id', $idUnidad)->first();
         $unidad = $obtenerUnidad->unidad;
 
         return view('reportes.rf001.dashboard', compact('unidad'))->render();
@@ -290,7 +285,7 @@ class Rf001Controller extends Controller
         $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($id);
         $idRf001 = $id;
         $idUnidad = Auth::user()->unidad;
-        $obtenerUnidad = \DB::table('tbl_unidades')->where('id', $idUnidad)->first();
+        $obtenerUnidad = DB::table('tbl_unidades')->where('id', $idUnidad)->first();
         $unidad = $obtenerUnidad->unidad;
 
         // Decodificar el JSON
@@ -378,7 +373,8 @@ class Rf001Controller extends Controller
         // si se necesita generar el dato
         // aplicar el filtro sólo para memorandum
         $unidad = Auth::user()->unidad;
-        $data = $this->rfoo1Repository->sentRF001Format($unidad);
+        $memorandum = $request->input('memorandum'); // Obtén el valor del input
+        $data = $this->rfoo1Repository->sentRF001Format($unidad, $memorandum);
         return view('reportes.rf001.formatos', compact('data'))->render();
     }
 
@@ -427,12 +423,12 @@ class Rf001Controller extends Controller
         $idReporte = base64_encode($id);
         $unidad = $rf001->unidad;
 
-        $dataunidades = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
+        $dataunidades = DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
         $idUnidad = Auth::user()->unidad;
 
         $direccion = $dataunidades->direccion;
         // aplicando distructuración
-        $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+        $distintivo = DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $dataunidades->id, $organismo);
 
         $data = [
@@ -468,10 +464,10 @@ class Rf001Controller extends Controller
         $organismo = Auth::user()->id_organismo;
         $idReporte = base64_encode($id);
 
-        $data = \DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
+        $data = DB::table('tbl_unidades')->where('unidad', $rf001->unidad)->first();
         $direccion = $data->direccion;
         // aplicando distructuración
-        $distintivo = \DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+        $distintivo = DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
         list($bodyMemo, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDoctoCancelado($idReporte, $unidad, $organismo);
 
         $report = PDF::loadView('reportes.rf001.vista_concentrado.memorf001', compact('bodyMemo', 'distintivo','direccion',  'uuid', 'objeto', 'puestos', 'qrCodeBase64'))->setPaper('a4', 'portrait')->output();
