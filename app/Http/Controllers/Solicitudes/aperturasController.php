@@ -157,7 +157,8 @@ class aperturasController extends Controller
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado=='VoBo' and $grupos[0]->vb_dg==false){ //DESHACER ENVIO voBo
                     $movimientos = ['' => '- SELECCIONAR -', 'DESHACER'=>'DESHACER MOVIMIENTO'];
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG
-                    $movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD','RETORNO-VoBo'=>'RETORNAR VoBo'];
+                    //$movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD','RETORNO-VoBo'=>'RETORNAR VoBo']; //HABILITAR VOBO DG
+                    $movimientos = ['' => '- SELECCIONAR -', 'PRETORNADO'=>'RETORNAR A UNIDAD', 'VALIDADO'=>'VALIDAR PRELIMINAR']; //INHABILITAR VOBO DG
                 }
 
             }else $message = "No se encuentran registros que mostrar.";

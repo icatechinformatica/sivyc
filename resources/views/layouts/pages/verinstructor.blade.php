@@ -98,6 +98,11 @@
                 {{ session('mensaje') }}
             </div>
         @endif
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
         @php
             //Ruta pathfiles
             $path_files = 'https://sivyc.icatech.gob.mx/storage';
@@ -1176,6 +1181,7 @@
                             @endcan
                         </div>
                         <div class="form-group col-md-3"><br>
+
                             <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-entrevista-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de entrevista</small></small></a>
                         </div>
                     @else
@@ -1491,7 +1497,7 @@
                     @endif
                     <div id=divperfil @if(count($perfil) == 0) class='d-none d-print-none' @endif>
                         <strong>Info!</strong> No hay Registros
-                        @if($datainstructor->status != "PREVALIDACION")
+                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA')
                             <div class="pull-right">
                                 @can('instructor.editar_fase2')
                                     <a class="btn mr-sm-4 mt-3" href="{{ route('cursoimpartir-form', ['idins' => $id]) }}">Agregar Especialidad Validado para Impartir</a>
@@ -1570,6 +1576,23 @@
                     {{-- <footer>El instructor dado de baja puede ser dado de alta de nuevo en cualquier momento necesario y viceversa.</footer> --}}
                 </div>
             @endif
+            @can('only_admins_wsp')
+                <hr style="border-color:dimgray">
+                <div>
+                    <label><h3>Reenviar Credenciales de acceso para e.firma</h3></label>
+                </div>
+                <div class="form-row">
+                    <div class="pull-right">
+                        <a class="btn btn-info btn-sm mr-sm-4 mt-3"
+                           href="{{ route('reenviar-wsp-instructor', ['idins' => $id]) }}"
+                           title="Reenviar credenciales de acceso por WhatsApp"
+                           data-toggle="tooltip"
+                           data-placement="top">
+                            <i class="fa fa-envelope"></i> Reenviar Credenciales
+                        </a>
+                    </div>
+                </div>
+            @endcan
             @if($datainstructor->status != 'VALIDADO' || $datainstructor->status != 'BAJA')
                 <hr style="border-color:dimgray">
                 <div>
@@ -2129,7 +2152,7 @@
                             </div>
                             <div class="form-group col-md-10">
                                 <label for="inputmemosol">Observaciones</label>
-                                <textarea name="observacionreturn" id="observacionreturn" cols="6" rows="4" class="form-control" required></textarea>
+                                <textarea name="observacionreturn" id="observacionreturn" cols="30" rows="10" class="form-control" required></textarea>
                             </div>
                         </div>
                         <div class="form-row">
@@ -3076,7 +3099,8 @@
              datos.institucion_pais2 != '' && datos.institucion_entidad != '' && datos.institucion_ciudad != '' &&
              datos.institucion_nombre != '' && datos.fecha_documento != '' && datos.periodo != ''&& datos.folio_documento != '' &&
              datos.capacitador_icatech != 'SIN ESPECIFICAR' && datos.recibidos_icatech != 'SIN ESPECIFICAR' &&
-             datos.exp_lab != '' && datos.exp_doc != '')
+             datos.exp_lab != '' && datos.exp_doc != ''
+            )
             {
                 var url = '/instructor/mod/perfilinstructor/guardar';
                 var request2 = $.ajax
@@ -3139,7 +3163,6 @@
                 if(respuesta['error'] != 'error')
                 {
                     position = document.getElementById("row").value;
-                    // console.log(respuesta);
                     $('#delperprofModal').modal('hide');
                     $('#delperprofwarning').prop("class", "d-none d-print-none")
                         var table = document.getElementById('tableperfiles')
@@ -3319,7 +3342,7 @@
                     document.getElementById("puestolab").value = '';
                     document.getElementById("periodolab").value = '';
                     document.getElementById("institucionlab").value = '';
-                    document.getElementById("idInstructorexpdoc").value = '';
+                    document.getElementById("idInstructorexplab").value = '';
                     $('#addexplabwarning').prop("class", "d-none d-print-none")
                     const span = document.getElementById('newnrevisionspan');
                 });
@@ -3374,66 +3397,6 @@
                 $('#delexplabModal').modal('hide');
                 console.log(respuesta)
             });
-        }
-
-        chkpre = document.getElementById("chkpre").value;
-        if(chkpre == 'FALSE')
-        {
-            let arine = document.getElementById("arch_ine");
-            let ardom = document.getElementById("arch_domicilio");
-            let arcur = document.getElementById("arch_curp");
-            let arban = document.getElementById("arch_banco");
-            let arfot = document.getElementById("arch_foto");
-            let arid = document.getElementById("arch_id");
-            let arrfc = document.getElementById("arch_rfc");
-            let arest = document.getElementById("arch_estudio");
-            let aralt = document.getElementById("arch_curriculum_personal");
-            let imageName0 = document.getElementById("imageName0");
-            let imageName = document.getElementById("imageName");
-            let imageName2 = document.getElementById("imageName2");
-            let imageName3 = document.getElementById("imageName3");
-            let imageName4 = document.getElementById("imageName4");
-            let imageName5 = document.getElementById("imageName5");
-            let imageName6 = document.getElementById("imageName6");
-            let imageName7 = document.getElementById("imageName7");
-            let imageName8 = document.getElementById("imageName8");
-
-            arine.addEventListener("change", ()=>{
-                let inputImage0 = document.querySelector("#arch_ine").files[0];
-                imageName0.innerText = inputImage0.name;
-            })
-            ardom.addEventListener("change", ()=>{
-                let inputImage = document.querySelector("#arch_domicilio").files[0];
-                imageName.innerText = inputImage.name;
-            })
-            arcur.addEventListener("change", ()=>{
-                let inputImage2 = document.querySelector("#arch_curp").files[0];
-                imageName2.innerText = inputImage2.name;
-            })
-            arban.addEventListener("change", ()=>{
-                let inputImage3 = document.querySelector("#arch_banco").files[0];
-                imageName3.innerText = inputImage3.name;
-            })
-            arfot.addEventListener("change", ()=>{
-                let inputImage4 = document.querySelector("#arch_foto").files[0];
-                imageName4.innerText = inputImage4.name;
-            })
-            arid.addEventListener("change", ()=>{
-                let inputImage5 = document.querySelector("#arch_id").files[0];
-                imageName5.innerText = inputImage5.name;
-            })
-            arrfc.addEventListener("change", ()=>{
-                let inputImage6 = document.querySelector("#arch_rfc").files[0];
-                imageName6.innerText = inputImage6.name;
-            })
-            arest.addEventListener("change", ()=>{
-                let inputImage7 = document.querySelector("#arch_estudio").files[0];
-                imageName7.innerText = inputImage7.name;
-            })
-            aralt.addEventListener("change", ()=>{
-                let inputImage8 = document.querySelector("#arch_curriculum_personal").files[0];
-                imageName8.innerText = inputImage8.name;
-            })
         }
 
         function validacionpdfview()
@@ -3975,8 +3938,8 @@
         function toggleOcupacion() {
             const ocupacion = document.getElementById('ocupacion').value;
             const labelOcupa = document.getElementById('label_ocupa');
-            const sinOcupa = document.getElementById('sin_ocupa');
-            const conOcupa = document.getElementById('con_ocupa');
+            const sinOcupa = document.getElementById('sin_ocupacion');
+            const conOcupa = document.getElementById('con_ocupacion');
             const ingresoMensual = document.getElementById('ingreso_mensual_div');
             const ingresoLabel = document.getElementById('ingreso_label');
 
