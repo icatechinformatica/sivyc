@@ -9,6 +9,7 @@
 <link rel="stylesheet" href="{{ asset('css/stepbar.css') }}" />
 <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="{{ asset('css/grupos/detalles.css') }}">
+<link rel="stylesheet" href="{{ asset('css/grupos/instructor-modal.css') }}">
 @endpush
 
 @section('content')
@@ -81,7 +82,7 @@
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="agenda">
                         <span class="step-circle mr-2" data-status="restante">5</span>
-                        <span class="step-label font-weight-bold">Agenda</span>
+                        <span class="step-label font-weight-bold">Agenda - Instructor</span>
                     </li>
                     <li class="list-group-item py-3 d-flex align-items-center" data-step="alumnos">
                         <span class="step-circle mr-2" data-status="restante">6</span>
@@ -265,12 +266,29 @@
                             </div>
                         </div>
                     </div>
-                    <div class="d-flex justify-content-end mt-4">
-                        {{ html()->button('Guardar Agenda')->class('btn btn-primary float-end guardar-seccion')->id('guardar_agenda')->type('button') }}
+                    <div class="d-flex justify-content-end">
+                        {{ html()->button('Guardar Agenda')->class('btn btn-primary float-end guardar-seccion rounded')->id('guardar_agenda')->type('button') }}
+                    </div>
+                </div>
+                {{ html()->form()->close() }}
+
+                {{-- ! Instructor --}}
+                {{ html()->form()->id('form-instructor')->open() }}
+                <div class="p-3 mb-2">
+                    <h5 class="font-weight-bold border-bottom pb-1 mb-3">Instructor</h5>
+                    <div class="form-row mt-2">
+                        <div class="form-group col-12">
+                            <div class="d-flex justify-content-center align-items-center h-100">
+                                {!! html()->button('<i class="fa fa-graduation-cap mr-2 rounded"></i> SELECCIONAR INSTRUCTOR','button')->class('btn btn-instructor btn-lg w-100')->id('btn-instructor')->toHtml() !!}
+                            </div>
+                        </div>
                     </div>
                 </div>
                 {{ html()->form()->close() }}
             </div>
+
+            {{-- * Modal: Búsqueda de Instructores --}}
+            @include('grupos.seleccionarInstructor')
 
             {{-- * Sección: Alumnos --}}
             <div class="col-12 mb-4 step-section p-0" id="alumnos" style="display: none;">
@@ -459,6 +477,7 @@
 @include('grupos.observacionTurnado')
 @include('grupos.observacionVer')
 @include('grupos.confirmacionClonacion')
+@include('grupos.seleccionarInstructor')
 
 </div> {{-- /#grupos-wrapper --}}
 

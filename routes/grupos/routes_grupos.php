@@ -14,6 +14,9 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos', 'as' => 'grupos.']
     Route::get('/localidades/{municipioId}', [GrupoController::class, 'getLocalidades'])->name('localidades');
     // Guardar costos de alumnos
     Route::post('/{grupo}/alumnos/costos', [GrupoController::class, 'guardarCostosAlumnos'])->name('alumnos.costos');
+    
+    // Búsqueda de instructores para modal
+    Route::get('/instructores/buscar', [GrupoController::class, 'buscarInstructores'])->name('instructores.buscar');
 
     // GRUPOS – AJAX dependientes (municipios/localidades)
     Route::post('/cursos/disponibles', [GrupoController::class, 'getCursosDisponibles'])->name('cursos.disponibles');
@@ -33,5 +36,12 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos', 'as' => 'grupos.']
     Route::post('{grupo_id}/turnar', [GrupoController::class, 'turnarGrupo'])->name('turnar');
 
     Route::post('{grupo_id}/clonar', [GrupoController::class, 'clonarGrupo'])->name('clonar.grupo');
+
+    Route::get('/test-modal' , function() {
+        return view('grupos.seleccionarInstructor');
+    })->name('test.modal');
+
+    // Ruta de prueba sin autenticación para instructores
+    Route::get('/test-instructores', [GrupoController::class, 'buscarInstructores'])->name('test.instructores')->withoutMiddleware(['auth']);
 
 });

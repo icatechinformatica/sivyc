@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Services\Grupo\GrupoService;
 use App\Services\Grupo\AgendaService;
+use App\Services\Grupo\AsignarInstructorService;
 use Illuminate\Support\Facades\Validator;
 use App\Services\Unidades\UnidadesService;
 use App\Services\Grupo\GrupoEstatusService;
@@ -32,14 +33,16 @@ class GrupoController extends Controller
     protected $unidadesService;
     protected $municipiosService;
     protected $agendaService;
+    protected $asignarInstructorService;
 
-    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService, UnidadesService $unidadesService, MunicipioService $municipiosService, AgendaService $agendaService)
+    public function __construct(GrupoService $grupoService, GrupoEstatusService $grupoEstatusService, UnidadesService $unidadesService, MunicipioService $municipiosService, AgendaService $agendaService, AsignarInstructorService $asignarInstructorService)
     {
         $this->grupoService = $grupoService;
         $this->grupoEstatusService = $grupoEstatusService;
         $this->unidadesService = $unidadesService;
         $this->municipiosService = $municipiosService;
         $this->agendaService = $agendaService;
+        $this->asignarInstructorService = $asignarInstructorService;
     }
 
     public function index(Request $request)
@@ -465,6 +468,35 @@ class GrupoController extends Controller
         } catch (\Exception $e) {
             Log::error('Error al clonar grupo: ' . $e->getMessage());
             return response()->json(['message' => 'Error al clonar grupo'], 500);
+        }
+    }
+
+
+    // ?  Ruta nombre : instructores.buscar - Ruta Ajax para buscar instructores por {criterios}
+    public function buscarInstructores(Request $request)
+    {
+        try {
+            $request->validate(['busqueda' => 'nullable|string|max:100']);
+            $busqueda = $request->get('busqueda', '');
+            
+            // Asegurar que siempre sea string, nunca null
+            $busqueda = is_null($busqueda) ? '' : $busqueda;
+            
+            $instructores = $this->asignarInstructorService->buscarInstructores($busqueda);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Instructores encontrados con éxito.',
+                'data' => $instructores->values()->toArray()
+            ], 200);
+
+        } catch (\Exception $e) {
+            Log::error('Error al buscar instructores: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Error al buscar instructores',
+                'data' => []
+            ], 500);
         }
     }
 }

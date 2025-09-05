@@ -23,4 +23,9 @@ interface InstructorRepositoryInterface
      * Obtiene validación de especialidad del instructor
      */
     public function obtenerValidacionEspecialidad($id_especialidad, $id_instructor, $memo_especialidad);
+
+    /**
+     * Buscar instructores por nombre o especialidad
+     */
+    public function buscarInstructores(string $busqueda, int $limite = 20);
 }

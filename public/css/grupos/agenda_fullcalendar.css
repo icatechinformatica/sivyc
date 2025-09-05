@@ -150,6 +150,17 @@
     border-radius: 5px;
 }
 
+.btn-instructor {
+    background-color: #027ddb;
+    color: white;
+    border-radius: 5px;
+}
+
+.btn-agenda:hover,
+.btn-instructor:hover {
+    color: #cacaca;
+}
+
 .btn-regresar {
     color: #0d6efd;
     border-radius: 5px;

@@ -193,6 +193,7 @@ return [
         App\Providers\UnidadServiceProvider::class,
         App\Providers\MunicipioServiceProvider::class,
         App\Providers\AgendaServiceProvider::class,
+        App\Providers\AsignarInstructorServiceProvider::class,
 
     ],
 
