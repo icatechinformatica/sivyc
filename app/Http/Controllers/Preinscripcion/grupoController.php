@@ -125,7 +125,8 @@ class grupoController extends Controller
                                 ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
                                 ->where(\DB::raw("elem->>'memo_val'"), '=', $instructor_mespecialidad);
                         })
-                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad') as pdfvalida"));
+                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad' ORDER BY elem->>'fecha_val'  DESC 
+LIMIT 1) as pdfvalida"));
                 }
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $folio_grupo;
