@@ -705,7 +705,7 @@ class grupoController extends Controller
                                 ->where('instructores.id', $request->instructor)
                                 //->whereJsonContains('unidades_disponible', [$grupo->unidad])
                                 ->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
-                                //->WHERE('especialidad_instructores.activo', 'true')
+                                ->WHERE('especialidad_instructores.activo', 'true')
                                 ->WHERE('fecha_validacion','<',$request->inicio)
                                 ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
                                 ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
