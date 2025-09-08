@@ -37,10 +37,6 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'grupos', 'as' => 'grupos.']
 
     Route::post('{grupo_id}/clonar', [GrupoController::class, 'clonarGrupo'])->name('clonar.grupo');
 
-    Route::get('/test-modal' , function() {
-        return view('grupos.seleccionarInstructor');
-    })->name('test.modal');
-
     // Ruta de prueba sin autenticación para instructores
     Route::get('/test-instructores', [GrupoController::class, 'buscarInstructores'])->name('test.instructores')->withoutMiddleware(['auth']);
 

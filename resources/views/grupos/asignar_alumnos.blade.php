@@ -10,20 +10,25 @@
 @endpush
 
 @section('content')
-<div class="card-header rounded-lg shadow d-flex justify-content-between align-items-center mb-0">
-    <div class="col-md-8 d-flex align-items-center">
-        <a href="{{ route('grupos.editar', $grupo->id) }}"
-           class="btn btn-outline-light btn-sm d-inline-flex align-items-center px-2 py-1 mr-3"
-           title="Regresar a editar grupo" aria-label="Regresar a editar grupo">
-            <i class="fa fa-arrow-left mr-1"></i>
-        </a>
-        <span>Grupos / Asignar Alumnos</span>
-    </div>
-    <div class="d-flex align-items-center">
-        <span class="font-weight-bold mr-3">Curso:</span>
-        <span class="badge badge-secondary p-2 mr-4" style="font-size:1rem;">{{ $grupo->curso->nombre_curso }}</span>
-        <span class="font-weight-bold mr-2">Folio Grupo:</span>
-        <span class="badge badge-info p-2" style="font-size:1rem;">{{ $grupo->clave_grupo ?? '-' }}</span>
+<div class="card-header rounded-lg shadow d-flex align-items-center header-grupos">
+    <div class="col-md-12 d-flex flex-column flex-md-row align-items-start align-items-md-center w-100">
+        <!-- Título -->
+        <div class="col-md-8 d-flex align-items-center">
+            <a href="{{ route('grupos.editar', $grupo->id) }}" class="btn btn-outline-light btn-sm d-inline-flex align-items-center px-2 py-1 mr-3" title="Regresar a editar grupo" aria-label="Regresar a editar grupo">
+                <i class="fa fa-arrow-left mr-1"></i>
+            </a>
+            <h5 class="mb-0 font-weight-bold">Grupos <span class="text-muted">/ Asignar Alumnos</span></h5>
+        </div>
+
+        <!-- Badges a la derecha -->
+        <div class="badges-wrap d-flex flex-wrap align-items-center order-2 order-md-3 ml-md-auto">
+            <span class="badge badge-pill badge-light" style="font-weight: 600;">
+                <i class="fa fa-book mr-1" aria-hidden="true"></i>{{ $grupo->curso->nombre_curso }}
+            </span>
+            <span class="badge badge-pill badge-info ml-2" style="font-weight: 600;">
+                <i class="fa fa-hashtag mr-1" aria-hidden="true"></i>{{ $grupo->clave_grupo ?? '-' }}
+            </span>
+        </div>
     </div>
 </div>
 
@@ -34,50 +39,48 @@
     <div class="col-12 my-2">
         @if (session('success'))
             <div class="alert alert-success" role="alert">{{ session('success') }}</div>
-            @endif
-            @if (session('error'))
+        @endif
+        @if (session('error'))
             <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
-            @endif
-            @if (session('info'))
+        @endif
+        @if (session('info'))
             <div class="alert alert-info" role="alert">{{ session('info') }}</div>
         @endif
     </div>
 </div>
 
 <div class="card card-body mt-0">
-    <div class="col-md-12 mb-3 d-flex justify-content-between align-items-center px-0">
-        <div class="col-md-9 flex-grow-1 px-0">
-            <form class="form-inline" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo->id) }}">
-                @csrf
-                <div class="input-group w-50">
-                    <input type="text" name="curp" class="form-control" placeholder="Ingrese CURP" maxlength="18" required>
-                    <div class="input-group-append">
-                        <button class="btn btn-primary mr-2 rounded" type="submit" name="action" value="agregar">Agregar</button>
-                    </div>
-                </div>
-            </form>
-        </div>
+    <div class="row mb-3">
+        <form class="col-12 col-md-6 p-3 rounded d-flex flex-column flex-md-row align-items-center h-100" method="POST" action="{{ route('grupos.asignar.alumnos', $grupo->id) }}">
+            @csrf
+            <div class="form-group col-12 col-md-8 mb-2 mb-md-auto">
+                <label for="curp" class="d-block">CURP</label>
+                <input type="text" name="curp" class="form-control" id="curp" placeholder="Ingrese CURP" maxlength="18" required>
+            </div>
+            <div class="form-group col-12 col-md-4">
+                <label class="d-md-block d-none" style="opacity: 0;">adjust</label>
+                <button type="submit" name="action" value="agregar" class="btn btn-sm btn-primary w-100">Agregar</button>
+            </div>
+        </form>
 
-        <div class="ml-auto d-flex align-items-center p-0 m-0 col-md-3">
-            <form id="form-costos" class="form-inline justify-content-end" method="POST" action="{{ route('grupos.alumnos.costos', $grupo->id) }}">
-                @csrf
-                <div class="d-flex align-items-center">
-                    <div class="d-flex mr-2">
-                        <label for="cuota" class="font-weight-bold my-auto">Cuota general</label>
-                    </div>
-                    <div class="input-group input-group-sm mr-2" style="width: 160px;">
-                        <input id="cuota" name="cuota_general" type="number" step="0.01" min="0" class="form-control"
-                            placeholder="0.00" data-num-alumnos="{{ $numAlumnos }}"
-                            data-per-share="{{ !is_null($perShare) ? number_format((float) $perShare, 2, '.', '') : '' }}"
-                            data-costo-curso="{{ !is_null($costoCurso) ? number_format((float) $costoCurso, 2, '.', '') : '' }}"
-                            value="{{ $todosSinCosto && !is_null($perShare) ? number_format((float) $perShare, 2, '.', '') : '' }}"
-                            aria-label="Cuota general">
-                    </div>
-                    <button type="submit" class="btn btn-primary btn-sm"> <i class="fa fa-save mr-1"></i> Guardar </button>
-                </div>
-            </form>
-        </div>
+        <form id="form-costos" class="col-12 col-md-6 p-3 rounded d-flex flex-column flex-md-row align-items-center h-100" method="POST" action="{{ route('grupos.alumnos.costos', $grupo->id) }}">
+            @csrf
+            <div class="form-group col-12 col-md-8 mb-2 mb-md-auto">
+                <label for="cuota" class="d-block">Cuota general</label>
+                <input id="cuota" name="cuota_general" type="number" step="0.01" min="0" class="form-control" placeholder="0.00"
+                    data-num-alumnos="{{ $numAlumnos }}"
+                    data-per-share="{{ !is_null($perShare) ? number_format((float) $perShare, 2, '.', '') : '' }}"
+                    data-costo-curso="{{ !is_null($costoCurso) ? number_format((float) $costoCurso, 2, '.', '') : '' }}"
+                    value="{{ $todosSinCosto && !is_null($perShare) ? number_format((float) $perShare, 2, '.', '') : '' }}"
+                    aria-label="Cuota general">
+            </div>
+            <div class="form-group col-12 col-md-4">
+                <label class="d-md-block d-none" style="opacity: 0;">adjust</label>
+                <button type="submit" class="btn btn-sm btn-primary w-100"><i class="fa fa-save mr-1"></i> Guardar</button>
+            </div>
+        </form>
     </div>
+
 
     <div class="table-responsive">
         <table class="table table-bordered table-striped table-hover">
@@ -139,7 +142,8 @@
                     <td class="text-center align-middle">
                         <form method="POST" action="{{ route('grupos.eliminar.alumno', $grupo->id) }}" class="">
                             @csrf
-                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}"> <button class="btn btn-danger btn-sm rounded p-2" type="submit" name="action" value="eliminar">
+                            <input type="hidden" name="alumno_id" value="{{ $alumno->id }}"> <button
+                                class="btn btn-danger btn-sm rounded p-2" type="submit" name="action" value="eliminar">
                                 <i class="fas fa-trash"></i>
                             </button>
                         </form>

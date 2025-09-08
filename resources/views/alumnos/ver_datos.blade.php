@@ -160,9 +160,9 @@ if (!$esNuevoRegistro && $datos) {
                                     <span class="input-group-text" id="entidad-addon"><i class="bi bi-geo-alt"></i></span>
                                 </div>
                                 {!! html()->select('entidad_de_nacimiento_select', [null => 'SELECCIONE LA ENTIDAD'] + $entidades->pluck('nombre', 'id')->toArray())->class('form-control')->id('entidad_de_nacimiento_select')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon')
-                                        ->value(!$esNuevoRegistro ? $datos->entidad_de_nacimiento : '') !!}
-                                {!! html()->text('entidad_de_nacimiento')->class('form-control')->id('entidad_de_nacimiento')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon') !!}
-
+                                        ->value(!$esNuevoRegistro ? $datos->id_entidad_nacimiento : '') !!}
+                                {!! html()->text('entidad_de_nacimiento')->class('form-control')->id('entidad_de_nacimiento')->attribute('aria-label', 'Entidad de Nacimiento')->attribute('aria-describedby', 'entidad-addon')
+                                    ->value($entidades->find($datos->id_entidad_nacimiento)->nombre) !!}
                             </div>
                         </div>
                         <div class="col-12 col-md-3 mb-3">
