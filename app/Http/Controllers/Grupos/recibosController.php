@@ -45,9 +45,9 @@ class recibosController extends Controller
         
         [$data , $message] = $this->data($request);
         if(session('message')) $message = session('message');
-        if($data){     
-            if($data->reemplazar)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];
-            //elseif($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS', 'DESHACER'=>'DESHACER ASIGNACION'];
+        if($data){
+            if($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS', 'DESHACER'=>'DESHACER ASIGNACION'];
+            elseif($data->reemplazar)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];
             elseif((!$data->status_curso and !in_array($data->status_folio, ['DISPONIBLE','IMPRENTA'])) OR in_array($data->status_folio,['ACEPTADO', 'CARGADO','ASIGNADO'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];            
             
             if(in_array($data->status_folio, ["REPORTADO","SELLADO","CANCELADO"])) $movimientos = [];
@@ -443,7 +443,7 @@ class recibosController extends Controller
                             END) as status_folio"),                    
                         DB::raw("(
                             CASE
-                                WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status_folio is not null) THEN true
+                                WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status_folio is not null) AND tr.estado_reportado IS NULL AND tc.clave='0' THEN true
                                 ELSE false
                             END) as deshacer"),
                         DB::raw("(
@@ -630,7 +630,8 @@ class recibosController extends Controller
                     $result = null;
                     [$data , $message] = $this->data($request);// dd($data);
                     if($data->deshacer){
-                        $result = DB::table('tbl_recibos')->where('id',$data->id_recibo)->whereIn('status_folio', ['ASIGNADO','CARGADO','ENVIADO'])->update(                                        [ 
+                        $result = DB::table('tbl_recibos')->where('id',$data->id_recibo)->whereNull('estado_reportado')
+                        ->whereIn('status_folio', ['ASIGNADO','CARGADO','ENVIADO'])->update(                                        [ 
                                 'importe' => 0, 'importe_letra' =>null,'status_folio' => null,
                                 'fecha_status' => null, 'id_curso' => null, 'folio_grupo' => null,
                                 'fecha_expedicion' => null, 'recibio' => null,                   
