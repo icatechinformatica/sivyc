@@ -46,7 +46,8 @@ class recibosController extends Controller
         [$data , $message] = $this->data($request);
         if(session('message')) $message = session('message');
         if($data){     
-            if($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS', 'DESHACER'=>'DESHACER ASIGNACION'];
+            if($data->reemplazar)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];
+            //elseif($data->deshacer)$movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS', 'DESHACER'=>'DESHACER ASIGNACION'];
             elseif((!$data->status_curso and !in_array($data->status_folio, ['DISPONIBLE','IMPRENTA'])) OR in_array($data->status_folio,['ACEPTADO', 'CARGADO','ASIGNADO'])) $movimientos = [ 'SUBIR' => 'SUBIR ARCHIVO PDF', 'ESTATUS'=>'CAMBIO DE ESTATUS'];            
             
             if(in_array($data->status_folio, ["REPORTADO","SELLADO","CANCELADO"])) $movimientos = [];
@@ -386,19 +387,17 @@ class recibosController extends Controller
         return $message;
     }
 
-    private function data(Request $request){//dd($request->ID);
+    private function data(Request $request){//dd($request->id_concepto);
         $data = $message = [];
-        if(isset($request->idconcepto) and $request->ID<>"NUEVO") $request->id_concepto = $request->idconcepto;        
-        if($request->ID=="NUEVO" and $request->id_concepto==1) $request->ID = null;
+        $valor = null;        
+        
+        if($request->ID <> "NUEVO" AND $request->ID) $valor = $request->ID;
+        elseif($request->folio_grupo) $valor = $request->folio_grupo;
 
-        if(!is_numeric($request->ID) AND !is_null($request->ID)){       
-            $request->folio_grupo = $request->ID;
-            $request->ID =null;
-        }           
-
-        if($request->ID OR $request->folio_grupo){
+        if($valor OR $request->ID == "NUEVO" ){
             switch($request->id_concepto){
-                case 1: /// PAGO DE CURSO
+            case 1: /// PAGO DE CURSO
+                if($valor){
                     $data = DB::table('tbl_cursos as tc')  
                     ->select('tc.id as id_curso','tc.folio_grupo','tc.unidad','tu.ubicacion', 'tc.clave','tc.curso','tc.nombre','tc.tipo_curso',
                         'tc.status_curso','tc.inicio', 'tc.termino', 'tc.hini', 'tc.hfin','tc.costo','tc.hombre','tc.mujer','tr.recibide',
@@ -447,6 +446,11 @@ class recibosController extends Controller
                                 WHEN  tr.num_recibo = (SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status_folio is not null) THEN true
                                 ELSE false
                             END) as deshacer"),
+                        DB::raw("(
+                            CASE
+                                WHEN  tr.estado_reportado IS NULL and tc.clave='0' THEN true
+                                ELSE false
+                            END) as reemplazar"),
 
                         DB::raw("(
                             CASE                                
@@ -457,42 +461,38 @@ class recibosController extends Controller
                             END) as editar"),
                         DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
                         DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
-                    );                    
-                    
-                    
-                    
-                    if(is_numeric($request->ID) and $request->ID>0) $data =  $data->where('tr.id',$request->ID);
-                    else if($request->folio_grupo) $data = $data->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$request->folio_grupo.'%');
-                    
-                    $valor = $request->folio_grupo;
-                    $ID = $request->ID;
-                    $data = $data->wherein('tc.unidad',$this->unidades)
+                    )
+                    ->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$valor.'%')
+                    ->wherein('tc.unidad',$this->unidades)
                     ->join('tbl_unidades as tu','tu.unidad', '=', 'tc.unidad')
-                    ->leftjoin('tbl_recibos as tr', function ($join) use ($request, $valor) {                    
+                    ->leftjoin('tbl_recibos as tr', function ($join){                    
                         $join->on('tr.folio_grupo','=','tc.folio_grupo')
-                        ->where('tr.id_concepto','1');
-                        /*
-                        if($request->folio_grupo){ 
+                        ->where('tr.id_concepto','1');       
+                          /*
+                        if($valor){
                             $join->where(function ($query) use ($valor) {
                                 $query->where('tr.folio_recibo', $valor)
-                                ->orWhere(function ($q) use ($valor) {
+                                 ->orWhere(function ($q) use ($valor) {
                                         $q->where('tc.folio_grupo', $valor)
-                                            ->whereNotIn('tr.status_folio',['CANCELADO']);
+                                            ->where('tc.status_curso','<>','0');
                                     });
                                 });
                         }
                                 */
+                                
                     })
                     ->join('tbl_recibos as max', function ($join) {
                             $join->on('max.unidad', '=', 'tu.ubicacion')                    
                             ->where('max.num_recibo', '=', DB::raw("(SELECT max(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and ( status_folio!='CANCELADO' or status_folio is null ))")); 
                     })        
-                    ->leftjoin('cat_conceptos as cc','cc.id','=','tr.id_concepto')->first(); //dd($data);
+                    ->leftjoin('cat_conceptos as cc','cc.id','=','tr.id_concepto')->first(); 
                     
-                    if($data->status_folio == 'CANCELADO') $request->folio_grupo = $data->folio_recibo;
-                    elseif(!$request->folio_grupo) $request->folio_grupo = $data->folio_grupo;
-                break;
-                default:
+                    //if($data->status_folio == 'CANCELADO') $request->folio_grupo = $data->folio_recibo;
+                    //elseif(!$request->folio_grupo) $request->folio_grupo = $data->folio_grupo;
+                    $request->folio_grupo = $valor;
+                }
+            break;
+            default:                
                     $data = DB::table('cat_conceptos as cc')  
                         ->select('cc.*','tr.*','tr.id as id_recibo','tu.ubicacion','tu.direccion','tu.delegado_administrativo','tc.clave','tc.curso',
                             'tr.importe as costo','cc.id as id_concepto','cc.importe as precio_unitario', 'tc.id as id_curso','ti.alumno','tc.tipo_curso','ti.calificacion',
@@ -523,6 +523,11 @@ class recibosController extends Controller
                                     ELSE false
                                 END) as deshacer"),
                             DB::raw("(
+                            CASE
+                                WHEN  tr.estado_reportado IS NULL and tc.clave='0' THEN true
+                                ELSE false
+                            END) as reemplazar"),
+                            DB::raw("(
                                 CASE
                                     WHEN tr.estado_reportado IS NOT NULL  THEN false
                                     WHEN tr.status_folio IS NOT NULL AND tr.status_folio<>'ENVIADO' THEN true
@@ -531,14 +536,16 @@ class recibosController extends Controller
                                 END) as editar")
                         )                        
                         ->where('cc.id',$request->id_concepto)
-                        ->leftjoin('tbl_recibos as tr', function ($join) use ($request) {                    
+                        //->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$valor.'%')
+
+                        ->leftjoin('tbl_recibos as tr', function ($join) use ($request, $valor) {                    
                             $join->on('cc.id','=','tr.id_concepto')
                             ->where('tr.id_concepto','>','1')
                             ->whereNotIn('tr.status_folio',['CANCELADO'])                           
-                            ->where(function ($query) use ($request) {
-                                if($request->folio_grupo)$query->where(DB::raw('CONCAT(tr.folio_recibo, tr.folio_grupo)'), 'ILIKE', '%'.$request->folio_grupo.'%');
+                            ->where(function ($query) use ($request, $valor) {// dd($request->ID);
+                                if($valor)$query->where(DB::raw('CONCAT(tr.folio_recibo, tr.folio_grupo)'), 'ILIKE', '%'.$valor.'%');
                                 elseif($request->ID=="NUEVO") $query->orWhere('tr.id', 0);
-                                else $query->orWhere('tr.id', $request->ID);
+                                //else $query->orWhere('tr.id', $request->ID);
                             });                                                    
                         })
                         ->join('tbl_unidades as tu',function ($join) use($request){
@@ -569,16 +576,16 @@ class recibosController extends Controller
                               //  $join->Where(DB::raw('CONCAT(tc.folio_grupo,tc.clave)'), 'ILIKE', '%' . $request->clave . '%');
                         }) 
                         ->first(); //dd($data);
-                        if(!$request->folio_grupo) $request->folio_grupo = $data->folio_recibo;
+                        $request->folio_grupo = $valor;
                         
-                break;
+            break;
             }//dd($data);
-            if(!$data) $message["ERROR"]= "EL FOLIO NO ENCONTRATO.";
+            if(!$data) $message["ERROR"]= "POR FAVOR, INGRESE UN FOLIO VÁLIDO.";
             else{
                 $_SESSION['data'] = $data;
                 //if($data->id_recibo) $data->id_recibo = $this->encryptData($data->id_recibo, $this->key); 
                 //else  $data->id_recibo = $this->encryptData(0, $this->key); 
-                if(!$data->recibide and $request->id_concepto==1) $data->recibide = DB::table('alumnos_registro')->where('folio_grupo',$request->folio_grupo)->value('realizo');                
+                if(!$data->recibide and $request->id_concepto==1) $data->recibide = DB::table('alumnos_registro')->where('folio_grupo',$valor)->value('realizo');                
                 if(!$data->fecha_expedicion) $data->fecha_expedicion = date('Y-m-d');
                 if(!$data->recibio) $data->recibio = $data->delegado_administrativo;
                 if(isset($data->depositos)) $data->depositos = json_decode($data->depositos,true); 
