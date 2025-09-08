@@ -6,7 +6,6 @@
 
     let calendar = null;
     let selectedRange = null; // { start, end, startStr, endStr } rango seleccionado (end exclusivo)
-    let buildingConnectors = false; // evita recursión al reconstruir conectores
 
     // Utilidades de formato de tiempo
     function decimalAHora(dec) {
@@ -104,67 +103,7 @@
         return new Date(NaN);
     }
 
-    // Determina si un evento es conector (de fondo, no persistente)
-    function esConector(evt) {
-        try {
-            return evt && (evt.display === 'background' || evt.extendedProps?.isConnector === true);
-        } catch (_) { return false; }
-    }
-
-    // Crea conectores de fondo para días consecutivos con eventos
-    function reconstruirConectores() {
-        const cal = (window.GrupoAgenda && window.GrupoAgenda.calendar) || calendar;
-        if (!cal) return;
-        // Evitar reentradas
-        if (buildingConnectors) return;
-        buildingConnectors = true;
-
-        // Eliminar conectores previos
-        cal.getEvents().forEach(function (e) { if (esConector(e)) e.remove(); });
-
-        // Recolectar eventos reales (no conectores)
-        const eventos = cal.getEvents().filter(function (e) { return !esConector(e); });
-        if (!eventos.length) return;
-
-        function toDayStr(date) {
-            const dt = (date instanceof Date) ? date : new Date(date);
-            const y = dt.getFullYear();
-            const m = String(dt.getMonth() + 1).padStart(2, '0');
-            const da = String(dt.getDate()).padStart(2, '0');
-            return `${y}-${m}-${da}`;
-        }
-
-        function addDaysStr(dateStr, days) {
-            const p = dateStr.split('-');
-            const d = new Date(+p[0], +p[1] - 1, +p[2]);
-            d.setDate(d.getDate() + days);
-            const y = d.getFullYear();
-            const m = String(d.getMonth() + 1).padStart(2, '0');
-            const da = String(d.getDate()).padStart(2, '0');
-            return `${y}-${m}-${da}`;
-        }
-
-        // Crear conectores por cada evento (si cruza más de un día)
-        eventos.forEach(function (e) {
-            if (!e.start || !e.end) return;
-            const startDay = toDayStr(e.start);
-            // end es exclusivo; para cubrir visualmente el último día, usamos end tal como está
-            const endDayExclusive = toDayStr(e.end);
-            if (startDay === endDayExclusive) return; // mismo día
-            cal.addEvent({
-                id: `conn-${startDay}-${endDayExclusive}`,
-                start: `${startDay}T00:00:00`,
-                end: `${endDayExclusive}T00:00:00`,
-                display: 'background',
-                allDay: true,
-                editable: false,
-                overlap: true,
-                extendedProps: { isConnector: true }
-            });
-        });
-
-        buildingConnectors = false;
-    }
+    // (eliminado reconstruirConectores y lógica de conectores al ya no requerirse)
 
     // Actualiza los indicadores del panel lateral de la agenda
     function actualizarIndicadoresAgenda() {
@@ -172,7 +111,7 @@
             const cal = (window.GrupoAgenda && window.GrupoAgenda.calendar) || calendar;
             if (!cal) return;
 
-            const eventos = cal.getEvents().filter(function (e) { return !esConector(e); });
+            const eventos = cal.getEvents();
 
             // Para eventos que abarcan varios días, NO debemos tomar la diferencia directa end - start
             // (eso contaría noches completas). En su lugar: minutosPorDía x númeroDeDías (inclusive).
@@ -270,7 +209,6 @@
                 eventDidMount: function (info) { /* no-op */ },
                 // Refrescar indicadores al ajustar el conjunto de eventos
                 eventsSet: function () {
-                    if (!buildingConnectors) reconstruirConectores();
                     actualizarIndicadoresAgenda();
                 },
                 // Cargar eventos desde backend
@@ -294,7 +232,6 @@
                 // Seleccionar evento: solo mostrar detalles, no eliminar
                 eventClick: function (info) {
                     const evt = info.event;
-                    if (esConector(evt)) return; // ignorar conectores
                     try {
                         // Marcar selección visual opcional
                         calendar.getEvents().forEach(e => e.setProp('classNames', (e === evt) ? ['fc-selected'] : []));
@@ -335,7 +272,6 @@
                 // Drag & drop con validación de horas máximas
                 eventDrop: function (info) {
                     if (!esEditable()) { info.revert(); return; }
-                    if (esConector(info.event)) { info.revert(); return; }
                     const maxHoras = obtenerMaxHoras();
                     if (isFinite(maxHoras)) {
                         const minutos = minutosTotalesAgenda(calendar);
@@ -351,7 +287,6 @@
                 },
                 eventResize: function (info) {
                     if (!esEditable()) { info.revert(); return; }
-                    if (esConector(info.event)) { info.revert(); return; }
                     const maxHoras = obtenerMaxHoras();
                     if (isFinite(maxHoras)) {
                         const minutos = minutosTotalesAgenda(calendar);
@@ -368,9 +303,7 @@
                 // Cambios directos sobre props del evento
                 eventAdd: function () { actualizarIndicadoresAgenda(); },
                 eventChange: function () { actualizarIndicadoresAgenda(); },
-                eventRemove: function () { actualizarIndicadoresAgenda(); },
-                // Evitar arrastrar conectores
-                eventAllow: function (dropInfo, draggedEvent) { return !esConector(draggedEvent); },
+                eventRemove: function () { actualizarIndicadoresAgenda(); }
             });
 
             calendar.render();
@@ -390,7 +323,7 @@
             } catch (_) { /* noop */ }
 
             // Inicializar conectores e indicadores con el estado actual (si hay eventos precargados)
-            setTimeout(function () { reconstruirConectores(); actualizarIndicadoresAgenda(); }, 0);
+            setTimeout(function () { actualizarIndicadoresAgenda(); }, 0);
         });
 
         // Botón: aplicar horario al rango seleccionado
@@ -471,7 +404,7 @@
                     $btn.prop('disabled', false).text('Aplicar a días seleccionados');
                     selectedRange = null;
                     if (calendar) calendar.unselect();
-                    setTimeout(function () { reconstruirConectores(); actualizarIndicadoresAgenda(); }, 0);
+                    setTimeout(function () { actualizarIndicadoresAgenda(); }, 0);
                 }
             });
         });
@@ -500,7 +433,7 @@
                     btn.disabled = true;
                     btn.dataset.agendaId = '';
                     actualizarIndicadoresAgenda();
-                    setTimeout(function () { reconstruirConectores(); }, 0);
+                    setTimeout(function () { /* ya no se usan conectores */ }, 0);
                 } catch (_) { /* noop */ }
             },
             error: function () { alert('No se pudo eliminar'); }
