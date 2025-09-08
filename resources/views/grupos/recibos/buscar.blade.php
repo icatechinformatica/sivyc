@@ -90,7 +90,7 @@
 
                                     </td>
                                     <td class="text-center">
-                                        <a class="nav-link pt-0"  onclick="ver('{{ $item->id_recibo ?? $item->folio_grupo}}','{{ $item->id_concepto}}')">
+                                        <a class="nav-link pt-0"  onclick="ver('{{ ($item->folio_recibo AND $item->folio_recibo!= 'NO DISPONIBLE') ? $item->folio_recibo : $item->folio_grupo}}','{{ $item->id_concepto}}')">
                                             <i  class="fa fa-search  fa-3x fa-lg" style="color: #826E19"  title='VER REGISTRO DE RECIBO DE PAGO.'></i>
                                         </a>
                                     </td>
@@ -145,7 +145,7 @@
                                         @endif
                                     </td>
                                     <td class="text-center">
-                                        <a class="nav-link pt-0"  onclick="ver('{{ $item->id_recibo }}','{{ $item->id_concepto}}')">
+                                        <a class="nav-link pt-0"  onclick="ver('{{ $item->folio_recibo }}','{{ $item->id_concepto}}')">
                                             @if($item->editar)                                                
                                                 <i  class="fa fa-edit  fa-3x fa-lg text-success" title='EDITAR REGISTRO DE RECIBO DE PAGO.'></i>
                                             @else                                                
@@ -154,7 +154,7 @@
                                         </a>
                                     </td>
                                 </tr>     
-                            @endforeach     
+                            @endforeach      
                         
                         </tbody>
                         <tfoot>
