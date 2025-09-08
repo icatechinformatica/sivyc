@@ -53,6 +53,32 @@ class Reporterf001Repository implements Reporterf001Interface
             ->leftJoin('tbl_cursos','tbl_cursos.folio_grupo','=', 'tbl_recibos.folio_grupo');
     }
 
+    public function applyFilters($query, array $filters)
+    {
+        // Filtro por fechas dentro de JSONB depositos
+        if (!empty($filters['fechaInicio']) && !empty($filters['fechaFin'])) {
+            $query->whereRaw("
+                EXISTS (
+                    SELECT 1
+                    FROM jsonb_array_elements(tbl_recibos.depositos) AS deposito
+                    WHERE (deposito->>'fecha')::date BETWEEN ? AND ?
+                )
+            ", [$filters['fechaInicio'], $filters['fechaFin']]);
+        }
+
+        // Filtro por unidad
+        if (!empty($filters['unidad'])) {
+            $query->where('tbl_unidades.unidad', $filters['unidad']);
+        }
+
+        // Filtro por folio de recibo
+        if (!empty($filters['folio'])) {
+            $query->where('tbl_recibos.folio_recibo', trim($filters['folio']));
+        }
+
+        return $query;
+    }
+
     public function generateRF001Format($request, $usuario)
     {
         $seleccionados = $request->input('seleccionados', []);
