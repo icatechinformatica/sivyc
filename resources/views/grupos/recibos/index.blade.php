@@ -47,7 +47,7 @@
                             <h4 class="bg-light p-2">&nbsp; RECIBO No. &nbsp;<span class="bg-white p-1">&nbsp;<b>{{$data->uc}}</b> <b class="text-danger">{{ str_pad($data->num_recibo, 4, "0", STR_PAD_LEFT) }}</b>&nbsp;</span> &nbsp;</h4>
                             @if($data->status_folio == 'DISPONIBLE') 
                                 <h4 class="text-center text-white p-2" style="background-color: #33A731;">&nbsp;{{$data->status_folio}} &nbsp;</h4>
-                            @elseif(in_array($data->status_folio, ['IMPRENTA','ENVIADO','CANCELADO','REPORTADO'])) 
+                            @elseif(in_array($data->status_folio, ['IMPRENTA','ENVIADO','CANCELADO','REPORTADO','SELLADO'])) 
                                 <h4 class="text-center text-white bg-danger p-2" >&nbsp;{{$data->status_folio}} &nbsp;</h4>
                             @else
                                 <h4 class="bg-warning text-center p-2">&nbsp;{{$data->status_folio}} &nbsp;</h4>

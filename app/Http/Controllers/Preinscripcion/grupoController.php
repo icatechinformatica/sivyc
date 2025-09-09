@@ -125,7 +125,8 @@ class grupoController extends Controller
                                 ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
                                 ->where(\DB::raw("elem->>'memo_val'"), '=', $instructor_mespecialidad);
                         })
-                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad') as pdfvalida"));
+                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad' ORDER BY elem->>'fecha_val'  DESC 
+LIMIT 1) as pdfvalida"));
                 }
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $folio_grupo;
@@ -700,14 +701,14 @@ class grupoController extends Controller
                                     'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
                                     'banco','no_cuenta','interbancaria','tipo_honorario'
                                     )
-                                //->WHERE('estado', true)
-                                //->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')
+                                ->WHERE('estado', true)
+                                ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')
                                 ->where('instructores.id', $request->instructor)
                                 //->whereJsonContains('unidades_disponible', [$grupo->unidad])
-                                //->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
-                                //->WHERE('especialidad_instructores.activo', 'true')
-                                //->WHERE('fecha_validacion','<',$request->inicio)
-                                //->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
+                                ->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
+                                ->WHERE('especialidad_instructores.activo', 'true')
+                                ->WHERE('fecha_validacion','<',$request->inicio)
+                                ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
                                 ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
                                 ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
                                 ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
