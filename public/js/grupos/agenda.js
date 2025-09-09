@@ -6,6 +6,8 @@
 
     let calendar = null;
     let selectedRange = null; // { start, end, startStr, endStr } rango seleccionado (end exclusivo)
+    // Flag para navegar automáticamente a la primera fecha del grupo solo una vez
+    let gotoInicialHecho = false;
 
     // Utilidades de formato de tiempo
     function decimalAHora(dec) {
@@ -103,7 +105,6 @@
         return new Date(NaN);
     }
 
-    // (eliminado reconstruirConectores y lógica de conectores al ya no requerirse)
 
     // Actualiza los indicadores del panel lateral de la agenda
     function actualizarIndicadoresAgenda() {
@@ -210,6 +211,25 @@
                 // Refrescar indicadores al ajustar el conjunto de eventos
                 eventsSet: function () {
                     actualizarIndicadoresAgenda();
+                    // Ir a la primera fecha (start más antiguo) solo la primera vez que haya eventos
+                    if (!gotoInicialHecho && calendar) {
+                        try {
+                            const evs = calendar.getEvents();
+                            if (evs && evs.length) {
+                                let primerInicio = null;
+                                evs.forEach(function (e) {
+                                    const s = e.start;
+                                    if (s instanceof Date && !isNaN(s)) {
+                                        if (!primerInicio || s < primerInicio) primerInicio = s;
+                                    }
+                                });
+                                if (primerInicio) {
+                                    calendar.gotoDate(primerInicio);
+                                    gotoInicialHecho = true;
+                                }
+                            }
+                        } catch (_) { /* noop */ }
+                    }
                 },
                 // Cargar eventos desde backend
                 events: function (fetchInfo, success, failure) {
