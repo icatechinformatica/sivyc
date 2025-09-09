@@ -116,7 +116,7 @@ class ValidacionServicioVb
                     FROM agenda
                     LEFT JOIN tbl_cursos ON agenda.id_curso = tbl_cursos.folio_grupo
                     WHERE agenda.id_instructor = {$instructor->id}
-                        AND (tbl_cursos.status_curso = 'AUTORIZADO' OR tbl_cursos.vb_dg = true)
+                        AND (tbl_cursos.status_curso <> 'CANCELADO')
                 ) as t"))
                 ->whereBetween('dia', [$semanaInicio->format('Y-m-d'), $semanaFin->format('Y-m-d')])
                 ->value(DB::raw('SUM(EXTRACT(hour FROM duracion) * 60 + EXTRACT(minute FROM duracion))'));
@@ -148,7 +148,7 @@ class ValidacionServicioVb
             $cursos = DB::table('tbl_cursos as tc')
                 ->where('tc.id_instructor', $instructor->id)
                 ->where(function ($query) {
-                        $query->where('tc.status_curso', '=', 'AUTORIZADO');
+                        $query->where('tc.status_curso', '<>', 'CANCELADO');
                 })
                 // ->where(function ($query) use ($folio_grupo) {
                 //     $query->where('tc.status_curso', '=', 'VALIDADO')
@@ -325,8 +325,7 @@ class ValidacionServicioVb
             )
             ->whereIn('a.id_instructor', $idsInstructores)
             ->where(function ($query) {
-                $query->where('tc.status_curso', '=', 'AUTORIZADO')
-                    ->orWhere('tc.vb_dg', '=', true);
+                $query->where('tc.status_curso', '<>', 'CANCELADO');
             })
             ->get()
             ->groupBy('id_instructor');
