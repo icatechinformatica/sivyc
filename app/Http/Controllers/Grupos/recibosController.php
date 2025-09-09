@@ -427,11 +427,11 @@ class recibosController extends Controller
                         DB::raw("(
                             CASE
                                 WHEN tc.comprobante_pago IS NOT NULL THEN (regexp_match(tc.folio_pago, '[0-9]+'))[1]::INTEGER 
-                                WHEN  tr.status_folio is not null THEN tr.num_recibo 
+                                WHEN tr.status_folio is not null THEN tr.num_recibo 
                                 WHEN max.status_folio is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status_folio is null)
-                                ELSE max.num_recibo+1
-                            END) as num_recibo"),
-
+                                ELSE (SELECT max(num_recibo)+1 FROM tbl_recibos WHERE unidad = tu.ubicacion)
+                            END
+                            ) as num_recibo"),
                         DB::raw("(
                             CASE        
                                 WHEN tr.status_folio='CANCELADO' THEN 'CANCELADO'                         
@@ -509,7 +509,7 @@ class recibosController extends Controller
                                 CASE                                
                                     WHEN  tr.status_folio is not null THEN tr.num_recibo 
                                     WHEN max.status_folio is null THEN (SELECT min(num_recibo) FROM tbl_recibos WHERE unidad = tu.ubicacion and status_folio is null)
-                                    ELSE max.num_recibo+1
+                                    ELSE (SELECT max(num_recibo)+1 FROM tbl_recibos WHERE unidad = tu.ubicacion)
                                 END) as num_recibo"), 
                             DB::raw("(
                                 CASE
