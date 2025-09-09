@@ -368,6 +368,8 @@ class aperturaController extends Controller
         $mpreapertura = $request->memo;
         $fpreapertura = $request->fecha;
         $obs_preapertura = $request->obs;
+        $cespecifico = $request->cespe;
+        $fcespe = $request->fespe;
         $message = "La operación ha fallado, favor de volver a intentar.";
         try {
             if($folio_grupo && $mpreapertura && $fpreapertura) {                
@@ -398,8 +400,22 @@ class aperturaController extends Controller
                     Auth::user()->name,
                     $folio_grupo,
                 ]);
+                if(DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->where('status','NO_REPORTADO')->exists()){
+                    $result = DB::statement("
+                        UPDATE alumnos_registro
+                        SET
+                            cespecifico = ?,
+                            fcespe = ?                        
+                        WHERE folio_grupo = ?
+                    ", [
+                        $cespecifico,
+                        $fcespe,                    
+                        $folio_grupo,
+                    ]);
+                    if($result) $message = "Operación Exitosa!"; 
+                }else $message = "EL CONVENIO ESPECÍFICO NO PUEDE SER EDITADO, EL GRUPO HA SIDO REPORTADO EN FORMATO T.";
 
-                if($result) $message = "Operación Exitosa!";                 
+                          
             }else $message = "Por favor, ingrese los datos requeridos.";
             
             return $message;
