@@ -148,8 +148,7 @@ class ValidacionServicioVb
             $cursos = DB::table('tbl_cursos as tc')
                 ->where('tc.id_instructor', $instructor->id)
                 ->where(function ($query) {
-                        $query->where('tc.status_curso', '=', 'AUTORIZADO')
-                        ->orWhere('tc.vb_dg', '=', true);
+                        $query->where('tc.status_curso', '=', 'AUTORIZADO');
                 })
                 // ->where(function ($query) use ($folio_grupo) {
                 //     $query->where('tc.status_curso', '=', 'VALIDADO')
