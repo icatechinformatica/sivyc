@@ -34,16 +34,14 @@ class ValidacionServicioVb
                             DB::raw("CAST(agenda.start AS TIME) as hini"),
                             DB::raw("CAST(agenda.end AS TIME) as hfin")
                         )
-                        // ->where('tbl_cursos.status', '<>', 'CANCELADO')
-                        // ->where('tbl_cursos.status', '=', 'VALIDADO')
                         ->where('tbl_cursos.id_instructor', '=', $ins->id)
                         ->where('agenda.id_instructor', $ins->id)
                         ->whereDate('agenda.start', '<=', $fechaStr)
                         ->whereDate('agenda.end', '>=', $fechaStr)
+                        ->where('agenda.id_curso', '<>', $value->id_curso)
                         ->where(function ($query) use($value) {
                             $query->where('tbl_cursos.status_curso', '<>', 'CANCELADO')
                                 ->orWhereNull('tbl_cursos.status_curso');
-                                // ->orWhere('tbl_cursos.folio_grupo', '<>', $value->id_curso);
                         })
                         ->get();
                     $minutosTotales = 0;
