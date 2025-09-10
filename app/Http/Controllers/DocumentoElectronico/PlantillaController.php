@@ -30,11 +30,7 @@ class PlantillaController extends Controller
     {
         // TODO: MEJORAR CONSULTA Y AGREGAR A PDF
         // $plantillas = $this->servicioPlantilla->obtenerPlantillas();
-        $plantillas = $this->servicioPlantilla->getPlantilla(5);
-        return response()->json([
-            'success' => true,
-            'data' => $plantillas
-        ], 200);
+        return response()->json(['message' => 'Funcionalidad en desarrollo'], 200);
     }
 
     /**
@@ -66,45 +62,6 @@ class PlantillaController extends Controller
      */
     public function show($id)
     {
-        $documento = $this->servicioPlantilla->getPlantilla($id);
-        // como llamarias al método de inyección de variables en un servicio dedicado
-                //Prueba de inyeccion html
-        $uuid = 'prueba uuid'; $cadena_sello = 'prueba de cadena de sellado'; $fecha_sello = '22/04/2025';
-
-        $selloDigital = "Sello Digital: | GUID: $uuid | Sello: $cadena_sello | Fecha: $fecha_sello<br>
-                Este documento ha sido Firmado Electrónicamente, teniendo el mismo valor que la firma autógrafa
-                de acuerdo a los Artículos 1, 3, 8 y 11 de la Ley de Firma Electrónica Avanzada del Estado de Chiapas";
-
-        $variables = [
-            'sello_digital' => $selloDigital,
-            'no_contrato' => 'TU/DA/800/0272/2024.',
-            'titular_uc' => 'LIC. ILIANA MICHELLE RAMIREZ MOLINA',
-            'cargo_titular_uc' => 'TITULAR DE LA DIRECCIÓN DE LA UNIDAD DE CAPACITACION TUXTLA',
-            'instructor' => 'ROGELIO MOISES MUELA LOPEZ',
-            'director_general' => 'Mtra. Fabiola Lizbeth Astudillo Reyes',
-            'cargo_dg' => 'Titular de la Dirección General del Instituto de Capacitación y Vinculación Tecnológica del Estado de Chiapas',
-            'gobernador' => 'Dr. Rutilio Escandón Cadenas',
-            'fecha_nom_dg' => '16 de enero de 2019',
-            'espe_instructor' => 'ADMINISTRACIÓN',
-            'regimen_instructor' => 'SUELDOS Y SALARIOS E INGRESOS ASIMILADOS A SALARIOS',
-            'clave_grupo' => '2B-24-ADMI-CAE-0138',
-            'tipo_identif_instructor' => 'Credencial Para Votar',
-            'folio_identif_instructor' => '1625073024802',
-            'rfc_instructor' => 'MULR870429QN2',
-            'domicilio_instructor' => 'C SABINO NORTE MZA 139 LT 9, COL PATRIA NUEVA DE SABINES, C.P. 29045, TUXTLA GUTIERREZ, CHIS.',
-            'importe_monto' => '12,800.00',
-            'importe_monto_letra' => 'DOCE MIL OCHOCIENTOS PESOS 00/100 M.N.',
-            'municipio' => 'TUXTLA GUTIERREZ',
-            // otras variables...
-        ];
-        $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($documento->cuerpo, $variables);
-        $newDocument = (new EFirmaService())->setBody($contenidoProcesado);
-        return $newDocument;
-        //
-        // return response()->json([
-        //     'success' => true,
-        //     'data' => $contenidoProcesado
-        // ], 200);
     }
 
     /**
@@ -116,11 +73,6 @@ class PlantillaController extends Controller
     public function edit($id)
     {
         //
-        $plantillas = $this->servicioPlantilla->getPlantilla($id);
-        return response()->json([
-            'success' => true,
-            'data' => $plantillas
-        ], 200);
     }
 
     /**
@@ -146,12 +98,8 @@ class PlantillaController extends Controller
         //
     }
 
-    public function generarPdf($file)
-    {
-        return PDF::loadHTML($file);
-    }
 
-    public function loadFile($id)
+    public function loadFile($id, $grupo = null)
     {
         $objEplantilla = ['id', 'tipo', 'cuerpo', 'vigencia'];
         $dataQry = $this->servicioPlantilla->getPlantilla($id, 'Plantillas\EPlantilla', $objEplantilla, 'id'); // llamada del servicio con el metodo obtener plantilla parametro con el id y el nombre del modelo
@@ -382,7 +330,7 @@ class PlantillaController extends Controller
                 $filename = str_replace(['/', '\\'], '_', $filename);
 
                 return $pdf->stream($filename);
-                break;
+            break;
             case 'CONTRATO':
                 $id_contrato = 20912;
                 $params = ['table' => 'contratos',
@@ -520,7 +468,7 @@ class PlantillaController extends Controller
                 $filename = str_replace(['/', '\\'], '_', $filename);
 
                 return $pdf->stream($filename);
-                break;
+            break;
             case 'SUPRE':
                 // Simulación de $data_supre (objeto con propiedades)
                 $data_supre = (object)[
@@ -725,7 +673,115 @@ class PlantillaController extends Controller
                 $filename = str_replace(['/', '\\'], '_', $filename);
 
                 return $pdf->stream($filename);
-                break;
+            break;
+            case 'EXONERACION':
+                $direccion = 'Av. Central #123, Tapachula, Chiapas';
+                $direccionHtml = '';
+                $leyendaHtml = '';
+                // Definir todas las variables con valores de ejemplo
+                $variables = [
+                    'ubicacion' => 'Tapachula',
+                    'tipo_numero_documento' => 'Memorándum No. 12345',
+                    'municipio' => 'Tapachula',
+                    'fecha_doc' => '15 de Mayo de 2023',
+                    'nombre_titular' => 'Lic. Juan Pérez Hernández',
+                    'cargo_titular' => 'Director General',
+                    'tipo_exoneracion' => 'Exoneración',
+                    'dependencia' => 'Departamento de Capacitación Abierta',
+                    'nombre_vinculacion' => 'Lic. María García López',
+                    'cargo_vinculacion' => 'Responsable de Vinculación',
+                    'nombre_dunidad' => 'Ing. Carlos Martínez Ruiz',
+                    'cargo_dunidad' => 'Director de Unidad',
+                    'nombre_dgeneral' => 'Mtro. Roberto Sánchez Méndez',
+                    'cargo_dgeneral' => 'Director General de Capacitación',
+                    'nombre_dacademico' => 'Lic. Ana Torres Fernández',
+                    'cargo_dacademico' => 'Directora Académica',
+                    'nombre_curso' => 'Introducción a la Programación',
+                    'modalidad' => 'Presencial',
+                    'duracion' => '40',
+                    'horario' => '16:00-20:00',
+                    'fecha_inicio' => '01/06/2023',
+                    'fecha_termino' => '15/06/2023',
+                    'tipo_capacitacion' => 'PRESENCIAL',
+                    'lugar_capacitacion' => 'Unidad de Capacitación Tapachula, Aula 4',
+                    'dias' => 'Lunes, Miércoles y Viernes',
+                    'apellido_paterno' => 'Gómez',
+                    'apellido_materno' => 'Hernández',
+                    'nombre' => 'Juan Carlos',
+                    'sexo' => 'M',
+                    'edad' => '24',
+                    'costo' => '200.00',
+                    'tipo_curso' => 'Curso',
+                    'unidad' => 'Tapachula',
+                    'costo_curso' => '1,200.00',
+                    'total_alumnos' => '12',
+                    'mujeres' => '5',
+                    'hombres' => '7',
+                    'fecha_ini_exo' => '01/06/2023',
+                    'fecha_fin_exo' => '15/06/2023',
+                    'marca_exo' => 'X',
+                    'marca_redu' => '',
+                    'num_convenio' => 'CONV-2023-056',
+                    'razon_exoneracion' => 'BR',
+                    'observaciones' => 'Grupo de bajos recursos',
+                    'mod' => 'EXT'
+                ];
+                $alumnos = [
+                    ['apellido_paterno' => 'Méndez', 'apellido_materno' => 'López', 'nombre' => 'Daniel', 'sexo' => 'M', 'edad' => 25, 'costo' => 1500],
+                    ['apellido_paterno' => 'Ramírez', 'apellido_materno' => 'Gómez', 'nombre' => 'Ana', 'sexo' => 'F', 'edad' => 23, 'costo' => 1600],
+                    ['apellido_paterno' => 'Hernández', 'apellido_materno' => 'Martínez', 'nombre' => 'Luis', 'sexo' => 'M', 'edad' => 28, 'costo' => 1400],
+                    ['apellido_paterno' => 'García', 'apellido_materno' => 'Santos', 'nombre' => 'María', 'sexo' => 'F', 'edad' => 21, 'costo' => 1350],
+                    ['apellido_paterno' => 'Torres', 'apellido_materno' => 'Pérez', 'nombre' => 'Jorge', 'sexo' => 'M', 'edad' => 30, 'costo' => 1700],
+                    ['apellido_paterno' => 'Vázquez', 'apellido_materno' => 'Ruiz', 'nombre' => 'Carmen', 'sexo' => 'F', 'edad' => 26, 'costo' => 1500],
+                    ['apellido_paterno' => 'Sánchez', 'apellido_materno' => 'Morales', 'nombre' => 'Ricardo', 'sexo' => 'M', 'edad' => 29, 'costo' => 1600],
+                    ['apellido_paterno' => 'Ortega', 'apellido_materno' => 'Flores', 'nombre' => 'Paola', 'sexo' => 'F', 'edad' => 22, 'costo' => 1450],
+                    ['apellido_paterno' => 'Castillo', 'apellido_materno' => 'Ramos', 'nombre' => 'Hugo', 'sexo' => 'M', 'edad' => 27, 'costo' => 1550],
+                    ['apellido_paterno' => 'Luna', 'apellido_materno' => 'Fernández', 'nombre' => 'Diana', 'sexo' => 'F', 'edad' => 24, 'costo' => 1650],
+                    ['apellido_paterno' => 'Navarro', 'apellido_materno' => 'Molina', 'nombre' => 'Eduardo', 'sexo' => 'M', 'edad' => 31, 'costo' => 1750],
+                    ['apellido_paterno' => 'Reyes', 'apellido_materno' => 'Cruz', 'nombre' => 'Verónica', 'sexo' => 'F', 'edad' => 20, 'costo' => 1300]
+                ];
+
+                $distintivo = DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
+                $leyenda = $this->servicioPlantilla->textoSeparador($distintivo);
+                // Asignar variables al arreglo $variables
+
+                $variables['leyenda'] = $leyenda;
+
+                $tbody = "";
+                $contador = 1;
+                foreach ($alumnos as $alumno) {
+                    $tbody .= "
+                        <tr>
+                            <td>{$contador}</td>
+                            <td>{$alumno['apellido_paterno']}</td>
+                            <td>{$alumno['apellido_materno']}</td>
+                            <td>{$alumno['nombre']}</td>
+                            <td>{$alumno['sexo']}</td>
+                            <td>{$alumno['edad']}</td>
+                            <td>{$alumno['costo']}</td>
+                        </tr>";
+                    $contador++;
+                }
+                $variables['tabla_alumnos'] = $tbody;
+
+                if (!is_array($direccion)) {
+                    $direccion = explode("*", $direccion);
+                }
+
+                // Construir el HTML
+                $direccionHtml = "<p class='direccion'>";
+                foreach ($direccion as $point => $ari) {
+                    if ($point != 0) $direccionHtml .= "<br> ";
+                    $direccionHtml .= htmlspecialchars($ari, ENT_QUOTES, 'UTF-8');
+                }
+                $direccionHtml .= "</p>";
+
+                $variables['direccion'] = $direccionHtml;
+                $contenidoProcesado = $this->servicioPlantilla->procesarPlantilla($dataQry->cuerpo, $variables);
+                $pdf = $this->servicioPlantilla->generarPdfDocument(['contenido' => $contenidoProcesado]);
+                $filename = 'solicitud_de_exoneracion_' . date('Ymd') . '.pdf';
+                return $pdf->stream($filename);
+            break;
             default:
                 # code...
                 break;
