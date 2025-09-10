@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use App\Factories\ElectronicDocumentFactory;
 use PDF;
 use Illuminate\Support\Facades\DB;
+use App\Utilities\MyUtility;
 
 class DocumentoService
 {
@@ -56,7 +57,7 @@ class DocumentoService
                 $ccpValidador = '';
                 $bandera = false;
                 $elaboroHtml = '';
-                $instituto = \DB::table('tbl_instituto')->first();
+                $instituto = DB::table('tbl_instituto')->first();
                 // Decodificar el campo cuentas_bancarias
                 $cuentas_bancarias = json_decode($instituto->cuentas_bancarias, true); // true convierte el JSON en un array asociativo
                 $cuenta = $cuentas_bancarias[$unidadUbicacion]['BBVA'];
@@ -307,7 +308,7 @@ class DocumentoService
 
     public function setCpp($idUnidad)
     {
-        $query = \DB::table('tbl_funcionarios as funcionario')
+        $query = DB::table('tbl_funcionarios as funcionario')
         ->join('tbl_organismos as organismos', 'funcionario.id_org', '=', 'organismos.id')
         ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
         ->where('funcionario.activo', 'true')
@@ -326,7 +327,7 @@ class DocumentoService
         ->where(function ($query) {
             $query->whereNull('funcionario.incapacidad')
                 ->orWhere('funcionario.incapacidad', '{}')
-                ->orWhereNull(\DB::raw("funcionario.incapacidad->>'id_firmante'"));
+                ->orWhereNull(DB::raw("funcionario.incapacidad->>'id_firmante'"));
         })
         ->orderBy('funcionario.id_org', 'asc')
         ->get();
@@ -336,7 +337,7 @@ class DocumentoService
 
     public function setFuncionarios($idUnidad)
     {
-        return \DB::table('tbl_funcionarios AS funcionario')
+        return DB::table('tbl_funcionarios AS funcionario')
                 ->join('tbl_organismos AS organismos', 'funcionario.id_org', '=', 'organismos.id')
                 ->select('funcionario.nombre', 'funcionario.id_org', 'organismos.id_parent', 'funcionario.cargo')
                 ->where([
@@ -380,16 +381,29 @@ class DocumentoService
     public function procesarPlantilla($contenido, array $variables)
     {
         foreach ($variables as $key => $value) {
+            // Convertir el valor a string según su tipo
             if (is_array($value) || is_object($value)) {
-                // Si no puedes procesarlo como string, usa json_encode o maneja según el caso
                 $value = json_encode($value);
             } elseif (is_bool($value)) {
                 $value = $value ? 'Sí' : 'No';
             } elseif (is_null($value)) {
                 $value = '';
+            } else {
+                $value = (string) $value;
             }
 
-            $contenido = str_replace("@$key", (string) $value, $contenido);
+            // Todos los patrones que queremos reemplazar
+            $patrones = [
+                "@$key",      // @variable
+                "$$key",      // $variable
+                "{{$key}}",   // {variable}
+                "[$key]",     // [variable]
+                "@{$key}",    // @{variable}
+            ];
+
+            foreach ($patrones as $patron) {
+                $contenido = str_replace($patron, $value, $contenido);
+            }
         }
 
         return $contenido;
@@ -609,5 +623,30 @@ class DocumentoService
         $part[0] = number_format($part['0']);
         $cadwell = implode(".", $part);
         return ($cadwell);
+    }
+
+    public function textoSeparador($texto)
+    {
+         // Convertir el texto en array usando * como separador
+        $partes = explode("*", $texto);
+
+        // Construir el HTML en una variable
+        $html = '<p><small style="line-height: 1;">';
+
+        foreach ($partes as $i => $parte) {
+            if ($i != 0) {
+                $html .= '<br>';
+            }
+            $html .= htmlspecialchars(trim($parte)); // quitar espacios extra y proteger caracteres
+        }
+
+        $html .= '</small></p>';
+
+        return $html;
+    }
+
+    public static function escaparHTML($texto)
+    {
+        return htmlspecialchars($texto, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
     }
 }
