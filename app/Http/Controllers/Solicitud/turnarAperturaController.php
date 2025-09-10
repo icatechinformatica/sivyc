@@ -597,7 +597,7 @@ class turnarAperturaController extends Controller
                         CASE 
                            WHEN tc.nota is not null THEN ' ' || tc.nota
                         END*/
-                    ) AS observaciones
+                    ) AS observaciones2
                 ")
             );
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
