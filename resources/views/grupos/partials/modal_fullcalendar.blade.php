@@ -77,13 +77,12 @@
                                 <div class="mb-3">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-secondary mr-2">Horas del curso</span>
-                                        <span id="fc-horas-maximas" class="fw-bold fs-5 text-dark">{{
-                                            decimal_a_hora($grupo->curso->horas) }}</span>
+                                        <span id="fc-horas-maximas" class="fw-bold fs-5 text-dark">{{ decimal_a_hora($grupo->curso->horas) }}</span>
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="text-secondary mr-2">Horas agendadas</span>
-                                        <span id="fc-horas-totales" class="d-none"> {{decimal_a_hora($grupo->horasTotales()) }}</span>
-                                        <span class="fw-bold fs-5 text-dark"> {{decimal_a_hora($grupo->horasTotales()) }}</span>
+                                        <span id="fc-horas-totales" class=""> {{decimal_a_hora($grupo->horasTotales()) }}</span>
+                                        {{-- <span class="fw-bold fs-5 text-dark"> {{decimal_a_hora($grupo->horasTotales()) }}</span> --}}
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="text-secondary mr-2">Dias totales</span>
@@ -91,8 +90,8 @@
                                     </div>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <span class="text-secondary mr-2">Horas por asignar restantes</span>
-                                        <span id="fc-horas-restantes" class="d-none">{{ decimal_a_hora($grupo->curso->horas - $grupo->horasTotales()) }}</span>
-                                        <span class="fw-bold fs-5 text-dark">{{ decimal_a_hora($grupo->curso->horas - $grupo->horasTotales()) }}</span>
+                                        <span id="fc-horas-restantes" class="">{{ decimal_a_hora($grupo->curso->horas - $grupo->horasTotales()) }}</span>
+                                        {{-- <span class="fw-bold fs-5 text-dark">{{ decimal_a_hora($grupo->curso->horas - $grupo->horasTotales()) }}</span> --}}
                                     </div>
                                 </div>
                             </div>

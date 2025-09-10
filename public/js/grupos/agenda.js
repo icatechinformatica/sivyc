@@ -10,15 +10,14 @@
     let gotoInicialHecho = false;
 
     // Utilidades de formato de tiempo
+    // Formatea como PHP decimal_a_hora: "Xhrs Ymin"
     function decimalAHora(dec) {
         if (!isFinite(dec)) dec = 0;
         if (dec < 0) dec = 0;
-        const totalMin = Math.round(dec * 60);
-        const h = Math.floor(totalMin / 60);
-        const m = totalMin % 60;
-        const hh = String(h).padStart(2, '0');
-        const mm = String(m).padStart(2, '0');
-        return `${hh}:${mm}`;
+        // Imitar exactamente la lógica de PHP: floor horas, round minutos del residuo
+        const hours = Math.floor(dec);
+        const minutes = Math.round((dec - hours) * 60);
+        return `${hours}hrs ${minutes}min`;
     }
 
     // Horas máximas del curso como número decimal (p.ej. 40)
@@ -47,7 +46,7 @@
     }
 
     function minutosTotalesAgenda(cal) {
-        const eventos = (cal?.getEvents?.() || []).filter(function (e) { return !esConector(e); });
+        const eventos = (cal?.getEvents?.() || []);
         return eventos.reduce((acc, evt) => acc + minutosEvento(evt), 0);
     }
 
@@ -67,14 +66,43 @@
     }
 
     function horaADecimal(hhmm) {
-        if (typeof hhmm !== 'string') return 0;
-        const parts = hhmm.split(':');
-        if (parts.length < 2) return 0;
-        const h = parseInt(parts[0], 10);
-        const m = parseInt(parts[1], 10);
-        const hh = isFinite(h) ? h : 0;
-        const mm = isFinite(m) ? m : 0;
-        return hh + (mm / 60);
+        if (typeof hhmm !== 'string') {
+            // permitir números ya en decimal
+            if (isFinite(hhmm)) return Number(hhmm);
+            return 0;
+        }
+        const str = hhmm.trim().toLowerCase();
+        if (!str) return 0;
+
+        // 1) Formato "Xhrs Ymin" (o variantes con espacios)
+        //    ejemplos válidos: "8hrs 30min", "8 hrs 5 min", "8hr 0min", "8hrs"
+        let m = str.match(/^(\d+)\s*h(?:rs?)?\s*(\d+)?\s*m(?:in)?\s*$/i);
+        if (m) {
+            const h = parseInt(m[1], 10) || 0;
+            const mi = parseInt(m[2], 10) || 0;
+            return h + (mi / 60);
+        }
+        // Solo horas con sufijo hrs/hr/h
+        m = str.match(/^(\d+)\s*h(?:rs?)?\s*$/i);
+        if (m) {
+            const h = parseInt(m[1], 10) || 0;
+            return h;
+        }
+
+        // 2) Formato "HH:MM"
+        if (str.includes(':')) {
+            const parts = str.split(':');
+            const h = parseInt(parts[0], 10);
+            const mi = parseInt(parts[1], 10);
+            const hh = isFinite(h) ? h : 0;
+            const mm = isFinite(mi) ? mi : 0;
+            return hh + (mm / 60);
+        }
+
+        // 3) Número decimal en texto ("40" o "40.5")
+        const num = parseFloat(str);
+        if (isFinite(num)) return num;
+        return 0;
     }
 
     function minutosEntre(fechaInicio, fechaFin) {
@@ -163,6 +191,21 @@
                 const restantes = Math.max(0, maxHoras - horasTotales);
                 $horasRestantes.textContent = decimalAHora(restantes);
             }
+
+            // Desbloqueo del botón de Instructor cuando se cumple la duración del curso
+            try {
+                const btnInstructor = document.getElementById('btn-instructor');
+                const editable = esEditable();
+                if (btnInstructor && isFinite(maxHoras)) {
+                    const cumple = horasTotales >= maxHoras - 1e-6; // tolerancia flotante
+                    btnInstructor.disabled = !(editable && cumple);
+                    if (btnInstructor.disabled) {
+                        btnInstructor.title = 'Primero agenda todas las horas del curso para seleccionar instructor.';
+                    } else {
+                        btnInstructor.removeAttribute('title');
+                    }
+                }
+            } catch (_) { /* noop */ }
         } catch (_) { /* noop */ }
     }
 

@@ -477,8 +477,6 @@
 @include('grupos.observacionTurnado')
 @include('grupos.observacionVer')
 @include('grupos.confirmacionClonacion')
-@include('grupos.seleccionarInstructor')
-
 </div> {{-- /#grupos-wrapper --}}
 
 
@@ -510,6 +508,8 @@
     editable: @json($esEditable),
         // Horas máximas del curso (decimal). Usado para calcular horas restantes en la UI.
         maxHoras: @json(isset($grupo) && isset($grupo->curso) ? $grupo->curso->horas : null),
+        // Horas agendadas iniciales (decimal) para controlar el desbloqueo del botón de Instructor sin abrir el modal
+        horasIniciales: @json(isset($grupo) ? $grupo->horasTotales() : 0),
         // Plantillas de rutas (coinciden con routes/web.php)
         routes: {
             index: function(grupoId) {
@@ -526,6 +526,34 @@
             }
         }
     };
+</script>
+<script>
+    // Estado inicial del botón de Instructor según horas agendadas vs horas del curso
+    (function() {
+        try {
+            var btn = document.getElementById('btn-instructor');
+            if (!btn) return;
+
+            var cfg = window.GrupoAgenda || {};
+            var editable = !!cfg.editable;
+            var maxHoras = parseFloat(cfg.maxHoras);
+            var horas = parseFloat(cfg.horasIniciales);
+
+            if (!isFinite(maxHoras)) {
+                btn.disabled = true;
+                btn.title = 'Selecciona un curso con horas definidas y agenda el total para habilitar.';
+                return;
+            }
+
+            var habilitar = editable && isFinite(horas) && (horas >= maxHoras);
+            btn.disabled = !habilitar;
+            if (!habilitar) {
+                btn.title = 'Primero agenda todas las horas del curso para seleccionar instructor.';
+            } else {
+                btn.removeAttribute('title');
+            }
+        } catch (_) { /* noop */ }
+    })();
 </script>
 <script>
     // Modo solo lectura global basado en $esEditable

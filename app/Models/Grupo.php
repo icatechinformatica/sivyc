@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Agenda;
+use App\Models\Vistas\CursoView;
 use Carbon\Carbon;
 
 class Grupo extends Model
@@ -64,7 +65,7 @@ class Grupo extends Model
     public function curso()
     {
         // El modelo definido es App\Models\curso (minúsculas). Ajustamos la referencia.
-        return $this->belongsTo(curso::class, 'id_curso');
+        return $this->belongsTo(CursoView::class, 'id_curso');
     }
 
     public function estatus()
@@ -203,5 +204,10 @@ class Grupo extends Model
     public function exoneracion()
     {
         return $this->belongsTo(Exoneraciones::class, 'id_tipo_exoneracion');
+    }
+
+    public function tieneInstructorAsignado()
+    {
+        return !is_null($this->id_instructor);
     }
 }

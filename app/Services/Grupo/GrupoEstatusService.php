@@ -51,14 +51,25 @@ class GrupoEstatusService
         }
 
         // ? Validar que el registro de grupo este completo
-        if ($grupo->seccion_captura !== 'agenda') {
-            if (!$this->permitirRevision($grupo)) {
-                return [
-                    'ok' => false,
-                    'mensaje' => 'Para enviar a Revisión se requiere completar el registro del grupo.'
-                ];
-            }
+
+        // ? Hora del curso cubiertas
+
+        $curso = DB::table('vista_cursos')->where('id_curso', $grupo->id_curso)->first();
+        if ($grupo->horasTotales() < $curso->horas) {
+            return [
+                'ok' => false,
+                'mensaje' => 'Para enviar a Revisión se requiere cubrir todas las horas del curso.'
+            ];
         }
+
+        // ? Instructor asignado
+        if (!$grupo->tieneInstructorAsignado()) {
+            return [
+                'ok' => false,
+                'mensaje' => 'Para enviar a Revisión se requiere asignar un instructor.'
+            ];
+        }
+
 
         // ? Validar transición a REVISIÓN
         if ($nuevo_estatus_id === 2) { // Sabiendo que el ID de REVISIÓN es 2
@@ -107,7 +118,7 @@ class GrupoEstatusService
      */
     public function cambiarEstatus(Grupo $grupo, int $nuevo_estatus_id, ?string $seccion = null, $observacion = null)
     {
-        // Validar existencia del estatus destino
+        // ? Validar existencia del estatus destino
         $estatusDestino = Estatus::find($nuevo_estatus_id);
         if (!$estatusDestino) {
             return response()->json(['error' => 'El estatus destino no existe.'], 404);
@@ -115,12 +126,12 @@ class GrupoEstatusService
 
         $estatusActual = $grupo->estatusActual();
 
-        // No-op
+        // ? No-op
         if ($estatusActual && (int)$estatusActual->id === (int)$nuevo_estatus_id) {
             return response()->json(['error' => 'El grupo ya se encuentra en el estatus solicitado.'], 400);
         }
 
-        // Validación de transición con mensaje detallado
+        // ? Validación de transición con mensaje detallado
         $validacion = $this->puedeTransicionar($grupo, $nuevo_estatus_id);
         if (!$validacion['ok']) {
             return response()->json(['error' => $validacion['mensaje']], 400);
