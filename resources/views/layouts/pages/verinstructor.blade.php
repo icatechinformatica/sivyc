@@ -3795,6 +3795,56 @@
             });
         });
 
+        let ardom = document.getElementById("arch_domicilio");
+        let arcur = document.getElementById("arch_curp");
+        let arban = document.getElementById("arch_banco");
+        let arfot = document.getElementById("arch_foto");
+        let arid = document.getElementById("arch_id");
+        let arrfc = document.getElementById("arch_rfc");
+        let arest = document.getElementById("arch_estudio");
+        let aralt = document.getElementById("arch_curriculum_personal");
+        let imageName = document.getElementById("imageName");
+        let imageName2 = document.getElementById("imageName2");
+        let imageName3 = document.getElementById("imageName3");
+        let imageName4 = document.getElementById("imageName4");
+        let imageName5 = document.getElementById("imageName5");
+        let imageName6 = document.getElementById("imageName6");
+        let imageName7 = document.getElementById("imageName7");
+        let imageName8 = document.getElementById("imageName8");
+
+        ardom.addEventListener("change", ()=>{
+            let inputImage = document.querySelector("#arch_domicilio").files[0];
+            imageName.innerText = inputImage.name;
+        })
+        arcur.addEventListener("change", ()=>{
+            let inputImage2 = document.querySelector("#arch_curp").files[0];
+            imageName2.innerText = inputImage2.name;
+        })
+        arban.addEventListener("change", ()=>{
+            let inputImage3 = document.querySelector("#arch_banco").files[0];
+            imageName3.innerText = inputImage3.name;
+        })
+        arfot.addEventListener("change", ()=>{
+            let inputImage4 = document.querySelector("#arch_foto").files[0];
+            imageName4.innerText = inputImage4.name;
+        })
+        arid.addEventListener("change", ()=>{
+            let inputImage5 = document.querySelector("#arch_id").files[0];
+            imageName5.innerText = inputImage5.name;
+        })
+        arrfc.addEventListener("change", ()=>{
+            let inputImage6 = document.querySelector("#arch_rfc").files[0];
+            imageName6.innerText = inputImage6.name;
+        })
+        arest.addEventListener("change", ()=>{
+            let inputImage7 = document.querySelector("#arch_estudio").files[0];
+            imageName7.innerText = inputImage7.name;
+        })
+        aralt.addEventListener("change", ()=>{
+            let inputImage8 = document.querySelector("#arch_curriculum_personal").files[0];
+            imageName8.innerText = inputImage8.name;
+        })
+
         // document.getElementById('reginstructor').addEventListener('submit', function (e) {
         //     var fileInputs = [
         //         'arch_domicilio',
