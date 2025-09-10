@@ -127,11 +127,11 @@
                 @endif
                 <br/>
                 @if(isset($grupo))
-                    @if(isset($instructor) and ($grupo->vb_dg==true or $grupo->clave!='0'))
+                    
                         <h5>DEL INSTRUCTOR</h5>
                         <div class="row bg-light form-inline" style="padding:15px 0 15px 0; text-indent:1.8em; line-height: 2.1em;">
-                            @if(isset($instructor->tipo_honorario))
-                                <span>RÉGIMEN :&nbsp;&nbsp;<strong>{{$instructor->tipo_honorario}}</strong></span>
+                            @if(isset($grupo->tipo_honorario))
+                                <span>RÉGIMEN :&nbsp;&nbsp;<strong>{{$grupo->tipo_honorario}}</strong></span>
                             @endif
                             <span>&nbsp;&nbsp;
                                 MEMORÁNDUM DE VALIDACIÓN:
@@ -146,7 +146,7 @@
                                 @endif
                             </span>
                         </div>
-                    @endif
+                    
                     @if($grupo->tdias)
                         <h5>DEL CURSO</h5>
                         <div class="row bg-light form-inline" style="padding:15px 0 15px 0; text-indent:1.8em; line-height: 2.1em;">

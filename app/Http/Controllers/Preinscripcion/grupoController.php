@@ -122,8 +122,7 @@ class grupoController extends Controller
                                 ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
                                 ->where(\DB::raw("elem->>'memo_val'"), '=', $instructor_mespecialidad);
                         })
-                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad' ORDER BY elem->>'fecha_val'  DESC 
-LIMIT 1) as pdfvalida"));
+                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad') as pdfvalida"));
                 }
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $folio_grupo;
@@ -335,6 +334,8 @@ LIMIT 1) as pdfvalida"));
                 DB::raw('COALESCE(tc.mpreapertura, null) as mpreapertura'),
                 DB::raw('COALESCE(tc.fpreapertura, null) as fpreapertura'),
                 DB::raw('COALESCE(tc.obs_preapertura, null) as obs_vincula'),
+                DB::raw("COALESCE(tc.soportes_instructor->>'tipo_honorario', null) as tipo_honorario"),
+
                 ///DE OTRAS TABLAS
                 DB::raw('ar.turnado as  turnado_grupo'),                
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
