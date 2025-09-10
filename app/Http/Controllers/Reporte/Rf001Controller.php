@@ -89,23 +89,17 @@ class Rf001Controller extends Controller
         // Consulta base
         $data = $this->rfoo1Repository->getReciboQry($unidad);
 
+        // 🔹 Arreglo de filtros para repositorio
+        $filters = [
+            'fechaInicio' => $fechaInicio,
+            'fechaFin'    => $fechaFin,
+            'unidad'      => $getUnidad,
+            'folio'       => $folioGrupo,
+            'estado'      => $statusRecibo,
+        ];
 
-        // Filtros optimizados
-        if (!empty($fechaInicio) && !empty($fechaFin)) {
-            $data->whereRaw("EXISTS (
-                SELECT 1
-                FROM jsonb_array_elements(tbl_recibos.depositos) AS deposito
-                WHERE (deposito->>'fecha')::date BETWEEN ? AND ?
-            )", [$fechaInicio, $fechaFin]);
-        }
-
-        if (!empty($getUnidad)) {
-            $data->where('tbl_unidades.unidad', $getUnidad);
-        }
-
-        if (!empty($folioGrupo)) {
-            $data->where('tbl_recibos.folio_recibo', trim($folioGrupo));
-        }
+        // 🔹 Aplicar filtros
+        $data = $this->rfoo1Repository->applyFilters($data, $filters);
 
         $tipoSolicitud = 'CONCENTRADO';
         if (!empty($statusRecibo)) {

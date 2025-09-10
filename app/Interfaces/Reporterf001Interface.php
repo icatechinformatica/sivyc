@@ -4,6 +4,7 @@ namespace App\Interfaces;
 interface Reporterf001Interface {
     public function index($user);
     public function getReciboQry($unidad);
+    public function applyFilters($query, array $filters);
     public function sentRF001Format($unidad, $memorandum);
     public function getDetailRF001Format($concentrado);
     public function storeData(array $request);
