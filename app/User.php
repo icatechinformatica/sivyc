@@ -149,7 +149,7 @@ class User extends Authenticatable
         return $this->registro->ubicacion ?? null;
     }
 
-    public function organizmo()
+    public function organismo()
     {
         if ($this->registro && method_exists($this->registro, 'organismo')) {
             return $this->registro->organismo();
