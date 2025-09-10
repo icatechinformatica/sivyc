@@ -103,7 +103,7 @@
         <div class="form-group col-md-3 mt-1">
             {{ Form::text('memo', $memo, ['id'=>'memo', 'class' => 'form-control', 'placeholder' => 'MEMORÁNDUM ARC', 'aria-label' => 'MEMORÁNDUM ARC', 'required' => 'required', 'size' => 25]) }}
         </div>
-        @if($grupos[0]->fecha_arc01??null AND $grupos[0]->status_curso??null !='VALIDADO')
+        @if($grupos[0]->fecha_arc01??null)
             <div class="form-group col-md-2 d-flex">
                 {{ form::date('fecha_arc01', $grupos[0]->fecha_arc01??null, ['id'=>'fecha_arc01', 'class'=>'form-control']) }}
                 <a onclick="guardar_fecha('{{ $grupos[0]->munidad??null }}')" title="Guardar Fecha"><i class="fas fa-save fa-lg m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a>
@@ -195,14 +195,16 @@
     });
 
     function guardar_fecha(memo){
-        if (confirm("Está seguro de guardar cambios, en la fecha del ARC-01?") == true) {
+        if (confirm("Está seguro de guardar cambios del ARC-01?") == true) {
             var fecha = $("#fecha_arc01").val();
+            var memo_arc01 = $("#memo").val();
             $.ajax({
                         url: "aperturas/guardar_fecha",
                         method: 'POST',
                         data: {
                             memo: memo,
-                            fecha: fecha
+                            fecha: fecha,
+                            memo_arc01: memo_arc01
                         },
                         success: function(data) {
                         //$('#result_table').html(data);

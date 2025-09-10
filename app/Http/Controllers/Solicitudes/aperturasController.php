@@ -747,17 +747,18 @@ class aperturasController extends Controller
         if($request->fecha AND $request->memo){
             $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->whereNotNull('fecha_arc01')
             ->where(function ($query) {
-                    $query->whereNotIn('status_curso', ['AUTORIZADO', 'CANCELADO'])
+                    $query->whereNotIn('status_curso', ['CANCELADO'])
                         ->orWhereNull('status_curso');
             })
             ->update([
                 'fecha_arc01' => $request->fecha,
+                'munidad' => $request->memo_arc01,
                 'movimientos' => DB::raw("
                 COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
                     jsonb_build_object(
                             'fecha', '".date('Y-m-d H:i:s')."',
                             'usuario', '".Auth::user()->name."',
-                            'operacion', 'CAMBIO LA FECHA DEL ARC01',
+                            'operacion', 'CAMBIO LA FECHA Y MEMO DEL ARC01',
                             'motivo solicitud', 'SOLICITADO POR LA UNIDAD DE CAPACITACIÓN.'
                             )
                     )
