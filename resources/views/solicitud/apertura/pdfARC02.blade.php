@@ -1,21 +1,27 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayout')
 @section('title', 'Solicitud ARC-02 | SIVyC Icatech')
 @section('content_script_css')
-    <style>
-         /* body { margin-top: 140px;  margin-bottom: 23px;} */
-        .tableg td{padding: 0px;}
-        .tablas{border-collapse: collapse;width: 100%;}
-        .tablas tr, .tablas th, .tablas td{font-size: 8px; border: gray 1px solid; text-align: center;}
-        .tablaf { border-collapse: collapse; width: 100%;}
-        .tablaf td { font-size: 8px; text-align: center; padding: 0px;}
+    <style>         
+        .content {font-family: sans-serif; font-size: 9px; margin-top:30px;}
 
-        #titulo{ position: fixed; top: 80px; width:100%; text-align: center;}
-        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
-        #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:bold;}
-        #titulo table{position: fixed; top: 100px;}
-        #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
-        .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
-        header {top: 40px; left: 90px; font-size: 11px; font-weight: bold; line-height: 1;}
+        .tablas{border-collapse: collapse; width: 100%; margin-top:70px; }
+        .tablas tr th {padding:1px;margin:0px;}
+        .tablas th, .tablas td{font-size: 8px; border: gray 1px solid; text-align: center;font-weight:bold;}
+
+        .tablaf { page-break-inside: avoid; border-collapse: collapse; width: 100%; white-space: nowrap; height: auto; margin-top:15px;}
+        .tablaf tr td { font-size: 12px; text-align: center; padding: 0px 0px;}
+        .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; border-collapse: collapse; }
+        .tablad tr td{padding: 1px 10px 0 10px;}
+
+        #titulo{ position: fixed; top: 80px; width:100%; text-align: center; }
+        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}        
+        #titulo span{position: fixed; top: 120px; width:93%; display: block; text-align: right; font-weight: bold;}
+        #para { font-size: 8px; font-weight:bold; position: fixed; top: 140px;}        
+        
+        .agenda-list {list-style: none; padding: 0; margin: 0;}
+        ul.inline-list { list-style: none; padding: 0; margin-top:150px;}
+        ul.inline-list li { margin-right: 10px;}
+        .obs {padding: 0; margin: 0; }
     </style>
 @endsection
 @section('content')
@@ -50,38 +56,31 @@
     <table class="tablas">
             <tbody>
                 <tr>
-                    <th rowspan="2">CURSO/CERTIFICACIÓN</th>
-                    <th rowspan="2">NOMBRE</th>
-                    <th rowspan="2">MOD</th>
-                    <th colspan="2">TIPO</th>
-                    <th rowspan="2">HORAS</th>
-                    <th rowspan="2">CLAVE</th>
-                    <th rowspan="2">NUM. DE <br> MEMORANDUM DE <br> AUT. DE CLAVE</th>
-                    <th rowspan="2">INSTRUCTOR<br/>EXTERNO</th>
-                    <th rowspan="2">INICIO </th>
-                    <th rowspan="2">TERMINO</th>
-                    <th rowspan="2">ESPACIO FISICO</th>
-                    <th rowspan="2">MOTIVO</th>
-                    <th rowspan="2">SOLICITA</th>
-                    <th rowspan="2">OBSERVACIONES</th>
-                </tr>
-                <tr>
-                    <th >PRES<br>EN</th>
-                    <th >DISTA<br>NCIA</th>
-                </tr>
+                    <th>CURSO/CERTIFICACIÓN</th>
+                    <th>NOMBRE</th>
+                    <th>MOD</th>
+                    <th>TIPO DE<br>CAPACI<BR/>TACIÓN</th>
+                    <th>HORAS</th>                    
+                    <th>CLAVE</th>
+                    <th>NUM. DE <br> MEMORANDUM DE <br> AUT. DE CLAVE</th>
+                    <th>INSTRUCTOR<br/>EXTERNO</th>
+                    <th>FECHAS/HORARIOS<br/>(HORAS)</th>
+                    <th>ESPACIO FISICO</th>
+                    <th>MOTIVO</th>
+                    <th>SOLICITA</th>
+                    <th>OBSERVACIONES</th>
+                </tr>                               
                 @foreach($reg_cursos as $a)
                     <tr>
                         <td>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION';} @endphp</td>
                         <td style="width: 8%;">{{ $a->curso }}</td>
                         <td>{{ $a->mod }}</td>
-                        <td>@if($a->tcapacitacion=="PRESENCIAL"){{ "X" }}@endif</td>
-                        <td>@if($a->tcapacitacion=="A DISTANCIA"){{ "X" }}@endif</td>
+                        <td>{{ $a->tcapacitacion}}</td>
                         <td>{{ $a->dura }}</td>
                         <td style="width:8%;">{{ $a->clave }}</td>
                         <td>@if ($a->mvalida) {{ substr($a->mvalida ,0,12)}} {{ substr($a->mvalida ,12,strlen($a->mvalida ))}} @endif</td>
                         <td style="width: 10%;">{{ $a->nombre }}</td>
-                        <td style="width: 5%;">{{ $a->inicio }}</td>
-                        <td style="width: 5%;">{{ $a->termino }}</td>
+                        <td> <div style="width: 50px">{!! $a->agenda !!}</div></td>
                         <td style="width: 15%;">{{ $a->efisico }}</td>
                         <td>@isset($a->motivo){{ $a->motivo }}@else {{$a->opcion}}@endisset</td>
                         <td style="width: 8%;">{{ $a->realizo }}</td>
