@@ -99,22 +99,19 @@ class grupoController extends Controller
                 //dd($grupo);
                 $clave = DB::table('tbl_municipios')->where('id', $grupo->id_municipio)->value('clave');
                 $localidad = DB::table('tbl_localidades')->where('id_estado', '7')->where('clave_municipio', '=', $clave)->pluck('localidad', 'clave');
-                $cursos = DB::table('cursos')->where('tipo_curso','like',"%$tipo%");
-                    // ->Where('curso_alfa',true); //nueva linea para cursos alfa 08052025
-                    if($grupo->status_curso!='AUTORIZADO') $cursos = $cursos->where('cursos.estado', true);
-                    $cursos = $cursos->where('modalidad','like',"%$mod%")
-                    ->whereJsonContains('unidades_disponible', [$grupo->unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
 
-                if($grupo->status_curso =='AUTORIZADO')$cursos->put($grupo->id_curso, $grupo->nombre_curso);
-
-                //dd($grupo);
+                //CATÁLOGO DE CURSOS
+                $request->tipo = $tipo;
+                $request->unidad =  $grupo->unidad;
+                $request->modalidad = $mod;
+                $request->status_curso = $grupo->status_curso;
+                $request->id_curso = $grupo->id_curso;                
+                $cursos = $this->cmbcursos($request, true);
+               
+                //CATÁLOGO DE INSTRUCTORES
                 $instructores = $this->data_instructores($grupo);
                 //FIN CATALOGOS
-                //$instructor = DB::table('instructores')->select('id',DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'tipo_honorario')->where('id',$grupo->id_instructor)->first();
-
-
-                //$grupo = DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->first();
-                //dd($instructor_mespecialidad);
+               
                 $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
                 if($grupo->id_especialidad){
                     $instructor_mespecialidad = $grupo->instructor_mespecialidad;
@@ -125,8 +122,7 @@ class grupoController extends Controller
                                 ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
                                 ->where(\DB::raw("elem->>'memo_val'"), '=', $instructor_mespecialidad);
                         })
-                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad' ORDER BY elem->>'fecha_val'  DESC 
-LIMIT 1) as pdfvalida"));
+                    ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad' ORDER BY elem->>'fecha_val' DESC limit 1 ) as pdfvalida"));
                 }
             } else {
                 $message = "No hay registro qwue mostrar para Grupo No." . $folio_grupo;
@@ -338,6 +334,8 @@ LIMIT 1) as pdfvalida"));
                 DB::raw('COALESCE(tc.mpreapertura, null) as mpreapertura'),
                 DB::raw('COALESCE(tc.fpreapertura, null) as fpreapertura'),
                 DB::raw('COALESCE(tc.obs_preapertura, null) as obs_vincula'),
+                DB::raw("COALESCE(tc.soportes_instructor->>'tipo_honorario', null) as tipo_honorario"),
+
                 ///DE OTRAS TABLAS
                 DB::raw('ar.turnado as  turnado_grupo'),                
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
@@ -368,18 +366,27 @@ LIMIT 1) as pdfvalida"));
 
 
 
-    public function cmbcursos(Request $request)
+    public function cmbcursos(Request $request, $registros=false)
     {
         //$request->unidad = 'TUXTLA';
         if (isset($request->tipo) and isset($request->unidad) and isset($request->modalidad)) {
-            $cursos = DB::table('cursos')->select('cursos.id', 'nombre_curso')
-                ->where('tipo_curso','like',"%$request->tipo%")
-                ->where('modalidad','like',"%$request->modalidad%")
-                ->where('cursos.estado', true)
-                // ->Where('curso_alfa', true) // linea nueva para solo cursos alfa
-                ->whereJsonContains('unidades_disponible', [$request->unidad])->orderby('cursos.nombre_curso')->get();
-            $json = json_encode($cursos);
+            $cursos = DB::table('cursos as c')->select('c.id', 'c.nombre_curso')
+                ->join('especialidades as e','e.id','=','c.id_especialidad')
+                ->where('c.tipo_curso','like',"%$request->tipo%")
+                ->where('c.modalidad','like',"%$request->modalidad%")
+                ->where('c.estado', true)                
+                ->where('e.activo', 'true')
+                ->whereJsonContains('unidades_disponible', [$request->unidad])->orderby('c.nombre_curso');
             //var_dump($json);exit;
+            if($registros){
+                if($request->status_curso == 'AUTORIZADO')
+                     $cursos = DB::table('cursos as c')->select('c.id', 'c.nombre_curso')->where('c.id',$request->id_curso);
+                
+                return $cursos->pluck('nombre_curso', 'cursos.id');
+            }else{
+                $cursos = $cursos->get();
+                $json = json_encode($cursos);
+            }
         } else {
             $json = json_encode(["No hay registros que mostrar."]);
         }

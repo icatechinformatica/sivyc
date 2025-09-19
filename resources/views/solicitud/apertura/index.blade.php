@@ -164,20 +164,10 @@
             </div>
             <div class="form-row" >
                 <div class="form-group col-md-4">
-                    <label>CONVENIO ESPEC&Iacute;FICO:</label>
-                    <input name='cespecifico' id='cespecifico' type="text" class="form-control" aria-required="true" value="{{ $grupo->cespecifico}}" readonly/>
-                </div>
-                <div class="form-group col-md-3">
-                    <label>FECHA CONVENIO ESPEC&Iacute;FICO:</label>
-                    <input type="date" id="fcespe" name="fcespe" aria-required="true" class="form-control" value="{{$grupo->fcespe}}" readonly>
-                </div>
-                <div class="form-group col-md-4">
                      <label>MEMOR&Aacute;NDUM DE EXONERACI&Oacute;N:</label>
                      <input name='mexoneracion' id='mexoneracion' type="text" class="form-control" aria-required="true" value="{{$grupo->mexoneracion}}" readonly/>
                 </div>
-                </div>
-            <div class="form-row" >
-                <div class="form-group col-md-12">
+                <div class="form-group col-md-8">
                     <label>DOMICILIO, LUGAR O ESPACIO F&Iacute;SICO:</label>
                     <input type="text" id="efisico" name="efisico" class="form-control" value="{{$grupo->efisico}}" readonly>
                 </div>
@@ -209,11 +199,13 @@
             <div class="row bg-light form-inline" style="padding:15px 10px 15px 0; text-indent:4em; line-height: 3.1em;">
                 <span>MEMORÁNDUM DE APERTURA: &nbsp;&nbsp;{{ Form::text('mpreapertura', $grupo->mpreapertura ?? '', ['id'=>'mpreapertura', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM DE SOLICITUD DE APERTURA', 'aria-label' => 'No. Memorándum' , 'required' => 'required', 'style' => 'width: 300px; background-color: #ecececff;']) }} </span>
                 <span>FECHA MEMO: &nbsp;&nbsp;{{ Form::date('fecha_turnado', $grupo->fecha_turnado ?? null , ['id'=>'fecha_turnado', 'class' => 'form-control datepicker mr-sm-2 mb-2 small', 'title' => 'FECHA DEL MEMORÁNDUM', 'required' => 'required' , 'style' => 'background-color: #ecececff;']) }}
-                <a onclick="guardar_preapertura('{{ $grupo->folio_grupo??null }}')" title="Guardar Cambios"><i class="fas fa-save fa-2x m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a></span>
-                <span class="mt-2">
-                    OBSERVACIONES:    &nbsp;&nbsp;
+                <a onclick="guardar_preapertura('{{ $grupo->folio_grupo??null }}','{{ $grupo->cespecifico??null }}','{{ $grupo->fcespe??null }}')" title="Guardar Cambios"><i class="fas fa-save fa-2x m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a></span>
+                <span class="mt-2 col-md-12 ml-0">
+                OBSERVACIONES:    &nbsp;&nbsp;
                     <textarea name='obs_vincu' id='obs_vincu'  class="form-control col-md-12" rows="2" style="width:500px; background-color: #ecececff;" >{{$grupo->obs_vincula}}</textarea>
                 </span>
+                <span class="mt-4">CONVENIO ESPECÍFICO: &nbsp;&nbsp;{{ Form::text('cespecifico', $grupo->cespecifico ?? '', ['id'=>'cespecifico', 'class' => 'form-control', 'placeholder' => 'No. MEMORÁNDUM DE SOLICITUD DE APERTURA', 'aria-label' => 'No. Memorándum' , 'required' => 'required', 'style' => 'width: 300px; background-color: #ecececff;']) }} </span>
+                <span>FECHA CONVENIO ESP.: &nbsp;&nbsp;{{ Form::date('fcespe', $grupo->fcespe ?? null , ['id'=>'fcespe', 'class' => 'form-control datepicker mr-sm-2 mb-2 small', 'title' => 'FECHA DEL MEMORÁNDUM', 'required' => 'required' , 'style' => 'background-color: #ecececff;']) }}
             </div>
             <br/>
             <h5><b>DELEGACIÓN ADMINISTRATIVA</b></h5>
@@ -377,11 +369,13 @@
                     }
             });
 
-            function guardar_preapertura(folio){
-                if (confirm("Está seguro guardar los cambios de fecha o memorándum?") == true) {
+            function guardar_preapertura(folio,convenio, cfecha){
+                if (confirm("Está seguro guardar los cambios?") == true) {
                     var memo = $("#mpreapertura").val();
                     var fecha = $("#fecha_turnado").val();
                     var obs = $("#obs_vincu").val();
+                    var cespe = $("#cespecifico").val();
+                    var fespe = $("#fcespe").val();
                     $.ajax({
                                 url: "apertura/guardar_preapertura",
                                 method: 'POST',
@@ -389,9 +383,15 @@
                                     folio: folio,
                                     memo: memo,
                                     fecha: fecha,
-                                    obs: obs
+                                    obs: obs,
+                                    cespe: cespe,
+                                    fespe: fespe
                                 },
                                 success: function(data) {
+                                    if (data.indexOf('CONVENIO') !== -1) {
+                                        $("#cespecifico").val(convenio);
+                                        $("#fcespe").val(cfecha);
+                                    }
                                 //$('#result_table').html(data);
                                 alert(data);
                             }
