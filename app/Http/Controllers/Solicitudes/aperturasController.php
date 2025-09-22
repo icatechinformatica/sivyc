@@ -532,31 +532,38 @@ class aperturasController extends Controller
                         "),
 
                         DB::raw("
-                            (
-                                CASE
-                                    WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
-                                    WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
-                                    ELSE ''
-                                END 
-                                || 
-                                CASE 
-                                    WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
-                                    WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
-                                    ELSE ''
-                                END                      
-                                ||
-                                CASE 
-                                    WHEN tc.tipo != 'EXO' THEN 
-                                        'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
-                                        'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') || '. ' 
-                                    ELSE '.'
-                                END
-                                /*||
-                                CASE 
-                                WHEN tc.nota is not null THEN ' ' || tc.nota
-                                END*/
-                            ) AS observaciones
-                        ")
+                        (
+                         CASE WHEN tc.arc='01' THEN(
+
+                            CASE
+                                WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
+                                WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
+                                ELSE ''
+                            END 
+                            || 
+                            CASE 
+                                WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
+                                WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
+                                ELSE ''
+                            END                      
+                            ||
+                            CASE 
+                                WHEN tc.tipo != 'EXO' THEN 
+                                    'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
+                                    'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') 
+                                ELSE ''
+                            END
+                            || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
+                            /*||
+                            CASE 
+                            WHEN tc.nota is not null THEN ' ' || tc.nota
+                            END*/)
+                        ELSE
+                            tc.observaciones
+                        END
+                         
+                        ) AS observaciones
+                    ")
             );
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
             switch($_SESSION['opt'] ){
@@ -629,7 +636,7 @@ class aperturasController extends Controller
     public function validar_preliminar(Request $request){ 
         $memo = $request->memo;
         $opt = $request->opt;
-        //$message = 'Operación fallida, vuelva a intentar..';
+        $message = 'Operación fallida, vuelva a intentar..';
         
         if ($memo AND ($opt == 'ARC01' OR $opt == 'ARC02')) {
             switch($request->movimiento){
@@ -747,17 +754,18 @@ class aperturasController extends Controller
         if($request->fecha AND $request->memo){
             $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->whereNotNull('fecha_arc01')
             ->where(function ($query) {
-                    $query->whereNotIn('status_curso', ['AUTORIZADO', 'CANCELADO'])
+                    $query->whereNotIn('status_curso', ['CANCELADO'])
                         ->orWhereNull('status_curso');
             })
             ->update([
                 'fecha_arc01' => $request->fecha,
+                'munidad' => $request->memo_arc01,
                 'movimientos' => DB::raw("
                 COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
                     jsonb_build_object(
                             'fecha', '".date('Y-m-d H:i:s')."',
                             'usuario', '".Auth::user()->name."',
-                            'operacion', 'CAMBIO LA FECHA DEL ARC01',
+                            'operacion', 'CAMBIO LA FECHA Y MEMO DEL ARC01',
                             'motivo solicitud', 'SOLICITADO POR LA UNIDAD DE CAPACITACIÓN.'
                             )
                     )

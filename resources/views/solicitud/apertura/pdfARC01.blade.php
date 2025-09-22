@@ -1,24 +1,27 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayout')
 @section('title', 'Solicitud ARC-01 | SIVyC Icatech')
 @section('content_script_css')
     <style>
-         /* body { margin-top: 140px;  margin-bottom: 36px;} */
-        .tablas{border-collapse: collapse; width: 100%; margin-top:1px; }
+        .content {font-family: sans-serif; font-size: 9px; margin-top:30px;}
+
+        .tablas{border-collapse: collapse; width: 100%; margin-top:70px; }
         .tablas tr th {padding:1px;margin:0px;}
-        .tablas th, .tablas td{font-size: 7px; border: gray 1px solid; text-align: center;font-weight:bold;}
+        .tablas th, .tablas td{font-size: 8px; border: gray 1px solid; text-align: center;font-weight:bold;}
 
         .tablaf { page-break-inside: avoid; border-collapse: collapse; width: 100%; white-space: nowrap; height: auto; margin-top:15px;}
         .tablaf tr td { font-size: 12px; text-align: center; padding: 0px 0px;}
         .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; border-collapse: collapse; }
         .tablad tr td{padding: 1px 10px 0 10px;}
 
-        #titulo{ position: fixed; top: 80px; width:100%; text-align: center;}
-        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
-        #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:bold;}
-        #titulo table{position: fixed; top: 100px;}
-        #para {position: relative; top: -30px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-bottom:-40px;}
-        .content {font-family: sans-serif; font-size: 9px; padding-top: 115px;}
-        header {top: 40px; left: 90px; font-size: 11px; font-weight: bold; line-height: 1;}
+        #titulo{ position: fixed; top: 80px; width:100%; text-align: center; }
+        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}        
+        #titulo span{position: fixed; top: 120px; width:93%; display: block; text-align: right; font-weight: bold;}
+        #para { font-size: 8px; font-weight:bold; position: fixed; top: 140px;}        
+        
+        .agenda-list {list-style: none; padding: 0; margin: 0;}
+        ul.inline-list { list-style: none; padding: 0; margin-top:150px;}
+        ul.inline-list li { margin-right: 10px;}
+        .obs {padding: 0; margin: 0; }
     </style>
 @php $arc = true; @endphp
 @endsection
@@ -32,17 +35,12 @@
     <div id="titulo">
         <h4>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}</h4>
         <h4>DEPARTAMENTO ACADÉMICO</h4>
-        <h4>ARC-01</h4>
-
-        <table width="100%" table width="100%" style="margin-left: -65px;">
-            <tr>
-                <td style='text-align:right;font-size: 9px;'> <b>
-                    {{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}<br/>
-                    MEMORÁNDUM NO. {{ $memo_apertura }} <br/>
-                    {{ $reg_unidad->municipio }}, Chiapas; {{$fecha_memo }}.</b><br/>
-                </td>
-            </tr>
-        </table>
+        <h4>ARC-01</h4>        
+        <span>
+            {{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}<br/>
+            MEMORÁNDUM NO. {{ $memo_apertura }} <br/>
+            {{ $reg_unidad->municipio }}, Chiapas; {{$fecha_memo }}.</b><br/>
+        </span>
     </div>
     <div id="para">
         PARA: {{ $reg_unidad->dacademico }}, {{$reg_unidad->pdacademico}}<br/>
@@ -56,51 +54,41 @@
             <tr>
                 <th rowspan="2">CURSO /<br/>CERTIFICACIÓN</th>
                 <th rowspan="2">ESPECIALIDAD</th>
-                <th rowspan="2">NOMBRE</th>
+                <th rowspan="2">FOLIO /<br/>NOMBRE</th>
                 <th rowspan="2">MOD</th>
-                <th colspan="2">TIPO DE<br>CAPACITACIÓN</th>
+                <th rowspan="2">TIPO DE<br>CAPACI<BR/>TACIÓN</th>
                 <th rowspan="2">D<br>U<br>R<br>A</th>
-                <th rowspan="2">FECHA DE<br>INICIO</th>
-                <th rowspan="2">FECHA DE<br>TERMINO</th>
-                <th rowspan="2">HRS<br>DIA<br>RIAS</th>
-                <th rowspan="2">HORARIO</th>
-                <th rowspan="2">DIAS</th>
+                <th rowspan="2">FECHAS/HORARIOS<br/>(HORAS)</th>
                 <th rowspan="2">C<br>U<br>P<br>O</th>
                 <th colspan="2">INSCRI TOS</th>
                 <th rowspan="2">INSTRUCTOR <br/>EXTERNO</th>
-                <th rowspan="2" >CRITE<br>RIO<br>DE<br>PAGO</th>
+                <th rowspan="2">CRITE<br>RIO<br>DE<br>PAGO</th>
                 <th rowspan="2">MUNICIPIO</th>
                 <th rowspan="2">ZON<br>A<br>ECO<br>NOM<br>ICA</th>
                 <th rowspan="2">DEPENDEN<br>CIA<br>BENEFICIA<br>DA</th>
-                <th colspan="3">TIPO DE CUOTA</th>
-                <th width="auto"  rowspan="2">ESPACIO FISICO<br>MEDIO VIRTUAL</th>
-                <th width="auto" rowspan="2">OBSERVACIONES</th>
+                <th rowspan="2">TIPO DE CUOTA</th>
+                <th rowspan="2" width="auto">ESPACIO FISICO /<br>MEDIO VIRTUAL</th>
+                <th rowspan="2" width="auto">OBSERVACIONES</th>
             </tr>
             <tr>
-                <th >PRES<br>EN</th>
-                <th >DISTA<br>NCIA</th>
                 <th >FEM</th>
-                <th >MAS</th>
-                <th >ORD</th>
-                <th >EXO</th>
-                <th >RED</th>
+                <th >MAS</th>                
             </tr>
         </thead>
         <tbody>
             @foreach($reg_cursos as $a)
+                @php
+                    $agendaArray = json_decode($a->agenda, true);
+                @endphp
             <tr>
                 <td>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION';} @endphp</td>
                 <td>{{ $a->espe }}</td>
-                <td>{{ $a->curso }}</td>
+                <td><div style="width: 60px">{{ $a->folio_grupo }} /<br/> {{ $a->curso }}</div></td>
                 <td>{{ $a->mod }}</td>
-                <td>@if($a->tcapacitacion=="PRESENCIAL"){{ "X" }}@endif</td>
-                <td>@if($a->tcapacitacion=="A DISTANCIA"){{ "X" }}@endif</td>
+                <td>{{ $a->tcapacitacion}}</td>                
                 <td>{{ $a->dura }}</td>
-                <td>{{ $a->inicio }}</td>
-                <td>{{ $a->termino }}</td>
-                <td>{{ $a->horas }}</td>
-                <td>{{ $a->horario }}</td>
-                <td>{{ $a->dia }}</td>
+                <td> <div style="width: 90px">{!! $a->agenda !!}</div></td>
+                {{--<td>{{ $a->dia }}</td>--}}
                 <td>{{ $a->mujer + $a->hombre }}</td>
                 <td>{{ $a->mujer }}</td>
                 <td>{{ $a->hombre }}</td>
@@ -117,11 +105,9 @@
                 <td>{{ $a->muni }}</td>
                 <td>{{ $a->ze }}</td>
                 <td>{{ $a->depen }}</td>
-                <td>@if($a->tipo=="PINS"){{ "X" }}@endif</td>
-                <td>@if($a->tipo=="EXO"){{ "X" }}@endif</td>
-                <td>@if($a->tipo=="EPAR"){{ "X" }}@endif</td>
+                <td>@if($a->tipo=="PINS"){{ "ORD" }} @elseif($a->tipo=="EPAR") {{ "RED" }} @else {{ $a->tipo }} @endif</td>
                 <td >{{ $a->efisico }}</td>
-                <td>{{ $a->nota }}</td>
+                <td class="obs"> {!! $a->observaciones !!}</td>
             </tr>
             @endforeach
         </tbody>
@@ -179,4 +165,3 @@
     }
 </script>
 @endsection
-
