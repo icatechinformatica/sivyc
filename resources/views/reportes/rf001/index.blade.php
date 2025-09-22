@@ -212,11 +212,9 @@
                     {{ Form::select('unidad', $datos['unidades'], $getConcentrado ? $getConcentrado->unidad : '', ['id' => 'unidad', 'placeholder' => '- UNIDAD -', 'class' => 'form-control  mr-sm-2']) }}
                 </div>
                 <div class="form-group col-md-3">
-                    @if (!$getConcentrado)
                     <b>
                         Periodo Del {{ $dateInit->day }} de {{ $monthNameInit }} al {{ $dateEnd->day }} de {{ $monthNameEnd }}
                     </b>
-                    @endif
                 </div>
             </div>
             <div class="form-row">
