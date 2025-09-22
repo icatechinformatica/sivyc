@@ -1238,7 +1238,67 @@ class grupoController extends Controller
                         'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','tc.obs_preapertura as nota_vincu','ar.efisico','tc.unidad','tc.solicita',
                         DB::raw('COALESCE(tc.fpreapertura, null) as fecha_turnado'),
                         DB::raw('COALESCE(tc.vb_dg, false) as vb_dg'), //NUEVO VOBO
-                        DB::raw("COALESCE(tc.clave, '0') as clave") //NUEVO VOBO
+                        DB::raw("COALESCE(tc.clave, '0') as clave"), //NUEVO VOBO
+                        DB::raw("
+                            (
+                                SELECT string_agg( '<div>' ||
+                                CASE 
+                                    WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                                    ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                                END
+                                
+                                || ' ' ||
+                                CASE
+                                    WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
+                                    ELSE TO_CHAR(\"start\", 'HH24:MI')
+                                END || '-' ||
+                                CASE
+                                    WHEN TO_CHAR(\"end\", 'MI') = '00' THEN TO_CHAR(\"end\", 'HH24')
+                                    ELSE TO_CHAR(\"end\", 'HH24:MI')
+                                END || 'h. (' ||
+                                TO_CHAR(
+                                    (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
+                                    ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
+                                    'FM999990.##'
+                                ) || 'hrs.)'|| '</div>',
+                                E'\n'
+                                ORDER BY DATE(start)
+                                ) AS agenda_texto
+                                FROM agenda
+                                WHERE id_curso = tc.folio_grupo
+                            )::text AS agenda
+                        "),
+
+                        DB::raw("
+                            (
+                                CASE
+                                    WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
+                                    WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
+                                    ELSE ''
+                                END 
+                                || 
+                                CASE 
+                                    WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
+                                    WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
+                                    ELSE ''
+                                END                      
+                                ||
+                                CASE 
+                                    WHEN tc.tipo != 'EXO' THEN 
+                                        'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
+                                        'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') 
+                                    ELSE ''
+                                END
+                                || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
+                                /*||
+                                CASE 
+                                WHEN tc.nota is not null THEN ' ' || tc.nota
+                                END*/
+                            ) AS observaciones
+                        ")
+                
+
+
                     )
                     ->leftJoin('alumnos_registro as ar', 'tc.folio_grupo', 'ar.folio_grupo')
                     ->where('ar.folio_grupo', $folio_grupo)
@@ -1246,7 +1306,7 @@ class grupoController extends Controller
                     ->groupBy('tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                     'tc.costo','tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante','tc.depen_telrepre','tc.nombre','ar.realizo',
                     'tc.obs_preapertura','ar.efisico','tc.unidad','tc.fpreapertura','tc.solicita',
-                    'tc.vb_dg','tc.clave' //NUEVO VOBO
+                    'tc.vb_dg','tc.clave','tc.modinstructor','tc.tipo','tc.instructor_mespecialidad' //NUEVO VOBO
                     )
                     ->orderBy('folio_grupo')
                     ->get(); //dd($cursos);
@@ -1289,11 +1349,12 @@ class grupoController extends Controller
                         $data[$key]['tel_repre'] = $value->tel_repre;
                         $data[$key]['instructor'] = $value->nombre;
                         $data[$key]['vincu'] = $value->vincu;
-                        $data[$key]['observaciones'] = $value->nota_vincu;
+                        $data[$key]['observaciones'] = $value->observaciones;
                         $data[$key]['efisico'] = $value->efisico;
                         $data[$key]['unidad'] = $value->unidad;
                         $data[$key]['vb_dg'] = $value->vb_dg; //NUEVO VOBO
                         $data[$key]['clave'] = $value->clave; //NUEVO VOBO
+                        $data[$key]['agenda'] = $value->agenda;
                     }
                 }// dd($cursos[0]->fecha_turnado);
                 if (count($data) > 0) {
