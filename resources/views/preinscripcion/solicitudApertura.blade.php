@@ -1,20 +1,30 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayout')
 @section('title', 'Solicitud de Apertura | SIVyC Icatech')
 @section('content_script_css')
-    <style>
-         /* @page { margin-bottom: 107px; } */
+    <style>        
+        .content {font-family: sans-serif; font-size: 9px; margin-top:40px;}   
+            
+        #titulo { top: 0px; width: 100%; text-align: center; margin-top: -30;}
+        #titulo h2{padding:0px; margin:0px 0px 2px 50px; font-size: 13px; font-weight:normal;}
+        #titulo h3{padding:0px; margin:0px 0px 2px 50px; ; font-size: 12px; font-weight:normal;}
+        #titulo table{position: fixed; top: 120px;}
+        #para {position: relative; top: 0px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-top:20px;}
+
         .tb {width: 100%; border-collapse: collapse; text-align: center; }
         .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 5px;}
-        .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}
+        .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}        
+      
         .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:0px;}
         .tablaf tr, .tablaf td {padding: 0px}
         p {margin:5px; padding:0px;font-size: 10px}
-        #titulo { top: 0px; width: 100%; text-align: center; margin-top: -30;}
-        #titulo h2{padding:0px; margin:0px 0px 2px 0px; font-size: 13px; font-weight:normal;}
-        #titulo h3{padding:0px; margin:0px; font-size: 12px; font-weight:normal;}
-        #titulo table{position: fixed; top: 93px;}
-        #para {position: relative; top: 0px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-top:20px;}
-        header{ line-height: 1; font-size: 12px; top: 20px; font-weight: bold; left: 40px;}
+        
+        .agenda-list {list-style: none; padding: 0; margin: 0;}
+        ul.inline-list { list-style: none; padding: 0; margin-top:150px;}
+        ul.inline-list li { margin-right: 10px;}
+        .obs {padding: 0; margin: 0; }
+
+
+
     </style>
 @endsection
 @section('header')
@@ -25,7 +35,7 @@
             <h3>Departamento de Vinculación</h3>
             <table width="100%">
                 <tr>
-                    <td style='text-align:right; font-size: 12px; padding-right: 50px;'>
+                    <td style='text-align:right; font-size: 12px; padding-right: 40px;'>
                         @if(strpos($reg_unidad->unidad.$reg_unidad->cct, "07EIC0"))
                             Unidad de Capacitación
                         @else
@@ -53,13 +63,9 @@
                     <th>ESPECIALIDAD</th>
                     <th>NOMBRE</th>
                     <th>MOD</th>
-                    <th>TIPO</th>
+                    <th>TIPO DE CAPACI<BR/>TACIÓN</th>
                     <th>DURA</th>
-                    <th>FECHA DE INICIO</th>
-                    <th>FECHA DE TERMINO</th>
-                    <th>HORARIO</th>
-                    <th>DIAS</th>
-                    <th>HRS. POR DIA</th>
+                    <th>FECHAS/HORARIOS<br/>(HORAS)</th>                    
                     <th>COSTO POR PART</th>
                     <th>TOTAL INGRESO</th>
                     <th>NO. PART</th>
@@ -84,11 +90,7 @@
                         <td>{{$item['mod']}}</td>
                         <td>{{$item['tcapacitacion']}}</td>
                         <td>{{$item['dura']}}</td>
-                        <td>{{$item['inicio']}}</td>
-                        <td>{{$item['termino']}}</td>
-                        <td>{{$item['horario']}} HRS.</td>
-                        <td>{{$item['dia']}}</td>
-                        <td>{{$item['horas']}}</td>
+                        <td> <div style="width: 80px">{!! $item['agenda'] !!}</div></td>
                         <td>{{$item['costos']}}</td>
                         <td>{{$item['costo']}}</td>
                         <td>{{$item['tpar']}}</td>
@@ -107,7 +109,8 @@
                         </td>
                         <td>{{$item['vincu']}}</td>
                         <td width='auto'>{{$item['efisico']}}</td>
-                        <td width='auto'>{{$item['observaciones']}}</td>
+                        <td width='auto'>{!! $item['observaciones'] !!}</td>
+
                     </tr>
                 @endforeach
             </table>
