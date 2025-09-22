@@ -34,15 +34,14 @@ class ValidacionServicioVb
                             DB::raw("CAST(agenda.start AS TIME) as hini"),
                             DB::raw("CAST(agenda.end AS TIME) as hfin")
                         )
-                        // ->where('tbl_cursos.status', '<>', 'CANCELADO')
-                        // ->where('tbl_cursos.status', '=', 'VALIDADO')
                         ->where('tbl_cursos.id_instructor', '=', $ins->id)
                         ->where('agenda.id_instructor', $ins->id)
                         ->whereDate('agenda.start', '<=', $fechaStr)
                         ->whereDate('agenda.end', '>=', $fechaStr)
+                        ->where('agenda.id_curso', '<>', $value->id_curso)
                         ->where(function ($query) use($value) {
                             $query->where('tbl_cursos.status_curso', '<>', 'CANCELADO')
-                                ->orWhere('tbl_cursos.folio_grupo', '<>', $value->id_curso);
+                                ->orWhereNull('tbl_cursos.status_curso');
                         })
                         ->get();
                     $minutosTotales = 0;
@@ -116,7 +115,7 @@ class ValidacionServicioVb
                     FROM agenda
                     LEFT JOIN tbl_cursos ON agenda.id_curso = tbl_cursos.folio_grupo
                     WHERE agenda.id_instructor = {$instructor->id}
-                        AND (tbl_cursos.status_curso = 'AUTORIZADO' OR tbl_cursos.vb_dg = true)
+                        AND (tbl_cursos.status_curso <> 'CANCELADO' OR tbl_cursos.status_curso IS NULL)
                 ) as t"))
                 ->whereBetween('dia', [$semanaInicio->format('Y-m-d'), $semanaFin->format('Y-m-d')])
                 ->value(DB::raw('SUM(EXTRACT(hour FROM duracion) * 60 + EXTRACT(minute FROM duracion))'));
@@ -148,8 +147,8 @@ class ValidacionServicioVb
             $cursos = DB::table('tbl_cursos as tc')
                 ->where('tc.id_instructor', $instructor->id)
                 ->where(function ($query) {
-                        $query->where('tc.status_curso', '=', 'AUTORIZADO')
-                        ->orWhere('tc.vb_dg', '=', true);
+                        $query->where('tc.status_curso', '<>', 'CANCELADO')
+                        ->orWhereNull('tc.status_curso');
                 })
                 // ->where(function ($query) use ($folio_grupo) {
                 //     $query->where('tc.status_curso', '=', 'VALIDADO')
@@ -326,8 +325,8 @@ class ValidacionServicioVb
             )
             ->whereIn('a.id_instructor', $idsInstructores)
             ->where(function ($query) {
-                $query->where('tc.status_curso', '=', 'AUTORIZADO')
-                    ->orWhere('tc.vb_dg', '=', true);
+                $query->where('tc.status_curso', '<>', 'CANCELADO')
+                ->orWhereNull('tc.status_curso');
             })
             ->get()
             ->groupBy('id_instructor');
