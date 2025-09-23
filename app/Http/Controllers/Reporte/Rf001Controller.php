@@ -43,6 +43,7 @@ class Rf001Controller extends Controller
      */
     public function index(Request $request, $concentrado = null)
     {
+        // --- IGNORE ---
         $fechaActual = Carbon::now();
         $periodo = $this->obtenerPrimerYUltimoDiaHabil($fechaActual);
 
@@ -50,11 +51,21 @@ class Rf001Controller extends Controller
         $getConcentrado = null;
         $foliosMovimientos = null;
 
-        // Fechas por defecto
-        $periodoInicio = $periodo[0];
-        $periodoFin = $periodo[4];
-        $fechaInicio = $request->get('fechaInicio', $periodoInicio);
-        $fechaFin = $request->get('fechaFin', $periodoFin);
+
+        // Fechas por defecto optimizadas
+        if ($request->filled('fechaInicio')) {
+            $fechaInicio = $request->get('fechaInicio');
+        } else {
+            $fechaInicio = $periodo[0];
+        }
+
+        if ($request->filled('fechaFin')) {
+            $fechaFin = $request->get('fechaFin');
+        } else {
+            $fechaFin = $periodo[4];
+        }
+        $periodoInicio = $fechaInicio;
+        $periodoFin = $fechaFin;
 
         if ($concentrado) {
             $getConcentrado = $this->rfoo1Repository->getDetailRF001Format($concentrado);
@@ -66,10 +77,20 @@ class Rf001Controller extends Controller
             $movimientos = json_decode($data['movimientos'] ?? '[]', true);
             $foliosMovimientos = array_column($movimientos, 'folio');
 
-            $periodoInicio = $request->get('fechaInicio', $getConcentrado->periodo_inicio ?? $periodoInicio);
-            $periodoFin = $request->get('fechaFin', $getConcentrado->periodo_fin ?? $periodoFin);
+            // Asignar fechas del concentrado por defecto
+            $periodoInicio = $getConcentrado->periodo_inicio ?? $periodoInicio;
+            $periodoFin    = $getConcentrado->periodo_fin ?? $periodoFin;
+
+            // Si vienen en el request, sobrescribir
+            if ($request->filled('fechaInicio')) {
+                $periodoInicio = $request->get('fechaInicio');
+            }
+            if ($request->filled('fechaFin')) {
+                $periodoFin = $request->get('fechaFin');
+            }
+
             $fechaInicio = $periodoInicio;
-            $fechaFin = $periodoFin;
+            $fechaFin    = $periodoFin;
         }
 
         $selectedCheckboxes = $request->input('seleccionados', []);
@@ -378,7 +399,7 @@ class Rf001Controller extends Controller
          $validatedData = $request->validated();
          if (!$validatedData) {
             # retornar información del error de la validación
-            return response()->json(['errors' => $validatedData->errors()], 422);
+            return response()->json(['errors' => $request->validator->errors()], 422);
          }
 
         $storeData = $this->rfoo1Repository->storeComment($request);

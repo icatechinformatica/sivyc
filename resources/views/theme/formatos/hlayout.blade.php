@@ -6,57 +6,121 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>@yield('title', '')</title>
     <style>
-        @page { margin: 15px 30px 90px 30px; }
-        body { margin-top: 120px; font-family: sans-serif; font-size: 9px; width:100%; padding:0px;}
-        header { position: fixed; top: 0cm; text-align: center; font-weight: bold;}
-        footer { position: fixed; top: 17.7cm; width:100%;}
-        .direccion {position: absolute;  top: 1.3cm; width:400px; margin-left:25px; height:auto; font-family: sans-serif; font-size: 8px; color:#FFF; }
+        @page {size: Letter landscape; margin: 0px}
+        body{
+            font-family: sans-serif;
+            margin: 0px;
+            padding: 35px            
+        }       
+        header { position: fixed;    
+            margin: 0px;
+            padding: 0px;
+            width:100%;         
+            color: black;
+            text-align: center;            
+            font-size: 11px;
+            font-weight: bold;
+            top: 35px;
+        }
+        
+        footer { 
+            bottom: 0;
+            width: 100%;
+            height: 50px;            
+            line-height: 50px;
+        }
+        .direccion {
+            text-align: right;
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            font-size: 10px;
+            color: rgb(0, 0, 0);
+            line-height: 1;
+        }
+
+        .direccion_old {
+            text-align: left;
+            position: absolute;
+            top: -65%;
+            left: 12%;
+            font-size: 8.5px;
+            color: rgb(255, 255, 255);
+            line-height: 1;
+        }
+
+        #fondo1 {
+            position: fixed;
+            padding: 0px;
+            margin: 0px;
+            top: 10px;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/membretado/membretado horizontal.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
+
+        #fondo_old {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('img/membretado/membretado horizontal_old.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            z-index: -1;
+        }
     </style>
     @if(isset($marca))
         @if ($marca)
             <style>
                 header:after {
-                content: "BORRADOR";
-                font-size: 19em;
+                content: "BORRADOR";                
                 color: rgba(40, 40, 43, 0.35);
                 z-index: 9999;
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 position: fixed;
-                top: 35%;
+                top: 30%;
                 right: 0;
                 bottom: 0;
-                left: 10%;
+                left: 20%;
                 transform: rotate(-25deg);
+                font-family: sans-serif;
+                font-weight: bold; 
+                font-size: 12em;
                 }
             </style>
-            @endif
+        @endif
     @endif
-
-    @yield("css")
+    @yield("content_script_css")
 </head>
-<body>
-    <header>
-        <img src='img/formatos/bannerhorizontal.jpeg' width="100%">
-        <p style="margin-top:-65px; padding:0px; font-size: 11px; "><span  style="font-style: italic; display:block; padding-bottom:5px;">@if(isset($distintivo)){{ $distintivo }}@endif</span>@if(isset($titulo)){{ $titulo }}@endif</p>
-        @yield("header")
-    </header>
-    @if(isset($direccion))
-    <footer>
-        @yield("footer")
-        <div style="position: relative;";>
-            <img style=" position: absolute;" src='img/formatos/footer_horizontal.jpeg' width="100%">
-            @php $direccion = explode("*", $direccion);  @endphp
-            <p class='direccion'><b>@foreach($direccion as $point => $ari)@if($point != 0)<br> @endif {{$ari}}@endforeach</b></p>
-        </div>
-    </footer>
-    @endif
-    <content>
-        @yield("content")
-    </content>
+@php
+    $distintivo = !empty($distintivo) ? str_replace("*", "<br/>", $distintivo) : '';
+    $fondoNuevo = ($fechaLayout ?? $fecha ?? '9999-12-31') > '08-12-2024';
+    
+    $direccion = !empty($direccion) ? str_replace("*", "<br/>", $direccion) : '';
+    $clase_direccion = (!isset($fecha) || $fecha > '07-12-2024') ? 'direccion' : 'direccion_old';
 
-    @yield("body")
-    @yield("js")
+@endphp
+<body>    
+    <div id="{{ $fondoNuevo ? 'fondo1' : 'fondo_old' }}"></div>
+    <div class="content">
+        <header>{!! $distintivo !!}</header>
+        <footer>
+            <p class="{{ $clase_direccion }}">
+                {!! $direccion !!}
+            </p>
+        </footer>
+        @yield("content")
+    </div>
+    @yield("script_content_js")
 </body>
 </html>

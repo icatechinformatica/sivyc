@@ -453,7 +453,7 @@ class turnarAperturaController extends Controller
                 DB::raw('COALESCE(vb_dg, false) as vb_dg'),//NUEVO VOBO
                 DB::raw("
                     (
-                        SELECT string_agg(
+                        SELECT string_agg( '<div>' ||
                         CASE 
                             WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                             ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
@@ -467,12 +467,12 @@ class turnarAperturaController extends Controller
                         CASE
                             WHEN TO_CHAR(\"end\", 'MI') = '00' THEN TO_CHAR(\"end\", 'HH24')
                             ELSE TO_CHAR(\"end\", 'HH24:MI')
-                        END || 'h.(' ||
+                        END || 'h. (' ||
                         TO_CHAR(
                             (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
                             ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
                             'FM999990.##'
-                        ) || 'h)',
+                        ) || 'hrs.)'|| '</div>',
                         E'\n'
                         ORDER BY DATE(start)
                         ) AS agenda_texto
@@ -498,9 +498,10 @@ class turnarAperturaController extends Controller
                         CASE 
                             WHEN tc.tipo != 'EXO' THEN 
                                 'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
-                                'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') || '. ' 
-                            ELSE '.'
+                                'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') 
+                            ELSE ''
                         END
+                        || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
                         /*||
                         CASE 
                            WHEN tc.nota is not null THEN ' ' || tc.nota
@@ -548,10 +549,15 @@ class turnarAperturaController extends Controller
                 'tc.instructor_mespecialidad','folio_grupo',
                 DB::raw("COALESCE(clave, '0') as clave"), //NUEVO VOBO
                 DB::raw('COALESCE(vb_dg, false) as vb_dg'),//NUEVO VOBO
-                DB::raw("
+                 DB::raw("
                     (
-                        SELECT string_agg(
-                        TO_CHAR(DATE(start), 'DD/MM/YYYY') || ' ' ||
+                        SELECT string_agg( '<div>' ||
+                        CASE 
+                            WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                            ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                        END
+                        
+                        || ' ' ||
                         CASE
                             WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
                             ELSE TO_CHAR(\"start\", 'HH24:MI')
@@ -559,45 +565,18 @@ class turnarAperturaController extends Controller
                         CASE
                             WHEN TO_CHAR(\"end\", 'MI') = '00' THEN TO_CHAR(\"end\", 'HH24')
                             ELSE TO_CHAR(\"end\", 'HH24:MI')
-                        END || 'h.(' ||
+                        END || 'h. (' ||
                         TO_CHAR(
                             (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
                             ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
                             'FM999990.##'
-                        ) || 'h)',
+                        ) || 'hrs.)'|| '</div>',
                         E'\n'
                         ORDER BY DATE(start)
                         ) AS agenda_texto
                         FROM agenda
                         WHERE id_curso = tc.folio_grupo
                     )::text AS agenda
-                "),
-
-                DB::raw("
-                    (
-                        CASE
-                            WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
-                            WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
-                            ELSE ''
-                        END 
-                        || 
-                        CASE 
-                            WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
-                            WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
-                            ELSE ''
-                        END                      
-                        ||
-                        CASE 
-                            WHEN tc.tipo != 'EXO' THEN 
-                                'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
-                                'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') || '. ' 
-                            ELSE '.'
-                        END
-                        /*||
-                        CASE 
-                           WHEN tc.nota is not null THEN ' ' || tc.nota
-                        END*/
-                    ) AS observaciones2
                 ")
             );
             if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
