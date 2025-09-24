@@ -4986,7 +4986,7 @@ class InstructorController extends Controller
             'sexo' => $dataInstructor->sexo
         ];
 
-        $response = $this->whatsapp_alta_usuario_msg($infowhats, app(WhatsAppService::class));
+        $response = $this->whatsapp_reenvio_usuario_instructor_msg($infowhats, app(WhatsAppService::class));
 
         if (isset($response['status']) && $response['status'] === false) {
             // Handle the error as you wish
@@ -4994,6 +4994,27 @@ class InstructorController extends Controller
         }
         return back()->with('success', 'Mensaje de WhatsApp enviado correctamente.');
         // termina el envio de mensaje de WhatsApp
+    }
+
+    private function whatsapp_reenvio_usuario_instructor_msg($instructor, WhatsAppService $whatsapp)
+    {
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'restablecer_pwd_instructor')->First();
+        // Reemplazar variables en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{usuario}}', '{{pwd}}','\n'],
+            [$instructor['nombre'], $instructor['correo'], $instructor['pwd'],"\n"],
+            $plantilla->plantilla
+        );
+
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
+
+         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
+
+        return $callback;
     }
 }
 
