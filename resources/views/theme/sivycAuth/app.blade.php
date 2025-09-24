@@ -9,7 +9,7 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-    <link rel="shortcut icon" href="{{ URL::asset('favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('icon/favicon.ico') }}">
 
     <!-- Google Fonts -->
     <link href="{{asset("css/roboto.css") }}" rel="stylesheet">
@@ -40,7 +40,7 @@
     <link rel="stylesheet" href="{{asset("css/custom.css") }}">
     <link rel="stylesheet" href="{{asset("css/paqueterias.css") }}">
 
- 
+
 
 </head>
 
@@ -70,7 +70,7 @@
     <script src="{{asset("vendor/dzsparallaxer/advancedscroller/plugin.js") }}"></script>
     <script src="{{asset("vendor/fancybox/jquery.fancybox.min.js") }}"></script>
     <script src="{{asset("vendor/slick-carousel/slick/slick.js") }}"></script>
-    
+
 
     <script src="{{asset("js/hs.core.js") }}"></script>
     <script src="{{asset("vendor/typedjs/typed.min.js") }}"></script>
