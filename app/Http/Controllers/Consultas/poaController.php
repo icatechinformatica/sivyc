@@ -27,7 +27,9 @@ class poaController extends Controller
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
             $this->data = $this->unidad_user();
-            $_SESSION['unidades'] =  $this->data['unidades'];
+            $unidades = $this->data['unidades'];
+            unset($unidades["ECE-CONOCER"]);
+            $_SESSION['unidades'] =  $unidades;
             return $next($request);
         });
     }
