@@ -701,12 +701,18 @@ class grupoController extends Controller
                                     'sexo',
                                     'tipo_honorario',
                                     'instructor_perfil.grado_profesional as escolaridad',
-                                    'instructor_perfil.estatus as titulo',
-                                    'especialidad_instructores.memorandum_validacion as mespecialidad',
+                                    'instructor_perfil.estatus as titulo',                                    
                                     'especialidad_instructores.criterio_pago_id as cp',
                                     'tipo_identificacion',
                                     'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
-                                    'banco','no_cuenta','interbancaria','tipo_honorario'
+                                    'banco','no_cuenta','interbancaria','tipo_honorario',
+                                    DB::raw("(
+                                            SELECT elem->>'memo_val'
+                                            FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
+                                            WHERE (elem->>'fecha_val')::date < '$request->inicio'
+                                            ORDER BY elem->>'fecha_val' DESC
+                                            LIMIT 1
+                                        ) as mespecialidad")
                                     )
                                 ->WHERE('estado', true)
                                 ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')
@@ -721,6 +727,7 @@ class grupoController extends Controller
                                 ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
                                 ->ORDERBY('fecha_validacion','DESC')
                                 ->first();
+                                
                             if ($instructor) {
                                 /** CRITERIO DE PAGO */
                                 if ($instructor->cp > $curso->cp) {
