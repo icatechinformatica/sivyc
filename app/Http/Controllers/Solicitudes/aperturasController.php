@@ -144,23 +144,29 @@ class aperturasController extends Controller
                      $movimientos['DENEGADO'] = 'DENEGAR REEMPLAZO DE SOPORTE DE PAGO';
                 }
 
+                 if($status_solicitud =='TURNADO'){ //TURNADO PRELIMINAR
+                    $movimientos += ['' => '- SELECCIONAR -']; 
+                    if($grupos[0]->arc == '02')  $movimientos += ['EDICION' =>'AUTORIZAR EDICION']; 
+                     $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'];
+                }
+
+                /*
                 if($status_solicitud =='TURNADO' and $grupos[0]->motivo_vobo and $grupos[0]->vb_dg==false){ //RECHAZADO VoBo
                     $movimientos = ['' => '- SELECCIONAR -', 'PRETORNADO'=>'RETORNAR A UNIDAD'];
-                }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado!='VoBo' and $grupos[0]->vb_dg==false){ //TURNADO PRELIMINAR
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado!='VoBo' and $grupos[0]->vb_dg==true){ //TURNADO PRELIMINAR
                     $movimientos += ['' => '- SELECCIONAR -'];
                     if($grupos[0]->arc == '02'){
                         $movimientos += ['EDICION' =>'AUTORIZAR EDICION', 'PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
-                    }else{
-                        //$movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
+                    }else{                        
                         $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
                     }
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado=='VoBo' and $grupos[0]->vb_dg==false){ //DESHACER ENVIO voBo
                     $movimientos = ['' => '- SELECCIONAR -', 'DESHACER'=>'DESHACER MOVIMIENTO'];
-                }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG
-                    //$movimientos = ['' => '- SELECCIONAR -', 'VALIDADO'=>'TURNAR UNIDAD','RETORNO-VoBo'=>'RETORNAR VoBo']; //HABILITAR VOBO DG
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG                    
                     $movimientos = ['' => '- SELECCIONAR -', 'PRETORNADO'=>'RETORNAR A UNIDAD', 'VALIDADO'=>'VALIDAR PRELIMINAR']; //INHABILITAR VOBO DG
                 }
-
+                */
+                
             }else $message = "No se encuentran registros que mostrar.";
         }
 //dd($grupos);
