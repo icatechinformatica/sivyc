@@ -1,6 +1,6 @@
 @extends('errors.errors_layout')
 <!--llamar a la plantilla -->
-@section('title', 'Error 500 Error Interno del Servidor | Sivyc Icatech')
+@section('title', 'Error 429 Demasiadas Solicitudes | Sivyc Icatech')
 <!--seccion-->
 @section('content')
 
@@ -15,17 +15,17 @@
                     </div>
 
                     <div class="text-center">
-                        <div class="error-number">500</div>
+                        <div class="error-number">429</div>
                         <div class="accent-line"></div>
                         <div class="error-icon"></div>
 
                         <h1 class="error-title h2">
-                            ¡Error Interno del Servidor!
+                            ¡Demasiadas solicitudes!
                         </h1>
 
                         <p class="error-description">
-                            Lo sentimos, ha ocurrido un error interno en el servidor.
-                            Por favor, inténtelo de nuevo más tarde.
+                            Lo sentimos, ha realizado demasiadas solicitudes en un corto período de tiempo.
+                            Por favor, espere un momento y pruebe nuevamente.
                         </p>
 
                         <div class="d-flex justify-content-center gap-3 flex-wrap">
