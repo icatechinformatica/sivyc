@@ -1758,21 +1758,18 @@ class MetavanceController extends Controller
         ##OBTENEMOS DATOS DE LOS FIRMANTES
         $firmantes = $this->datos_firmantes($organismo, 'efirma');
         list($firmanteUno, $firmanteDos) = $firmantes;
-
-        ##Array de funcionarios para guardarlos de manera independiente
-        // $arrayFuncionarios = [
-        //     [
-        //         'funcionario'=>$firmanteUno->funcionario,
-        //         'cargo'=>$firmanteUno->cargo,
-        //         'curp'=>$firmanteUno->curp,
-        //         'titulo'=>$firmanteUno->titulo
-        //     ],
-        //     [   'funcionario'=>$firmanteDos->funcionario,
-        //         'cargo'=>$firmanteDos->cargo,
-        //         'curp'=>$firmanteDos->curp,
-        //         'titulo'=>$firmanteDos->titulo
-        //     ]
-        // ];
+        $firmantesData = [
+            'firmante1' => [
+                'curp' => $firmanteUno->curp,
+                'cargo' => $firmanteUno->cargo,
+                'nombre' => $firmanteUno->funcionario,
+            ],
+            'firmante2' => [
+                'curp' => $firmanteDos->curp,
+                'cargo' => $firmanteDos->cargo,
+                'nombre' => $firmanteDos->funcionario,
+            ],
+        ];
 
         ## Obtenemos la clave que le pertenece al organismo para construir el numero de oficio
         $clave_org = DB::table('tbl_organismos')->where('id', $organismo)->where('activo', 'true')->value('clave');
@@ -1784,15 +1781,6 @@ class MetavanceController extends Controller
         //Proceso para genera xml de ambos documentos
         if($tipo_efirma == 'META_ANUAL'){
             $nombre_archivo = $tipo_efirma;
-
-            // $cont_sinhtml = strip_tags($cont_html); //contenido sin html
-            // //Limpiar cadena
-            // $del_html = preg_replace('/@page\s*\{.*?\}\s*\/\*.*?\*\/|\.tb\s*\{.*?\}|\#titulo\s*\{.*?\}|\.tablaf\s*\{.*?\}|\.showlast\s*\{.*?\}|\.showborders\s*\{.*?\}|\.prueba\s*\{.*?\}|\.direccion\s*\{.*?\}|\.mielemento\s*\{.*?\}|p\s*\{.*?\}|body\s*\{.*?\}|header\s*\{.*?\}|footer\s*\{.*?\}|if\s*\(\s*isset\(\$pdf\)\s*\)\s*\{.*?\}/s', '', $cont_sinhtml);
-            // // Eliminar líneas en blanco o espacios innecesarios.
-            // $del_espacios = preg_replace('/\s+/', ' ', $del_html);
-            // //Elimina css restantes
-            // $body = preg_replace('/[.#][\w\s-]+[\w\s,.]*\{[^}]*\}\s*/', '', $del_espacios);
-
             $nombre_reporte = 'Reporte PAT Meta Anual';
 
             //NO OFICIO
@@ -1809,12 +1797,6 @@ class MetavanceController extends Controller
 
         }else if($tipo_efirma == 'AVANCE_MES'){ //avance_enero
             $nombre_archivo = $tipo_efirma.'_'.strtoupper($mesavance);
-
-            // $cont_sinhtml = strip_tags($cont_html); //contenido sin html
-            // $del_html = preg_replace('/@page\s*\{.*?\}\s*\/\*.*?\*\/|\.tb\s*\{.*?\}|\#titulo\s*\{.*?\}|\.tablaf\s*\{.*?\}|\.showlast\s*\{.*?\}|\.showborders\s*\{.*?\}|\.prueba\s*\{.*?\}|\.direccion\s*\{.*?\}|\.mielemento\s*\{.*?\}|p\s*\{.*?\}|body\s*\{.*?\}|header\s*\{.*?\}|footer\s*\{.*?\}|if\s*\(\s*isset\(\$pdf\)\s*\)\s*\{.*?\}/s', '', $cont_sinhtml);
-            // $del_espacios = preg_replace('/\s+/', ' ', $del_html);
-            // $body = preg_replace('/[.#][\w\s-]+[\w\s,.]*\{[^}]*\}\s*/', '', $del_espacios);
-
             $nombre_reporte = 'Reporte PAT Avance Mensual';
 
             $cut_mes = strtoupper(substr($mesavance, 0, 3));
@@ -1992,7 +1974,6 @@ class MetavanceController extends Controller
                 }
 
                 $dataInsert->obj_documento = json_encode($ArrayXml); //Doc en json
-                // $dataInsert->obj_documento_interno = $cont_html;
                 $dataInsert->body_html = $cont_html;
                 $dataInsert->status = 'EnFirma';
                 $dataInsert->cadena_original = $response->json()['cadenaOriginal'];
@@ -2001,6 +1982,7 @@ class MetavanceController extends Controller
                 $dataInsert->nombre_archivo = $nombre_archivo; //Tipor de reporte (META_ANUAL / AVANCE_MES_ENERO)
                 $dataInsert->documento = $result; //Doc en xml
                 $dataInsert->num_oficio = $numOficio;
+                $dataInsert->obj_documento_interno = json_encode($firmantesData, JSON_UNESCAPED_UNICODE);
                 $dataInsert->save();
                 // $dataInsert->documento_interno = $result; // Opcional para agregar otro dato
 
@@ -2803,7 +2785,7 @@ class MetavanceController extends Controller
 
     public function show_pdf_efirma($id_registro){
         $cadena_html_meta  = $qrCodeBase64 = $uuid = $cadena_sello = $fecha_sello = $no_oficio = '';
-        $firmantes = [];
+        $firmantes = $firmantesData = [];
         $id_organismo = $_SESSION['id_organsmog'];
         // dd($_SESSION['id_organsmog']);
         $ids_org = DB::table('tbl_organismos as o')
@@ -2817,37 +2799,40 @@ class MetavanceController extends Controller
 
         if(!empty($firma_electronica)){
             if($firma_electronica->status == 'VALIDADO'){
-                $objeto = json_decode($firma_electronica->obj_documento,true);
+                $objeto = json_decode($firma_electronica->obj_documento, true);
                 $no_oficio = $firma_electronica->num_oficio;
                 $uuid = $firma_electronica->uuid_sellado;
                 $cadena_sello = $firma_electronica->cadena_sello;
                 $fecha_sello = $firma_electronica->fecha_sellado;
-                // $folio = $firma_electronica->nombre_archivo;
-                // $tipo_archivo = $firma_electronica->tipo_archivo;
-                // $totalFirmantes = $objeto['firmantes']['_attributes']['num_firmantes'];
+                $firmantesData = json_decode($firma_electronica->obj_documento_interno, true);
 
-                $curpUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['curp_firmante'];
-                $curpUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['curp_firmante'];
-                $emailUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['email_firmante'];
-                $emailUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['email_firmante'];
+                if (empty($firmantesData)) {
+                    $curpUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['curp_firmante'];
+                    $curpUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['curp_firmante'];
+                    $emailUser1 = $objeto['firmantes']['firmante'][0][0]['_attributes']['email_firmante'];
+                    $emailUser2 = $objeto['firmantes']['firmante'][0][1]['_attributes']['email_firmante'];
 
-                //Nuevo algoritmo de busqueda de funcionarios
-                if($ids_org->id_direccion == 1){
-                    if($curpUser1 == $curpUser2){
-                        //Si un usuario tiene a cargo dos departamentos
-                        $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->where('id_org', '!=', $ids_org->id_depto)->value('cargo');
-                        $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->where('id_org', $ids_org->id_depto)->value('cargo');
+                    //Nuevo algoritmo de busqueda de funcionarios
+                    if($ids_org->id_direccion == 1){
+                        if($curpUser1 == $curpUser2){
+                            //Si un usuario tiene a cargo dos departamentos
+                            $funUno = DB::table('tbl_funcionarios')->select('curp', 'cargo', 'nombre as funcionario')->where('curp', '=', $curpUser1)->where('id_org', '!=', $ids_org->id_depto)->first();
+                            $funDos = DB::table('tbl_funcionarios')->select('curp', 'cargo', 'nombre as funcionario')->where('curp', '=', $curpUser2)->where('id_org', $ids_org->id_depto)->first();
+                        }else{
+                            $funUno = DB::table('tbl_funcionarios')->select('curp', 'cargo', 'nombre as funcionario')->where('curp', '=', $curpUser1)->first();
+                            $funDos = DB::table('tbl_funcionarios')->select('curp', 'cargo', 'nombre as funcionario')->where('curp', '=', $curpUser2)->first();
+                        }
                     }else{
-                        $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
-                        $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
+                        $funUno = DB::table('tbl_funcionarios')->select('curp', 'cargo', 'nombre as funcionario')->where('curp', '=', $curpUser1)->first();
+                        $funDos = DB::table('tbl_funcionarios')->select('curp', 'cargo', 'nombre as funcionario')->where('curp', '=', $curpUser2)->first();
                     }
-                }else{
-                    $puesto_firmUno = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser1)->where('activo', 'true')->value('cargo');
-                    $puesto_firmDos = DB::table('tbl_funcionarios')->where('curp', '=', $curpUser2)->where('activo', 'true')->value('cargo');
-                }
+                    if(empty($funUno) || empty($funDos)){
+                        return back()->with('message', '¡No se encontraron los datos del los funcionarios!');
+                    }else{
+                        $firmantesData = ['firmante1' => (array) $funUno, 'firmante2' => (array) $funDos];
+                        DocumentosFirmar::where('id', $id_registro)->update(['obj_documento_interno' => json_encode($firmantesData)]); //Guardar datos de los funcionarios
+                    }
 
-                if(empty($puesto_firmUno) || empty($puesto_firmDos)){
-                    return back()->with('message', '¡No se encontraron los datos del los funcionarios!');
                 }
 
                 $arrayfirmantes  = $objeto['firmantes']['firmante'][0];
@@ -2856,8 +2841,8 @@ class MetavanceController extends Controller
                     $firma = $value['_attributes']['firma_firmante'];
                     $fechafirm = $value['_attributes']['fecha_firmado_firmante'];
                     $seriefirm = $value['_attributes']['no_serie_firmante'];
-                    if($key == 0) $puesto = $puesto_firmUno;
-                    else $puesto = $puesto_firmDos;
+                    if($key == 0) $puesto = $firmantesData['firmante1']['cargo'];
+                    else $puesto = $firmantesData['firmante2']['cargo'];
                     $firmantes[] = ['nombre' => $nombre,'firma' => $firma,'fecha_firma' => $fechafirm,'serie' => $seriefirm, 'puesto' => $puesto];
                 }
 
