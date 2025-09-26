@@ -36,5 +36,3 @@ package-lock.json
 #Ignorar archivos de compilación y minificación
 /css/*.min.css
 /js/*.min.js
-
-.DS_Store

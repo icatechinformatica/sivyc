@@ -1,52 +1,27 @@
-@extends('errors.errors_layout')
+@extends('theme.sivyc.layout')
 <!--llamar a la plantilla -->
-@section('title', 'Error 500 Error Interno del Servidor | Sivyc Icatech')
+@section('title', 'Error 405 Método No Permitido | Sivyc Icatech')
 <!--seccion-->
 @section('content')
-
-<div class="error-page">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8 col-md-10">
-                <div class="error-card p-5">
-                    <div class="decorative-elements">
-                        <div class="circle-1"></div>
-                        <div class="circle-2"></div>
-                    </div>
-
-                    <div class="text-center">
-                        <div class="error-number">500</div>
-                        <div class="accent-line"></div>
-                        <div class="error-icon"></div>
-
-                        <h1 class="error-title h2">
-                            ¡Error Interno del Servidor!
-                        </h1>
-
-                        <p class="error-description">
-                            Lo sentimos, ha ocurrido un error interno en el servidor.
-                            Por favor, inténtelo de nuevo más tarde.
-                        </p>
-
-                        <div class="d-flex justify-content-center gap-3 flex-wrap">
-                            <a href="{{ url('/') }}" class="btn btn-custom">
-                                <i class="fas fa-home me-2"></i>Ir al Inicio
-                            </a>
-                            <a href="javascript:history.back()" class="btn btn-outline-secondary justify-content-center align-items-center d-flex">
-                                <i class="fas fa-arrow-left me-2"></i>Regresar
-                            </a>
-                        </div>
-
-                        <div class="mt-4">
-                            <small class="text-muted">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Si necesita ayuda, contacte al administrador del sistema
-                            </small>
-                        </div>
-                    </div>
-                </div>
+    <div class="container g-pt-50">
+        <div class="jumbotron">
+            <h1 class="display-4">
+                ¡Metodo No Permitido!
+            </h1>
+            <div style="width: 49.5%; display: inline-block;">
+                <p class="lead">
+                    <b>Ups!, El método utilizado no está permitido para este recurso.</b>
+                </p>
             </div>
+            <div style="width: 50%; display: inline-block; text-align: center;">
+                <p class="lead">
+                    <img  src="{{asset('img/blade_icons/405-error.png')}}" alt="unauthorized">
+                </p>
+            </div>
+            <hr class="my-4">
+            <p class="lead">
+              <a class="btn btn-primary btn-lg" href="#" role="button">Regresar</a>
+            </p>
         </div>
     </div>
-</div>
 @endsection
