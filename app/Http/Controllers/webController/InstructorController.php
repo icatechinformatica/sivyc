@@ -5016,5 +5016,37 @@ class InstructorController extends Controller
 
         return $callback;
     }
+
+    public function asignarCursosEspecialidad(Request $request)
+{
+    $idins = $request->idins;
+    $idespec = $request->idespec;
+    $cursos = $request->cursos;
+
+
+    // Busca el instructor y la especialidad
+    $instructor = pre_instructor::find($idins);
+    $especialidad_validada = especialidad_instructor::find($idespec);
+    if (!$instructor || !$especialidad_validada) {
+        return response()->json(['message' => 'Instructor no encontrado'], 404);
+    }
+
+    // Actualiza los cursos en la especialidad correspondiente
+    $especialidades = $instructor->data_especialidad;
+    foreach ($especialidades as &$especialidad) {
+        if ($especialidad['id'] == $idespec) {
+            $especialidad['cursos_impartir'] = $cursos;
+            $especialidad_validada->cursos_impartir = $cursos;
+            $especialidad_validada->memorandum_modificacion = Auth::user()->name . ' agrego los cursos el ' . date('d/m/Y'). ' '. implode(', ', $cursos);
+        }
+    }
+    $instructor->data_especialidad = $especialidades;
+    $instructor->save();
+    $especialidad_validada->save();
+
+
+
+    return response()->json(['message' => 'Cursos asignados correctamente']);
+}
 }
 
