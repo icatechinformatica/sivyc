@@ -1,6 +1,6 @@
 @extends('errors.errors_layout')
 <!--llamar a la plantilla -->
-@section('title', 'Error 500 Error Interno del Servidor | Sivyc Icatech')
+@section('title', 'Error 419 Pagina Expirada/Error Token CSRF  | Sivyc Icatech')
 <!--seccion-->
 @section('content')
 
@@ -15,17 +15,17 @@
                     </div>
 
                     <div class="text-center">
-                        <div class="error-number">500</div>
+                        <div class="error-number">419</div>
                         <div class="accent-line"></div>
                         <div class="error-icon"></div>
 
                         <h1 class="error-title h2">
-                            ¡Error Interno del Servidor!
+                            ¡Página expirada!
                         </h1>
 
                         <p class="error-description">
-                            Lo sentimos, ha ocurrido un error interno en el servidor.
-                            Por favor, inténtelo de nuevo más tarde.
+                            Lo sentimos, la página que está intentando acceder ha expirado.
+                            Por favor, vuelva a cargar la página y pruebe nuevamente.
                         </p>
 
                         <div class="d-flex justify-content-center gap-3 flex-wrap">

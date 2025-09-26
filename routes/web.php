@@ -942,3 +942,7 @@ Route::post('/recursos-humanos/reporte/quincenal/pdf', 'RH\RHController@reporte_
 Route::get('/recursos-humanos/reporte/quincenal/detalles/{id}', 'RH\RHController@reporte_quincenal_detalles')->name('rh.reporte.detalles');
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->name('rh.agregar.justificante');
+
+Route::get('/test/error/{codigo}', function ($codigo) {
+    abort($codigo);
+});
