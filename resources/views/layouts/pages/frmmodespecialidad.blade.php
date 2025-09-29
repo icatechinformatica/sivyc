@@ -310,9 +310,18 @@
                 <div class="form-group col-md-1" style="text-align: right;width:0%">
                     <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">Regresar</a>
                 </div>
-                <div class="form-group col-md-11" style="text-align: right;width:100%">
-                    <button type="submit" class="btn mr-sm-4 mt-3 btn-danger" >Modificar</button>
-                </div>
+                @can('agregar-cursos-dta')
+                    <div class="form-group col-md-9" style="text-align: right;">
+                        <button type="button" class="btn btn-success mt-3" id="btnAsignarCursos">Asignar cursos</button>
+                    </div>
+                    <div class="form-group col-md-2" style="text-align: right;width:100%">
+                        <button type="submit" class="btn mr-sm-4 mt-3 btn-danger" >Modificar</button>
+                    </div>
+                @else
+                    <div class="form-group col-md-10" style="text-align: right;width:100%">
+                        <button type="submit" class="btn mr-sm-4 mt-3 btn-danger" >Modificar</button>
+                    </div>
+                @endcan
             </div>
             <br>
             <input type="hidden" name="idesp" id="idesp" value="{{ $id }}">
@@ -337,16 +346,40 @@
     </script>
 @stop
 @section('script_content_js')
-    <script src="{{ asset("js/scripts/bootstrap-toggle.js") }}"></script>
-    <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
-    <script>
-        function toggleOnOff() {
-            var checkBox = document.getElementById("ckbCheckAll");
-            if (checkBox.checked == true){
-                $('.checkBoxClass').prop('checked', true).change()
-            } else {
-                $('.checkBoxClass').prop('checked', false).change()
-            }
+<script src="{{ asset("js/scripts/bootstrap-toggle.js") }}"></script>
+<script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
+<script>
+    function toggleOnOff() {
+        var checkBox = document.getElementById("ckbCheckAll");
+        if (checkBox.checked == true){
+            $('.checkBoxClass').prop('checked', true).change()
+        } else {
+            $('.checkBoxClass').prop('checked', false).change()
         }
-    </script>
+    }
+
+    // Nuevo: Enviar cursos seleccionados
+    $('#btnAsignarCursos').on('click', function() {
+        let cursos = [];
+        $('.checkBoxClass:checked').each(function() {
+            cursos.push($(this).val());
+        });
+        $.ajax({
+            url: '{{ route("asignar.cursos.especialidad") }}',
+            method: 'POST',
+            data: {
+                _token: '{{ csrf_token() }}',
+                idins: $('#idins').val(),
+                idespec: $('#idespec').val(),
+                cursos: cursos
+            },
+            success: function(response) {
+                alert(response.message || 'Cursos asignados correctamente');
+            },
+            error: function() {
+                alert('Error al asignar cursos');
+            }
+        });
+    });
+</script>
 @endsection
