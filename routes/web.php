@@ -943,15 +943,9 @@ Route::get('/recursos-humanos/reporte/quincenal/detalles/{id}', 'RH\RHController
 Route::post('/asistencia/upload', 'RH\RHController@upload')->name('asistencia.upload');
 Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->name('rh.agregar.justificante');
 
-<<<<<<< HEAD
-//agregar curso a un instructor sin prevalidacion
-Route::post('/instructor/asignar-cursos-especialidad', 'webController\InstructorController@asignarCursosEspecialidad')->name('asignar.cursos.especialidad');
-=======
 Route::get('/test/error/{codigo}', function ($codigo) {
     abort($codigo);
 });
 
 //agregar curso a un instructor sin prevalidacion
 Route::post('/instructor/asignar-cursos-especialidad', 'webController\InstructorController@asignarCursosEspecialidad')->name('asignar.cursos.especialidad');
-
->>>>>>> 3446c5e306f57c322889acb1481b8e844cc801a3
