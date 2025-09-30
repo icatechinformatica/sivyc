@@ -492,6 +492,42 @@
 @php
     $movimiento = json_decode($getConcentrado->movimientos, true);
     $importeTotal = 0;
+
+    // OPTIMIZACIÓN: Obtener todos los folios de una sola vez
+    $folios = collect($movimiento)->pluck('folio')->filter()->toArray();
+
+    // Una sola consulta para todos los recibos
+    $recibosData = \DB::table('tbl_recibos AS tr')
+        ->whereIn('tr.folio_recibo', $folios)
+        ->where('tr.status_recibo', 'PAGADO')
+        ->select('tr.*')
+        ->addSelect(
+            \DB::raw("CASE WHEN tr.status_folio='CANCELADO' THEN concat('" . $pathCancelado . "', tr.folio_recibo) END as file_pdf")
+        )
+        ->get()
+        ->keyBy('folio_recibo'); // Indexar por folio_recibo para acceso rápido
+
+    // Obtener todos los id_curso únicos para la consulta de asistencias
+    $cursoIds = $recibosData->pluck('id_curso')->filter()->unique()->toArray();
+
+    // Una sola consulta para todas las asistencias validadas
+    $asistenciasValidadas = \DB::table('tbl_cursos as tc')
+        ->join('documentos_firmar as ef', 'ef.numero_o_clave', '=', 'tc.clave')
+        ->whereIn('tc.id', $cursoIds)
+        ->where('ef.tipo_archivo', 'Lista de asistencia')
+        ->where('ef.status', 'VALIDADO')
+        ->select('tc.id')
+        ->get()
+        ->pluck('id')
+        ->toArray();
+
+    // Una sola consulta para las asistencias de pagos (fallback)
+    $asistenciasPagos = \DB::table('pagos')
+        ->whereIn('id_curso', $cursoIds)
+        ->whereNotNull('arch_asistencia')
+        ->select('id_curso', 'arch_asistencia')
+        ->get()
+        ->keyBy('id_curso');
 @endphp
 @section('content')
     <div id="loader-overlay">
@@ -586,125 +622,114 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th style="text-align: center;" style="width: 15%;">FOLIO</th>
-                                    <th style="text-align: center;">CURSO</th>
-                                    <th style="text-align: center;">CONCEPTO</th>
-                                    <th style="text-align: center;">FOLIOS</th>
-                                    <th style="text-align: center;">LISTA DE ASISTENCIA</th>
-                                    <th style="text-align: center;">RECIBO DE PAGO</th>
-                                    <th style="text-align: center;">IMPORTES</th>
-                                    <th style="text-align: center;">COMENTARIOS</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($movimiento as $item)
-                                    @php
-
-                                        $depositos = isset($item['depositos'])
-                                            ? json_decode($item['depositos'], true)
-                                            : [];
-
-                                        $observaciones = isset($item['observaciones'])
-                                            ? json_decode($item['observaciones'], true)
-                                            : [];
-
-                                        $jsonString = (string) json_encode($observaciones);
-                                        // SECCION DE CREACIÓN CONSULTA PHP
-                                        $fileCancelled = \DB::table('tbl_recibos AS tr')
-                                            ->where('tr.status_recibo', 'PAGADO')
-                                            ->where('tr.folio_recibo', $item['folio'])
-                                            ->select('tr.*')
-                                            ->addSelect(
-                                                \DB::raw( "CASE WHEN tr.status_folio='CANCELADO' THEN concat('" . $pathCancelado . "', tr.folio_recibo)
-                                                   END as file_pdf")
-                                            )->first();
-
-                                        $val_asis = \DB::table('tbl_cursos as tc')
-                                            ->join('documentos_firmar as ef', 'ef.numero_o_clave', '=', 'tc.clave')
-                                            ->where('tc.id', $fileCancelled->id_curso)
-                                            ->where('ef.tipo_archivo', 'Lista de asistencia')
-                                            ->where('ef.status', 'VALIDADO')
-                                            ->value('tc.id');
-
-                                        if(empty($val_asis)){$val_asis = \DB::table('pagos')->where('id_curso', $fileCancelled->id_curso)->value('arch_asistencia');}
-                                    @endphp
+                            <table>
+                                <thead>
                                     <tr>
-                                        <td style="width: 6em;">{{ $item['folio'] }}</td>
-                                        <td>
-                                            @if ($item['curso'] != null)
-                                                {{ $item['curso'] }}
-                                            @else
-                                                {{ $item['descripcion'] }}
-                                            @endif
-                                        </td>
-                                        <td>{{ $item['concepto'] }}</td>
-                                        <td>
-                                            @foreach ($depositos as $k)
-                                                {{ $k['folio'] }} &nbsp;
-                                            @endforeach
-                                        </td>
-                                        {{-- LISTA DE ASISTENCIA --}}
-                                        <td style="text-align:center;">
-                                            @if ($val_asis)
-                                                <a class="nav-link pt-0"
-                                                href="
-                                                    @if (is_numeric($val_asis))
-                                                        {{route('asistencia-pdf', ['id' => $val_asis])}}
-                                                    @else
-                                                        {{$val_asis}}
-                                                    @endif
-                                                "
-                                                        target="_blank">
-                                                        <i class="far fa-file-pdf fa-2x {{empty($val_asis) ? 'text-gray' : 'text-danger'}}"
-                                                            title='VER LISTA DE ASISTENCIA'></i>
-                                                </a>
-                                            @else
-                                                <i class="far fa-file-pdf fa-2x text-gray" title='ARCHIVO NO DISPONIBLE'></i>
-                                            @endif
-
-                                        </td>
-                                        <td style="text-align: center;">
-                                            @if ($fileCancelled->file_pdf !== null)
-                                                <a class="nav-link pt-0" href="{{ $fileCancelled->file_pdf }}"
-                                                    target="_blank">
-                                                    <i class="far fa-file-pdf  fa-2x {{ $fileCancelled->file_pdf === null || empty($fileCancelled->file_pdf) ? 'text-gray' : 'text-danger' }}"
-                                                        title='DESCARGAR RECIBO DE PAGO CANCELADO OFICIALIZADO.'></i>
-                                                </a>
-                                            @else
-                                                <a class="nav-link pt-0" href="{{ $pathFile }}{{ $item['documento'] }}"
-                                                    target="_blank">
-                                                    <i class="far fa-file-pdf  fa-2x {{ $item['documento'] === null || empty($item['documento']) ? 'text-gray' : 'text-danger' }}"
-                                                        title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
-                                                </a>
-                                            @endif
-                                        </td>
-                                        <td style="text-align: end;">
-                                            $ {{ number_format($item['importe'], 2, '.', ',') }}
-                                        </td>
-                                        <td style="text-align:center">
-                                            <a href="javascript:;"
-                                                class="btn {{ empty($jsonString) || $jsonString === 'null' || $jsonString === '[]' ? 'btn-light' : 'btn-warning' }} openModal"
-                                                data-toggle="modal" data-folio="{{ $item['folio'] }}"
-                                                data-target="#exampleModal" data-observaciones="{{ $jsonString }}">
-                                                <i class="fa fa-comment" aria-hidden="true"></i>
-                                            </a>
-                                        </td>
+                                        <th style="text-align: center;" style="width: 15%;">FOLIO</th>
+                                        <th style="text-align: center;">CURSO</th>
+                                        <th style="text-align: center;">CONCEPTO</th>
+                                        <th style="text-align: center;">FOLIOS</th>
+                                        <th style="text-align: center;">LISTA DE ASISTENCIA</th>
+                                        <th style="text-align: center;">RECIBO DE PAGO</th>
+                                        <th style="text-align: center;">IMPORTES</th>
+                                        <th style="text-align: center;">COMENTARIOS</th>
                                     </tr>
-                                    @php
-                                        $importeTotal += $item['importe'];
-                                    @endphp
-                                @endforeach
-                                <tr>
-                                    <td colspan="6" style="text-align: end;"><b>SUBTOTAL</b></td>
-                                    <td style="text-align: end;"><b>$
-                                            {{ number_format($importeTotal, 2, '.', ',') }}</b></td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @foreach ($movimiento as $item)
+                                        @php
+                                            $depositos = isset($item['depositos']) ? json_decode($item['depositos'], true) : [];
+                                            $observaciones = isset($item['observaciones']) ? json_decode($item['observaciones'], true) : [];
+                                            $jsonString = (string) json_encode($observaciones);
+
+                                            // OPTIMIZACIÓN: Obtener datos del recibo desde la colección precargada
+                                            $fileCancelled = $recibosData->get($item['folio']);
+
+                                            // OPTIMIZACIÓN: Determinar asistencia sin consulta adicional
+                                            $val_asis = null;
+                                            if ($fileCancelled) {
+                                                // Verificar si el curso tiene asistencia validada
+                                                if (in_array($fileCancelled->id_curso, $asistenciasValidadas)) {
+                                                    $val_asis = $fileCancelled->id_curso;
+                                                } else {
+                                                    // Usar el archivo de asistencia de pagos como fallback
+                                                    $pagoAsistencia = $asistenciasPagos->get($fileCancelled->id_curso);
+                                                    $val_asis = $pagoAsistencia ? $pagoAsistencia->arch_asistencia : null;
+                                                }
+                                            }
+                                        @endphp
+                                        <tr>
+                                            <td style="width: 6em;">{{ $item['folio'] }}</td>
+                                            <td>
+                                                @if ($item['curso'] != null)
+                                                    {{ $item['curso'] }}
+                                                @else
+                                                    {{ $item['descripcion'] }}
+                                                @endif
+                                            </td>
+                                            <td>{{ $item['concepto'] }}</td>
+                                            <td>
+                                                @foreach ($depositos as $k)
+                                                    {{ $k['folio'] }} &nbsp;
+                                                @endforeach
+                                            </td>
+                                            {{-- LISTA DE ASISTENCIA --}}
+                                            <td style="text-align:center;">
+                                                @if ($val_asis)
+                                                    <a class="nav-link pt-0"
+                                                    href="
+                                                        @if (is_numeric($val_asis))
+                                                            {{route('asistencia-pdf', ['id' => $val_asis])}}
+                                                        @else
+                                                            {{$val_asis}}
+                                                        @endif
+                                                    "
+                                                            target="_blank">
+                                                            <i class="far fa-file-pdf fa-2x {{empty($val_asis) ? 'text-gray' : 'text-danger'}}"
+                                                                title='VER LISTA DE ASISTENCIA'></i>
+                                                    </a>
+                                                @else
+                                                    <i class="far fa-file-pdf fa-2x text-gray" title='ARCHIVO NO DISPONIBLE'></i>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: center;">
+                                                @if ($fileCancelled && $fileCancelled->file_pdf !== null)
+                                                    <a class="nav-link pt-0" href="{{ $fileCancelled->file_pdf }}" target="_blank">
+                                                        <i class="far fa-file-pdf fa-2x text-danger" title='DESCARGAR RECIBO DE PAGO CANCELADO OFICIALIZADO.'></i>
+                                                    </a>
+                                                @elseif ($fileCancelled)
+                                                    <a class="nav-link pt-0" href="{{ $pathFile }}{{ $item['documento'] }}" target="_blank">
+                                                        <i class="far fa-file-pdf fa-2x {{ $item['documento'] === null || empty($item['documento']) ? 'text-gray' : 'text-danger' }}"
+                                                            title='DESCARGAR RECIBO DE PAGO OFICIALIZADO.'></i>
+                                                    </a>
+                                                @else
+                                                    <i class="far fa-file-pdf fa-2x text-gray" title='ARCHIVO NO DISPONIBLE'></i>
+                                                @endif
+                                            </td>
+                                            <td style="text-align: end;">
+                                                $ {{ number_format($item['importe'], 2, '.', ',') }}
+                                            </td>
+                                            <td style="text-align:center">
+                                                <a href="javascript:;"
+                                                    class="btn {{ empty($jsonString) || $jsonString === 'null' || $jsonString === '[]' ? 'btn-light' : 'btn-warning' }} openModal"
+                                                    data-toggle="modal" data-folio="{{ $item['folio'] }}"
+                                                    data-target="#exampleModal" data-observaciones="{{ $jsonString }}">
+                                                    <i class="fa fa-comment" aria-hidden="true"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        @php
+                                            $importeTotal += $item['importe'];
+                                        @endphp
+                                    @endforeach
+                                    <tr>
+                                        <td colspan="6" style="text-align: end;"><b>SUBTOTAL</b></td>
+                                        <td style="text-align: end;"><b>$ {{ number_format($importeTotal, 2, '.', ',') }}</b></td>
+                                    </tr>
+                                </tbody>
+                            </table>
                     </div>
+
                 </div>
                 <div class="row">
                     <div class="col d-flex justify-content-end">
