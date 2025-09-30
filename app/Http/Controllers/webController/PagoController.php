@@ -404,7 +404,13 @@ class PagoController extends Controller
             ->value('fecha_entrega');
 
 
-        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad','calendario_entrega'));
+        // Eager load roles and permissions for the current user
+        $user = Auth::user();
+        $user->load('roles.permissions');
+
+        return view('layouts.pages.vstapago', compact(
+            'contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad','calendario_entrega'
+        ));
     }
 
     public function crear_pago($id)
