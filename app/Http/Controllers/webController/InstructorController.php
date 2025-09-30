@@ -4728,7 +4728,7 @@ class InstructorController extends Controller
         $instructor->turnado = $saveInstructor->turnado;
         $instructor->estado = $saveInstructor->estado;
         $instructor->codigo_postal = $saveInstructor->codigo_postal;
-        $instructor->telefono_casa = $saveInstructor->telefono_casa;
+        $instructor->telefono_casa = preg_replace('/[^0-9]/', '', $saveInstructor->telefono_casa ?? '');
         $instructor->archivo_ine = $saveInstructor->archivo_ine;
         $instructor->archivo_domicilio = $saveInstructor->archivo_domicilio;
         $instructor->archivo_curp = $saveInstructor->archivo_curp;
