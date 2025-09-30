@@ -21,11 +21,10 @@ use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Database\QueryException;
 use App\Models\ModelExpe\ExpeUnico;
-//use App\Models\Alumnopre;
-//use App\Models\Inscripcion;
 use App\Models\tbl_inscripcion;
 use App\Utilities\Algoritmo35;
 use App\Utilities\MyUtility;
+use App\Utilities\MiAgenda;
 
 use function PHPSTORM_META\type;
 use App\Http\Controllers\Solicitudes\vbgruposController;
@@ -142,9 +141,6 @@ class grupoController extends Controller
 
         if(str_starts_with($this->data['cct'] ?? 0, '07000')) $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->orderby('muni')->pluck('muni', 'id');
         else  $municipio = DB::table('tbl_municipios')->where('id_estado', '7')->whereJsonContains('unidad_disponible',$uni)->orderby('muni')->pluck('muni', 'id');
-
-
-
 
         $dependencia = DB::table('organismos_publicos')
             ->where('activo', true)
@@ -1402,6 +1398,13 @@ class grupoController extends Controller
         return response()->json($data['agenda']);
     }
 
+    
+    private function actualiza_dias($id_curso){
+        $tdias = MiAgenda::agenda_tdias($id_curso);
+        $dias = MiAgenda::agenda_dias($id_curso);            
+        $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias, 'tdias' => $tdias]);
+    }
+
     public function deleteCalendar(Request $request){
         $id = $request->id;
         $id_curso = DB::table('agenda')->where('id',$id)->value('id_curso');
@@ -1412,8 +1415,7 @@ class grupoController extends Controller
         } else {
             */
             Agenda::destroy($id);
-            $dias = $this->dias($id_curso);
-            $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias['nombre'], 'tdias' => $dias['total']]);
+            $this->actualiza_dias($id_curso);
             return response()->json($id);
        // }
     }
@@ -1661,89 +1663,10 @@ class grupoController extends Controller
             //dd($ex);
             return 'duplicado';
         }
-        $dias_curso = $this->dias($id_curso);
-        $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias_curso['nombre'], 'tdias' => $dias_curso['total']]);
+        $this->actualiza_dias($id_curso);
     }
 
-    public function dias($id)
-    {
-        $dias_agenda = DB::table('agenda')
-            ->select(
-                DB::raw("extract(dow from (generate_series(agenda.start, agenda.end, '1 day'::interval))) as dia"),
-                DB::raw("generate_series(agenda.start, agenda.end, '1 day'::interval)::date as fecha")
-            )
-            ->where('id_curso', $id)
-            ->orderBy('fecha')
-            ->get();
-
-        if (count($dias_agenda) > 0) {
-            $grupos = [];
-            $inicio = null;
-            $fin = null;
-            $prev = null;
-
-            foreach ($dias_agenda as $item) {
-                $fecha = $item->fecha;
-                $dia = $item->dia;
-
-                if ($inicio === null) {
-                    $inicio = $fin = $item;
-                } else {
-                    $prev_fecha = new \DateTime($prev->fecha);
-                    $curr_fecha = new \DateTime($fecha);
-                    $diff = $prev_fecha->diff($curr_fecha)->days;
-
-                    if ($diff == 1) {
-                        // Son consecutivos, extendemos el rango
-                        $fin = $item;
-                    } else {
-                        // No son consecutivos, guardamos el rango anterior
-                        $grupos[] = [$inicio, $fin];
-                        $inicio = $fin = $item;
-                    }
-                }
-                $prev = $item;
-            }
-            // Guardar el último rango
-            $grupos[] = [$inicio, $fin];
-
-            // Construir la cadena de días
-            $dias_a = [];
-            foreach ($grupos as $rango) {
-                $dia_ini = $this->dia($rango[0]->dia);
-                $dia_fin = $this->dia($rango[1]->dia);
-
-                if ($rango[0]->fecha == $rango[1]->fecha) {
-                    $dias_a[] = $dia_ini;
-                } else {
-                    // Si solo son dos días consecutivos, usar "Y"
-                    $fecha1 = new \DateTime($rango[0]->fecha);
-                    $fecha2 = new \DateTime($rango[1]->fecha);
-                    if ($fecha1->diff($fecha2)->days == 1) {
-                        $dias_a[] = $dia_ini . " Y " . $dia_fin;
-                    } else {
-                        $dias_a[] = $dia_ini . " A " . $dia_fin;
-                    }
-                }
-            }
-            $dias_str = implode(", ", $dias_a);
-        } else {
-            $dias_str = 0;
-        }
-
-        // Calcular el total de días
-        $total_dias = DB::table('agenda')
-            ->select(DB::raw("(generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias"))
-            ->where('id_curso', $id)
-            ->orderBy('dias')
-            ->pluck('dias');
-        $tdias = count($total_dias);
-
-        $insert_dias['nombre'] = $dias_str;
-        $insert_dias['total'] = $tdias;
-        return $insert_dias;
-    }
-
+    
     private function valida_instructor($id_instructor)
     {
         //return ['valido' => true, 'message' => null]; //QUITAR ESTA LINEA EL 01 de JULIO 2024
