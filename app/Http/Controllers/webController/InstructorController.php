@@ -102,6 +102,12 @@ class InstructorController extends Controller
             ]);
             $data->appends($request->only(['unidadbusquedaPorInstructor', 'tipo_busqueda_instructor']));
 
+        // After you get $data, add a new attribute to each item in the collection to indicate if curp exists in users table
+        foreach ($data as $key=>$item) {
+            $exists = \DB::connection('mysql')->table('users')->where('curp', $item->curp)->exists();
+            $data[$key]->usuario_efirma = $exists; // true or false
+        }
+
         $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
         $old = $request->all(); //dd($old['tipo_busqueda_instructor']);
         if(!$old)  $old['tipo_busqueda_instructor'] = null;
@@ -4980,7 +4986,7 @@ class InstructorController extends Controller
         }
         $infowhats = [
             'nombre' => $dataInstructor->instructor,
-            'correo' => $dataInstructor->correo,
+            'usuario' => $dataInstructor->correo,
             'pwd' => $dataInstructor->rfc,
             'telefono' => $dataInstructor->telefono,
             'sexo' => $dataInstructor->sexo
@@ -4996,13 +5002,75 @@ class InstructorController extends Controller
         // termina el envio de mensaje de WhatsApp
     }
 
+    public function envio_credenciales_wsp($idins)
+    {
+        $dataInstructor = instructor::Where('id', $idins)->First();
+        $dataInstructor->instructor = $dataInstructor->nombre . ' ' . $dataInstructor->apellidoPaterno . ' ' . $dataInstructor->apellidoMaterno;
+        //envio de credenciales de instructor para Efirma
+        $userInstructor = DB::Connection('mysql')->Table('users')->Where('curp', $dataInstructor->curp)->First();//se checa si existe el usuario
+        if(is_null($userInstructor)) {
+            $userId = DB::Connection('mysql')->Table('users')->InsertGetId([
+                'name' => $dataInstructor->instructor,
+                'email' => $dataInstructor->correo,
+                'password' => Hash::make($dataInstructor->rfc), // Always hash passwords!
+                'created_at' => now(),
+                'updated_at' => now(),
+                'tipo_usuario' => '3',
+                'curp' => $dataInstructor->curp,
+                'id_sivyc' => $dataInstructor->id
+            ]);
+            //end of create user
+        } else {
+            DB::Connection('mysql')->Table('users')
+                ->where('curp', $dataInstructor->curp)
+                ->update(['password' => Hash::make($dataInstructor->rfc)]);
+        }
+        $infowhats = [
+            'nombre' => $dataInstructor->instructor,
+            'usuario' => $dataInstructor->correo,
+            'pwd' => $dataInstructor->rfc,
+            'telefono' => $dataInstructor->telefono,
+            'sexo' => $dataInstructor->sexo
+        ];
+
+        $response = $this->whatsapp_envio_usuario_instructor_msg($infowhats, app(WhatsAppService::class));
+
+        if (isset($response['status']) && $response['status'] === false) {
+            // Handle the error as you wish
+            return back()->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+        }
+        return back()->with('success', 'Mensaje de WhatsApp enviado correctamente.');
+        // termina el envio de mensaje de WhatsApp
+    }
+
     private function whatsapp_reenvio_usuario_instructor_msg($instructor, WhatsAppService $whatsapp)
     {
         $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'restablecer_pwd_instructor')->First();
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
             ['{{nombre}}', '{{usuario}}', '{{pwd}}','\n'],
-            [$instructor['nombre'], $instructor['correo'], $instructor['pwd'],"\n"],
+            [$instructor['nombre'], $instructor['usuario'], $instructor['pwd'],"\n"],
+            $plantilla->plantilla
+        );
+
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
+
+         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
+
+        return $callback;
+    }
+
+    private function whatsapp_envio_usuario_instructor_msg($instructor, WhatsAppService $whatsapp)
+    {
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'alta_efirma_instructores')->First();
+        // Reemplazar variables en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{usuario}}', '{{pwd}}','\n'],
+            [$instructor['nombre'], $instructor['usuario'], $instructor['pwd'],"\n"],
             $plantilla->plantilla
         );
 

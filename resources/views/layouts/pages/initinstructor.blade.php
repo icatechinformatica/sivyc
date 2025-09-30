@@ -162,40 +162,73 @@
                             @if ($itemData->status == 'EN FIRMA')
                                 <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                 @can('reenvio_credenciales_instructor')
-                                            <a class="btn btn-info btn-sm mr-sm-4 mt-3"
+                                    @if(!$itemData->usuario_efirma)
+                                        <a class="btn btn-info btn-sm mr-sm-4 mt-3"
+                                            href="{{ route('enviar-alta-wsp-instructor', ['idins' => $itemData->id]) }}"
+                                            title="Asignar credenciales de acceso a eFirma por WhatsApp"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            onclick="return confirm('¿Confirma que desea enviar las credenciales de acceso a eFirma por WhatsApp?');">
+                                                <i class="fa fa-envelope"></i> Enviar usuario eFirma
+                                        </a>
+                                    @else
+                                        <a class="btn btn-info btn-sm mr-sm-4 mt-3"
                                             href="{{ route('reenviar-wsp-instructor', ['idins' => $itemData->id]) }}"
                                             title="Reenviar credenciales de acceso por WhatsApp"
                                             data-toggle="tooltip"
                                             data-placement="top"
                                             onclick="return confirm('¿Confirma que desea reenviar las credenciales por WhatsApp?');">
                                                 <i class="fa fa-envelope"></i> Reenviar Credenciales
-                                            </a>
+                                        </a>
+                                    @endif
                                 @endcan
                             @endif
                             @if ($itemData->status == 'Aprobado' || $itemData->status == 'BAJA')
                                     <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
-                                    @can('reenvio_credenciales_instructor')
-                                                <a class="btn btn-info btn-sm mr-sm-4 mt-3"
+                                        @can('reenvio_credenciales_instructor')
+                                                    @if(!$itemData->usuario_efirma)
+                                            <a class="btn btn-info btn-sm mr-sm-4 mt-3"
+                                                href="{{ route('enviar-alta-wsp-instructor', ['idins' => $itemData->id]) }}"
+                                                title="Asignar credenciales de acceso a eFirma por WhatsApp"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                onclick="return confirm('¿Confirma que desea enviar las credenciales de acceso a eFirma por WhatsApp?');">
+                                                    <i class="fa fa-envelope"></i> Enviar usuario eFirma
+                                            </a>
+                                        @else
+                                            <a class="btn btn-info btn-sm mr-sm-4 mt-3"
                                                 href="{{ route('reenviar-wsp-instructor', ['idins' => $itemData->id]) }}"
                                                 title="Reenviar credenciales de acceso por WhatsApp"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
                                                 onclick="return confirm('¿Confirma que desea reenviar las credenciales por WhatsApp?');">
                                                     <i class="fa fa-envelope"></i> Reenviar Credenciales
-                                                </a>
+                                            </a>
+                                        @endif
                                     @endcan
                             @endif
                             @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
                                     <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
                                     @can('reenvio_credenciales_instructor')
-                                                <a class="btn btn-info btn-sm mr-sm-4 mt-3"
+                                        @if(!$itemData->usuario_efirma)
+                                            <a class="btn btn-info btn-sm mr-sm-4 mt-3"
+                                                href="{{ route('enviar-alta-wsp-instructor', ['idins' => $itemData->id]) }}"
+                                                title="Asignar credenciales de acceso a eFirma por WhatsApp"
+                                                data-toggle="tooltip"
+                                                data-placement="top"
+                                                onclick="return confirm('¿Confirma que desea enviar las credenciales de acceso a eFirma por WhatsApp?');">
+                                                    <i class="fa fa-envelope"></i> Enviar usuario eFirma
+                                            </a>
+                                        @else
+                                            <a class="btn btn-info btn-sm mr-sm-4 mt-3"
                                                 href="{{ route('reenviar-wsp-instructor', ['idins' => $itemData->id]) }}"
                                                 title="Reenviar credenciales de acceso por WhatsApp"
                                                 data-toggle="tooltip"
                                                 data-placement="top"
                                                 onclick="return confirm('¿Confirma que desea reenviar las credenciales por WhatsApp?');">
                                                     <i class="fa fa-envelope"></i> Reenviar Credenciales
-                                                </a>
+                                            </a>
+                                        @endif
                                     @endcan
                             @endif
                         </td>
