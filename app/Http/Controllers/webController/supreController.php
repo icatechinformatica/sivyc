@@ -115,7 +115,7 @@ class supreController extends Controller
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             ->WHERE('tabla_supre.status', '!=', 'Cancelado');
 
-        if($roles->role_name != 'admin' && $roles->role_name != 'planeacion') {
+        if($roles->role_name != 'admin' && !str_contains($roles->role_name, 'planeacion')) {
             $data = $data->Where('unidad_capacitacion', $unidaduser->ubicacion);
         }
 
