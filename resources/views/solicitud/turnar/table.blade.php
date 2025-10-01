@@ -29,7 +29,7 @@
                 <th scope="col" class="text-center">MUNICIPIO</th>
                 <th scope="col" class="text-center">ZE</th>
                 <th scope="col" class="text-center">DEPENDENCIA</th>
-                <th scope="col" class="text-center">TIPO</th>                
+                <th scope="col" class="text-center">TIPO</th>
                 <th scope="col" class="text-center">SOLICITUD</th>
                 <th scope="col" class="text-center">FORMATOT</th>
                 <th scope="col" class="text-center">LUGAR</th>
@@ -123,7 +123,7 @@
                         <td><div style="width:120px;">
                             @if($g->vb_dg==true or  $g->clave!='0')
                                 {{ $g->nombre }}
-                            @endif                        
+                            @endif
                         </div></td>
                         <td class="text-center"> {{ $g->mod }} </td>
                         <td class="text-center">
@@ -140,7 +140,7 @@
                         <td> {{ $g->muni }} </td>
                         <td class="text-center"> {{ $g->ze}} </td>
                         <td><div style="width:150px;">{{ $g->depen }}</div></td>
-                        <td class="text-center"> {{ $g->tcapacitacion }} </td>                        
+                        <td class="text-center"> {{ $g->tcapacitacion }} </td>
                         <td class="text-center"> @if($g->status_sol) {{ $g->status_sol }} @else {{"EN CAPTURA" }} @endif </td>
                         <td class="text-center"> {{ $g->status }} </td>
                         <td > <div style="width:350px;">{{ $g->efisico }} </div></td>
@@ -172,8 +172,8 @@
             <div class="form-group col-md-3">
                 {{ Form::button('ENVIAR PRELIMINAR '.$g->option.' >>', ['id'=>'preliminar','class' => 'btn  bg-danger mx-4']) }}
             </div>
-        @elseif (($opt=='ARC01'&& ($grupos[0]->status_solicitud=='VALIDADO') OR ($opt=='ARC02' && $grupos[0]->status_solicitud_arc02=='VALIDADO')) AND is_null($grupos[0]->file_arc02)) 
-            @if(Auth::user()->roles[0]->slug=='admin')
+        @elseif (($opt=='ARC01'&& ($grupos[0]->status_solicitud=='VALIDADO') OR ($opt=='ARC02' && $grupos[0]->status_solicitud_arc02=='VALIDADO')) AND is_null($grupos[0]->file_arc02))
+            @if(auth()->user()->hasRole('admin'))
                 <div class="form-group col-md-12 p-2 pl-3 bg-light">
                     <h5> USUARIO ADMINISTRADOR </h5>
                 </div>
@@ -204,11 +204,11 @@
     @if($pdf_curso)
         <a href="{{$pdf_curso}}" target="_blank" class="btn bg-warning">AUTORIZACIÓN</a>
     @endif
-    @if($movimientos)        
+    @if($movimientos)
         <div class="form-row col-md-9 justify-content-end">
             @if(($permiso ?? null) == 'ACEPTADO')
                 {{ Form::button('GENERAR MEMORÁNDUM PDF', ['id'=>'generar','class' => 'btn']) }}
-            @endif            
+            @endif
             {{ Form::select('movimiento', $movimientos, '', ['id'=>'movimiento','class' => 'form-control  col-md-4 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }}
             {{ Form::text('motivo', '', ['id'=>'motivo', 'class' => 'form-control col-md-4 m-1 ', 'placeholder' => 'MOTIVO', 'title' => 'MOTIVO', 'style'=>'display:none']) }}
             <div class="custom-file col-md-3 m-1" id="inputFile" style="display:none">
