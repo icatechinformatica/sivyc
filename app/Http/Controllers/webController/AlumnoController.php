@@ -47,6 +47,11 @@ class AlumnoController extends Controller {
             }
         }
 
+        // verificar permisos una sola vez para evitar N+1
+        $canEditAlumnos = $request->user()->can('alumnos.inscripcion-paso2');
+        $canManageExtraPermiso = $request->user()->can('permiso.alu.exo');
+
+
         $retrieveAlumnos = Alumnopre::busquedapor($tipo, $buscar_aspirante)
         ->leftjoin('users','users.id','iduser_updated')
         ->orderBy('apellido_paterno','ASC')->orderby('apellido_materno','ASC')->orderby('nombre','ASC')
@@ -54,7 +59,7 @@ class AlumnoController extends Controller {
             DB::raw("requisitos->>'documento' as documento"),'name','alumnos_pre.updated_at']);
         //dd($retrieveAlumnos);
         $contador = $retrieveAlumnos->count();
-        return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador','buscar_aspirante'));
+        return view('layouts.pages.vstaalumnos', compact('retrieveAlumnos', 'contador','buscar_aspirante', 'canEditAlumnos', 'canManageExtraPermiso'));
     }
 
     public function showl(Request $request) {  //EN PRODUCCION vista inscripción aspirante
