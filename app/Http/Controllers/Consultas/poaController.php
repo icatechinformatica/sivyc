@@ -125,12 +125,12 @@ class poaController extends Controller
 
                     $data_total = DB::table('tbl_unidades as u')
                     ->select('poa.id_unidad','u.ubicacion as unidad',DB::raw('poa.total_cursos as cursos_programados'),
-                    DB::raw("count(*)  as cursos_autorizados"),
-                    DB::raw('count(f.*) as suficiencia_autorizada'),
-                    DB::raw("count(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN 1 ELSE NULL END) AS recep_financ"),
-                    DB::raw("count(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE NULL END) AS valid_financ"), 
+                    DB::raw('COUNT(DISTINCT tc.id) as cursos_autorizados'),
+                    DB::raw('COUNT(DISTINCT f.*) as suficiencia_autorizada'),                    
+                    DB::raw("COUNT(DISTINCT CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN p.id END) AS recep_financ"),
+                    DB::raw("COUNT(DISTINCT CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion='VALIDADO' THEN p.id END) AS valid_financ"),
 
-                    DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
+                     DB::raw("COUNT(DISTINCT CASE WHEN tc.proceso_terminado = true THEN tc.id END) as cursos_reportados"),
                     DB::raw('MAX(poa.total_horas) as horas_programadas'),
                     DB::raw("sum(tc.dura)  as horas_impartidas"),
 
