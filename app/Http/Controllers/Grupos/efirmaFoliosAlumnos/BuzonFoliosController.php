@@ -25,6 +25,13 @@ class BuzonFoliosController extends Controller
     public function index(Request $request)
     {
         ## Buzon de folios
+        // Verificar si hay usuario autenticado
+        if (!Auth::check()) {
+            return redirect()->route('login')->with('error', 'Debe iniciar sesión para acceder a esta página.');
+        }
+
+        $user = Auth::user();
+
         //Debemos obtener la unidad a la que pertenece el usuario para la visualizacion, firmado y sellado
         $data = $ids = $cad_original = $array_firm = [];
         $token = '';
@@ -32,21 +39,29 @@ class BuzonFoliosController extends Controller
         $curpf = '';
 
         ## Obtenemos la unidad y el rol del usuario
-        $unidad = Auth::user()->unidad;
+        $unidad = $user->unidad;
         $ubicacion = Unidad::where('id', $unidad)->value('ubicacion');
-        $slug = Auth::user()->roles()->first()->slug;
+        $slug = $user->roles()->first()->slug;
         // $aceptados = ['admin', 'titular_unidad', 'director_unidad'];
 
         ##Obtenemos curp, email del firmante para validar si le pertenece firmar el documento
-        $curpUser = DB::Table('users')->Select('tbl_funcionarios.curp')
-        ->Join('tbl_funcionarios','tbl_funcionarios.curp','users.curp')
-        ->Where('users.id', Auth::user()->id)
-        ->First();
+        $curpUser = DB::Table('users')
+            ->Select('tbl_funcionarios.curp')
+            ->Join('tbl_funcionarios','tbl_funcionarios.curp','users.curp')
+            ->Where('users.id', $user->id)
+            ->First();
 
-        if($curpUser != null){$curpf = $curpUser->curp;}
+        if($curpUser != null){
+            $curpf = $curpUser->curp;
+        }
 
         ## Estados del documento
-        $estados = ['EnFirma' => 'POR FIRMAR','firmado' => 'FIRMADO','sellado' => 'SELLADO','cancelado' => 'CANCELADO'];
+        $estados = [
+            'EnFirma' => 'POR FIRMAR',
+            'firmado' => 'FIRMADO',
+            'sellado' => 'SELLADO',
+            'cancelado' => 'CANCELADO'
+        ];
 
         ### Recopilamos los datos del request
         if(session('ejercicio_e')) $ejercicio_e = session('ejercicio_e');
@@ -69,74 +84,89 @@ class BuzonFoliosController extends Controller
         if(!is_null($ejercicio_e) && !is_null($filtro_e) && !is_null($clave_e)){
             try {
                 $data = DB::table('efolios_alumnos as ef')
-                ->select('ef.id','ef.matricula','ef.efolio','ef.fecha_creacion','ef.status_doc','tf.nombre','tf.motivo','tf.movimiento','ef.obj_documento', 'ef.cadena_original','ef.id_curso')
-                ->join('tbl_cursos as tc', 'tc.id', '=', 'ef.id_curso')
-                ->join('tbl_folios as tf', 'tf.folio', '=', 'ef.efolio')
-                ->whereYear('ef.fecha_creacion', $ejercicio_e);
-                if($matricula)$data = $data->where('ef.matricula',$matricula);
-                // ->where('ef.status_doc', $filtro_e);
+                    ->select('ef.id','ef.matricula','ef.efolio','ef.fecha_creacion','ef.status_doc','tf.nombre','tf.motivo','tf.movimiento','ef.obj_documento', 'ef.cadena_original','ef.id_curso')
+                    ->join('tbl_cursos as tc', 'tc.id', '=', 'ef.id_curso')
+                    ->join('tbl_folios as tf', 'tf.folio', '=', 'ef.efolio')
+                    ->whereYear('ef.fecha_creacion', $ejercicio_e);
+
+                if($matricula) {
+                    $data = $data->where('ef.matricula', $matricula);
+                }
 
                 if ($filtro_e == 'EnFirma') {
-                    // $data = $data->where('ef.status_doc', 'EnFirma')->orWhere('ef.status_doc', 'EnFirmaUno');
                     $data = $data->where(function($query) {
                         $query->where('ef.status_doc', 'EnFirma')
-                              ->orWhere('ef.status_doc', 'EnFirmaUno');
+                            ->orWhere('ef.status_doc', 'EnFirmaUno');
                     });
-                }else if($filtro_e == 'firmado'){
+                } else if($filtro_e == 'firmado') {
                     $data = $data->where('ef.status_doc', 'firmado');
-                }else if($filtro_e == 'sellado'){
+                } else if($filtro_e == 'sellado') {
                     $data = $data->where('ef.status_doc', 'sellado');
-                }
-                else if($filtro_e == 'cancelado'){
-                    // $data = $data->where('ef.status_doc', 'cancelado')->orWhere('ef.status_doc', 'cancelado_icti');
+                } else if($filtro_e == 'cancelado') {
                     $data = $data->where(function($query) {
                         $query->where('ef.status_doc', 'cancelado')
-                              ->orWhere('ef.status_doc', 'cancelado_icti');
+                            ->orWhere('ef.status_doc', 'cancelado_icti');
                     });
                 }
 
-                $data = $data->whereRaw("CONCAT(tc.clave, ' ', tc.folio_grupo) LIKE ?", ['%'.$clave_e.'%'])->orderBy('ef.id', 'asc')->get();
+                $data = $data->whereRaw("CONCAT(tc.clave, ' ', tc.folio_grupo) LIKE ?", ['%'.$clave_e.'%'])
+                            ->orderBy('ef.id', 'asc')
+                            ->get();
 
                 if($data == null || count($data) == 0){
-                    return back()->with(['message' => 'No se encontraron registros', 'clave_e' => $clave_e, 'matricula' => $matricula]);
+                    return back()->with([
+                        'message' => 'No se encontraron registros',
+                        'clave_e' => $clave_e,
+                        'matricula' => $matricula
+                    ]);
                 }
             } catch (\Throwable $th) {
                 return back()->with('message', '¡ERROR AL REALIZAR LA BUSQUEDA DE REGISTROS! '.$th->getMessage());
             }
+
             ##Obtenemos los id
             if($data) $ids = $data->pluck('id')->toArray();
             if($data) $cad_original = $data->pluck('cadena_original', 'id')->toArray();
 
             ##Obtenemos token para enviarlos a la vista
             $token = $this->generarToken();
-            // $getToken = Tokens_icti::latest()->first();
-            // if ($getToken) {$token = $getToken->token;}
 
             ##Validamos los firmantes del documento
+            if(count($data) > 0) {
                 $obj = json_decode($data[0]->obj_documento, true);
                 $cursoId = $data[0]->id_curso;
-                $firmantes = $obj['firmantes']['firmante'][0];
-                foreach ($firmantes as $value) {
-                    $curp = $value['_attributes']['curp_firmante'];
-                    // $email = $value['_attributes']['email_firmante'];
-                    if($curpf == $curp){
-                        $existcurp = true;
-                        $countFirma = DB::table('efolios_alumnos')
-                        ->selectRaw('COUNT(*) AS count_firma_firmante')
-                        ->whereRaw("jsonb_path_exists(obj_documento, '$.firmantes.firmante[*] ? (@._attributes.curp_firmante == \"$curp\") ._attributes.firma_firmante')")
-                        ->where('id_curso', $cursoId)
-                        ->where(function($query) {
-                            $query->where('status_doc', 'EnFirma')
-                                  ->orWhere('status_doc', 'EnFirmaUno');
-                        })
-                        ->value('count_firma_firmante');
-                        if($countFirma == count($data)){$existfirma = true;}
+
+                if(isset($obj['firmantes']['firmante'][0])) {
+                    $firmantes = $obj['firmantes']['firmante'][0];
+                    foreach ($firmantes as $value) {
+                        if(isset($value['_attributes']['curp_firmante'])) {
+                            $curp = $value['_attributes']['curp_firmante'];
+                            if($curpf == $curp){
+                                $existcurp = true;
+                                $countFirma = DB::table('efolios_alumnos')
+                                    ->selectRaw('COUNT(*) AS count_firma_firmante')
+                                    ->whereRaw("jsonb_path_exists(obj_documento, '$.firmantes.firmante[*] ? (@._attributes.curp_firmante == \"$curp\") ._attributes.firma_firmante')")
+                                    ->where('id_curso', $cursoId)
+                                    ->where(function($query) {
+                                        $query->where('status_doc', 'EnFirma')
+                                            ->orWhere('status_doc', 'EnFirmaUno');
+                                    })
+                                    ->value('count_firma_firmante');
+                                if($countFirma == count($data)){
+                                    $existfirma = true;
+                                }
+                            }
+                        }
                     }
                 }
+            }
         }
 
-        return view('grupos.efirmafolios.efirmabuzon_folios', compact('ubicacion','estados','ejercicio_e','filtro_e','clave_e',
-        'data','ids','matricula','token', 'cad_original', 'array_firm', 'curpf','existcurp','slug', 'existfirma'));
+        return view('grupos.efirmafolios.efirmabuzon_folios', compact(
+            'ubicacion','estados','ejercicio_e','filtro_e','clave_e',
+            'data','ids','matricula','token', 'cad_original', 'array_firm',
+            'curpf','existcurp','slug', 'existfirma'
+        ));
     }
 
 
