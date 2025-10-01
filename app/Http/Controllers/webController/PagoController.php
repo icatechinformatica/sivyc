@@ -404,12 +404,21 @@ class PagoController extends Controller
             ->value('fecha_entrega');
 
 
-        // Eager load roles and permissions for the current user
-        $user = Auth::user();
-        $user->load('roles.permissions');
+        $user = Auth::user()->load('roles.permissions');
+
+        // Calcula solo los permisos que realmente usas en el blade
+        $permisos = [
+            'contratos_create' => $user->can('contratos.create'),
+            'contratos_edit'   => $user->can('contratos.edit'),
+            'contrato_validate'=> $user->can('contrato.validate'),
+            'pagos_create'     => $user->can('pagos.create'),
+            'verificar_pago'   => $user->can('verificar_pago.create'),
+            'folio_especial'   => $user->can('folio.especialedit'),
+        ];
+
 
         return view('layouts.pages.vstapago', compact(
-            'contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad','calendario_entrega'
+            'contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad','calendario_entrega', 'permisos'
         ));
     }
 
