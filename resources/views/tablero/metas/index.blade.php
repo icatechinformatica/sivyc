@@ -30,8 +30,10 @@
                 aria-controls="nav-horas" aria-selected="false">HORAS</a>
             <a class="nav-item nav-link alert-light" id="nav-beneficiarios-tab" data-toggle="tab" href="#nav-beneficiarios"
                 role="tab" aria-controls="nav-beneficiarios" aria-selected="false">BENEFICIARIOS</a>
+                {{--
             <a class="nav-item nav-link alert-light" id="nav-inversion-tab" data-toggle="tab" href="#nav-inversion"
                 role="tab" aria-controls="nav-inversion" aria-selected="false">INVERSI&Oacute;N</a>
+                 --}}
         </div>
     </nav>
     <div class="tab-content" id="nav-tabContent">
