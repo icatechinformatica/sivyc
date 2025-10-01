@@ -69,8 +69,7 @@
                     @php
                         $estilo = "";
                         $unidad =  "ZONA ".$i->ze ;
-
-                        $unidad = "UNIDAD ".$i->unidad;
+                        
                         $color = "text-warning";
                         $totalz3[0] += $i->cursos_programados;
                         $totalz3[1] += $i->cursos_autorizados;
@@ -97,8 +96,6 @@
                     @php
                         $estilo = "";
                         $unidad =  "ZONA ".$i->ze ;
-
-                        $unidad = "UNIDAD ".$i->unidad;
                         $color = "text-warning";
                         
                         $totalz2[0] += $i->cursos_programados;
