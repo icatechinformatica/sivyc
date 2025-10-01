@@ -63,9 +63,10 @@ class InstructorController extends Controller
 
         // Check permission using loaded data instead of can() method
         $canViewAll = $user->hasPermissionTo('instructores.all') ||
-                    $user->roles->contains(function ($role) {
-                        return $role->hasPermissionTo('instructores.all');
-                    });
+              $user->roles->contains(function ($role) {
+                  return $role && method_exists($role, 'hasPermissionTo') &&
+                         $role->hasPermissionTo('instructores.all');
+              });
 
         $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)
             ->where('instructores.id', '!=', '0')
