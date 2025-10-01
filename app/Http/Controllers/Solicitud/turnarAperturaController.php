@@ -470,6 +470,7 @@ class turnarAperturaController extends Controller
 
     public function pdfARC01(Request $request){
         if($request->fecha AND $request->memo){
+            $sesionUnidades = session('unidades');
             $marca = true;
             $fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
@@ -537,7 +538,7 @@ class turnarAperturaController extends Controller
                     ) AS observaciones
                 ")
                 );
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
+            if($sesionUnidades)$reg_cursos = $reg_cursos->whereIn('unidad',$sesionUnidades);
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
             //dd($reg_cursos);
             if(count($reg_cursos)>0){
@@ -563,7 +564,9 @@ class turnarAperturaController extends Controller
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC01.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
-        }return "ACCIÓN INVÁlIDA";exit;
+        }
+        return "ACCIÓN INVÁlIDA";
+        exit;
     }
 
     public function pdfARC02(Request $request) {
@@ -571,6 +574,7 @@ class turnarAperturaController extends Controller
             $marca = true;
             $fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
+            $sesionUnidades = session('unidades');
 
             $reg_cursos = DB::table('tbl_cursos as tc')->SELECT('id','unidad','nombre','mvalida','mod','curso','inicio','termino','dura',
                 'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso','fecha_arc02','status_solicitud_arc02',
@@ -607,7 +611,7 @@ class turnarAperturaController extends Controller
                     )::text AS agenda
                 ")
             );
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
+            if($sesionUnidades)$reg_cursos = $reg_cursos->whereIn('unidad',$sesionUnidades);
             $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
 
             if(count($reg_cursos)>0){
