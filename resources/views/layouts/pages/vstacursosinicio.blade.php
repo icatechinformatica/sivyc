@@ -44,7 +44,7 @@
                         EXPORTAR CATÁLOGO
                     </a>
                     <div class="dropdown-menu bg-warning" aria-labelledby="dropdownMenuLink">
-                        @can('exportar.cursosdv')
+                        @if($permisos['exportar_cursosdv'])
                             <a class="dropdown-item border-bottom text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'CURSOS'])}}" target="_blank">
                                 <i  class="far fa-file-excel fa-1x fa-sm"></i> CURSOS
                             </a>
@@ -54,25 +54,25 @@
                             <a class="dropdown-item border-bottom  text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'PROGRAMA'])}}" target="_blank">
                                 <i  class="far fa-file-excel fa-1x fa-sm"></i> PROGRAMA ESTRATÉGICO
                             </a>
-                        @endcan
-                        @can('academico.catalogo.cursos')
+                        @endif
+                        @if($permisos['academico_catalogo_cursos'])
                             <a class="dropdown-item border-bottom text-dark"  href="{{route('academico.exportar.cursos',['xls'=>'ACTIVOS'])}}" target="_blank">
                                 <i  class="far fa-file-excel fa-1x fa-sm"></i> CURSOS ACTIVOS
                             </a>
-                        @endcan
-                        @can('academico.catalogo.cursosall')
+                        @endif
+                        @if($permisos['academico_catalogo_cursos_all'])
                             <a class="dropdown-item text-dark"  href="{{route('academico.exportar.cursosall')}}" target="_blank">
                                 <i  class="far fa-file-excel fa-1x fa-sm"></i> TODO LOS CURSOS
                             </a>
-                        @endcan
+                        @endif
                     </div>
                 </div>
             </div>
-            @can('cursos.create')
+            @if($permisos['cursos_create'])
                 <div class="form-group col-md-3">
                     <a class="btn" href="{{route('frm-cursos')}}">NUEVO CURSO</a>
                 </div>
-            @endcan
+            @endif
 
         </div>
 
@@ -90,13 +90,13 @@
                     <th >CURSO /CERTIFICACIÓN</th>
                     <th >PROG. ESTRA.</th>
                     <th >ACTUALIZADO</th>
-                    @can('cursos.show')
+                    @if($permisos['cursos_show'])
                         <th >&nbsp;EDIT&nbsp;</th>
-                    @endcan
+                    @endif
                     <th >&nbsp;VER&nbsp;</th>
-                    @can('paqueteriasdidacticas')
+                    @if($permisos['paqueterias_didacticas'])
                     <th >PAQUE TERÍA</th>
-                    @endcan
+                    @endif
                     <th >CARTA DESCRI</th>
                 </tr>
             </thead>
@@ -125,13 +125,13 @@
                         <td>{{$servicio}}</td>
                         <td>{{$prog}}</td>
                         <td>{{ $itemData->user_updated_name ?: $itemData->user_created_name }} {{ $fecha }} </td>
-                        @can('cursos.show')
+                        @if($permisos['cursos_show'])
                         <td>
                             <a class="nav-link" alt="Editar Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}">
                                 <i  class="fa fa-edit  fa-2x fa-lg text-success"></i>
                             </a>
                         </td>
-                        @endcan
+                        @endif
                         <td>
                             <a class="nav-link" alt="Ver Registro" href="{{route('cursos-catalogo.show',['id' => base64_encode($itemData->id)])}}" data-toggle="modal" data-placement="top" data-target="#fullHeightModalRight"
                                 data-id="{{$itemData->id}}">
@@ -147,12 +147,12 @@
 
                             @endif
                         </td> --}}
-                        @can('paqueteriasdidacticas')
+                        @if($permisos['paqueterias_didacticas'])
                         <td>
                             <a href="{{route('paqueteriasDidacticas',$itemData->id)}}" class="nav-link" title="Paquetes">
                             <i class="fa fa-2x fa-folder text-muted"></i></a>
                         </td>
-                        @endcan
+                        @endif
 
                         <td>
                             @if ($itemData->horas_tematico == $itemData->horas)
