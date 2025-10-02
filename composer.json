@@ -26,7 +26,7 @@
         "lcobucci/jwt": "3.3.3",
         "maatwebsite/excel": "^3.1",
         "revolution/laravel-google-sheets": "^5.0",
-        "sentry/sentry-laravel": "^4.16",
+        "sentry/sentry-laravel": "*",
         "setasign/fpdf": "1.8.*",
         "setasign/fpdi": "^2.0",
         "smalot/pdfparser": "^2.7",
