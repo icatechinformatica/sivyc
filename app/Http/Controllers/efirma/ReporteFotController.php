@@ -196,16 +196,23 @@ class ReporteFotController extends Controller
         $id_contrato = $request->id;
         $id_curso = "";
 
-        $result = DB::Table('contratos')->Select('tbl_cursos.id AS id_curso')
-            ->Join('folios','folios.id_folios','contratos.id_folios')
-            ->Join('tbl_cursos','tbl_cursos.id','folios.id_cursos')
-            ->Join('documentos_firmar','documentos_firmar.numero_o_clave','tbl_cursos.clave')
+        try {
+            $result = DB::Table('contratos')->Select('tbl_cursos.id AS id_curso')
+            ->join('folios', 'folios.id_folios', '=' , 'contratos.id_folios')
+            ->join('tbl_cursos', 'tbl_cursos.id', '=' , 'folios.id_cursos')
+            ->join('documentos_firmar', 'documentos_firmar.numero_o_clave', '=' , 'tbl_cursos.clave')
             ->Where('contratos.id_contrato',$id_contrato)
             ->where('documentos_firmar.tipo_archivo', 'Reporte fotografico')
             ->where('documentos_firmar.status', 'VALIDADO')
             ->first();
-        if($result != null){
-            $id_curso = $result->id_curso;
+
+            $id_curso = $result ? $result->id_curso : null;
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 500,
+                'error' => 'Error de conexión a la base de datos',
+                'id_curso' => null
+            ], 500);
         }
 
         return response()->json([
