@@ -67,16 +67,19 @@ class turnarAperturaController extends Controller
     public function index(Request $request){
         $opt = $memo = $message = $file = $extemporaneo = $status_solicitud = $num_revision = NULL;
         $movimientos = [];
-        if($request->memo)  $memo = $request->memo;
-        elseif(isset($_SESSION['memo'])) $memo = $_SESSION['memo'];
 
-        if($request->opt)  $opt = $request->opt;
-        elseif(isset($_SESSION['opt'])) $opt = $_SESSION['opt'];
+        // Usar session() de Laravel en lugar de $_SESSION
+        if($request->memo) $memo = $request->memo;
+        elseif(session('memo')) $memo = session('memo');
+
+        if($request->opt) $opt = $request->opt;
+        elseif(session('opt')) $opt = session('opt');
         else $opt = "ARC01";
 
-        $_SESSION['grupos'] = NULL;
+        session(['grupos' => null]); // En lugar de $_SESSION['grupos'] = NULL;
         $grupos = $mextemporaneo = [];
         $ids_extemp = [];
+
         if($memo){
             $grupos = DB::table('tbl_cursos as tc')->select(
                     'tc.*','tc.turnado as turnado_solicitud','tr.status_folio','tc.fecha_arc01','file_arc02',
@@ -90,34 +93,40 @@ class turnarAperturaController extends Controller
                 )
                 ->leftjoin('alumnos_registro as ar','ar.folio_grupo','tc.folio_grupo')
                 ->leftJoin('tbl_recibos as tr', function ($join) {
-                $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
-                    ->where('tr.status_folio','ENVIADO');
+                    $join->on('tc.folio_grupo', '=', 'tr.folio_grupo')
+                        ->where('tr.status_folio','ENVIADO');
                 });
-                if($opt == 'ARC01'){
-                   $grupos = $grupos->whereRaw("(tc.num_revision = '$memo' OR (tc.munidad = '$memo'))");
-                   //->where('tc.munidad',$memo);
-                }else{
-                   $grupos = $grupos->whereRaw("(tc.num_revision_arc02 = '$memo' OR (tc.nmunidad = '$memo'))");
-                   //->where('tc.nmunidad',$memo);
-                }
-                if($_SESSION['unidades']){
-                   $grupos = $grupos->whereIn('tc.unidad',$_SESSION['unidades']);
-                }
-                $grupos = $grupos->groupby('tc.id','ar.turnado', 'tr.status_folio')->get();
+
+            if($opt == 'ARC01'){
+            $grupos = $grupos->whereRaw("(tc.num_revision = ? OR tc.munidad = ?)", [$memo, $memo]);
+            }else{
+            $grupos = $grupos->whereRaw("(tc.num_revision_arc02 = ? OR tc.nmunidad = ?)", [$memo, $memo]);
+            }
+
+            // Verificar si existe la sesión 'unidades' antes de usarla
+            $unidades = session('unidades');
+            if($unidades && is_array($unidades) && !empty($unidades)){
+            $grupos = $grupos->whereIn('tc.unidad', $unidades);
+            }
+
+            $grupos = $grupos->groupby('tc.id','ar.turnado', 'tr.status_folio')->get();
 
             if(count($grupos)>0){
-
                 if ($opt == 'ARC01') {
-                    if($grupos[0]->file_arc01) $file =  $this->path_files.$grupos[0]->file_arc01;
+                    if($grupos[0]->file_arc01) $file = $this->path_files.$grupos[0]->file_arc01;
                     $status_solicitud = $grupos[0]->status_solicitud;
                     $num_revision = $grupos[0]->num_revision;
-                    if(isset($_SESSION['memo']))$ids_extemp = $this->ids_extemp($_SESSION['memo']);
+                    if(session('memo')) $ids_extemp = $this->ids_extemp(session('memo'));
 
                     if(count($ids_extemp)>0){
                         $extemporaneo = true;
-                        $mextemporaneo = ['VALIDACION VENCIDA DEL INSTRUCTOR'=>'VALIDACION VENCIDA DEL INSTRUCTOR','REQUISITOS FALTANTES'=>'REQUISITOS FALTANTES',
-                             'ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO','SOLICITUD DE LA DEPENDENCIA'=>'SOLICITUD DE LA DEPENDENCIA',
-                             'ACTUALIZACION DE PAQUETERIA DIDACTICA'=>'ACTUALIZACION DE PAQUETERIA DIDACTICA'];
+                        $mextemporaneo = [
+                            'VALIDACION VENCIDA DEL INSTRUCTOR'=>'VALIDACION VENCIDA DEL INSTRUCTOR',
+                            'REQUISITOS FALTANTES'=>'REQUISITOS FALTANTES',
+                            'ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO',
+                            'SOLICITUD DE LA DEPENDENCIA'=>'SOLICITUD DE LA DEPENDENCIA',
+                            'ACTUALIZACION DE PAQUETERIA DIDACTICA'=>'ACTUALIZACION DE PAQUETERIA DIDACTICA'
+                        ];
                     }
 
                     ///MOVIMIENTO ADICIONALES DESPUES DE AUTORIZADO
@@ -131,26 +140,35 @@ class turnarAperturaController extends Controller
                     }
 
                 } elseif ($opt == 'ARC02') {
-                    if($grupos[0]->file_arc02) $file =  $this->path_files.$grupos[0]->file_arc02;
+                    if($grupos[0]->file_arc02) $file = $this->path_files.$grupos[0]->file_arc02;
                     $status_solicitud = $grupos[0]->status_solicitud_arc02;
                     $num_revision = $grupos[0]->num_revision_arc02;
-                    foreach ($grupos as $grupo) {
 
+                    foreach ($grupos as $grupo) {
                         $interval = (Carbon::parse($grupo->termino)->diffInDays($grupo->inicio))/2;
                         $interval = intval(ceil($interval));
                         $interval = (Carbon::parse($grupo->inicio)->addDay($interval))->format('Y-m-d');
                         $i = date($interval);
                         if ($i < date('Y-m-d')){
-                             $extemporaneo = true;
-                             $ids_extemp[] = $grupo->id;
+                            $extemporaneo = true;
+                            $ids_extemp[] = $grupo->id;
                         }
                     }
-                    if($extemporaneo == true)$mextemporaneo = ['OBSERVACIONES DE FINANCIEROS'=>'OBSERVACIONES DE FINANCIEROS','ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO',
-                    'TRAMITES ADMINISTRATIVOS'=>'TRAMITES ADMINISTRATIVOS'];
+                    if($extemporaneo == true) {
+                        $mextemporaneo = [
+                            'OBSERVACIONES DE FINANCIEROS'=>'OBSERVACIONES DE FINANCIEROS',
+                            'ERROR MECANOGRAFICO'=>'ERROR MECANOGRAFICO',
+                            'TRAMITES ADMINISTRATIVOS'=>'TRAMITES ADMINISTRATIVOS'
+                        ];
+                    }
                 }
-                $_SESSION['grupos'] = $grupos;
-                $_SESSION['memo'] = $memo;
-                $_SESSION['opt'] = $opt;
+
+                // Usar session() de Laravel
+                session([
+                    'grupos' => $grupos,
+                    'memo' => $memo,
+                    'opt' => $opt
+                ]);
 
             }else $message = "No se encuentran registros que mostrar.";
         }else $message = "Ingrese el número de revisión o número de memorándum.";
