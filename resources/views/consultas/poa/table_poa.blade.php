@@ -158,7 +158,16 @@
                     <td class="text-center"> 
                         {{ number_format($i->cursos_programados, 0, '', ',') }}
                     </td>
-                    <td class="text-center">{{ number_format($i->cursos_autorizados, 0, '', ',') }}</td>
+                    <td class="text-center">             
+                        @if($i->orden >= 4 and $i->orden<>20 and $i->cursos_autorizados>0)
+                            <a href="#" onclick="DetalleCursos('{{$unidad}}'); return false;" alt="VER DETALLES" class="text-primary fw-bold d-block w-100 text-center">
+                                {{ number_format($i->cursos_autorizados, 0, '', ',') }}
+                            </a>
+                        @else
+                            {{ number_format($i->cursos_autorizados, 0, '', ',') }}
+                        @endif
+                                                
+                    </td>
                     @if($i->cursos_autorizados>$i->cursos_programados)
                         <td class="text-center {{$color}}">{{ number_format($i->cursos_programados-$i->cursos_autorizados, 0, '', ',') }}</td>
                     @else

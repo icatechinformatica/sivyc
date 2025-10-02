@@ -1,8 +1,14 @@
 <!--ELABORO ROMELIA PEREZ - rpnanguelu@gmail.com-->
 @extends('theme.sivyc.layout')
 @section('title', 'Consultas | SIVyC Icatech')
-@section('content')
+@section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
+    <style>
+        .multiselect-all,
+        .multiselect-option{ text-align: left; display: flex; align-items: center; }        
+    </style>
+@endsection
+@section('content')   
 
     <div class="card-header">
         Consulta de Cursos Aperturados
@@ -16,22 +22,31 @@
                 </div>
             </div>
         @endif
-        <?php
+        @php
             if(isset($curso)) $clave = $curso->clave;
-            else $clave = null;
-        ?>
+            else $clave = null;            
+            $opciones = [];            
+            $opciones['INICIADOS'] = 'CURSOS INICIADOS';
+            $opciones['TERMINADOS'] = 'CURSOS TERMINADOS';            
+        @endphp
+        @can('consultas.poa')
+            @php
+                $opciones['AUTORIZADOS'] = 'CURSOS AUTORIZADOS';
+                $opciones['EXONERADOS'] = 'CURSOS EXONERADOS';
+            @endphp
+        @endcan
+
         {{ Form::open(['method' => 'post','id'=>'frm', 'enctype' => 'multipart/form-data']) }}
-            <div class="row form-inline">
-                    {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control mr-sm-4 mt-3', 'placeholder' => 'CLAVE APERTURA / MEMORÁNDUM ARC-01', 'size' => 38]) }}
-                    {{ Form::select('unidad', $unidades, $unidad ,['id'=>'unidad','class' => 'form-control  mr-sm-4 mt-3','title' => 'UNIDAD','placeholder' => '-SELECCIONAR-']) }}
-                    {{ Form::select('opcion', ['INICIADOS'=>'CURSOS INICIADOS','TERMINADOS'=>'CURSOS TERMINADOS','EXONERADOS'=>'CURSOS EXONERADOS'], $opcion, ['id'=>'opcion', 'class' => 'form-control mr-sm-4 mt-3'] ) }}
-                    {{ Form::date('fecha1', $fecha1 , ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}
-                    {{ Form::date('fecha2', $fecha2, ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-4 mt-3', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL', 'required' => 'required']) }}
-                    {{ Form::button('FILTRAR', ['id' => 'botonFILTRAR', 'name'=> 'boton', 'value' => 'FILTRAR', 'class' => 'btn mr-sm-4 mt-3']) }}
-                    {{ Form::button('XLS', ['id' => 'botonXLS', 'value' => 'XLS', 'class' => 'btn mr-sm-4 mt-3']) }}
+            <div class="row form-inline">                    
+                    {{ Form::select('unidad[]', $unidades, $values['unidad'] ?? null ,['id'=>'unidad','class' => 'form-control  mr-sm-4 select2','title' => 'UNIDAD','placeholder' => '-SELECCIONAR-', 'multiple' => true, 'size' => 1]) }}
+                    {{ Form::select('opcion', $opciones, $values['opcion'] ?? null, ['id'=>'opcion', 'class' => 'form-control mr-sm-4 ml-3'] ) }}
+                    {{ Form::date('fecha1', $values['fecha1'] ?? null , ['id'=>'fecha1', 'class' => 'form-control datepicker  mr-sm-4', 'placeholder' => 'FECHA INICIAL', 'title' => 'FECHA INICIAL', 'required' => 'required']) }}
+                    {{ Form::date('fecha2', $values['fecha2'] ?? null, ['id'=>'fecha2', 'class' => 'form-control datepicker  mr-sm-4', 'placeholder' => 'FECHA FINAL', 'title' => 'FECHA FINAL', 'required' => 'required']) }}
+                    {{ Form::text('valor', $values['valor'] ?? null, ['id'=>'valor', 'class' => 'form-control mr-sm-3', 'placeholder' => 'CLAVE APERTURA / MEMO ARC-01', 'size' => 30]) }}
+                    {{ Form::button('FILTRAR', ['id' => 'botonFILTRAR', 'name'=> 'boton', 'value' => 'FILTRAR', 'class' => 'btn mr-sm-4']) }}
+                    {{ Form::button('XLS', ['id' => 'botonXLS', 'value' => 'XLS', 'class' => 'btn mr-sm-4']) }}
             </div>
         {!! Form::close() !!}
-
         <div class="row">
             <div class="table-responsive">
                 <table class="table table-bordered table-striped">
@@ -87,6 +102,9 @@
 
     </div>
      @section('script_content_js')
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/css/bootstrap-multiselect.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/1.1.1/js/bootstrap-multiselect.min.js"></script>
+
         <script language="javascript">
             $(document).ready(function(){
                 $("#botonFILTRAR" ).click(function(){ $('#frm').attr('action', "{{route('consultas.cursosaperturados')}}"); $("#frm").attr("target", '_self'); $('#frm').submit(); });
@@ -96,6 +114,28 @@
                 $( ".datepicker" ).datepicker({
                     dateFormat: "yy-mm-dd"
                 });
+            });
+            $(document).ready(function() {
+                $('#unidad').multiselect({                    
+                    includeSelectAllOption: true,
+                    selectAllText: '- SELECCIONAR TODO-',
+                    allSelectedText: 'Todos seleccionados',
+                    enableFiltering: true,
+                    buttonWidth: '100%',
+                    nonSelectedText: '-UNIDAD-',
+                    numberDisplayed: 0,
+                    maxHeight: 300,     
+                    buttonText: function(options, select) {
+                        if (options.length === 0) {
+                            return '-SELECCIONAR-'; // solo aparece si está vacío
+                        } else if (options.length === 1) {
+                            return $(options[0]).text(); // si selecciona uno, muestra su nombre
+                        } else {
+                            return options.length-1 + ' SELECCIONADOS'; // si selecciona varios
+                        }
+                    }
+                });
+                
             });
         </script>
     @endsection
