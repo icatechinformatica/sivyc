@@ -366,23 +366,33 @@ class PagoController extends Controller
             ) AS resultado")
             ]);
 
+        // Before the loop, get all needed especialidad_instructor records
+        $instructorIds = $contratos_folios->pluck('id_instructor')->unique()->toArray();
+        $especialidades = especialidad_instructor::whereIn('id_instructor', $instructorIds)->get();
+
         foreach($contratos_folios as $pointer => $ari)
         {
-            $memoval = especialidad_instructor::WHERE('id_instructor',$ari->id_instructor) // obtiene la validacion del instructor
-            ->whereJsonContains('hvalidacion', [['memo_val' => $ari->instructor_mespecialidad]])->value('hvalidacion');
-            if(isset($memoval))
-            {
-                foreach($memoval as $me)
-                {
-                    if(isset($me['memo_val']) && $me['memo_val'] == $ari->instructor_mespecialidad)
-                    {
+            $especialidad = $especialidades->where('id_instructor', $ari->id_instructor)
+                ->filter(function($item) use ($ari) {
+                    // Check if hvalidacion contains the needed memo_val
+                    if (is_array($item->hvalidacion)) {
+                        foreach ($item->hvalidacion as $me) {
+                            if (isset($me['memo_val']) && $me['memo_val'] == $ari->instructor_mespecialidad) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                })->first();
+
+            if ($especialidad) {
+                foreach ($especialidad->hvalidacion as $me) {
+                    if (isset($me['memo_val']) && $me['memo_val'] == $ari->instructor_mespecialidad) {
                         $contratos_folios[$pointer]->arch_mespecialidad = $me['arch_val'];
                         break;
                     }
                 }
-            }
-            else
-            {
+            } else {
                 $contratos_folios[$pointer]->arch_mespecialidad = $ari->archivo_alta;
             }
 
@@ -394,7 +404,22 @@ class PagoController extends Controller
             ->value('fecha_entrega');
 
 
-        return view('layouts.pages.vstapago', compact('contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad','calendario_entrega'));
+        $user = Auth::user()->load('roles.permissions');
+
+        // Calcula solo los permisos que realmente usas en el blade
+        $permisos = [
+            'contratos_create' => $user->can('contratos.create'),
+            'contratos_edit'   => $user->can('contratos.edit'),
+            'contrato_validate'=> $user->can('contrato.validate'),
+            'pagos_create'     => $user->can('pagos.create'),
+            'verificar_pago'   => $user->can('verificar_pago.create'),
+            'folio_especial'   => $user->can('folio.especialedit'),
+        ];
+
+
+        return view('layouts.pages.vstapago', compact(
+            'contratos_folios','unidades','año_pointer','array_ejercicio','tipoPago','unidad','calendario_entrega', 'permisos'
+        ));
     }
 
     public function crear_pago($id)
@@ -1255,9 +1280,9 @@ class PagoController extends Controller
                         'factura_xml' => $archivos->arch_factura_xml,
                         'contrato' => $archivos->arch_contrato,
                         'identificacion' => $archivos->archivo_ine,
-                        'asistencia' => $update->arch_asistencia,
-                        'calificacion' => $update->arch_calificaciones,
-                        'evidencia' => $update->arch_evidencia,
+                        'asistencia' => $archivos->arch_asistencia,
+                        'calificacion' => $archivos->arch_calificaciones,
+                        'evidencia' => $archivos->arch_evidencia,
                         'usuario_retorno' => Auth::user()->name,];
 
 

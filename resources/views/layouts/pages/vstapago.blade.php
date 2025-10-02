@@ -160,7 +160,7 @@
                     <th scope="col" style="font-size: 15px">Instructor</th>
                     <th scope="col" style="font-size: 15px">Status</th>
                     {{-- <th scope="col" style="width: 150px;">Ultima Modificación de Status</th> --}}
-                    {{-- @can('contratos.create')
+                    {{-- @if($permisos['contratos_create'])
                             <th scope="col" style="width: 150px;">Fecha de Validación de Recepción Fisica</th>
                     @endcan --}}
                     <th width="160px" style="font-size: 15px">Acciones</th>
@@ -170,7 +170,7 @@
             </thead>
             <tbody>
                 @foreach ($contratos_folios as $key=>$itemData)
-                    <tr @can('contratos.create')@if($itemData->alerta == TRUE && (is_null($itemData->status_recepcion) || $itemData->status_recepcion == 'Rechazado')) style='background-color: #621032; color: white;' @endif @endcan @can('contrato.validate')@if($itemData->alerta_financieros == TRUE && $itemData->status_recepcion == 'En Espera') style='background-color: #621032; color: white;' @endif @endcan>
+                    <tr @if($permisos['contratos_create'])@if($itemData->alerta == TRUE && (is_null($itemData->status_recepcion) || $itemData->status_recepcion == 'Rechazado')) style='background-color: #621032; color: white;' @endif @endcan @if($permisos['contrato_validate'])@if($itemData->alerta_financieros == TRUE && $itemData->status_recepcion == 'En Espera') style='background-color: #621032; color: white;' @endif @endcan>
                         <td style="font-size: 13px">{{$itemData->numero_contrato}}</td>
                         <td style="font-size: 13px">
                             @if($itemData->created_at != NULL)
@@ -180,25 +180,25 @@
                         </td>
                         <td style="font-size: 13px">{{$itemData->unidad_capacitacion}}</td>
                         <td style="font-size: 13px">{{$itemData->nombre}}</td>
-                        <td style="font-size: 13px">@if($itemData->status == 'Finalizado') Pagado @elseif($itemData->status == 'Pago_Verificado' && ($itemData->status_recepcion == 'Recibido' || $itemData->status_recepcion == 'VALIDADO' || $itemData->status_recepcion == 'recepcion tradicional')) Pago En Proceso @elseif($itemData->status = 'Pago_Verificado' && $itemData->status_recepcion == 'En Espera') Enviado @elseif($itemData->status = 'Pago_Verificado') Para Envío @else {{$itemData->status}}@endif</td>
+                        <td style="font-size: 13px">@if($itemData->status == 'Finalizado') Pagado @elseif($itemData->status == 'Pago_Verificado' && ($itemData->status_recepcion == 'Recibido' || $itemData->status_recepcion == 'VALIDADO' || $itemData->status_recepcion == 'recepcion tradicional')) Pago En Proceso @elseif($itemData->status == 'Pago_Verificado' && $itemData->status_recepcion == 'En Espera') Enviado @elseif($itemData->status == 'Pago_Verificado') Para Envío @else {{$itemData->status}}@endif</td>
                         <td style="font-size: 13px">
                             @switch($itemData->status)
                                 @case('Verificando_Pago')
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->arch_pago}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                    {{-- @can('contratos.edit')
+                                    {{-- @if($permisos['contratos_edit'])
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Solicitud de Pago" href="{{route('pago-mod', ['id' => $itemData->id_folios])}}" >
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                     @endcan --}}
-                                    @can('verificar_pago.create')
+                                    @if($permisos['verificar_pago'])
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Verificar Pago" href="{{route('pago.verificarpago', ['id' => $itemData->id_contrato])}}">
                                             <i class="fas fa-eye" aria-hidden="true"></i>
                                         </a>
                                     @endcan
                                     @if($itemData->permiso_editar == TRUE)
-                                        {{-- @can('folio.especialedit')
+                                        {{-- @if($permisos['folio_especial'])
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
@@ -209,7 +209,7 @@
                                     <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="PDF" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id_supre}}","{{$itemData->status}}","{{$itemData->doc_validado}}","{{$itemData->arch_pago}}"]'>
                                         <i class="fa fa-file" aria-hidden="true"></i>
                                     </a>
-                                    @can('pagos.create')
+                                    @if($permisos['pagos_create'])
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Confirmar Pago" href="{{route('pago-crear', ['id' => $itemData->id_contrato])}}">
                                             <i class="fas fa-money-bill-alt" aria-hidden="true"></i>
                                         </a>
@@ -218,7 +218,7 @@
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a> --}}
                                     @if($itemData->permiso_editar == TRUE)
-                                        {{-- @can('folio.especialedit')
+                                        {{-- @if($permisos['folio_especial'])
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
@@ -229,13 +229,13 @@
                                     <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Consulta de Validación" href="{{route('pago.historial-verificarpago', ['id' => $itemData->id_contrato])}}">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                     </a>
-                                    {{-- @can('contratos.edit')
+                                    {{-- @if($permisos['contratos_edit'])
                                         <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Solicitud de Pago" href="{{route('pago-mod', ['id' => $itemData->id_folios])}}" >
                                             <i class="fa fa-wrench" aria-hidden="true"></i>
                                         </a>
                                     @endcan --}}
                                     @if($itemData->permiso_editar == TRUE)
-                                        {{-- @can('folio.especialedit')
+                                        {{-- @if($permisos['folio_especial'])
                                             <a class="btn btn-info btn-circle m-1 btn-circle-sm" title="Editar Folio" href="{{route('folio_especialedit', ['id' => $itemData->id_folios])}}">
                                                 <i class="fa fa-wrench" aria-hidden="true"></i>
                                             </a>
@@ -283,14 +283,14 @@
                                 Digitalmente: {{$itemData->recepcion}}
                                 @if(is_null($itemData->status_transferencia))
                                     @if($itemData->edicion_pago == TRUE)
-                                        @can('contratos.create')
+                                        @if($permisos['contratos_create'])
                                             <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->edicion_pago}}"]'>
                                                 EDITAR ENTREGA
                                             </a>
                                         @endcan
                                     @else
                                         @if ($itemData->status_dpto_general)
-                                            @can('contrato.validate')
+                                            @if($permisos['contrato_validate'])
                                                 <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
                                                     Retorno o Edición
                                                 </a>
@@ -300,14 +300,14 @@
                                 @else
                                     <br>En Layout de Pago
                                     @if($itemData->edicion_pago == TRUE)
-                                        @can('contratos.create')
+                                        @if($permisos['contratos_create'])
                                             <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->edicion_pago}}"]'>
                                                 EDITAR ENTREGA
                                             </a>
                                         @endcan
                                     @else
                                         @if ($itemData->status_dpto_general)
-                                            @can('contrato.validate')
+                                            @if($permisos['contrato_validate'])
                                                 <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
                                                     Retorno o Edición
                                                 </a>
@@ -319,19 +319,19 @@
                                 @switch($itemData->status_recepcion)
                                     @case('En Espera')
                                         En Espera de Revisión Digital<br> enviada el: @if(isset($itemData->fecha_envio)){{$itemData->fecha_envio}} @else {{$itemData->updated_at}} @endif
-                                        @can('contratos.create')
+                                        @if($permisos['contratos_create'])
                                             {{-- <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","EN ESPERA"]'>
                                                 AGENDAR ENTREGA
                                             </a> --}}
                                         @endcan
-                                        @can('contrato.validate')
+                                        @if($permisos['contrato_validate'])
                                             <a class="btn btn-info" id="recepcionar" name="recepcionar" data-toggle="modal" @if($itemData->tipo_curso == 'CURSO') data-target="#validarRecepcionModalOrdinaria" @else data-target="#validarRecepcionModalCertificacion"  @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$calendario_entrega}}","{{$itemData->modinstructor}}"]'>
                                                 Revisar Entrega Digital
                                             </a>
                                         @endcan
                                     @break
                                     @case('Rechazado')
-                                        @can('contratos.create')
+                                        @if($permisos['contratos_create'])
                                             <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->resultado}}"]'>
                                                 AGENDAR ENTREGA
                                             </a>
@@ -341,7 +341,7 @@
                                     @case('VALIDADO')
                                         Documentación Validada
                                         Fecha de Cita: {{$itemData->fecha_agenda}}
-                                        @can('contrato.validate')
+                                        @if($permisos['contrato_validate'])
                                             <a class="btn btn-info" id="recepcionar_fisico" name="recepcionar_fisico" data-toggle="modal" data-placement="top" data-target="#recepcionModal" data-id='{{$itemData->id_contrato}}'>
                                                 Confirmar Recepción
                                             </a>
@@ -349,7 +349,7 @@
                                     @break
                                     @case('No Recibido')
                                         No Recibido Fisicamente
-                                        @can('contratos.create')
+                                        @if($permisos['contratos_create'])
                                             <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->resultado}}"]'>
                                                 AGENDAR ENTREGA
                                             </a>
@@ -358,14 +358,14 @@
                                     @case('recepcion tradicional')
                                         LA ENTREGA SERA POR RECEPCION TRADICIONAL
                                         @if(is_null($itemData->arch_contrato))
-                                            @can('contratos.create')
+                                            @if($permisos['contratos_create'])
                                                 <a class="btn btn-info" id="subir_contrato_rezagado" name="subir_contrato_rezagado" data-toggle="modal" data-placement="top" data-target="#subirContratoRezagadoModal" data-id='["{{$itemData->id_contrato}}"]'>
                                                     SUBIR CONTRATO
                                                 </a>
                                             @endcan
                                         @endif
                                         @if($itemData->edicion_pago == TRUE)
-                                            @can('contratos.create')
+                                            @if($permisos['contratos_create'])
                                                 <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->edicion_pago}}"]'>
                                                     EDITAR ENTREGA
                                                 </a>
@@ -373,7 +373,7 @@
                                         @endif
                                     @break
                                     @default
-                                        @can('contratos.create')
+                                        @if($permisos['contratos_create'])
                                             <a class="btn btn-info" id="agendar_recep" name="agendar_recep" data-toggle="modal" data-placement="top" @if($itemData->tipo_curso == 'CURSO') data-target="#agendarModalOrdinaria" @else data-target="#agendarModalCertificacion" @endif data-id='["{{$itemData->id_contrato}}","{{$itemData->arch_solicitud_pago}}","{{$itemData->archivo_bancario}}","{{$itemData->arch_mespecialidad}}","{{$itemData->pdf_curso}}","{{$itemData->doc_validado}}","{{$itemData->arch_factura}}","{{$itemData->arch_factura_xml}}","{{$itemData->arch_contrato}}","{{$itemData->archivo_ine}}","{{$itemData->arch_asistencia}}","{{$itemData->arch_calificaciones}}","{{$itemData->arch_evidencia}}","{{$itemData->modinstructor}}","{{$itemData->resultado}}"]'>
                                                 AGENDAR ENTREGA
                                             </a>
@@ -382,7 +382,7 @@
                                 @endswitch
                             @endif
                             @if ($itemData->status_recepcion == 'recepcion tradicional' && $itemData->status_recepcion)
-                                @can('contrato.validate')
+                                @if($permisos['contrato_validate'])
                                     <a class="btn btn-danger" id="retornar_fisico" name="retornar_fisico" data-toggle="modal" data-placement="top" data-target="#retornarRecepcionModal" data-id='{{$itemData->id_contrato}}'>
                                         Retorno o Edición
                                     </a>
@@ -570,7 +570,7 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">@can('contrato.validate')¿Confirmar Documentación digital para Entrega Fisica? @endcan @can('contratos.create')Vista de Documentación @endcan</h5>
+                    <h5 class="modal-title">@if($permisos['contrato_validate'])¿Confirmar Documentación digital para Entrega Fisica? @endcan @if($permisos['contratos_create'])Vista de Documentación @endcan</h5>
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -665,7 +665,7 @@
                     </table>
                 </div>
                 <input id="id_contrato_agendav" name="id_contrato_agendav" hidden>
-                @can('contrato.validate')
+                @if($permisos['contrato_validate'])
                     <div style="text-align:center" class="form-group" id="div_val_ordinario">
                         <p>Si validas podras asignar la fecha deseada a este registro.</p>
                         <button id="rechazar_recepcion" style="text-align: left; font-size: 10px; background-color: #12322B; color: white;" type="button" class="btn" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega Digital</button>
@@ -687,7 +687,7 @@
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">@can('contrato.validate')¿Confirmar Documentación digital para Entrega Fisica? @endcan @can('contratos.create')Vista de Documentación @endcan</h5>
+                    <h5 class="modal-title">@if($permisos['contrato_validate'])¿Confirmar Documentación digital para Entrega Fisica? @endcan @if($permisos['contratos_create'])Vista de Documentación @endcan</h5>
                     <button type="button" class="close" data-dismiss="modal">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -767,7 +767,7 @@
                 </div>
                 <div style="text-align:center" class="form-group" id="div_val_certificacion">
                     <input id="id_contrato_agendavc" name="id_contrato_agendavc" hidden>
-                    @can('contrato.validate')
+                    @if($permisos['contrato_validate'])
                         <p>Si validas podras asignar la fecha deseada a este registro.</p>
                         <button id="rechazar_recepcionvc" style="text-align: left; font-size: 10px;" type="button" class="btn btn-danger" data-toggle="modal" data-target="#rechazar_entregaModal">Rechazar Entrega</button>
                         <button id="validar_citavc" style="text-align: right; font-size: 10px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#validarCitaModal">Agendar Entrega Fisica</button>

@@ -104,13 +104,13 @@ class grupoController extends Controller
                 $request->unidad =  $grupo->unidad;
                 $request->modalidad = $mod;
                 $request->status_curso = $grupo->status_curso;
-                $request->id_curso = $grupo->id_curso;                
+                $request->id_curso = $grupo->id_curso;
                 $cursos = $this->cmbcursos($request, true);
-               
+
                 //CATÁLOGO DE INSTRUCTORES
                 $instructores = $this->data_instructores($grupo);
                 //FIN CATALOGOS
-               
+
                 $edicion_exo = DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','EDICION')->exists();
                 if($grupo->id_especialidad){
                     $instructor_mespecialidad = $grupo->instructor_mespecialidad;
@@ -220,7 +220,7 @@ class grupoController extends Controller
     }
 
     private function data_instructores($data){
-        if($data->status_curso !='AUTORIZADO'){        
+        if($data->status_curso !='AUTORIZADO'){
             $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
             ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
             ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($data->inicio)))
@@ -233,11 +233,11 @@ class grupoController extends Controller
             ->rightJoin('instructores','t.id_instructor','=','instructores.id')
             ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
             ->LEFTJOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
-            ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')            
+            ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
             ->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $data->id_curso)
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-            ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)            
+            ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
             ->WHERE('fecha_validacion','<',$data->inicio)
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
             ->whereNotIn('instructores.id', $internos)
@@ -333,7 +333,7 @@ class grupoController extends Controller
                 DB::raw("COALESCE(tc.soportes_instructor->>'tipo_honorario', null) as tipo_honorario"),
 
                 ///DE OTRAS TABLAS
-                DB::raw('ar.turnado as  turnado_grupo'),                
+                DB::raw('ar.turnado as  turnado_grupo'),
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
                 DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
                 'exo.status as exo_status','exo.nrevision as exo_nrevision',
@@ -370,14 +370,14 @@ class grupoController extends Controller
                 ->join('especialidades as e','e.id','=','c.id_especialidad')
                 ->where('c.tipo_curso','like',"%$request->tipo%")
                 ->where('c.modalidad','like',"%$request->modalidad%")
-                ->where('c.estado', true)                
+                ->where('c.estado', true)
                 ->where('e.activo', 'true')
                 ->whereJsonContains('unidades_disponible', [$request->unidad])->orderby('c.nombre_curso');
             //var_dump($json);exit;
             if($registros){
                 if($request->status_curso == 'AUTORIZADO')
                      $cursos = DB::table('cursos as c')->select('c.id', 'c.nombre_curso')->where('c.id',$request->id_curso);
-                
+
                 return $cursos->pluck('nombre_curso', 'cursos.id');
             }else{
                 $cursos = $cursos->get();
@@ -601,358 +601,654 @@ class grupoController extends Controller
 
     public function update(Request $request)
     {
-        //dd($request->all()); dd($request->folio_grupo);
-         $message = "Operación fallida, por favor intente de nuevo!!";
+        $message = "Operación fallida, por favor intente de nuevo!!";
+
         if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
             $folio_grupo = $request->folio_grupo;
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
+
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
-               // if ((((explode('-',$request->inicio))[0]) == date('Y')) AND ((explode('-',$request->termino))[0]) == date('Y')) {
-                    if ($request->inicio <= $request->termino) {
-                        $folio = $_SESSION['folio_grupo'];
-                        $mapertura = $request->mapertura;
-                        $tc_curso = DB::table('tbl_cursos')->where('unidad', $request->unidad)->where('folio_grupo', $_SESSION['folio_grupo'])->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')->first();
-                        if(!$tc_curso) { $tc_curso = new \stdClass(); $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = null;}
+                if ($request->inicio <= $request->termino) {
+                    $folio = $_SESSION['folio_grupo'];
+                    $mapertura = $request->mapertura;
 
+                    $tc_curso = DB::table('tbl_cursos')
+                        ->where('unidad', $request->unidad)
+                        ->where('folio_grupo', $_SESSION['folio_grupo'])
+                        ->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')
+                        ->first();
 
-                        if ($mapertura AND $tc_curso->status_curso!='EDICION' AND (DB::table('tbl_cursos')->where('mpreapertura',$mapertura)->where('folio_grupo','<>',$folio_grupo)->exists())) {
-                            $message = 'Número de memorándum de apertura ocupado..';
+                    if(!$tc_curso) {
+                        $tc_curso = new \stdClass();
+                        $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = null;
+                    }
+
+                    if ($mapertura AND $tc_curso->status_curso!='EDICION' AND
+                        (DB::table('tbl_cursos')->where('mpreapertura',$mapertura)->where('folio_grupo','<>',$folio_grupo)->exists())) {
+                        $message = 'Número de memorándum de apertura ocupado..';
+                    } else {
+                        // Optimización 1: Obtener datos del comprobante una sola vez
+                        $file = $request->customFile;
+                        $url_comprobante_data = DB::table('alumnos_registro')
+                            ->select('comprobante_pago')
+                            ->where('folio_grupo', $folio)
+                            ->where('eliminado',false)
+                            ->first();
+
+                        if ($file) {
+                            $url_comprobante = $this->uploaded_file($file, $folio, 'comprobante_pago');
+                        } elseif ($url_comprobante_data && $url_comprobante_data->comprobante_pago != null) {
+                            $url_comprobante = $url_comprobante_data->comprobante_pago;
                         } else {
-                            $file =  $request->customFile;
-                            $url_comprobante = DB::table('alumnos_registro')->select('comprobante_pago')->where('folio_grupo', $folio)->where('eliminado',false)->first();
-                            if ($file) {
-                                $url_comprobante = $this->uploaded_file($file, $folio, 'comprobante_pago');
-                            } elseif ($url_comprobante->comprobante_pago != null) {
-                                $url_comprobante = $url_comprobante->comprobante_pago;
-                            } else {
-                                $url_comprobante = null;
-                            }
-                            $get_curso =  DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->first();
-                            $id_especialidad = $get_curso->id_especialidad;
-                            $costo_individual = $get_curso->costo;
+                            $url_comprobante = null;
+                        }
 
-                            $horario = $request->hini . ' A ' . $request->hfin;
-                            $id_organismo = DB::table('organismos_publicos')->where('organismo', $request->dependencia)->where('activo', true)->value('id');
-                            if (($id_organismo == 358) OR ($request->modalidad=='EXT')) {
-                                $depen_repre = $request->repre_depen;
-                                $depen_telrepre = $request->repre_tel;
-                            } else {
-                                $depen_repre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->where('activo', true)->value('nombre_titular');
-                                $depen_telrepre = DB::table('organismos_publicos')->where('organismo',$request->dependencia)->where('activo', true)->value('telefono');
-                            }
-                            $convenio = null;
-                            if($request->dependencia AND $request->modalidad=='CAE'){
-                                $organismo = DB::table('organismos_publicos')->where('id',$id_organismo)->value('organismo');
+                        $get_curso = DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->first();
+                        $id_especialidad = $get_curso->id_especialidad;
+                        $costo_individual = $get_curso->costo;
 
-                                $unidades_toarray = $_SESSION['unidades']->values()->toArray();
-                                $convenio_t = DB::table('convenios')
-                                    ->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))
-                                    ->where(db::raw("to_char(DATE (fecha_vigencia)::date, 'YYYY-MM-DD')"),'>=',$request->termino)
-                                    ->where('tipo_convenio','GENERAL')
-                                    ->where(function ($q) use ($unidades_toarray) {
-                                        foreach ($unidades_toarray as $unidad) {
-                                            $q->orWhereJsonContains('unidades', $unidad);
-                                        }
-                                    })
-                                    ->where('institucion',$organismo)
-                                    ->where('activo','true')->first();
+                        $horario = $request->hini . ' A ' . $request->hfin;
 
-                                $convenio = [];
-                                if ($convenio_t) {
-                                    foreach ($convenio_t as $key=>$value) {
-                                        $convenio[$key] = $value;
+                        // Optimización 2: Una sola consulta para obtener todos los datos del organismo
+                        $organismo_data = DB::table('organismos_publicos')
+                            ->where('organismo', $request->dependencia)
+                            ->where('activo', true)
+                            ->select('id', 'organismo', 'nombre_titular', 'telefono', 'sector')
+                            ->first();
+
+                        $id_organismo = $organismo_data ? $organismo_data->id : null;
+                        $sector = $organismo_data ? $organismo_data->sector : null;
+
+                        if (($id_organismo == 358) OR ($request->modalidad=='EXT')) {
+                            $depen_repre = $request->repre_depen;
+                            $depen_telrepre = $request->repre_tel;
+                        } else {
+                            $depen_repre = $organismo_data ? $organismo_data->nombre_titular : null;
+                            $depen_telrepre = $organismo_data ? $organismo_data->telefono : null;
+                        }
+
+                        $convenio = null;
+                        if($request->dependencia AND $request->modalidad=='CAE' AND $organismo_data){
+                            $organismo = $organismo_data->organismo;
+
+                            $unidades_toarray = $_SESSION['unidades']->values()->toArray();
+                            $convenio_t = DB::table('convenios')
+                                ->select('no_convenio',DB::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))
+                                ->where(DB::raw("to_char(DATE (fecha_vigencia)::date, 'YYYY-MM-DD')"),'>=',$request->termino)
+                                ->where('tipo_convenio','GENERAL')
+                                ->where(function ($q) use ($unidades_toarray) {
+                                    foreach ($unidades_toarray as $unidad) {
+                                        $q->orWhereJsonContains('unidades', $unidad);
                                     }
-                                }else {
-                                    $convenio['no_convenio'] = '0';
-                                    $convenio['fecha_firma'] = null;
-                                    $convenio['sector'] = null;
+                                })
+                                ->where('institucion',$organismo)
+                                ->where('activo','true')->first();
+
+                            $convenio = [];
+                            if ($convenio_t) {
+                                foreach ($convenio_t as $key=>$value) {
+                                    $convenio[$key] = $value;
                                 }
-                            }
-                            if(!$convenio){
+                            } else {
                                 $convenio['no_convenio'] = '0';
                                 $convenio['fecha_firma'] = null;
                                 $convenio['sector'] = null;
                             }
-                            $sector = DB::table('organismos_publicos')->where('id',$id_organismo)->value('sector');
-                            $grupo_vulnerable = DB::table('grupos_vulnerables')->where('id', $request->grupo_vulnerable)->value('grupo');
-                            if ($request->cerss) $cerrs = true;
-                            else $cerrs = NULL;
-                            //novo
-                            $unidad = DB::table('tbl_unidades')->select('id','cct', 'plantel','ubicacion')->where('unidad', $request->unidad)->first();
-                            $id_ubicacion = DB::table('tbl_unidades')->where('unidad', $unidad->ubicacion)->value('id');
-                            $municipio = DB::table('tbl_municipios')->select('id','muni','ze')->where('id', $request->id_municipio)->first();
-                            $curso = DB::table('cursos as c')->select('c.id','c.nombre_curso','c.horas','c.rango_criterio_pago_maximo as cp','c.costo','e.nombre as espe',
+                        }
+
+                        if(!$convenio){
+                            $convenio['no_convenio'] = '0';
+                            $convenio['fecha_firma'] = null;
+                            $convenio['sector'] = null;
+                        }
+
+                        $grupo_vulnerable = DB::table('grupos_vulnerables')
+                            ->where('id', $request->grupo_vulnerable)
+                            ->value('grupo');
+
+                        $cerrs = $request->cerss ? true : NULL;
+
+                        // Optimización 3: Obtener datos de unidad con una sola consulta
+                        $unidad = DB::table('tbl_unidades')
+                            ->select('id','cct', 'plantel','ubicacion')
+                            ->where('unidad', $request->unidad)
+                            ->first();
+
+                        $id_ubicacion = DB::table('tbl_unidades')
+                            ->where('unidad', $unidad->ubicacion)
+                            ->value('id');
+
+                        $municipio = DB::table('tbl_municipios')
+                            ->select('id','muni','ze')
+                            ->where('id', $request->id_municipio)
+                            ->first();
+
+                        $curso = DB::table('cursos as c')
+                            ->select('c.id','c.nombre_curso','c.horas','c.rango_criterio_pago_maximo as cp','c.costo','e.nombre as espe',
                                 'a.formacion_profesional as area','c.memo_validacion as mpaqueteria','e.clave as clave_especialidad')
-                                ->join('especialidades as e','e.id','c.id_especialidad') ->join('area as a','a.id','c.area')
-                                ->where('c.id',$request->id_curso)->first();
-                            $hini = date("h:i a", strtotime($request->hini));
-                            $hfin = date("h:i a", strtotime($request->hfin));
-                            $hini = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hini);
-                            $hfin = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hfin);
-                            $instructor = DB::table('instructores')->select(
-                                    'instructores.id',
-                                    DB::raw('CONCAT("apellidoPaterno", ' . "' '" . ' ,"apellidoMaterno",' . "' '" . ',instructores.nombre) as instructor'),
-                                    'curp',
-                                    'rfc',
-                                    'sexo',
-                                    'tipo_honorario',
-                                    'instructor_perfil.grado_profesional as escolaridad',
-                                    'instructor_perfil.estatus as titulo',                                    
-                                    'especialidad_instructores.criterio_pago_id as cp',
-                                    'tipo_identificacion',
-                                    'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
-                                    'banco','no_cuenta','interbancaria','tipo_honorario',
-                                    DB::raw("(
-                                            SELECT elem->>'memo_val'
-                                            FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
-                                            WHERE (elem->>'fecha_val')::date < '$request->inicio'
-                                            ORDER BY elem->>'fecha_val' DESC
-                                            LIMIT 1
-                                        ) as mespecialidad")
-                                    )
-                                ->WHERE('estado', true)
-                                ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')
-                                ->where('instructores.id', $request->instructor)
-                                //->whereJsonContains('unidades_disponible', [$grupo->unidad])
-                                ->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
-                                ->WHERE('especialidad_instructores.activo', 'true')
-                                ->WHERE('fecha_validacion','<',$request->inicio)
-                                ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
-                                ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
-                                ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
-                                ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
-                                ->ORDERBY('fecha_validacion','DESC')
-                                ->first();
-                                
-                            if ($instructor) {
-                                /** CRITERIO DE PAGO */
-                                if ($instructor->cp > $curso->cp) {
-                                    $cp = $curso->cp;
-                                } else {
-                                    $cp = $instructor->cp;
-                                }
-                                /*CALCULANDO CICLO*/
-                                $mes_dia1 = date("m-d", strtotime(date("Y-m-d")));
-                                $mes_dia2 = date("m-d", strtotime(date("Y") . "-07-01"));
+                            ->join('especialidades as e','e.id','c.id_especialidad')
+                            ->join('area as a','a.id','c.area')
+                            ->where('c.id',$request->id_curso)
+                            ->first();
 
-                                if ($mes_dia1 >= $mes_dia2)  $ciclo = date("Y") . "-" . date("Y", strtotime(date("Y") . "+ 1 year")); //sumas año
-                                else $ciclo = date("Y", strtotime(date("Y") . "- 1 year")) . "-" . date("Y"); //restar año
+                        $hini = date("h:i a", strtotime($request->hini));
+                        $hfin = date("h:i a", strtotime($request->hfin));
+                        $hini = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hini);
+                        $hfin = str_replace(['am', 'pm'], ['a.m.', 'p.m.'], $hfin);
 
-                                /*REGISTRANDO COSTO Y TIPO DE INSCRIPCION*/
-                                $total_pago = 0;
-                                if (!(DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists())){
-                                    foreach ($request->costo as $key => $pago) {
-                                        $pago = $pago ?: 0; // Si $pago es null, asigna 0.
-                                        $diferencia = $costo_individual - $pago;
-                                        $tinscripcion = "EXONERACION";
-                                        $abrins = 'ET';
-                                        if ($pago > 0) {
-                                            $tinscripcion = ($diferencia > 0) ? "REDUCCION DE CUOTA" : "PAGO ORDINARIO";
-                                            $abrins = ($diferencia > 0) ? 'EP' : 'PI';
-                                        }
-                                        Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
+                        $instructor = DB::table('instructores')
+                            ->select(
+                                'instructores.id',
+                                DB::raw('CONCAT("apellidoPaterno", ' . "' '" . ' ,"apellidoMaterno",' . "' '" . ',instructores.nombre) as instructor'),
+                                'curp',
+                                'rfc',
+                                'sexo',
+                                'tipo_honorario',
+                                'instructor_perfil.grado_profesional as escolaridad',
+                                'instructor_perfil.estatus as titulo',
+                                'especialidad_instructores.criterio_pago_id as cp',
+                                'tipo_identificacion',
+                                'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
+                                'banco','no_cuenta','interbancaria','tipo_honorario',
+                                DB::raw("(
+                                        SELECT elem->>'memo_val'
+                                        FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
+                                        WHERE (elem->>'fecha_val')::date < '$request->inicio'
+                                        ORDER BY elem->>'fecha_val' DESC
+                                        LIMIT 1
+                                    ) as mespecialidad")
+                                )
+                            ->WHERE('estado', true)
+                            ->WHERE('instructores.status', '=', 'VALIDADO')
+                            ->where('instructores.nombre', '!=', '')
+                            ->where('instructores.id', $request->instructor)
+                            ->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
+                            ->WHERE('especialidad_instructores.activo', 'true')
+                            ->WHERE('fecha_validacion','<',$request->inicio)
+                            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
+                            ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
+                            ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
+                            ->LEFTJOIN('criterio_pago', 'criterio_pago.id', '=', 'especialidad_instructores.criterio_pago_id')
+                            ->ORDERBY('fecha_validacion','DESC')
+                            ->first();
 
+                        if ($instructor) {
+                            /** CRITERIO DE PAGO */
+                            $cp = ($instructor->cp > $curso->cp) ? $curso->cp : $instructor->cp;
 
-                                        ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
-                                        if (($tc_curso->status_curso == 'EDICION') AND $_SESSION['folio_grupo']) {
-                                            DB::table('tbl_inscripcion')
-                                            ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
-                                            ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
-                                            ->where('alumnos_registro.id', $key)
-                                            ->update([
-                                                'tbl_inscripcion.costo' => $pago,
-                                                'tbl_inscripcion.tinscripcion' => $tinscripcion,
-                                                'tbl_inscripcion.abrinscri' => $abrins
-                                            ]);
-                                        }
+                            /*CALCULANDO CICLO*/
+                            $mes_dia1 = date("m-d", strtotime(date("Y-m-d")));
+                            $mes_dia2 = date("m-d", strtotime(date("Y") . "-07-01"));
+                            $ciclo = ($mes_dia1 >= $mes_dia2) ?
+                                date("Y") . "-" . date("Y", strtotime(date("Y") . "+ 1 year")) :
+                                date("Y", strtotime(date("Y") . "- 1 year")) . "-" . date("Y");
+
+                            // Optimización 4: Procesar costos de forma eficiente
+                            $total_pago = 0;
+                            if (!(DB::table('exoneraciones')
+                                ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                ->where('status','!=', 'CAPTURA')
+                                ->where('status','!=','CANCELADO')
+                                ->exists())){
+
+                                // Preparar arrays para updates en lote
+                                $alumno_updates = [];
+                                $inscripcion_updates = [];
+
+                                foreach ($request->costo as $key => $pago) {
+                                    $pago = $pago ?: 0;
+                                    $diferencia = $costo_individual - $pago;
+                                    $tinscripcion = "EXONERACION";
+                                    $abrins = 'ET';
+
+                                    if ($pago > 0) {
+                                        $tinscripcion = ($diferencia > 0) ? "REDUCCION DE CUOTA" : "PAGO ORDINARIO";
+                                        $abrins = ($diferencia > 0) ? 'EP' : 'PI';
+                                    }
+
+                                    $alumno_updates[] = [
+                                        'id' => $key,
+                                        'costo' => $pago,
+                                        'tinscripcion' => $tinscripcion,
+                                        'abrinscri' => $abrins
+                                    ];
+
+                                    if (($tc_curso->status_curso == 'EDICION') AND $_SESSION['folio_grupo']) {
+                                        $inscripcion_updates[] = [
+                                            'alumno_id' => $key,
+                                            'costo' => $pago,
+                                            'tinscripcion' => $tinscripcion,
+                                            'abrinscri' => $abrins
+                                        ];
                                     }
                                 }
 
-                                $sx = DB::table('alumnos_registro')->select(
-                                    DB::raw("COUNT(curp) as total"),DB::raw("SUM(CASE WHEN substring(curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),
+                                // Realizar updates individuales (manteniendo la lógica original)
+                                foreach ($alumno_updates as $update) {
+                                    Alumno::where('id', $update['id'])->update([
+                                        'costo' => $update['costo'],
+                                        'tinscripcion' => $update['tinscripcion'],
+                                        'abrinscri' => $update['abrinscri']
+                                    ]);
+                                }
+
+                                // Updates para inscripción si es necesario
+                                foreach ($inscripcion_updates as $update) {
+                                    DB::table('tbl_inscripcion')
+                                        ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
+                                        ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
+                                        ->where('alumnos_registro.id', $update['alumno_id'])
+                                        ->update([
+                                            'tbl_inscripcion.costo' => $update['costo'],
+                                            'tbl_inscripcion.tinscripcion' => $update['tinscripcion'],
+                                            'tbl_inscripcion.abrinscri' => $update['abrinscri']
+                                        ]);
+                                }
+                            }
+
+                            $sx = DB::table('alumnos_registro')
+                                ->select(
+                                    DB::raw("COUNT(curp) as total"),
+                                    DB::raw("SUM(CASE WHEN substring(curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),
                                     DB::raw("SUM(CASE WHEN substring(curp,11,1) ='M' THEN 1 ELSE 0 END) as mujer"),
                                     DB::raw("SUM(costo) as costo")
-                                    )->where('folio_grupo',$_SESSION['folio_grupo'])->first();
+                                )
+                                ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                ->first();
 
-                                //TOTAL PAGADO
-                                $total_pago = $sx->costo*1;
-                                //COSTO TOTAL DEL CURSO
-                                $costo_total = $curso->costo * $sx->total;
-                                //DIFERENCIA COSTO - PAGADO
-                                $ctotal = $costo_total - $total_pago;
+                            //TOTAL PAGADO
+                            $total_pago = $sx->costo * 1;
+                            //COSTO TOTAL DEL CURSO
+                            $costo_total = $curso->costo * $sx->total;
+                            //DIFERENCIA COSTO - PAGADO
+                            $ctotal = $costo_total - $total_pago;
 
-                                if ($total_pago == 0) {
-                                    $tipo_pago = "EXO";
-                                    //if ($cp > 7) $cp = 7; //EXONERACION Criterio de Pago Máximo 7
-                                } elseif ($ctotal > 0) $tipo_pago = "EPAR";
-                                else $tipo_pago = "PINS";
-                                /*ID DEL CURSO DE 10 DIGITOS*/
-                                $PRE = date("y") . $unidad->plantel;
+                            if ($total_pago == 0) {
+                                $tipo_pago = "EXO";
+                            } elseif ($ctotal > 0) {
+                                $tipo_pago = "EPAR";
+                            } else {
+                                $tipo_pago = "PINS";
+                            }
 
-                                $ID = $tc_curso->id;
-                                if (!$ID) $ID = DB::table('tbl_cursos')->where('unidad', $request->unidad)->where('id', 'like', $PRE . '%')->value(DB::raw('max(id)+1'));
-                                if (!$ID) $ID = $PRE . '0001';
+                            /*ID DEL CURSO DE 10 DIGITOS*/
+                            $PRE = date("y") . $unidad->plantel;
+                            $ID = $tc_curso->id;
 
-                                if ($request->tcurso == "CERTIFICACION") {
-                                    $horas = $dura = 10;
-                                    $termino =  $request->inicio;
-                                } else {
-                                    $dura = $curso->horas;
-                                    $termino =  $request->termino;
-                                }
+                            if (!$ID) {
+                                $ID = DB::table('tbl_cursos')
+                                    ->where('unidad', $request->unidad)
+                                    ->where('id', 'like', $PRE . '%')
+                                    ->value(DB::raw('max(id)+1'));
+                            }
+                            if (!$ID) $ID = $PRE . '0001';
 
-                                $created_at = $tc_curso->created_at;
-                                if ($created_at) {
-                                    $updated_at = date('Y-m-d H:i:s');
-                                } else {
-                                    $created_at = date('Y-m-d H:i:s');
-                                    $updated_at = date('Y-m-d H:i:s');
-                                }
-                                if ($instructor->tipo_honorario == 'ASIMILADOS A SALARIOS') {
-                                    $tipo_honorario = 'ASIMILADOS A SALARIOS';
-                                } else {
-                                    $tipo_honorario = 'HONORARIOS';
-                                }
-                                $soportes_instructor = ["domicilio"=>$instructor->domicilio, "archivo_domicilio"=>$instructor->archivo_domicilio,
-                                "archivo_ine"=>$instructor->archivo_ine,"archivo_bancario"=>$instructor->archivo_bancario,"archivo_rfc"=>$instructor->archivo_rfc,
-                                'banco'=>$instructor->banco,'no_cuenta'=>$instructor->no_cuenta,'interbancaria'=>$instructor->interbancaria,'tipo_honorario'=>$instructor->tipo_honorario];
+                            if ($request->tcurso == "CERTIFICACION") {
+                                $horas = $dura = 10;
+                                $termino = $request->inicio;
+                            } else {
+                                $dura = $curso->horas;
+                                $termino = $request->termino;
+                            }
 
-                                $alus = DB::table('alumnos_registro')->where('folio_grupo',$folio)->first();
+                            $created_at = $tc_curso->created_at;
+                            if ($created_at) {
+                                $updated_at = date('Y-m-d H:i:s');
+                            } else {
+                                $created_at = date('Y-m-d H:i:s');
+                                $updated_at = date('Y-m-d H:i:s');
+                            }
 
-                                $result_curso = $result_alumnos = null;
-                                if($tc_curso->status_curso=='EDICION'){
-                                        $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
-                                            ['inicio' => $request->inicio,'termino' => $termino,'hini' => $hini,'hfin' => $hfin,'horas' => $horas,
-                                            'id_organismo' => $id_organismo,
-                                            'depen' => $request->dependencia,'muni' => $municipio->muni,'sector' => $sector,
-                                            'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),'cespecifico' => $request->cespecifico,
-                                            'hombre' => $sx->hombre, 'mujer' => $sx->mujer,'tipo' => $tipo_pago,'fcespe' => $request->fcespe,
-                                            'cgeneral' => $convenio['no_convenio'],'fcgen' => $convenio['fecha_firma'],
-                                            'ze' => $municipio->ze,'realizo' => strtoupper($this->realizo),'tcapacitacion' => $request->tipo,'costo' => $total_pago,
-                                            'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
-                                            'id_municipio' => $municipio->id,'clave_localidad' => $request->localidad,'id_gvulnerable' => $request->grupo_vulnerable,
-                                            'id_cerss' => $request->cerss,'created_at' => $created_at,'updated_at' => $updated_at,
-                                            'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,
-                                            'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel
-                                            ]);
+                            $tipo_honorario = ($instructor->tipo_honorario == 'ASIMILADOS A SALARIOS') ?
+                                'ASIMILADOS A SALARIOS' : 'HONORARIOS';
 
-                                        if($tc_curso->cp == $cp AND $result_curso){
-                                            $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
-                                                [
-                                                'id_instructor' => $instructor->id,'modinstructor' => $tipo_honorario,
-                                                'nombre' => $instructor->instructor,'curp' => $instructor->curp,'rfc' => $instructor->rfc,
-                                                'instructor_escolaridad' => $instructor->escolaridad,'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,
-                                                'instructor_mespecialidad' => $instructor->mespecialidad,'instructor_tipo_identificacion' => $instructor->tipo_identificacion,
-                                                'instructor_folio_identificacion' => $instructor->folio_ine,'soportes_instructor'=>json_encode($soportes_instructor)
-                                                ]);
-                                        }
-                                        if($result_curso){
-                                            $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
-                                                [
-                                                    'clave_localidad' => $request->localidad, 'organismo_publico' => $request->dependencia,
-                                                    'horario' => $horario, 'tipo_curso' => $request->tipo,'iduser_updated' => $this->id_user, 'updated_at' => date('Y-m-d H:i:s'),
-                                                    'id_muni' => $municipio->id,'inicio' => $request->inicio, 'termino' => $termino,
-                                                    'id_organismo' => $id_organismo, 'id_vulnerable' => $request->grupo_vulnerable,
-                                                    'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $municipio->id, 'grupo_vulnerable' => $grupo_vulnerable,
-                                                    'comprobante_pago' => $url_comprobante,'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago,
-                                                    'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual, 'efisico'=>str_replace('ñ','Ñ',strtoupper($request->efisico)),
-                                                    'id_instructor'=>$instructor->id,'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,
-                                                    'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre
-                                                ]
-                                            );
-                                            if($result_alumnos) $message = "Operación Exitosa!!";
-                                        }
-                                }elseif (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
-                                    $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','VINCULACION')->update(
-                                        ['id_instructor'=>$instructor->id, 'observaciones'=>$request->observaciones,'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante,
-                                        'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago,'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre,
-                                        'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual]);
+                            $soportes_instructor = [
+                                "domicilio" => $instructor->domicilio,
+                                "archivo_domicilio" => $instructor->archivo_domicilio,
+                                "archivo_ine" => $instructor->archivo_ine,
+                                "archivo_bancario" => $instructor->archivo_bancario,
+                                "archivo_rfc" => $instructor->archivo_rfc,
+                                'banco' => $instructor->banco,
+                                'no_cuenta' => $instructor->no_cuenta,
+                                'interbancaria' => $instructor->interbancaria,
+                                'tipo_honorario' => $instructor->tipo_honorario
+                            ];
 
-                                    if ($result_alumnos) {
-                                        $result_curso = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('id',$ID)
-                                            ->update(['comprobante_pago' => $url_comprobante, 'mpreapertura'=>$mapertura,'obs_preapertura'=>$request->observaciones,
-                                            'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago, 'updated_at' => date('Y-m-d H:i:s'),
-                                            'id_organismo' => $id_organismo,
-                                            'depen_representante'=>$depen_repre,'depen_telrepre'=>$depen_telrepre,'cespecifico' => $request->cespecifico,'fcespe' => $request->fcespe,
-                                            'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
-                                            'id_instructor' => $instructor->id,'nombre' => $instructor->instructor,'modinstructor' => $tipo_honorario,
-                                            'curp' => $instructor->curp,'rfc' => $instructor->rfc,'modinstructor' => $tipo_honorario,'instructor_escolaridad' => $instructor->escolaridad,
-                                            'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,'instructor_mespecialidad' => $instructor->mespecialidad,
-                                            'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
-                                            'soportes_instructor'=>json_encode($soportes_instructor),'cp' => $cp,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel,'costo' => $total_pago, 'status_solicitud' =>null,'vb_dg'=>true
+                            $alus = DB::table('alumnos_registro')->where('folio_grupo',$folio)->first();
+
+                            $result_curso = $result_alumnos = null;
+
+                            if($tc_curso->status_curso=='EDICION'){
+                                $result_curso = DB::table('tbl_cursos')
+                                    ->where('folio_grupo', $_SESSION['folio_grupo'])
+                                    ->update([
+                                        'inicio' => $request->inicio,
+                                        'termino' => $termino,
+                                        'hini' => $hini,
+                                        'hfin' => $hfin,
+                                        'horas' => $horas,
+                                        'id_organismo' => $id_organismo,
+                                        'depen' => $request->dependencia,
+                                        'muni' => $municipio->muni,
+                                        'sector' => $sector,
+                                        'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),
+                                        'cespecifico' => $request->cespecifico,
+                                        'hombre' => $sx->hombre,
+                                        'mujer' => $sx->mujer,
+                                        'tipo' => $tipo_pago,
+                                        'fcespe' => $request->fcespe,
+                                        'cgeneral' => $convenio['no_convenio'],
+                                        'fcgen' => $convenio['fecha_firma'],
+                                        'ze' => $municipio->ze,
+                                        'realizo' => strtoupper($this->realizo),
+                                        'tcapacitacion' => $request->tipo,
+                                        'costo' => $total_pago,
+                                        'medio_virtual' => $request->medio_virtual,
+                                        'link_virtual' => $request->link_virtual,
+                                        'id_municipio' => $municipio->id,
+                                        'clave_localidad' => $request->localidad,
+                                        'id_gvulnerable' => $request->grupo_vulnerable,
+                                        'id_cerss' => $request->cerss,
+                                        'created_at' => $created_at,
+                                        'updated_at' => $updated_at,
+                                        'comprobante_pago' => $url_comprobante,
+                                        'folio_pago' => $request->folio_pago,
+                                        'fecha_pago' => $request->fecha_pago,
+                                        'depen_representante' => $depen_repre,
+                                        'depen_telrepre' => $depen_telrepre,
+                                        'nplantel' => $unidad->plantel,
+                                        'programa' => $request->programa,
+                                        'plantel' => $request->plantel
+                                    ]);
+
+                                if($tc_curso->cp == $cp AND $result_curso){
+                                    $result_curso = DB::table('tbl_cursos')
+                                        ->where('folio_grupo', $_SESSION['folio_grupo'])
+                                        ->update([
+                                            'id_instructor' => $instructor->id,
+                                            'modinstructor' => $tipo_honorario,
+                                            'nombre' => $instructor->instructor,
+                                            'curp' => $instructor->curp,
+                                            'rfc' => $instructor->rfc,
+                                            'instructor_escolaridad' => $instructor->escolaridad,
+                                            'instructor_titulo' => $instructor->titulo,
+                                            'instructor_sexo' => $instructor->sexo,
+                                            'instructor_mespecialidad' => $instructor->mespecialidad,
+                                            'instructor_tipo_identificacion' => $instructor->tipo_identificacion,
+                                            'instructor_folio_identificacion' => $instructor->folio_ine,
+                                            'soportes_instructor' => json_encode($soportes_instructor)
                                         ]);
-                                      //  dd($instructor);
-                                        if ($result_curso) $message = "Operación Exitosa!!";
-                                    }
-
-                                } else {
-
-                                    $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('turnado','VINCULACION')->Update(
-                                        [
-                                            'id_unidad' =>  $unidad->id, 'id_curso' => $request->id_curso, 'clave_localidad' => $request->localidad, 'organismo_publico' => $request->dependencia,
-                                            'id_especialidad' =>  $id_especialidad, 'horario' => $horario, 'unidad' => $request->unidad, 'tipo_curso' => $request->tipo, 'mod' => $request->modalidad,
-                                            'iduser_updated' => $this->id_user, 'updated_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_muni' => $municipio->id,
-                                            'inicio' => $request->inicio, 'termino' => $termino, 'id_organismo' => $id_organismo, 'id_vulnerable' => $request->grupo_vulnerable,
-                                            'id_cerss' => $request->cerss, 'cerrs' => $cerrs, 'id_muni' => $municipio->id, 'grupo_vulnerable' => $grupo_vulnerable, 'comprobante_pago' => $url_comprobante,
-                                            'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago, 'servicio'=>$request->tcurso, 'medio_virtual' => $request->medio_virtual,
-                                            'link_virtual' => $request->link_virtual, 'efisico'=>str_replace('ñ','Ñ',strtoupper($request->efisico)),'id_instructor'=>$instructor->id,'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,
-                                            'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre
-                                        ]
-                                    );
-                                    if ($result_alumnos) {
-                                        $result_curso = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(['folio_grupo' => $_SESSION['folio_grupo']],
-                                            ['id' => $ID, 'cct' => $unidad->cct,'unidad' => $request->unidad,'nombre' => $instructor->instructor,'curp' => $instructor->curp,
-                                            'rfc' => $instructor->rfc,'clave' => '0','mvalida' => '0','mod' => $request->modalidad,'area' => $curso->area,'espe' => $curso->espe,'curso' => $curso->nombre_curso,
-                                            'inicio' => $request->inicio,'termino' => $termino,'dura' => $dura,'hini' => $hini,'hfin' => $hfin,'horas' => $horas,'ciclo' => $ciclo,
-                                            'id_organismo' => $id_organismo,'depen' => $request->dependencia,'muni' => $municipio->muni,'sector' => $sector,
-                                            'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),'cespecifico' => $request->cespecifico,'mpaqueteria' => $curso->mpaqueteria,'mexoneracion' => null,'hombre' => $sx->hombre,
-                                            'mujer' => $sx->mujer,'tipo' => $tipo_pago,'fcespe' => $request->fcespe,'cgeneral' => $convenio['no_convenio'],'fcgen' => $convenio['fecha_firma'],'opcion' => 'NINGUNO','motivo' => 'NINGUNO',
-                                            'cp' => $cp,'ze' => $municipio->ze,'id_curso' => $curso->id,'id_instructor' => $instructor->id,'modinstructor' => $tipo_honorario,
-                                            'nmunidad' => '0','nmacademico' => '0','observaciones' => 'NINGUNO','status' => "NO REPORTADO",'realizo' => strtoupper($this->realizo),
-                                            'valido' => 'SIN VALIDAR','arc' => '01','tcapacitacion' => $request->tipo,'status_curso' => null,'fecha_apertura' => null,
-                                            'fecha_modificacion' => null,'costo' => $total_pago,'motivo_correccion' => null,'pdf_curso' => null,'turnado' => "UNIDAD",
-                                            'fecha_turnado' => null,'tipo_curso' => $request->tcurso,'clave_especialidad' => $curso->clave_especialidad,'id_especialidad' => $id_especialidad,
-                                            'instructor_escolaridad' => $instructor->escolaridad,'instructor_titulo' => $instructor->titulo,'instructor_sexo' => $instructor->sexo,
-                                            'instructor_mespecialidad' => $instructor->mespecialidad,'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual,
-                                            'id_municipio' => $municipio->id,'clave_localidad' => $request->localidad,'id_gvulnerable' => $request->grupo_vulnerable,
-                                            'id_cerss' => $request->cerss,'created_at' => $created_at,'updated_at' => $updated_at,
-                                            'instructor_tipo_identificacion' => $instructor->tipo_identificacion,'instructor_folio_identificacion' => $instructor->folio_ine,
-                                            'comprobante_pago' => $url_comprobante,'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago,'depen_representante'=>$depen_repre,
-                                            'depen_telrepre'=>$depen_telrepre,'nplantel'=>$unidad->plantel, 'soportes_instructor'=>json_encode($soportes_instructor),
-                                            'id_unidad'=>$id_ubicacion,'munidad' => null,'num_revision' => null,
-                                            'programa'=>$request->programa, 'plantel'=>$request->plantel, 'status_solicitud' =>null,'mpreapertura'=>$mapertura,'obs_preapertura'=>$request->observaciones,
-                                            'vb_dg'=>true
-                                            //,'programa' => null,'nota' => null,'plantel' => null
-                                            ]
-                                        );
-                                        if($result_curso)$message = "Operación Exitosa!!";
-                                    }
                                 }
-                                ///AGREGAR PARA TODOS LOS CRITERIOS
+
+                                if($result_curso){
+                                    $result_alumnos = DB::table('alumnos_registro')
+                                        ->where('folio_grupo', $_SESSION['folio_grupo'])
+                                        ->update([
+                                            'clave_localidad' => $request->localidad,
+                                            'organismo_publico' => $request->dependencia,
+                                            'horario' => $horario,
+                                            'tipo_curso' => $request->tipo,
+                                            'iduser_updated' => $this->id_user,
+                                            'updated_at' => date('Y-m-d H:i:s'),
+                                            'id_muni' => $municipio->id,
+                                            'inicio' => $request->inicio,
+                                            'termino' => $termino,
+                                            'id_organismo' => $id_organismo,
+                                            'id_vulnerable' => $request->grupo_vulnerable,
+                                            'id_cerss' => $request->cerss,
+                                            'cerrs' => $cerrs,
+                                            'grupo_vulnerable' => $grupo_vulnerable,
+                                            'comprobante_pago' => $url_comprobante,
+                                            'folio_pago' => $request->folio_pago,
+                                            'fecha_pago' => $request->fecha_pago,
+                                            'medio_virtual' => $request->medio_virtual,
+                                            'link_virtual' => $request->link_virtual,
+                                            'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),
+                                            'id_instructor' => $instructor->id,
+                                            'cespecifico' => $request->cespecifico,
+                                            'fcespe' => $request->fcespe,
+                                            'depen_repre' => $depen_repre,
+                                            'depen_telrepre' => $depen_telrepre
+                                        ]);
+
+                                    if($result_alumnos) $message = "Operación Exitosa!!";
+                                }
+
+                            } elseif (DB::table('exoneraciones')
+                                ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                ->where('status','!=', 'CAPTURA')
+                                ->where('status','!=','CANCELADO')
+                                ->exists()) {
+
+                                $result_alumnos = DB::table('alumnos_registro')
+                                    ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                    ->where('turnado','VINCULACION')
+                                    ->update([
+                                        'id_instructor' => $instructor->id,
+                                        'observaciones' => $request->observaciones,
+                                        'updated_at' => date('Y-m-d H:i:s'),
+                                        'iduser_updated' => $this->id_user,
+                                        'comprobante_pago' => $url_comprobante,
+                                        'folio_pago' => $request->folio_pago,
+                                        'fecha_pago' => $request->fecha_pago,
+                                        'depen_repre' => $depen_repre,
+                                        'depen_telrepre' => $depen_telrepre,
+                                        'cespecifico' => $request->cespecifico,
+                                        'fcespe' => $request->fcespe,
+                                        'medio_virtual' => $request->medio_virtual,
+                                        'link_virtual' => $request->link_virtual
+                                    ]);
+
                                 if ($result_alumnos) {
-                                    if (($horario <> $alus->horario) OR ($request->id_curso <> $alus->id_curso) OR ($instructor->id <> $alus->id_instructor) OR
-                                    ($request->inicio <> $alus->inicio) OR ($termino <> $alus->termino) OR ($id_especialidad <> $alus->id_especialidad)) {                                        
-                                        DB::table('agenda')->where('id_curso', $folio)->delete();
-                                        DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);                                        
-                                    }
+                                    $result_curso = DB::table('tbl_cursos')
+                                        ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                        ->where('id',$ID)
+                                        ->update([
+                                            'comprobante_pago' => $url_comprobante,
+                                            'mpreapertura' => $mapertura,
+                                            'obs_preapertura' => $request->observaciones,
+                                            'folio_pago' => $request->folio_pago,
+                                            'fecha_pago' => $request->fecha_pago,
+                                            'updated_at' => date('Y-m-d H:i:s'),
+                                            'id_organismo' => $id_organismo,
+                                            'depen_representante' => $depen_repre,
+                                            'depen_telrepre' => $depen_telrepre,
+                                            'cespecifico' => $request->cespecifico,
+                                            'fcespe' => $request->fcespe,
+                                            'medio_virtual' => $request->medio_virtual,
+                                            'link_virtual' => $request->link_virtual,
+                                            'id_instructor' => $instructor->id,
+                                            'nombre' => $instructor->instructor,
+                                            'modinstructor' => $tipo_honorario,
+                                            'curp' => $instructor->curp,
+                                            'rfc' => $instructor->rfc,
+                                            'instructor_escolaridad' => $instructor->escolaridad,
+                                            'instructor_titulo' => $instructor->titulo,
+                                            'instructor_sexo' => $instructor->sexo,
+                                            'instructor_mespecialidad' => $instructor->mespecialidad,
+                                            'instructor_tipo_identificacion' => $instructor->tipo_identificacion,
+                                            'instructor_folio_identificacion' => $instructor->folio_ine,
+                                            'soportes_instructor' => json_encode($soportes_instructor),
+                                            'cp' => $cp,
+                                            'programa' => $request->programa,
+                                            'plantel' => $request->plantel,
+                                            'costo' => $total_pago,
+                                            'status_solicitud' => null,
+                                            'vb_dg' => true
+                                        ]);
+
+                                    if ($result_curso) $message = "Operación Exitosa!!";
                                 }
 
                             } else {
-                                $message = 'Instructor no valido..';
+                                $result_alumnos = DB::table('alumnos_registro')
+                                    ->where('folio_grupo', $_SESSION['folio_grupo'])
+                                    ->where('turnado','VINCULACION')
+                                    ->update([
+                                        'id_unidad' => $unidad->id,
+                                        'id_curso' => $request->id_curso,
+                                        'clave_localidad' => $request->localidad,
+                                        'organismo_publico' => $request->dependencia,
+                                        'id_especialidad' => $id_especialidad,
+                                        'horario' => $horario,
+                                        'unidad' => $request->unidad,
+                                        'tipo_curso' => $request->tipo,
+                                        'mod' => $request->modalidad,
+                                        'iduser_updated' => $this->id_user,
+                                        'updated_at' => date('Y-m-d H:i:s'),
+                                        'fecha' => date('Y-m-d'),
+                                        'id_muni' => $municipio->id,
+                                        'inicio' => $request->inicio,
+                                        'termino' => $termino,
+                                        'id_organismo' => $id_organismo,
+                                        'id_vulnerable' => $request->grupo_vulnerable,
+                                        'id_cerss' => $request->cerss,
+                                        'cerrs' => $cerrs,
+                                        'grupo_vulnerable' => $grupo_vulnerable,
+                                        'comprobante_pago' => $url_comprobante,
+                                        'folio_pago' => $request->folio_pago,
+                                        'fecha_pago' => $request->fecha_pago,
+                                        'servicio' => $request->tcurso,
+                                        'medio_virtual' => $request->medio_virtual,
+                                        'link_virtual' => $request->link_virtual,
+                                        'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),
+                                        'id_instructor' => $instructor->id,
+                                        'cespecifico' => $request->cespecifico,
+                                        'fcespe' => $request->fcespe,
+                                        'depen_repre' => $depen_repre,
+                                        'depen_telrepre' => $depen_telrepre
+                                    ]);
+
+                                if ($result_alumnos) {
+                                    $result_curso = DB::table('tbl_cursos')
+                                        ->where('clave', '0')
+                                        ->updateOrInsert(
+                                            ['folio_grupo' => $_SESSION['folio_grupo']],
+                                            [
+                                                'id' => $ID,
+                                                'cct' => $unidad->cct,
+                                                'unidad' => $request->unidad,
+                                                'nombre' => $instructor->instructor,
+                                                'curp' => $instructor->curp,
+                                                'rfc' => $instructor->rfc,
+                                                'clave' => '0',
+                                                'mvalida' => '0',
+                                                'mod' => $request->modalidad,
+                                                'area' => $curso->area,
+                                                'espe' => $curso->espe,
+                                                'curso' => $curso->nombre_curso,
+                                                'inicio' => $request->inicio,
+                                                'termino' => $termino,
+                                                'dura' => $dura,
+                                                'hini' => $hini,
+                                                'hfin' => $hfin,
+                                                'horas' => $horas,
+                                                'ciclo' => $ciclo,
+                                                'id_organismo' => $id_organismo,
+                                                'depen' => $request->dependencia,
+                                                'muni' => $municipio->muni,
+                                                'sector' => $sector,
+                                                'efisico' => str_replace('ñ','Ñ',strtoupper($request->efisico)),
+                                                'cespecifico' => $request->cespecifico,
+                                                'mpaqueteria' => $curso->mpaqueteria,
+                                                'mexoneracion' => null,
+                                                'hombre' => $sx->hombre,
+                                                'mujer' => $sx->mujer,
+                                                'tipo' => $tipo_pago,
+                                                'fcespe' => $request->fcespe,
+                                                'cgeneral' => $convenio['no_convenio'],
+                                                'fcgen' => $convenio['fecha_firma'],
+                                                'opcion' => 'NINGUNO',
+                                                'motivo' => 'NINGUNO',
+                                                'cp' => $cp,
+                                                'ze' => $municipio->ze,
+                                                'id_curso' => $curso->id,
+                                                'id_instructor' => $instructor->id,
+                                                'modinstructor' => $tipo_honorario,
+                                                'nmunidad' => '0',
+                                                'nmacademico' => '0',
+                                                'observaciones' => 'NINGUNO',
+                                                'status' => "NO REPORTADO",
+                                                'realizo' => strtoupper($this->realizo),
+                                                'valido' => 'SIN VALIDAR',
+                                                'arc' => '01',
+                                                'tcapacitacion' => $request->tipo,
+                                                'status_curso' => null,
+                                                'fecha_apertura' => null,
+                                                'fecha_modificacion' => null,
+                                                'costo' => $total_pago,
+                                                'motivo_correccion' => null,
+                                                'pdf_curso' => null,
+                                                'turnado' => "UNIDAD",
+                                                'fecha_turnado' => null,
+                                                'tipo_curso' => $request->tcurso,
+                                                'clave_especialidad' => $curso->clave_especialidad,
+                                                'id_especialidad' => $id_especialidad,
+                                                'instructor_escolaridad' => $instructor->escolaridad,
+                                                'instructor_titulo' => $instructor->titulo,
+                                                'instructor_sexo' => $instructor->sexo,
+                                                'instructor_mespecialidad' => $instructor->mespecialidad,
+                                                'medio_virtual' => $request->medio_virtual,
+                                                'link_virtual' => $request->link_virtual,
+                                                'id_municipio' => $municipio->id,
+                                                'clave_localidad' => $request->localidad,
+                                                'id_gvulnerable' => $request->grupo_vulnerable,
+                                                'id_cerss' => $request->cerss,
+                                                'created_at' => $created_at,
+                                                'updated_at' => $updated_at,
+                                                'instructor_tipo_identificacion' => $instructor->tipo_identificacion,
+                                                'instructor_folio_identificacion' => $instructor->folio_ine,
+                                                'comprobante_pago' => $url_comprobante,
+                                                'folio_pago' => $request->folio_pago,
+                                                'fecha_pago' => $request->fecha_pago,
+                                                'depen_representante' => $depen_repre,
+                                                'depen_telrepre' => $depen_telrepre,
+                                                'nplantel' => $unidad->plantel,
+                                                'soportes_instructor' => json_encode($soportes_instructor),
+                                                'id_unidad' => $id_ubicacion,
+                                                'munidad' => null,
+                                                'num_revision' => null,
+                                                'programa' => $request->programa,
+                                                'plantel' => $request->plantel,
+                                                'status_solicitud' => null,
+                                                'mpreapertura' => $mapertura,
+                                                'obs_preapertura' => $request->observaciones,
+                                                'vb_dg' => true
+                                            ]
+                                        );
+
+                                    if($result_curso) $message = "Operación Exitosa!!";
+                                }
                             }
+
+                            ///AGREGAR PARA TODOS LOS CRITERIOS
+                            if ($result_alumnos) {
+                                if (($horario <> $alus->horario) OR
+                                    ($request->id_curso <> $alus->id_curso) OR
+                                    ($instructor->id <> $alus->id_instructor) OR
+                                    ($request->inicio <> $alus->inicio) OR
+                                    ($termino <> $alus->termino) OR
+                                    ($id_especialidad <> $alus->id_especialidad)) {
+
+                                    DB::table('agenda')->where('id_curso', $folio)->delete();
+                                    DB::table('tbl_cursos')->where('folio_grupo',$folio)->update(['dia' => '', 'tdias' => 0]);
+                                }
+                            }
+
+                        } else {
+                            $message = 'Instructor no valido..';
                         }
-                    } else {
-                        $message = 'La fecha de termino no puede ser menor a la de inicio';
                     }
-                //} else {
-                    //$message = 'El año de la fecha de inicio o de termino no coincide con el actual';
-                //}
+                } else {
+                    $message = 'La fecha de termino no puede ser menor a la de inicio';
+                }
             } else {
-                $message  = "Si es una CERTIFICACIÓN, corrobore que cubra 10 horas.";
+                $message = "Si es una CERTIFICACIÓN, corrobore que cubra 10 horas.";
             }
-        } else $message = "La acción no se ejecuto correctamente";
+        } else {
+            $message = "La acción no se ejecuto correctamente";
+        }
+
         return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
     }
 
@@ -969,19 +1265,19 @@ class grupoController extends Controller
         $_SESSION['folio_grupo'] = NULL;
         return redirect()->route('preinscripcion.grupo');
     }
-    public function turnar(Request $request) 
-    { 
+    public function turnar(Request $request)
+    {
         $message = null;
-        $response = $this->consultar_instructores ($request);        
+        $response = $this->consultar_instructores ($request);
         $respon = $response->getData(true);
         $status_inst = $respon['status'];
         if($status_inst == 500){
             $message = $respon['mensaje'];
         }
-        
+
 
         if ($_SESSION['folio_grupo'] and !$message) {
-            
+
             if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                 return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
@@ -1023,7 +1319,7 @@ class grupoController extends Controller
                                     $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
                                     if($result){
                                         DB::table('instructores')->where('id',$g->id_instructor)->where('curso_extra',true)->update(['curso_extra'=>false]);
-                                        //DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->whereNull('fpreapertura')->update(['fpreapertura'=>date('Y-m-d')]); HABILITAR PARA VOBO DG 
+                                        //DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->whereNull('fpreapertura')->update(['fpreapertura'=>date('Y-m-d')]); HABILITAR PARA VOBO DG
                                         DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->whereNull('fpreapertura')->update(['fpreapertura'=>date('Y-m-d'),'vb_dg'=>true]); //INHABILITAR PARA VOBO DG
 
                                     }else return redirect()->route('preinscripcion.grupo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
@@ -1245,11 +1541,11 @@ class grupoController extends Controller
                         DB::raw("
                             (
                                 SELECT string_agg( '<div>' ||
-                                CASE 
+                                CASE
                                     WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                                     ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                                 END
-                                
+
                                 || ' ' ||
                                 CASE
                                     WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
@@ -1278,28 +1574,28 @@ class grupoController extends Controller
                                     WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
                                     WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
                                     ELSE ''
-                                END 
-                                || 
-                                CASE 
+                                END
+                                ||
+                                CASE
                                     WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
                                     WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
                                     ELSE ''
-                                END                      
+                                END
                                 ||
-                                CASE 
-                                    WHEN tc.tipo != 'EXO' THEN 
+                                CASE
+                                    WHEN tc.tipo != 'EXO' THEN
                                         'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
-                                        'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') 
+                                        'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00')
                                     ELSE ''
                                 END
                                 || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
                                 /*||
-                                CASE 
+                                CASE
                                 WHEN tc.nota is not null THEN ' ' || tc.nota
                                 END*/
                             ) AS observaciones
                         ")
-                
+
 
 
                     )
@@ -1398,10 +1694,10 @@ class grupoController extends Controller
         return response()->json($data['agenda']);
     }
 
-    
+
     private function actualiza_dias($id_curso){
         $tdias = MiAgenda::agenda_tdias($id_curso);
-        $dias = MiAgenda::agenda_dias($id_curso);            
+        $dias = MiAgenda::agenda_dias($id_curso);
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias, 'tdias' => $tdias]);
     }
 
@@ -1666,7 +1962,7 @@ class grupoController extends Controller
         $this->actualiza_dias($id_curso);
     }
 
-    
+
     private function valida_instructor($id_instructor)
     {
         //return ['valido' => true, 'message' => null]; //QUITAR ESTA LINEA EL 01 de JULIO 2024

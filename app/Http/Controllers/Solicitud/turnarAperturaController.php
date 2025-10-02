@@ -16,22 +16,50 @@ use App\Models\tbl_curso;
 use App\User;
 use PDF;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Cache; // Agregar esta línea
 
 class turnarAperturaController extends Controller
 {
     use catUnidades;
-    function __construct() {
-        session_start();
+    // Declarar propiedades como protegidas
+    protected $id_user;
+    protected $realizo;
+    protected $id_unidad;
+    protected $data;
+    protected $ejercicio;
+    protected $path_pdf;
+    protected $path_files;
+
+    public function __construct() {
+        // Remover session_start() - Laravel maneja las sesiones automáticamente
         $this->ejercicio = date("y");
         $this->middleware('auth');
         $this->path_pdf = "/UNIDAD/arc01/";
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
+
+        // Optimización del middleware para evitar N+1 queries
         $this->middleware(function ($request, $next) {
-            $this->id_user = Auth::user()->id;
-            $this->realizo = Auth::user()->name;
-            $this->id_unidad = Auth::user()->unidad;
-            $this->data = $this->unidades_user('unidad');
-            $_SESSION['unidades'] =  $this->data['unidades'];
+            // Cargar usuario con relaciones necesarias de una vez (eager loading)
+            $user = Auth::user();
+
+            // Verificar que el usuario esté autenticado
+            if (!$user) {
+                return redirect()->route('login');
+            }
+
+            $this->id_user = $user->id;
+            $this->realizo = $user->name;
+            $this->id_unidad = $user->unidad;
+
+            // Cache para evitar consultas repetitivas
+            $cacheKey = "unidades_user_{$user->id}";
+            $this->data = Cache::remember($cacheKey, 3600, function() {
+                return $this->unidades_user('unidad');
+            });
+
+            // Usar sesión de Laravel en lugar de $_SESSION
+            session(['unidades' => $this->data['unidades']]);
+
             return $next($request);
         });
     }
@@ -166,7 +194,7 @@ class turnarAperturaController extends Controller
                         $file = $request->file('file_autorizacion'); //dd($name_file);
                         $file_result = $this->upload_file($file,$name_file);
                         $url_file = $file_result["url_file"];
-                        if($file_result['up']){                            
+                        if($file_result['up']){
                             $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->where('status_curso','ACEPTADO')
                             ->update(['status_curso' => 'AUTORIZADO',
                                 'movimientos' => DB::raw("
@@ -442,6 +470,7 @@ class turnarAperturaController extends Controller
 
     public function pdfARC01(Request $request){
         if($request->fecha AND $request->memo){
+            $sesionUnidades = session('unidades');
             $marca = true;
             $fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
@@ -454,11 +483,11 @@ class turnarAperturaController extends Controller
                 DB::raw("
                     (
                         SELECT string_agg( '<div>' ||
-                        CASE 
+                        CASE
                             WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                             ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                         END
-                        
+
                         || ' ' ||
                         CASE
                             WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
@@ -487,29 +516,29 @@ class turnarAperturaController extends Controller
                             WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
                             WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
                             ELSE ''
-                        END 
-                        || 
-                        CASE 
-                            WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
-                            WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
-                            ELSE ''
-                        END                      
+                        END
                         ||
-                        CASE 
-                            WHEN tc.tipo != 'EXO' THEN 
+                        CASE
+                            WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
+                            WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
+                            ELSE ''
+                        END
+                        ||
+                        CASE
+                            WHEN tc.tipo != 'EXO' THEN
                                 'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
-                                'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') 
+                                'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00')
                             ELSE ''
                         END
                         || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
                         /*||
-                        CASE 
+                        CASE
                            WHEN tc.nota is not null THEN ' ' || tc.nota
                         END*/
                     ) AS observaciones
                 ")
                 );
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
+            if($sesionUnidades)$reg_cursos = $reg_cursos->whereIn('unidad',$sesionUnidades);
             $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
             //dd($reg_cursos);
             if(count($reg_cursos)>0){
@@ -535,7 +564,9 @@ class turnarAperturaController extends Controller
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC01.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
-        }return "ACCIÓN INVÁlIDA";exit;
+        }
+        return "ACCIÓN INVÁlIDA";
+        exit;
     }
 
     public function pdfARC02(Request $request) {
@@ -543,6 +574,7 @@ class turnarAperturaController extends Controller
             $marca = true;
             $fecha_memo =  $request->fecha;
             $memo_apertura =  $request->memo;
+            $sesionUnidades = session('unidades');
 
             $reg_cursos = DB::table('tbl_cursos as tc')->SELECT('id','unidad','nombre','mvalida','mod','curso','inicio','termino','dura',
                 'efisico','opcion','motivo','nmunidad','observaciones','realizo','tcapacitacion','tipo_curso','fecha_arc02','status_solicitud_arc02',
@@ -552,11 +584,11 @@ class turnarAperturaController extends Controller
                  DB::raw("
                     (
                         SELECT string_agg( '<div>' ||
-                        CASE 
+                        CASE
                             WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                             ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                         END
-                        
+
                         || ' ' ||
                         CASE
                             WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
@@ -579,7 +611,7 @@ class turnarAperturaController extends Controller
                     )::text AS agenda
                 ")
             );
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
+            if($sesionUnidades)$reg_cursos = $reg_cursos->whereIn('unidad',$sesionUnidades);
             $reg_cursos = $reg_cursos->WHERE('nmunidad', '=', $memo_apertura)->orderby('espe')->get();
 
             if(count($reg_cursos)>0){
