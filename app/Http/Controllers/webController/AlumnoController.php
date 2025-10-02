@@ -138,11 +138,18 @@ class AlumnoController extends Controller {
 
         }
         $medio_confirmacion = ["WHATSAPP"=>"WHATSAPP","MENSAJE DE TEXTO"=>"MENSAJE DE TEXTO","CORREO ELECTRÓNICO"=>"CORREO ELECTRÓNICO","FACEBOOK"=>"FACEBOOK","INSTAGRAM"=>"INSTAGRAM","TWITTER"=>"TWITTER","TELEGRAM"=>"TELEGRAM"];
+        $user = Auth::user()->load('roles.permissions');
+
+        // Calcula solo los permisos que realmente usas en el blade
+        $permisos = [
+            'alumnos-inscripcion-paso2' => $user->can('alumnos.inscripcion-paso2'),
+        ];
+
 
 
 
         return view('layouts.pages.valcurp', compact('curp','sexo','fnacimiento','estados','grado_estudio','estado_civil','etnias','alumno','gvulnerables', 'municipios',
-            'localidades','medio_confirmacion','datos_alfa', 'cat_modelo', 'etapa_eb', 'paises', 'vialidad', 'asentamientos'));
+            'localidades','medio_confirmacion','datos_alfa', 'cat_modelo', 'etapa_eb', 'paises', 'vialidad', 'asentamientos','permisos'));
     }
 
     public function showlm(Request $request) { //obtención municipios
