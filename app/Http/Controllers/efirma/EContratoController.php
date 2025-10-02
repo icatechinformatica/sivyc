@@ -264,8 +264,8 @@ class EContratoController extends Controller
             if(isset($dataInsert->obj_documento)) {
                 $firmantes = json_decode($dataInsert->obj_documento, true);
                 if($dataInsert->status != 'CANCELADO') {
-                    foreach($firmantes['firmantes']['firmante']['0'] as $firmante) {
-                        if(isset($firmante['_attributes']['certificado'])) {
+                    foreach($firmantes['firmantes']['firmante']['0'] as $firma) {
+                        if(isset($firma['_attributes']['certificado'])) {
                             $sobrescribir = False;
                         }
                     }
