@@ -1702,19 +1702,24 @@ class grupoController extends Controller
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias, 'tdias' => $tdias]);
     }
 
-    public function deleteCalendar(Request $request){
+    public function deleteCalendar(Request $request){        
         $id = $request->id;
-        $id_curso = DB::table('agenda')->where('id',$id)->value('id_curso');
-        /*
-        if (DB::table('exoneraciones')->where('folio_grupo',$id_curso)->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
-            $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
-            return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
-        } else {
-            */
-            Agenda::destroy($id);
-            $this->actualiza_dias($id_curso);
-            return response()->json($id);
-       // }
+        $id_curso = DB::table('agenda')->where('id',$id)->value('id_curso');     
+        if($id_curso){
+            $msg = $this->validaEXO($id_curso);
+            if($msg) return $msg;
+            else{
+                Agenda::destroy($id);
+                $this->actualiza_dias($id_curso);            
+            }
+        }
+       
+    }
+
+    private function validaEXO($id_curso){
+        if (DB::table('exoneraciones')->where('folio_grupo',$id_curso)->whereNotIn('status', ['CANCELADO', 'CAPTURA'])->exists()) {
+            return "El Grupo tiene una solicitud de Exoneración o Reducción de Couta en Proceso..";
+        }        
     }
 
     public function storeCalendar(Request $request){
@@ -1730,15 +1735,16 @@ class grupoController extends Controller
         $minutos_curso = Carbon::parse($horaTermino)->diffInMinutes($horaInicio);
         $es_lunes= Carbon::parse($fechaInicio)->is('monday');
         $sumaMesInicio = 0;
-        $sumaMesFin = 0;
-        $id_unidad = DB::table('tbl_unidades')->where('unidad','=',$grupo->unidad)->value('id');
-        $id_municipio = $grupo->id_municipio;
-        $clave_localidad = $grupo->clave_localidad;
-        /*
-        if (DB::table('exoneraciones')->where('folio_grupo',$id_curso)->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
-            return "Solicitud de Exoneración o Reducción de couta en Proceso..";
-        }
-        */
+        $sumaMesFin = 0;         
+        if($grupo){
+             $msg = $this->validaEXO($id_curso);
+            if($msg) return $msg;
+
+            $id_unidad = DB::table('tbl_unidades')->where('unidad','=',$grupo->unidad)->value('id');
+            $id_municipio = $grupo->id_municipio;
+            $clave_localidad = $grupo->clave_localidad;
+        }else $id_unidad =  $id_municipio = $clave_localidad = null;
+        
         //VALIDACIÓN DEL HORARIO
         if (($horaInicio < date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hini)))) OR ($horaInicio > date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hfin)))) OR
         ($horaTermino < date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hini)))) OR ($horaTermino > date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hfin))))) {
@@ -1763,185 +1769,6 @@ class grupoController extends Controller
         if (count($alumnos_ocupados) > 0) {
             return "Alumno(s) no disponible en fecha y hora: ".json_encode($alumnos_ocupados);
         }
-
-        /* VOBO
-        //CRITERIOS INSTRUCTOR ::
-
-        // INSTRUCTORES INTERNOS,MÁXIMO 2 CURSOS EN EL MES y 5 MESES DE ACTIVIDAD
-
-
-        $instructor_valido = $this->valida_instructor($id_instructor);
-        if(!$instructor_valido['valido'])  return $instructor_valido['message'];
-
-
-        //DISPONIBILIDAD FECHA Y HORA
-        $duplicado = DB::table('agenda as a')
-            ->leftJoin('tbl_cursos as tc','a.id_curso','tc.folio_grupo')
-            ->where('a.id_instructor',$id_instructor)
-            ->where('tc.status','<>','CANCELADO')
-            ->whereRaw("((date(a.start) <= '$fechaInicio' and date(a.end) >= '$fechaInicio') OR (date(a.start) <= '$fechaTermino' and date(a.end) >= '$fechaTermino'))")
-            ->whereRaw("((cast(a.start as time) <= '$horaInicio' and cast(a.end as time) > '$horaInicio') OR (cast(a.start as time) < '$horaTermino' and cast(a.end as time) >= '$horaTermino'))")
-            ->exists();
-        if ($duplicado) {
-            return "El instructor no se encuentra disponible en fecha y hora";
-        }
-        //8HRS DIARIAS
-        foreach ($period as $fecha) {
-            $f = date($fecha->format('Y-m-d'));
-            $suma = 0;
-            $horas_dia = DB::table('agenda')->select(DB::raw('cast(agenda.start as time) as hini'),DB::raw('cast(agenda.end as time) as hfin'))
-                ->join('tbl_cursos','agenda.id_curso','=','tbl_cursos.folio_grupo')
-                ->where('tbl_cursos.status','<>','CANCELADO')
-                ->where('agenda.id_instructor','=',$id_instructor)
-                ->whereRaw("(date(agenda.start)<='$f' AND date(agenda.end)>='$f')")
-                ->get();
-            foreach ($horas_dia as $value) {
-                $minutos = Carbon::parse($value->hfin)->diffInMinutes($value->hini);
-                $suma += $minutos;
-                if (($suma + $minutos_curso) > 480) {
-                    return "El instructor no debe de exceder las 8hrs impartidas.";
-                }
-            }
-        }
-        //40HRS SEMANA
-        if ($es_lunes) {
-            $dateini = Carbon::parse($fechaInicio);
-            $datefin= Carbon::parse($fechaInicio)->addDay(6);
-            $total=0;
-            $array1=[];
-            foreach($period as $pan){
-                $al = Carbon::parse($pan->format('d-m-Y'));
-                $fal = Carbon::parse($datefin->format('d-m-Y'));
-                if($al <= $fal){
-                    $total += $minutos_curso;
-                }else{
-                    $array1[]=$al;
-                }
-            }
-            $min_reg = DB::table(DB::raw("
-                    (select (generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias, agenda.id_curso,
-                    (cast(agenda.end as time)-cast(agenda.start as time))::time as dif
-                    from agenda
-                    left join tbl_cursos on agenda.id_curso = tbl_cursos.folio_grupo
-                    where agenda.id_instructor = '$id_instructor'
-                    and tbl_cursos.status != 'CANCELADO'
-                    order by agenda.id_curso) as t
-                "))
-                ->where('dias','>=',$dateini->format('Y-m-d'))
-                ->where('dias','<=',$datefin->format('Y-m-d'))
-                ->value(DB::raw('sum((extract(hour from dif)*60)+ extract(minute from dif))'));
-            if (($min_reg + $total) > 2400) {
-                return "El instructor no debe impartir más de 40hrs semanales.";
-            }
-            if(!empty($array1)){
-                $dateini = $array1[0];
-                $es_lunes= Carbon::parse($dateini)->is('monday');
-                if ($es_lunes) {
-                    $datefin = Carbon::parse($dateini)->addDay(6);
-                    $array2 = [];
-                    $total2 = 0;
-
-                    foreach ($array1 as $item) {
-                        $al = Carbon::parse($item->format('d-m-Y'));
-                        $fal = Carbon::parse($datefin->format('d-m-Y'));
-                        if ($al <= $fal) {
-                            $total2 += $minutos_curso;
-                        } else {
-                            $array2[] = $item;
-                        }
-                    }
-                    $min_reg = DB::table(
-                        DB::raw("(select (generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias, agenda.id_curso,
-                        (cast(agenda.end as time)-cast(agenda.start as time))::time as dif
-                        from agenda
-                        left join tbl_cursos on agenda.id_curso = tbl_cursos.folio_grupo
-                        where agenda.id_instructor = '$id_instructor'
-                        and tbl_cursos.status != 'CANCELADO'
-                        order by agenda.id_curso) as t")
-                        )
-                        ->where('dias', '>=', $dateini->format('Y-m-d'))
-                        ->where('dias', '<=', $datefin->format('Y-m-d'))
-                        ->value(DB::raw('sum((extract(hour from dif)*60)+ extract(minute from dif))'));
-                    if (($min_reg + $total2) > 2400) {
-                        return "El instructor no debe impartir más de 40hrs semanales.";
-                    }
-                    if (!empty($array2)) {
-                        return "El instructor no debe impartir más de 40hrs semanales.";        //ERROR!!!!!
-                    }
-                } else {
-                    return "El instructor no debe impartir más de 40hrs semanales.";       //ERROR!!!!!
-                }
-            }
-        } else {
-            $date= Carbon::parse($fechaInicio)->startOfWeek();   //dd(gettype($date));   //obtener el primer dia de la semana
-            $datefin= Carbon::parse($date)->addDay(6);
-            $total=0;   //vamos a contar los minutos que dura el curso a la semana y crear array´s para comprobar si el curso comparte días con otra semana
-            $array1=[];
-            foreach($period as $pan){
-                $al = Carbon::parse($pan->format('d-m-Y'));
-                $fal = Carbon::parse($datefin->format('d-m-Y'));
-                if($al <= $fal){
-                    $total += $minutos_curso;
-                }else{
-                    $array1[]=$pan;
-                }
-            }
-            $min_reg = DB::table(DB::raw("
-                    (select (generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias, agenda.id_curso,
-                    (cast(agenda.end as time)-cast(agenda.start as time))::time as dif
-                    from agenda
-                    left join tbl_cursos on agenda.id_curso = tbl_cursos.folio_grupo
-                    where agenda.id_instructor = '$id_instructor'
-                    and tbl_cursos.status != 'CANCELADO'
-                    order by agenda.id_curso) as t
-                "))
-                ->where('dias','>=',$date->format('Y-m-d'))
-                ->where('dias','<=',$datefin->format('Y-m-d'))
-                ->value(DB::raw('sum((extract(hour from dif)*60)+ extract(minute from dif))'));
-            if (($min_reg + $total) > 2400) {
-                return "El instructor no debe impartir más de 40hrs semanales.";
-            }
-            if(!empty($array1)){
-                $date= $array1[0];
-                $es_lunes= Carbon::parse($date)->is('monday');
-                if($es_lunes){
-                    $datefin= Carbon::parse($date)->addDay(6);
-                    $array2=[];
-                    $total2=0;
-                    foreach($array1 as $item){
-                        $al = Carbon::parse($item->format('d-m-Y'));
-                        $fal = Carbon::parse($datefin->format('d-m-Y'));
-                        if($al <= $fal){
-                            $total2 += $minutos_curso;
-                        }else{
-                            $array2= $item;
-                        }
-                    }
-                    $min_reg = DB::table(DB::raw("
-                            (select (generate_series(agenda.start, agenda.end, '1 day'::interval))::date as dias, agenda.id_curso,
-                            (cast(agenda.end as time)-cast(agenda.start as time))::time as dif
-                            from agenda
-                            left join tbl_cursos on agenda.id_curso = tbl_cursos.folio_grupo
-                            where agenda.id_instructor = '$id_instructor'
-                            and tbl_cursos.status != 'CANCELADO'
-                            order by agenda.id_curso) as t
-                        "))
-                        ->where('dias','>=',$date->format('Y-m-d'))
-                        ->where('dias','<=',$datefin->format('Y-m-d'))
-                        ->value(DB::raw('sum((extract(hour from dif)*60)+ extract(minute from dif))'));
-                    if (($min_reg + $total2) > 2400) {
-                        return "El instructor no debe impartir más de 40hrs semanales.";
-                    }
-                    if(!empty($array2)){
-                        return "El instructor no debe impartir más de 40hrs semanales.";
-                    }
-
-                }else{
-                    return "El instructor no debe impartir más de 40hrs semanales.";
-                }
-            }
-        }
-        FIN VOBO*/
         try {
             $titulo = $request->title;
             $agenda = new Agenda();
@@ -1956,11 +1783,12 @@ class grupoController extends Controller
             $agenda->clave_localidad = $clave_localidad;
             $agenda->iduser_created = Auth::user()->id;
             $agenda->save();
+            $this->actualiza_dias($id_curso);
         } catch (QueryException $ex) {
             //dd($ex);
             return 'duplicado';
         }
-        $this->actualiza_dias($id_curso);
+        
     }
 
 
