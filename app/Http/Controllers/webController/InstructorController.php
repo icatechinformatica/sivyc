@@ -138,7 +138,17 @@ class InstructorController extends Controller
 
         $busquedaPorInstructor = $request->busquedaPorInstructor;
 
-        return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old','tipo_busqueda','busquedaPorInstructor'));
+        $user = Auth::user()->load('roles.permissions');
+        // Calcula solo los permisos que realmente usas en el blade
+        $permisos = [
+            'instructor_create' => $user->can('instructor.create'),
+            'academico_exportar_instructores' => $user->can('academico.exportar.instructores'),
+            'only_admin' => $user->can('only.admin'),
+            'instructor_validar' => $user->can('instructor.validar'),
+            'reenvio_credenciales_instructor' => $user->can('reenvio_credenciales_instructor')
+        ];
+
+        return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old','tipo_busqueda','busquedaPorInstructor','permisos'));
     }
 
     public function cursosAutocomplete(Request $request) {
