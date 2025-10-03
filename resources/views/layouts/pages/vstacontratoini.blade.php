@@ -205,19 +205,19 @@
                                 @endif
                             @endif
                             @if ($itemData->status == 'Capturando' || $itemData->status_recepcion == 'Rechazado' || ($itemData->status_recepcion == null && $itemData->id_contrato != null))
-                                @can('contratos.edit')
+                                @if($canEditContrato)
                                     {{-- <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Firma Electronica" href="{{route('contrato-validado-historial', ['id' => $itemData->id_contrato])}}">
                                         <i class="fas fa-pencil-alt" aria-hidden="true"></i>
                                     </a> --}}
                                     <a class="btn btn-success btn-circle m-1 btn-circle-sm" title="Modificar Contrato y Pago" href="{{route('contrato-mod', ['id' => $itemData->id_contrato])}}">
                                         <i class="fas fa-file-alt" aria-hidden="true"></i>
                                     </a>
-                                @endcan
+                                @endif
                                 {{-- <a class="btn btn-danger btn-circle m-1 btn-circle-sm" title="Documento pdf" id="show_pdf" name="show_pdf" data-toggle="modal" data-target="#myModal" data-id='["{{$itemData->id_folios}}","{{$itemData->id_contrato}}","{{$itemData->docs}}","{{$itemData->id}}","{{$itemData->status}}","{{$itemData->doc_validado}}"]'>
                                     <i class="far fa-file-pdf" aria-hidden="true"></i>
                                 </a> --}}
                                 @if(!is_null($itemData->status_recepcion))
-                                    @can('contrato.restart')
+                                    @if($canRestartContrato)
                                         <button type="button" class="btn btn-danger btn-circle m-1 btn-circle-sm"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#restartModalContrato"
@@ -225,7 +225,7 @@
                                             title="Reiniciar Contrato">
                                             <i class="fa fa-history"></i>
                                         </button>
-                                    @endcan
+                                    @endif
                                 @endif
                                 @if($canCancelFolio)
                                     <button type="button" class="btn btn-warning btn-circle m-1 btn-circle-sm"

@@ -603,18 +603,18 @@ class grupoController extends Controller
     {
         $message = "Operación fallida, por favor intente de nuevo!!";
 
-        if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
+        if (session('folio_grupo') == $request->folio_grupo) {
             $folio_grupo = $request->folio_grupo;
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
 
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
                 if ($request->inicio <= $request->termino) {
-                    $folio = $_SESSION['folio_grupo'];
+                    $folio = session('folio_grupo');
                     $mapertura = $request->mapertura;
 
                     $tc_curso = DB::table('tbl_cursos')
                         ->where('unidad', $request->unidad)
-                        ->where('folio_grupo', $_SESSION['folio_grupo'])
+                        ->where('folio_grupo', session('folio_grupo'))
                         ->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')
                         ->first();
 
@@ -670,8 +670,8 @@ class grupoController extends Controller
                         $convenio = null;
                         if($request->dependencia AND $request->modalidad=='CAE' AND $organismo_data){
                             $organismo = $organismo_data->organismo;
-
-                            $unidades_toarray = $_SESSION['unidades']->values()->toArray();
+                            $unidadsesion = session('unidades');
+                            $unidades_toarray = $unidadsesion ? $unidadsesion->values()->toArray() : [];
                             $convenio_t = DB::table('convenios')
                                 ->select('no_convenio',DB::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))
                                 ->where(DB::raw("to_char(DATE (fecha_vigencia)::date, 'YYYY-MM-DD')"),'>=',$request->termino)
@@ -786,7 +786,7 @@ class grupoController extends Controller
                             // Optimización 4: Procesar costos de forma eficiente
                             $total_pago = 0;
                             if (!(DB::table('exoneraciones')
-                                ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                ->where('folio_grupo', session('folio_grupo'))
                                 ->where('status','!=', 'CAPTURA')
                                 ->where('status','!=','CANCELADO')
                                 ->exists())){
@@ -813,7 +813,7 @@ class grupoController extends Controller
                                         'abrinscri' => $abrins
                                     ];
 
-                                    if (($tc_curso->status_curso == 'EDICION') AND $_SESSION['folio_grupo']) {
+                                    if (($tc_curso->status_curso == 'EDICION') AND session('folio_grupo')) {
                                         $inscripcion_updates[] = [
                                             'alumno_id' => $key,
                                             'costo' => $pago,
@@ -832,16 +832,41 @@ class grupoController extends Controller
                                     ]);
                                 }
 
-                                // Updates para inscripción si es necesario
-                                foreach ($inscripcion_updates as $update) {
+                                // Updates para inscripción si es necesario 390cd5ce2d454baaa8667990a38d56b9
+
+                                if (!empty($inscripcion_updates)) {
+                                    // Construir las cláusulas CASE WHEN para cada campo
+                                    $costoCase = [];
+                                    $tinscripcionCase = [];
+                                    $abrinscriCase = [];
+                                    $alumnoIds = [];
+
+                                    foreach ($inscripcion_updates as $update) {
+                                        $alumnoId = $update['alumno_id'];
+                                        $costo = $update['costo'];
+                                        $tinscripcion = $update['tinscripcion'];
+                                        $abrinscri = $update['abrinscri'];
+
+                                        $costoCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN {$costo}";
+                                        $tinscripcionCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN '{$tinscripcion}'";
+                                        $abrinscriCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN '{$abrinscri}'";
+                                        $alumnoIds[] = $alumnoId;
+                                    }
+
+                                    // Construir las expresiones CASE completas
+                                    $costoExpression = "CASE " . implode(' ', $costoCase) . " ELSE tbl_inscripcion.costo END";
+                                    $tinscripcionExpression = "CASE " . implode(' ', $tinscripcionCase) . " ELSE tbl_inscripcion.tinscripcion END";
+                                    $abrinscriExpression = "CASE " . implode(' ', $abrinscriCase) . " ELSE tbl_inscripcion.abrinscri END";
+
+                                    // Ejecutar un solo UPDATE masivo
                                     DB::table('tbl_inscripcion')
                                         ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
-                                        ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
-                                        ->where('alumnos_registro.id', $update['alumno_id'])
+                                        ->where('tbl_inscripcion.folio_grupo', session('folio_grupo'))
+                                        ->whereIn('alumnos_registro.id', $alumnoIds)
                                         ->update([
-                                            'tbl_inscripcion.costo' => $update['costo'],
-                                            'tbl_inscripcion.tinscripcion' => $update['tinscripcion'],
-                                            'tbl_inscripcion.abrinscri' => $update['abrinscri']
+                                            'tbl_inscripcion.costo' => DB::raw($costoExpression),
+                                            'tbl_inscripcion.tinscripcion' => DB::raw($tinscripcionExpression),
+                                            'tbl_inscripcion.abrinscri' => DB::raw($abrinscriExpression)
                                         ]);
                                 }
                             }
@@ -853,7 +878,7 @@ class grupoController extends Controller
                                     DB::raw("SUM(CASE WHEN substring(curp,11,1) ='M' THEN 1 ELSE 0 END) as mujer"),
                                     DB::raw("SUM(costo) as costo")
                                 )
-                                ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                ->where('folio_grupo',session('folio_grupo'))
                                 ->first();
 
                             //TOTAL PAGADO
@@ -920,7 +945,7 @@ class grupoController extends Controller
 
                             if($tc_curso->status_curso=='EDICION'){
                                 $result_curso = DB::table('tbl_cursos')
-                                    ->where('folio_grupo', $_SESSION['folio_grupo'])
+                                    ->where('folio_grupo', session('folio_grupo'))
                                     ->update([
                                         'inicio' => $request->inicio,
                                         'termino' => $termino,
@@ -963,7 +988,7 @@ class grupoController extends Controller
 
                                 if($tc_curso->cp == $cp AND $result_curso){
                                     $result_curso = DB::table('tbl_cursos')
-                                        ->where('folio_grupo', $_SESSION['folio_grupo'])
+                                        ->where('folio_grupo', session('folio_grupo'))
                                         ->update([
                                             'id_instructor' => $instructor->id,
                                             'modinstructor' => $tipo_honorario,
@@ -982,7 +1007,7 @@ class grupoController extends Controller
 
                                 if($result_curso){
                                     $result_alumnos = DB::table('alumnos_registro')
-                                        ->where('folio_grupo', $_SESSION['folio_grupo'])
+                                        ->where('folio_grupo', session('folio_grupo'))
                                         ->update([
                                             'clave_localidad' => $request->localidad,
                                             'organismo_publico' => $request->dependencia,
@@ -1015,13 +1040,13 @@ class grupoController extends Controller
                                 }
 
                             } elseif (DB::table('exoneraciones')
-                                ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                ->where('folio_grupo',session('folio_grupo'))
                                 ->where('status','!=', 'CAPTURA')
                                 ->where('status','!=','CANCELADO')
                                 ->exists()) {
 
                                 $result_alumnos = DB::table('alumnos_registro')
-                                    ->where('folio_grupo',$_SESSION['folio_grupo'])
+                                    ->where('folio_grupo',session('folio_grupo'))
                                     ->where('turnado','VINCULACION')
                                     ->update([
                                         'id_instructor' => $instructor->id,
@@ -1041,8 +1066,8 @@ class grupoController extends Controller
 
                                 if ($result_alumnos) {
                                     $result_curso = DB::table('tbl_cursos')
-                                        ->where('folio_grupo',$_SESSION['folio_grupo'])
-                                        ->where('id',$ID)
+                                        ->where('folio_grupo', session('folio_grupo'))
+                                        ->where('id', $ID)
                                         ->update([
                                             'comprobante_pago' => $url_comprobante,
                                             'mpreapertura' => $mapertura,
@@ -1082,7 +1107,7 @@ class grupoController extends Controller
 
                             } else {
                                 $result_alumnos = DB::table('alumnos_registro')
-                                    ->where('folio_grupo', $_SESSION['folio_grupo'])
+                                    ->where('folio_grupo', session('folio_grupo'))
                                     ->where('turnado','VINCULACION')
                                     ->update([
                                         'id_unidad' => $unidad->id,
@@ -1123,7 +1148,7 @@ class grupoController extends Controller
                                     $result_curso = DB::table('tbl_cursos')
                                         ->where('clave', '0')
                                         ->updateOrInsert(
-                                            ['folio_grupo' => $_SESSION['folio_grupo']],
+                                            ['folio_grupo' => session('folio_grupo')],
                                             [
                                                 'id' => $ID,
                                                 'cct' => $unidad->cct,
@@ -1702,24 +1727,24 @@ class grupoController extends Controller
         $result = DB::table('tbl_cursos')->where('folio_grupo',$id_curso)->update(['dia' => $dias, 'tdias' => $tdias]);
     }
 
-    public function deleteCalendar(Request $request){        
+    public function deleteCalendar(Request $request){
         $id = $request->id;
-        $id_curso = DB::table('agenda')->where('id',$id)->value('id_curso');     
+        $id_curso = DB::table('agenda')->where('id',$id)->value('id_curso');
         if($id_curso){
             $msg = $this->validaEXO($id_curso);
             if($msg) return $msg;
             else{
                 Agenda::destroy($id);
-                $this->actualiza_dias($id_curso);            
+                $this->actualiza_dias($id_curso);
             }
         }
-       
+
     }
 
     private function validaEXO($id_curso){
         if (DB::table('exoneraciones')->where('folio_grupo',$id_curso)->whereNotIn('status', ['CANCELADO', 'CAPTURA'])->exists()) {
             return "El Grupo tiene una solicitud de Exoneración o Reducción de Couta en Proceso..";
-        }        
+        }
     }
 
     public function storeCalendar(Request $request){
@@ -1735,7 +1760,7 @@ class grupoController extends Controller
         $minutos_curso = Carbon::parse($horaTermino)->diffInMinutes($horaInicio);
         $es_lunes= Carbon::parse($fechaInicio)->is('monday');
         $sumaMesInicio = 0;
-        $sumaMesFin = 0;         
+        $sumaMesFin = 0;
         if($grupo){
              $msg = $this->validaEXO($id_curso);
             if($msg) return $msg;
@@ -1744,7 +1769,7 @@ class grupoController extends Controller
             $id_municipio = $grupo->id_municipio;
             $clave_localidad = $grupo->clave_localidad;
         }else $id_unidad =  $id_municipio = $clave_localidad = null;
-        
+
         //VALIDACIÓN DEL HORARIO
         if (($horaInicio < date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hini)))) OR ($horaInicio > date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hfin)))) OR
         ($horaTermino < date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hini)))) OR ($horaTermino > date('H:i',strtotime(str_replace(['a.m.', 'p.m.'], ['am', 'pm'], $grupo->hfin))))) {
@@ -1788,7 +1813,7 @@ class grupoController extends Controller
             //dd($ex);
             return 'duplicado';
         }
-        
+
     }
 
 

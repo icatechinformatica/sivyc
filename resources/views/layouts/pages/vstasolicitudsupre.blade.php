@@ -73,9 +73,9 @@
                 </div>
                 <br>
                 <div style="padding-top: 3%">
-                    @can('supre.create')
+                    @if($permisos['supre_create'])
                         <a class="btn btn-success btn-lg" href="{{route('frm-supre')}}"> Nuevo</a>
-                    @endcan
+                    @endif
                 </div>
             {{-- </div> --}}
         </div>
@@ -160,13 +160,13 @@
                                 </a>
                                 {{-- @if ($itemData->doc_supre != NULL) --}}
                                 @if ($itemData->doc_supre != NULL || $itemData->supre_sellado)
-                                    @can('supre.validar')
+                                    @if($permisos['supre_validar'])
                                         <a style="margin-left: 5px" title="Validar" href="{{route('supre-validacion', ['id' => $idh])}}">
                                             <i class="fa fa-edit fa-2x fa-lg text-success" aria-hidden="true"></i>
                                         </a>
-                                    @endcan
+                                    @endif
                                     @if ($itemData->doc_supre != NULL)
-                                        @can('supre.upload_supre')
+                                        @if($permisos['supre_upload_supre'])
                                             <button type="button" class="btn btn-info btn-circle m-1 btn-circle-sm"
                                                 data-toggle="modal" data-placement="top"
                                                 data-target="#DocSupreModal2"
@@ -174,16 +174,16 @@
                                                 title="Reemplazar Suficiencia Presupuestal Firmada">
                                                 <i class="fa fa-upload"></i>
                                             </button>
-                                        @endcan
+                                        @endif
                                     @endif
                                 @else
                                 {{-- @elseif (!$itemData->supre_sellado) --}}
-                                    @can('supre.edit')
+                                    @if($permisos['supre_edit'])
                                         <a style="padding-left: 10px;" title="Editar" href="{{route('modificar_supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench fa-2x fa-lg text-success" aria-hidden="true"></i>
                                         </a>
-                                    @endcan
-                                    @can('supre.upload_supre')
+                                    @endif
+                                    @if($permisos['supre_upload_supre'])
                                         <button type="button" style="padding-left: 10px; background-color: transparent; border-color: transparent"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#DocSupreModal"
@@ -191,7 +191,7 @@
                                             title="Cargar Validación de Suficiencia Presupuestal Firmada">
                                             <i class="fa fa-upload fa-2x fa-lg text-info"></i>
                                         </button>
-                                    @endcan
+                                    @endif
                                 @endif
                                 <input hidden value={{$itemData->id}} id='pdfp'>
                             @endif
@@ -202,7 +202,7 @@
                                 {{-- @if ($itemData->doc_supre != NULL || $itemData->supre_sellado) --}}
                                 @if($itemData->doc_validado != NULL || $itemData->valsupre_sellado)
                                     @if($itemData->edicion_pago || is_null($itemData->status_recepcion) || $itemData->status_recepcion == 'Rechazado')
-                                            @can('supre.upload_valsupre')
+                                            @if($permisos['supre_upload_valsupre'])
                                                 <button type="button" style="padding-left:5px; background-color:transparent; border-color:transparent;"
                                                     data-toggle="modal" data-placement="top"
                                                     data-target="#DocModal2"
@@ -210,10 +210,10 @@
                                                     title="Reemplazar Validación de Suficiencia Presupuestal Firmada {{$itemData->status_recepcion}}">
                                                     <i class="fa fa-upload fa-2x fa-lg text-warning"></i>
                                                 </button>
-                                            @endcan
+                                            @endif
                                     @endif
                                     @if(!in_array($itemData->status_recepcion, ['VALIDADO', 'En Espera']) || $itemData->permiso_editar)
-                                        @can('supre.restart')
+                                        @if($permisos['supre_restart'])
                                             <button type="button" style="padding-left: 5px; background-color:transparent; border-color:transparent;"
                                                 data-toggle="modal" data-placement="top"
                                                 data-target="#restartModal"
@@ -221,11 +221,11 @@
                                                 title="Rechazar Solicitud y Validación de Suficiencia Presupuestal">
                                                 <i class="fa fa-history fa-2x fa-lg text-danger"></i>
                                             </button>
-                                        @endcan
+                                        @endif
                                     @endif
                                 @else
                                     @if(!in_array($itemData->status_recepcion, ['VALIDADO', 'En Espera']) || $itemData->permiso_editar)
-                                        @can('supre.restart')
+                                        @if($permisos['supre_restart'])
                                             <button type="button" style="padding-left: 5px; background-color:transparent; border-color:transparent;"
                                                 data-toggle="modal" data-placement="top"
                                                 data-target="#restartModal"
@@ -233,8 +233,8 @@
                                                 title="Rechazar Solicitud y Validación de Suficiencia Presupuestal">
                                                 <i class="fa fa-history fa-2x fa-lg text-danger"></i>
                                             </button>
-                                        @endcan
-                                        @can('folio.modificar')
+                                        @endif
+                                        @if($permisos['folio.modificar'])
                                         <button type="button" style="margin-left: -10px; background-color:transparent; border-color:transparent;"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#modfolioModal"
@@ -242,9 +242,9 @@
                                             title="Permiso de Reemplazo de solicitud autografo">
                                             <i class="fa fa-history fa-2x fa-lg text-info"></i>
                                         </button>
-                                    @endcan
                                     @endif
-                                    @can('supre.upload_valsupre')
+                                    @endif
+                                    @if($permisos['supre_upload_valsupre'])
                                     <button type="button" style=" background-color: transparent; border-color: transparent"
                                         data-toggle="modal" data-placement="top"
                                         data-target="#DocModal"
@@ -252,17 +252,17 @@
                                         title="Cargar Validación de Suficiencia Presupuestal Firmada">
                                         <i class="fa fa-upload fa-2x fa-lg text-info"></i>
                                     </button>
-                                @endcan
+                                @endif
                                 @endif
                                 @if(!is_null($itemData->folio_validacion) && $itemData->efirma_status_valsupre != 'VALIDADO')
-                                    @can('supre.validar')
+                                    @if($permisos['supre_validar'])
                                             <a style="padding-left: 5px;" title="Editar Validación de Suficiencia Presupuestal" href="{{route('valsupre-mod', ['id' => $idh])}}">
                                                 <i class="fa fa-wrench fa-2x fa-lg text-success" aria-hidden="true"></i>
                                             </a>
-                                    @endcan
+                                    @endif
                                 @endif
                                 @if ($itemData->permiso_editar)
-                                    @can('supre.upload_supre')
+                                    @if($permisos['supre_upload_supre'])
                                         <button type="button" style="padding-left: 5px;"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#DocSupreModal2"
@@ -270,7 +270,7 @@
                                             title="Reemplazar Suficiencia Presupuestal Firmada">
                                             <i class="fa fa-upload fa-2x fa-lg text-info"></i>
                                         </button>
-                                    @endcan
+                                    @endif
                                 @endif
                             @endif
                             @if ($itemData->status == 'Rechazado')
@@ -278,14 +278,14 @@
                                     <i class="far fa-file-pdf fa-2x fa-lg text-danger" aria-hidden="true"></i>
                                 </a>
                                 {{-- @if(!$itemData->supre_sellado) --}}
-                                    @can('supre.edit')
+                                    @if($permisos['supre_edit'])
                                         <a style="padding-left: 5px;" title="Editar" href="{{route('modificar_supre', ['id' => $idh])}}">
                                             <i class="fa fa-wrench fa-2x fa-lg text-success" aria-hidden="true"></i>
                                         </a>
-                                    @endcan
+                                    @endif
                                 {{-- @endif --}}
                                 @if ($itemData->doc_supre != NULL)
-                                    @can('supre.upload_supre')
+                                    @if($permisos['supre_upload_supre'])
                                         <button type="button" style="padding-left: 5px; background-color:transparent; border-color:transparent;"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#DocSupreModal2"
@@ -293,9 +293,9 @@
                                             title="Reemplazar Suficiencia Presupuestal Firmada">
                                             <i class="fa fa-upload fa-2x fa-lg text-info"></i>
                                         </button>
-                                    @endcan
+                                    @endif
                                 @endif
-                                @can('supre.validar')
+                                @if($permisos['supre_validar'])
                                     <button type="button" style="padding-left: 5px; background-color:transparent; border-color:transparent;"
                                         data-toggle="modal" data-placement="top"
                                         data-target="#cancelModal"
@@ -303,7 +303,7 @@
                                         title="Cancelar Suficiencia Presupuestal">
                                         <i class="fas fa-times fa-2x fa-lg text-danger"></i>
                                     </button>
-                                @endcan
+                                @endif
                             @endif
                         </td>
                     </tr>
@@ -330,11 +330,11 @@
                             </button>
                         </div>
                         <div class="modal-body" style="text-align:center">
-                            {{-- @can('supre.create') --}}
+                            {{-- @if($permisos['supre_create']) --}}
                                 <div style="text-align:center" class="form-group">
                                     <a class="btn btn-danger" id="supre_pdf" name="supre_pdf" href="#" target="_blank">Solicitud de Suficiencia Presupuestal</a><br>
                                 </div>
-                            {{-- @endcan --}}
+                            {{-- @endif --}}
                             <div style="text-align:center" class="form-group">
                                 <a class="btn btn-danger" id="valsupre_pdf" name="valsupre_pdf" href="#" target="_blank">Validación de Suficiencia Presupuestal</a><br>
                             </div>

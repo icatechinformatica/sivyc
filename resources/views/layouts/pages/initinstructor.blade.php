@@ -48,13 +48,13 @@
                             </select>
                         </Div>
                         <button class="btn my-2 my-sm-0 ml-3" type="submit">BUSCAR</button>
-                    @can('instructor.create')
+                    @if($permisos['instructor_create'])
                         <a class="btn ml-3" href="{{route('instructor-crear')}}"> Nuevo</a>
-                    @endcan
-                    @can('academico.exportar.instructores')
+                    @endif
+                    @if($permisos['academico_exportar_instructores'])
                         <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores')}}">CATÁLOGO XLS</a>
                         <a class="btn btn-warning ml-3" href="{{route('academico.exportar.instructores.activos')}}">ACTIVOS XLS</a>
-                    @endcan
+                    @endif
                 {!! Form::close() !!}
             </div>
         </div>
@@ -70,11 +70,11 @@
                     <th scope="col">ESTATUS</th>
                     <th scope="col">FEC.VALIDA</th>
                     <th>VALIDACIÓN</th>
-                    @can('only.admin') <th class="text-center">EXTRA</th> @endcan
-                    @can('instructor.validar')
+                    @if($permisos['only_admin']) <th class="text-center">EXTRA</th> @endif
+                    @if($permisos['instructor_validar'])
                         <th class="text-center">VISIBLE</th>
                         <th class="text-center">CURSO</th>
-                    @endcan
+                    @endif
                     <th width="160px" class="text-center">ACCIONES</th>
 
                 </tr>
@@ -115,14 +115,14 @@
 
                             @endif
                         </td>
-                        @can('only.admin')
+                        @if($permisos['only_admin'])
                             <td class="text-center">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="curso_extra({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->curso_extra==true){{'checked'}} @endif >
                                 </div>
                             </td>
-                        @endcan
-                        @can('instructor.validar')
+                        @endif
+                        @if($permisos['instructor_validar'])
                             <td class="text-center">
                                 <div class="form-check">
                                     <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="estado"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->estado==true){{'checked'}} @endif >
@@ -133,16 +133,16 @@
                                     <input class="form-check-input" type="checkbox" value="{{ $itemData->id }}" name="activo_curso"   onchange="cambia_estado({{$itemData->id}},$(this).prop('checked'),$(this))"  @if($itemData->activo_curso==true){{'checked'}} @endif >
                                 </div>
                             </td>
-                        @endcan
+                        @endif
                         <td class="text-center">
                             @if ($itemData->status == 'EN CAPTURA' || $itemData->status == 'REACTIVACION EN CAPTURA')
-                                {{-- @can('instructor.validar')
+                                {{-- @if($permisos['instructor_validar'])
                                     <a class="btn btn-info" href="{{route('instructor-validar', ['id' => itemData->id])}}">Validar</a>
-                                @endcan --}}
+                                @endif --}}
                                 @if($itemData->numero_control == 'Pendiente')
-                                    {{-- @can('instructor.create') --}}
+                                    {{-- @if($permisos['instructor_create']) --}}
                                         <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
-                                    {{-- @endcan --}}
+                                    {{-- @endif --}}
                                 @else
                                     <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="CONTINUAR SOLICITUD" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                 @endif
@@ -152,16 +152,16 @@
                             @endif
                             @if ($itemData->status == 'RETORNO')
                                 @if($itemData->numero_control == 'Pendiente')
-                                    @can('instructor.create')
+                                    @if($permisos['instructor_create'])
                                         <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-crear-p2', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
-                                    @endcan
+                                    @endif
                                 @else
                                     <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MODIFICAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
                                 @endif
                             @endif
                             @if ($itemData->status == 'EN FIRMA')
                                 <a style="color: white;" class="btn mr-sm-4 btn-circle m-1 btn-circle-sm" title="MOSTRAR" href="{{route('instructor-ver', ['id' => $itemData->id])}}"><i class="fas fa-pencil-alt" aria-hidden="true"></i></a>
-                                @can('reenvio_credenciales_instructor')
+                                @if($permisos['reenvio_credenciales_instructor'])
                                     @if(!$itemData->usuario_efirma)
                                         <a class="btn btn-info btn-sm mr-sm-4 mt-3"
                                             href="{{ route('enviar-alta-wsp-instructor', ['idins' => $itemData->id]) }}"
@@ -181,11 +181,11 @@
                                                 <i class="fa fa-envelope"></i> Reenviar Credenciales
                                         </a>
                                     @endif
-                                @endcan
+                                @endif
                             @endif
                             @if ($itemData->status == 'Aprobado' || $itemData->status == 'BAJA')
                                     <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
-                                        @can('reenvio_credenciales_instructor')
+                                        @if($permisos['reenvio_credenciales_instructor'])
                                                     @if(!$itemData->usuario_efirma)
                                             <a class="btn btn-info btn-sm mr-sm-4 mt-3"
                                                 href="{{ route('enviar-alta-wsp-instructor', ['idins' => $itemData->id]) }}"
@@ -205,11 +205,11 @@
                                                     <i class="fa fa-envelope"></i> Reenviar Credenciales
                                             </a>
                                         @endif
-                                    @endcan
+                                    @endif
                             @endif
                             @if ($itemData->status == 'VALIDADO' || $itemData->status == 'BAJA EN PREVALIDACION')
                                     <a style="color: white;" class="btn mr-sm-4 " href="{{route('instructor-ver', ['id' => $itemData->id])}}">Mostrar</a>
-                                    @can('reenvio_credenciales_instructor')
+                                    @if($permisos['reenvio_credenciales_instructor'])
                                         @if(!$itemData->usuario_efirma)
                                             <a class="btn btn-info btn-sm mr-sm-4 mt-3"
                                                 href="{{ route('enviar-alta-wsp-instructor', ['idins' => $itemData->id]) }}"
@@ -229,7 +229,7 @@
                                                     <i class="fa fa-envelope"></i> Reenviar Credenciales
                                             </a>
                                         @endif
-                                    @endcan
+                                    @endif
                             @endif
                         </td>
 
