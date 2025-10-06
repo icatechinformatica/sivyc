@@ -200,8 +200,8 @@ class asignarfoliosController extends Controller
                 //elseif(count($alumnos)>0) if($alumnos[0]->folio)$message = "Curso con folios expedidos. ";
                 /*
                 if(!$message){
-                    $_SESSION['clave'] = $curso->clave;
-                    $_SESSION['matricula'] = $matricula;
+                    session('clave') = $curso->clave;
+                    session('matricula') = $matricula;
                 }
                 */
 
