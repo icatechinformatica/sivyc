@@ -78,7 +78,7 @@ class grupoController extends Controller
         $instructores = $inst->modal_instructores($request);
         dd($instructores);*/
         $curso = $cursos = $localidad  = $alumnos = $instructores = $instructor = $recibo =[];
-        $message = $comprobante = $folio_pago = $fecha_pago = $grupo = $ValidaInstructorPDF = NULL;
+        $message = $comprobante = $folio_pago = $fecha_pago = $grupo = $ValidaInstructorPDF = $folio_grupo = NULL;
         $es_vulnerable = $edicion_exo = false;
 
 
@@ -87,8 +87,9 @@ class grupoController extends Controller
         if(!$unidad) $unidad = $uni = $request->unidad;
 
         if (isset($_SESSION['folio_grupo'])) {
+            $folio_grupo = $_SESSION['folio_grupo'];
 
-            list($grupo, $alumnos) = $this->grupo_alumnos($_SESSION['folio_grupo']);
+            list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);
             if (count($alumnos) > 0) {
                 $uni = $grupo->unidad;
                 $es_vulnerable = collect($alumnos)->contains(function ($value) {
@@ -125,7 +126,7 @@ class grupoController extends Controller
                 $instructores = $this->data_instructores($grupo);
                 //FIN CATALOGOS
 
-                $edicion_exo = DB::table('exoneraciones')->where('folio_grupo', $_SESSION['folio_grupo'])->where('status','EDICION')->exists();
+                $edicion_exo = DB::table('exoneraciones')->where('folio_grupo', $folio_grupo)->where('status','EDICION')->exists();
                 if($grupo->id_especialidad){
                     $instructor_mespecialidad = $grupo->instructor_mespecialidad;
                     $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
@@ -138,7 +139,7 @@ class grupoController extends Controller
                     ->value(DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$instructor_mespecialidad' ORDER BY elem->>'fecha_val' DESC limit 1 ) as pdfvalida"));
                 }
             } else {
-                $message = "No hay registro que mostrar para Grupo No." . $_SESSION['folio_grupo'];
+                $message = "No hay registro que mostrar para Grupo No." . $folio_grupo;
                 $this->activar = true;
                 $_SESSION['folio_grupo'] = NULL;
             }
@@ -170,7 +171,7 @@ class grupoController extends Controller
         if($this->admin['slug']) $id_usuario = $this->id_user;
         $linkPDF = array("acta" => '',"convenio" => '', "soli_ape" => '',"sid" => '', "status_dpto" => 'INVALID');
         try {
-            $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $_SESSION['folio_grupo'])->first();
+            $jsonvincu = ExpeUnico::select('vinculacion')->where('folio_grupo', '=', $folio_grupo)->first();
             if (isset($jsonvincu->vinculacion['doc_1']) && isset($jsonvincu->vinculacion['status_dpto'])) {
                 $docs_json = [$jsonvincu->vinculacion['doc_1']['url_pdf_acta'], $jsonvincu->vinculacion['doc_1']['url_pdf_convenio'],
                 $jsonvincu->vinculacion['doc_3']['url_documento'], $jsonvincu->vinculacion['doc_4']['url_documento']];
