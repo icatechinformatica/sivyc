@@ -560,10 +560,8 @@ class aperturasController extends Controller
                                 ELSE ''
                             END
                             || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
-                            /*||
-                            CASE 
-                            WHEN tc.nota is not null THEN ' ' || tc.nota
-                            END*/)
+                            /*||' ' || tc.nota*/
+                           )
                         ELSE
                             tc.observaciones
                         END
