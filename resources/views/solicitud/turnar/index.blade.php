@@ -25,7 +25,7 @@
             <div class="form-group col-md-2">
                 <label for="">FECHA:</label>
                 <input type="date" id="fecha" name="fecha" class="form-control"
-                    value="{{ $grupos[0]->fecha_arc01 ?? date('Y-m-d') }}" readonly />
+                    value="{{ $opt == 'ARC01' ? ($grupos[0]->fecha_arc01 ?? date('Y-m-d')) : ($grupos[0]->fecha_arc02 ?? date('Y-m-d')) }}" readonly />
             </div>
             <div class="form-group col-md-3 mt-4">
                 {{ Form::button('FILTRAR', ['id' => 'buscar', 'class' => 'btn']) }}
