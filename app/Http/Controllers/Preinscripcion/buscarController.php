@@ -25,7 +25,7 @@ class buscarController extends Controller
             $this->id_unidad = Auth::user()->unidad;
 
             $this->data = $this->unidades_user('vincula');
-            $_SESSION['unidades'] =  $this->data['unidades'];
+            session(['unidades' => $this->data['unidades']]);
             if($this->data['slug']=='unidad_vinculacion')$this->activar = true;
             else $this->activar = false;
 
@@ -42,7 +42,7 @@ class buscarController extends Controller
         if(!isset($parameters['ejercicio'])) $ejercicio = $parameters['ejercicio'] = date('Y');
         $data = DB::table('alumnos_registro as ar')
         ->select('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso as curso', 'ar.unidad','id_instructor')
-        ->join('cursos as c', 'ar.id_curso', '=', 'c.id');        
+        ->join('cursos as c', 'ar.id_curso', '=', 'c.id');
 
         if (preg_match('/^2B-\d{6}$/', $valor_buscar)){
             $data->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%');
@@ -52,15 +52,15 @@ class buscarController extends Controller
             ->where(function ($query) use ($valor_buscar) {
                 $query->where('ar.folio_grupo', 'like', '%' . $valor_buscar . '%')
                     ->orWhere('c.nombre_curso', 'like', '%' . $valor_buscar . '%');
-            });     
+            });
         }
 
         if ($this->data['slug'] == 'vinculadores_administrativo') {
             $data->where('ar.iduser_created', $this->id_user);
         }
 
-        if (!empty($_SESSION['unidades'])) {
-            $data->whereIn('ar.unidad', $_SESSION['unidades']);
+        if (session('unidades')) {
+            $data->whereIn('ar.unidad', session('unidades'));
         }
 
         $data = $data->whereNotNull('ar.folio_grupo')
@@ -72,12 +72,12 @@ class buscarController extends Controller
     }
 
     public function show(Request $request){
-        $_SESSION['folio_grupo'] = $request->folio_grupo;
+        session(['folio_grupo' => $request->folio_grupo]);
         return redirect()->route('preinscripcion.grupo');
     }
 
     public function showvb(Request $request){
-        $_SESSION['folio_grupo'] = $request->folio_grupo;
+        session(['folio_grupo' => $request->folio_grupo]);
         return redirect()->route('preinscripcion.grupovobo');
     }
 
