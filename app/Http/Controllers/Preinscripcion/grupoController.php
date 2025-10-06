@@ -49,6 +49,7 @@ class grupoController extends Controller
     public $activar;
     function __construct()
     {
+        session_start();
         $this->ejercicio = date("y");
         $this->path = "/expedientes/";
         $this->path_uploadFiles = env("APP_URL").'/storage/uploadFiles';
