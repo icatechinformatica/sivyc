@@ -755,30 +755,40 @@ class aperturasController extends Controller
 
     public function guardar_fecha(Request $request){
         $message = "Operación fallida, por favor intente de nuevo.";
-        if($request->fecha AND $request->memo){
-            $result = DB::table('tbl_cursos')->where('munidad',$request->memo)->whereNotNull('fecha_arc01')
-            ->where(function ($query) {
+
+        if ($request->fecha && $request->memo && $request->memo_arc) {
+            $campo_fecha = $request->opt == 'ARC02' ? 'fecha_arc02' : 'fecha_arc01';
+            $campo_memo  = $request->opt == 'ARC02' ? 'nmunidad' : 'munidad';
+            $operacion   = $request->opt == 'ARC02' ? 'CAMBIO LA FECHA Y MEMO DEL ARC02' : 'CAMBIO LA FECHA Y MEMO DEL ARC01';
+
+            $result = DB::table('tbl_cursos')
+                ->where($campo_memo, $request->memo_arc)
+                ->whereNotNull($campo_fecha)
+                ->where(function ($query) {
                     $query->whereNotIn('status_curso', ['CANCELADO'])
                         ->orWhereNull('status_curso');
-            })
-            ->update([
-                'fecha_arc01' => $request->fecha,
-                'munidad' => $request->memo_arc01,
-                'movimientos' => DB::raw("
-                COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
-                    jsonb_build_object(
-                            'fecha', '".date('Y-m-d H:i:s')."',
-                            'usuario', '".Auth::user()->name."',
-                            'operacion', 'CAMBIO LA FECHA Y MEMO DEL ARC01',
-                            'motivo solicitud', 'SOLICITADO POR LA UNIDAD DE CAPACITACIÓN.'
+                })
+                ->update([
+                    $campo_fecha => $request->fecha,
+                    $campo_memo  => $request->memo,
+                    'movimientos' => DB::raw("
+                        COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                            jsonb_build_object(
+                                'fecha', '".now()."',
+                                'usuario', '".addslashes(Auth::user()->name)."',
+                                'operacion', '".addslashes($operacion)."',
+                                'motivo solicitud', 'SOLICITADO POR LA UNIDAD DE CAPACITACIÓN.'
                             )
-                    )
-                ")
-            ]);
-            if($result) $message = "Operación Exitosa!";
-        }else $message = "Por favor, ingrese una fecha válida.";
-        return $message;
+                        )
+                    ")
+                ]);
 
+            if ($result) $message = "Operación Exitosa!";
+        } else {
+            $message = "Por favor, ingrese una fecha válida.";
+        }
+
+        return $message;
     }
 
     ##Funcion para mostrar la lista de instructores validados
