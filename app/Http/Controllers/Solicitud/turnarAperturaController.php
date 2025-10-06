@@ -32,6 +32,7 @@ class turnarAperturaController extends Controller
 
     public function __construct() {
         // Remover session_start() - Laravel maneja las sesiones automáticamente
+        session_start();
         $this->ejercicio = date("y");
         $this->middleware('auth');
         $this->path_pdf = "/UNIDAD/arc01/";
