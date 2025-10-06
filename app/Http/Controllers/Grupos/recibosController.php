@@ -582,7 +582,7 @@ class recibosController extends Controller
             }//dd($data);
             if(!$data) $message["ERROR"]= "POR FAVOR, INGRESE UN FOLIO VÁLIDO.";
             else{
-                $_SESSION['data'] = $data;
+                session(['data' => $data]);
                 //if($data->id_recibo) $data->id_recibo = $this->encryptData($data->id_recibo, $this->key); 
                 //else  $data->id_recibo = $this->encryptData(0, $this->key); 
                 if(!$data->recibide and $request->id_concepto==1) $data->recibide = DB::table('alumnos_registro')->where('folio_grupo',$valor)->value('realizo');                
@@ -596,8 +596,8 @@ class recibosController extends Controller
     }
 
     public function pdfRecibo(Request $request){
-        if($_SESSION['data']){
-            $data = $_SESSION['data'];        //dd($data->costo);            
+        if(session('data')){
+            $data = session('data');        //dd($data->costo);            
             //dd($letra);
             $direccion = $data->direccion;
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();

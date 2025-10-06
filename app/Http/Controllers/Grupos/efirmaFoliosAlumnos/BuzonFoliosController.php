@@ -66,19 +66,19 @@ class BuzonFoliosController extends Controller
         ### Recopilamos los datos del request
         if(session('ejercicio_e')) $ejercicio_e = session('ejercicio_e');
         else $ejercicio_e = date('Y');
-        if($ejercicio_e) $_SESSION['ejercicio_e'] = $ejercicio_e;
+        if($ejercicio_e) session(['ejercicio_e' => $ejercicio_e]);
 
         if(session('filtro_e')) $filtro_e = session('filtro_e');
         else $filtro_e = $request->status;
-        if($filtro_e) $_SESSION['filtro_e'] = $filtro_e;
+        if($filtro_e) session(['filtro_e' => $filtro_e]);
 
         if(session('clave_e')) $clave_e = session('clave_e');
         else $clave_e = $request->txtclave;
-        if($clave_e) $_SESSION['clave_e'] = $clave_e;
+        if($clave_e) session(['clave_e' => $clave_e]);
 
         if(session('matricula')) $matricula = session('matricula');
         else $matricula = $request->txtmatricula;
-        if($matricula) $_SESSION['matricula'] = $matricula;
+        if($matricula) session(['matricula' => $matricula]);
 
         ##Realizamos la busqueda en la base de datos de efolios_alumnos
         if(!is_null($ejercicio_e) && !is_null($filtro_e) && !is_null($clave_e)){

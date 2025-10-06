@@ -48,7 +48,7 @@ class grupovoboController extends Controller
             $this->id_unidad = Auth::user()->unidad;
             $this->data = $this->unidades_user('vincula');  //vincula
             $this->admin =  $this->unidades_user('admin'); //admin
-            $_SESSION['unidades'] =  $this->data['unidades'];
+            session(['unidades' => $this->data['unidades']]);
 
             return $next($request);
         });
@@ -63,8 +63,8 @@ class grupovoboController extends Controller
         $unidades = $this->data['unidades'];
         $unidad = $uni = $this->data['unidad'];
         if(!$unidad) $unidad = $uni = $request->unidad;
-        if (isset($_SESSION['folio_grupo'])) {
-            $folio_grupo = $_SESSION['folio_grupo'];
+        if (session()->has('folio_grupo')) {
+            $folio_grupo = session('folio_grupo');
             list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);
             if (count($alumnos) > 0) {
                 $uni = $grupo->unidad;
@@ -98,7 +98,7 @@ class grupovoboController extends Controller
             } else {
                 $message = "No hay registro que mostrar para Grupo No." . $folio_grupo;
                 $this->activar = true;
-                $_SESSION['folio_grupo'] = NULL;
+                session()->forget('folio_grupo');
             }
 
             ##Mostrar mensaje de rechazo del modulo visto bueno
@@ -111,7 +111,7 @@ class grupovoboController extends Controller
 
         } else {
             $this->activar = true;
-            $_SESSION['folio_grupo'] = NULL;
+            session()->forget('folio_grupo');
         }
 
         $cerss = DB::table('cerss');
@@ -295,14 +295,14 @@ class grupovoboController extends Controller
     public function save(Request $request)
     {
         // $objeto_curp = array('url' => ''); //Para json doc_soporte
-        if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
+        if (session('folio_grupo') == $request->folio_grupo) {
         $curp = $request->busqueda;    //dd($request->all());
         $matricula = $message = NULL;
         $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
 
         if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
             if ($curp) {
-                $a_reg = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('eliminado',false)->first();
+                $a_reg = DB::table('alumnos_registro')->where('folio_grupo', $folio_grupo)->where('eliminado',false)->first();
                 if($a_reg) $date = $a_reg->inicio;
                 else $date = $request->inicio;
                 $alumno = DB::table('alumnos_pre')
@@ -322,8 +322,14 @@ class grupovoboController extends Controller
                                 ->select(DB::raw("count(curso) as total"), DB::raw("count(case when curso = '$request->id_curso' then curso end) as igual"))
                                 ->first(); //dd($cursos);
                             if ($cursos->total < 16 OR $alumno->curso_extra==true) {
-                                if($_SESSION['folio_grupo'] AND DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','<>','VINCULACION')->exists() == true) $_SESSION['folio_grupo'] = NULL;
-                                if(!$_SESSION['folio_grupo'] AND $alumno) $_SESSION['folio_grupo'] =$this->genera_folio();
+                                if($folio_grupo && DB::table('alumnos_registro')->where('folio_grupo',$folio_grupo)->where('turnado','<>','VINCULACION')->exists()) {
+                                    session()->forget('folio_grupo');
+                                    $folio_grupo = null;
+                                }
+                                if(!$folio_grupo && $alumno) {
+                                    $folio_grupo = $this->genera_folio();
+                                    session(['folio_grupo' => $folio_grupo]);
+                                }
                                 //EXTRAER MATRICULA Y GUARDAR
                                 $matricula_sice = DB::table('registro_alumnos_sice')->where('eliminado', false)->where('curp', $curp)->value('no_control');
 
@@ -332,7 +338,7 @@ class grupovoboController extends Controller
                                     DB::table('registro_alumnos_sice')->where('curp', $curp)->update(['eliminado' => true]);
                                 } elseif (isset($alumno->matricula)) $matricula  =  $alumno->matricula;
                                 //FIN MATRICULA
-                                if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
+                                if ($folio_grupo && DB::table('exoneraciones')->where('folio_grupo',$folio_grupo)->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                                     $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                                     return redirect()->route('preinscripcion.grupovobo')->with(['message' => $message]);
                                 }
@@ -407,18 +413,18 @@ class grupovoboController extends Controller
                                 }
                                 if ($id_cerss) $cerrs = true;
                                 else $cerrs = NULL;
-                                if ($_SESSION['folio_grupo']) {
+                                if ($folio_grupo) {
                                     if ((((explode('-',$inicio))[0]) == date('Y')) AND ((explode('-',$termino))[0]) == date('Y')) {
                                         if ($inicio <= $termino) {
                                                 $result = DB::table('alumnos_registro')->UpdateOrInsert(
-                                                    ['id_pre' => $alumno->id_pre, 'folio_grupo' => $_SESSION['folio_grupo']],
+                                                    ['id_pre' => $alumno->id_pre, 'folio_grupo' => $folio_grupo],
                                                     [
                                                         'id_unidad' =>  $id_unidad, 'id_curso' => $id_curso, 'id_especialidad' =>  $id_especialidad, 'organismo_publico' => $organismo, 'id_organismo'=>$id_organismo,
                                                         'horario'=>$horario, 'inicio' => $inicio, 'termino' => $termino, 'unidad' => $unidad, 'tipo_curso' => $tipo, 'clave_localidad' => $clave_localidad,
                                                         'cct' => $this->data['cct_folio'], 'realizo' => $realizo, 'no_control' => $matricula, 'ejercicio' => $this->ejercicio, 'id_muni' => $id_muni,
-                                                        'folio_grupo' => $_SESSION['folio_grupo'], 'iduser_created' => $iduser_created, 'comprobante_pago' => $comprobante_pago,
+                                                        'folio_grupo' => $folio_grupo, 'iduser_created' => $iduser_created, 'comprobante_pago' => $comprobante_pago,
                                                         'created_at' => date('Y-m-d H:i:s'), 'fecha' => date('Y-m-d'), 'id_cerss' => $id_cerss, 'cerrs' => $cerrs, 'mod' => $modalidad,
-                                                        'grupo' => $_SESSION['folio_grupo'], 'eliminado' => false, 'grupo_vulnerable' => $grupo_vulnerable, 'id_vulnerable' => $id_vulnerable,
+                                                        'grupo' => $folio_grupo, 'eliminado' => false, 'grupo_vulnerable' => $grupo_vulnerable, 'id_vulnerable' => $id_vulnerable,
                                                         'folio_pago'=>$folio_pago, 'fecha_pago'=>$fecha_pago, 'nombre'=>$alumno->nombre, 'apellido_paterno'=>$alumno->apellido_paterno,
                                                         'apellido_materno'=>$alumno->apellido_materno,'curp'=>$curp,'escolaridad'=>$alumno->escolaridad,
                                                         'efisico'=>$efisico,'medio_virtual'=>$medio_virtual,'link_virtual'=>$link_virtual,'servicio'=>$servicio,'cespecifico'=>$cespecifico,
@@ -461,15 +467,15 @@ class grupovoboController extends Controller
     {
         //dd($request->all()); dd($request->folio_grupo);
          $message = "Operación fallida, por favor intente de nuevo!!";
-        if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
+        if (session('folio_grupo') == $request->folio_grupo) {
 
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
                // if ((((explode('-',$request->inicio))[0]) == date('Y')) AND ((explode('-',$request->termino))[0]) == date('Y')) {
                     if ($request->inicio <= $request->termino) {
-                        $folio = $_SESSION['folio_grupo'];
+                        $folio = session('folio_grupo');
                         $mapertura = $request->mapertura;
-                        $tc_curso = DB::table('tbl_cursos')->where('unidad', $request->unidad)->where('folio_grupo', $_SESSION['folio_grupo'])->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')->first();
+                        $tc_curso = DB::table('tbl_cursos')->where('unidad', $request->unidad)->where('folio_grupo', session('folio_grupo'))->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')->first();
                         if(!$tc_curso) { $tc_curso = new \stdClass(); $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = null;}
 
 
@@ -500,7 +506,7 @@ class grupovoboController extends Controller
                             if($request->dependencia AND $request->modalidad=='CAE'){
                                 $organismo = DB::table('organismos_publicos')->where('id',$id_organismo)->value('organismo');
 
-                                $unidades_toarray = $_SESSION['unidades']->values()->toArray();
+                                $unidades_toarray = session('unidades')->values()->toArray();
                                 $convenio_t = DB::table('convenios')
                                     ->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))
                                     ->where(db::raw("to_char(DATE (fecha_vigencia)::date, 'YYYY-MM-DD')"),'>=',$request->termino)
@@ -554,7 +560,7 @@ class grupovoboController extends Controller
 
                                 /*REGISTRANDO COSTO Y TIPO DE INSCRIPCION*/
                                 $total_pago = 0;
-                                if (!(DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists())){
+                                if (!(DB::table('exoneraciones')->where('folio_grupo',session('folio_grupo'))->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists())){
                                     foreach ($request->costo as $key => $pago) {
                                         $pago = $pago ?: 0; // Si $pago es null, asigna 0.
                                         $diferencia = $costo_individual - $pago;
@@ -568,10 +574,10 @@ class grupovoboController extends Controller
 
 
                                         ///SI CAMBIA DE TIPO DE PAGO Y REDUCCION CANCELADA=> SE ACTUALIZA LOS COSTOS EN tbl_inscriçion
-                                        if (($tc_curso->status_curso == 'EDICION') AND $_SESSION['folio_grupo']) {
+                                        if (($tc_curso->status_curso == 'EDICION') AND session('folio_grupo')) {
                                             DB::table('tbl_inscripcion')
                                             ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
-                                            ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
+                                            ->where('tbl_inscripcion.folio_grupo', session('folio_grupo'))
                                             ->where('alumnos_registro.id', $key)
                                             ->update([
                                                 'tbl_inscripcion.costo' => $pago,
@@ -586,7 +592,7 @@ class grupovoboController extends Controller
                                     DB::raw("COUNT(curp) as total"),DB::raw("SUM(CASE WHEN substring(curp,11,1) ='H' THEN 1 ELSE 0 END) as hombre"),
                                     DB::raw("SUM(CASE WHEN substring(curp,11,1) ='M' THEN 1 ELSE 0 END) as mujer"),
                                     DB::raw("SUM(costo) as costo")
-                                    )->where('folio_grupo',$_SESSION['folio_grupo'])->first();
+                                    )->where('folio_grupo',session('folio_grupo'))->first();
 
                                 //TOTAL PAGADO
                                 $total_pago = $sx->costo*1;
@@ -627,7 +633,7 @@ class grupovoboController extends Controller
 
                                 $result_curso = $result_alumnos = null;
                                 if($tc_curso->status_curso=='EDICION'){
-                                        $result_curso = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
+                                        $result_curso = DB::table('tbl_cursos')->where('folio_grupo', session('folio_grupo'))->Update(
                                             ['inicio' => $request->inicio,'termino' => $termino,'hini' => $hini,'hfin' => $hfin,'horas' => $horas,
                                             'id_organismo' => $id_organismo,
                                             'depen' => $request->dependencia,'muni' => $municipio->muni,'sector' => $sector,
@@ -644,7 +650,7 @@ class grupovoboController extends Controller
 
                                             ]);
                                         if($result_curso){
-                                            $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->Update(
+                                            $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo', session('folio_grupo'))->Update(
                                                 [
                                                     'clave_localidad' => $request->localidad, 'organismo_publico' => $request->dependencia,
                                                     'horario' => $horario, 'tipo_curso' => $request->tipo,'iduser_updated' => $this->id_user, 'updated_at' => date('Y-m-d H:i:s'),
@@ -659,14 +665,14 @@ class grupovoboController extends Controller
                                             );
                                             if($result_alumnos) $message = "Operación Exitosa!!";
                                         }
-                                }elseif (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
-                                    $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','VINCULACION')->update(
+                                }elseif (DB::table('exoneraciones')->where('folio_grupo',session('folio_grupo'))->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
+                                    $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo',session('folio_grupo'))->where('turnado','VINCULACION')->update(
                                         ['observaciones'=>$request->observaciones,'updated_at' => date('Y-m-d H:i:s'), 'iduser_updated' => $this->id_user, 'comprobante_pago' => $url_comprobante,
                                         'folio_pago'=>$request->folio_pago, 'fecha_pago'=>$request->fecha_pago,'mpreapertura'=>$mapertura,'depen_repre'=>$depen_repre, 'depen_telrepre'=>$depen_telrepre,
                                         'cespecifico'=>$request->cespecifico,'fcespe'=>$request->fcespe,'medio_virtual' => $request->medio_virtual,'link_virtual' => $request->link_virtual]);
 
                                     if ($result_alumnos) {
-                                        $result_curso = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('id',$ID)
+                                        $result_curso = DB::table('tbl_cursos')->where('folio_grupo',session('folio_grupo'))->where('id',$ID)
                                             ->update(['comprobante_pago' => $url_comprobante,
                                             'folio_pago' => $request->folio_pago,'fecha_pago' => $request->fecha_pago, 'updated_at' => date('Y-m-d H:i:s'),
                                             'id_organismo' => $id_organismo,
@@ -679,7 +685,7 @@ class grupovoboController extends Controller
 
                                 } else {
 
-                                    $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('turnado','VINCULACION')->Update(
+                                    $result_alumnos = DB::table('alumnos_registro')->where('folio_grupo', session('folio_grupo'))->where('turnado','VINCULACION')->Update(
                                         [
                                             'id_unidad' =>  $unidad->id, 'id_curso' => $request->id_curso, 'clave_localidad' => $request->localidad, 'organismo_publico' => $request->dependencia,
                                             'id_especialidad' =>  $id_especialidad, 'horario' => $horario, 'unidad' => $request->unidad, 'tipo_curso' => $request->tipo, 'mod' => $request->modalidad,
@@ -692,7 +698,7 @@ class grupovoboController extends Controller
                                         ]
                                     );
                                     if ($result_alumnos) {
-                                        $result_curso = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(['folio_grupo' => $_SESSION['folio_grupo']],
+                                        $result_curso = DB::table('tbl_cursos')->where('clave', '0')->updateOrInsert(['folio_grupo' => session('folio_grupo')],
                                             ['id' => $ID, 'cct' => $unidad->cct,'unidad' => $request->unidad,
                                             'clave' => '0','mvalida' => '0','mod' => $request->modalidad,'area' => $curso->area,'espe' => $curso->espe,'curso' => $curso->nombre_curso,
                                             'inicio' => $request->inicio,'termino' => $termino,'dura' => $dura,'hini' => $hini,'hfin' => $hfin,'horas' => $horas,'ciclo' => $ciclo,
@@ -746,7 +752,7 @@ class grupovoboController extends Controller
 
     public function nuevo()
     {
-        $_SESSION['folio_grupo'] = NULL;
+        session()->forget('folio_grupo');
         return redirect()->route('preinscripcion.grupovobo');
     }
 
@@ -773,11 +779,11 @@ class grupovoboController extends Controller
         $message = 'Operación fallida, vuelva a intentar..';
         $ValidaHoras = $this->valida_grupo($request->folio_grupo);
         if(!$ValidaHoras){
-            if($_SESSION['folio_grupo'] == $request->folio_grupo){
-                $result = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);
+            if(session('folio_grupo') == $request->folio_grupo){
+                $result = DB::table('tbl_cursos')->where('folio_grupo',session('folio_grupo'))->update(['turnado' => "VoBo",'fecha_turnado' => date('Y-m-d')]);
                 if($result){
                     $message = "Grupo turnado para VoBo.";
-                    //unset($_SESSION['folio_grupo']);
+                    //unset(session('folio_grupo'));
                 }
             }
          }else $message = $ValidaHoras;
@@ -788,23 +794,23 @@ class grupovoboController extends Controller
 
     public function turnar()
     {
-        if ($_SESSION['folio_grupo']){
-            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
+        if (session('folio_grupo')){
+            if (DB::table('exoneraciones')->where('folio_grupo',session('folio_grupo'))->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->where('status','!=','AUTORIZADO')->exists()) {
                 $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
                 return redirect()->route('preinscripcion.grupovobo')->with(['message' => $message]);
             } else {
-                $g = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->first();
+                $g = DB::table('tbl_cursos')->where('folio_grupo',session('folio_grupo'))->first();
                 if ($g) {
                     if ($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0') AND ($g->depen!='INSTITUTO DE CAPACITACION Y VINCULACION TECNOLOGICA DEL ESTADO DE CHIAPAS')) {
                         $message = "MEMORÁNDUM DE EXONERACIÓN REQUERIDO..";
                         return redirect()->route('preinscripcion.grupovobo')->with(['message' => $message]);
                     } else {
-                        $alumnos = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->get();
-                        $comprobante = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->value('comprobante_pago');
+                        $alumnos = DB::table('alumnos_registro')->where('folio_grupo',session('folio_grupo'))->get();
+                        $comprobante = DB::table('alumnos_registro')->where('folio_grupo', session('folio_grupo'))->value('comprobante_pago');
                         $horas_agenda = DB::table('agenda')
                             ->select(DB::raw("SUM( (( EXTRACT(EPOCH FROM cast(agenda.end as time))-EXTRACT(EPOCH FROM cast(start as time)))/3600)*
                             ( (extract(days from ((agenda.end - agenda.start)) ) ) + (case when extract(hours from ((agenda.end - agenda.start)) ) > 0 then 1 else 0 end)) ) as horas"))
-                            ->where('id_curso',$_SESSION['folio_grupo'])->value('horas');
+                            ->where('id_curso', session('folio_grupo'))->value('horas');
                         if ($horas_agenda == $g->dura) {
                             $costo = 0;
                             $conteo = 0;
@@ -820,13 +826,13 @@ class grupovoboController extends Controller
                             }
 
                             if($g->status_curso=="EDICION"){
-                                if($g->clave !='0') $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','!=','0')->update(['status_curso' => 'AUTORIZADO']);
-                                else $result = DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->where('clave','0')->update(['status_curso' => null]);
+                                if($g->clave !='0') $result = DB::table('tbl_cursos')->where('folio_grupo', session('folio_grupo'))->where('clave','!=','0')->update(['status_curso' => 'AUTORIZADO']);
+                                else $result = DB::table('tbl_cursos')->where('folio_grupo', session('folio_grupo'))->where('clave','0')->update(['status_curso' => null]);
 
                                 if(!$result)return redirect()->route('preinscripcion.grupovobo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
 
                             }else{
-                                $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
+                                $result = DB::table('alumnos_registro')->where('folio_grupo', session('folio_grupo'))->update(['turnado' => 'UNIDAD', 'fecha_turnado' => date('Y-m-d')]);
                                 if(!$result) return redirect()->route('preinscripcion.grupovobo')->with(['message' => 'El curso no fue turnado correctamente. Por favor de intente de nuevo']);
                             }
 
@@ -848,13 +854,12 @@ class grupovoboController extends Controller
     public function delete(Request $request)
     {
         $id = $request->id;
-        if ($id and $_SESSION['folio_grupo']) {
-            if (DB::table('exoneraciones')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
+        if ($id && session('folio_grupo')) {
+            if (DB::table('exoneraciones')->where('folio_grupo',session('folio_grupo'))->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists()) {
                 $result = false;
             } else {
-                //$result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id',$id)->update(['eliminado'=>true,'iduser_updated'=>$this->id_user]);
-                if (count(DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->get())>1) {
-                    $result = DB::table('alumnos_registro')->where('folio_grupo', $_SESSION['folio_grupo'])->where('id', $id)->delete();
+                if (count(DB::table('alumnos_registro')->where('folio_grupo',session('folio_grupo'))->where('eliminado',false)->get())>1) {
+                    $result = DB::table('alumnos_registro')->where('folio_grupo', session('folio_grupo'))->where('id', $id)->delete();
                 } else {
                     $result = false;
                 }
@@ -867,8 +872,8 @@ class grupovoboController extends Controller
     public function subir_comprobante(Request $request)
     {
         $file =  $request->customFile;  //dd($file);
-        $id = $_SESSION['folio_grupo'];
-        if ($file and $_SESSION['folio_grupo'] == $request->folio_grupo) {
+        $id = session('folio_grupo');
+        if ($file && session('folio_grupo') == $request->folio_grupo) {
             $url_comprobante = $this->uploaded_file($file, $id, 'comprobante_pago');
             $opss = DB::table('alumnos_registro')->where('folio_grupo', $id)->update(['comprobante_pago' => $url_comprobante]);
             $message = "Operación Exitosa!!";
@@ -913,7 +918,7 @@ class grupovoboController extends Controller
     }
 
     public function generar(){
-        if ($_SESSION['folio_grupo']) {
+        if (session('folio_grupo')) {
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
             $alumnos = DB::table('alumnos_registro as ar')
                 ->select(
@@ -937,13 +942,13 @@ class grupovoboController extends Controller
                     $join->on('ti.folio_grupo', '=', 'ar.folio_grupo')
                          ->on('ti.curp', '=', 'ar.curp');
                 })
-                ->where('ar.folio_grupo',$_SESSION['folio_grupo'])
+                ->where('ar.folio_grupo',session('folio_grupo'))
                 ->orderBy('apellido_paterno','asc')
                 ->orderBy('apellido_materno','asc')
                 ->orderBy('nombre','asc')
                 ->get();//dd($alumnos);
             if (count($alumnos)>0) {
-                $folio_grupo = $_SESSION['folio_grupo'];
+                $folio_grupo = session('folio_grupo');
                 $reg_unidad = DB::table('tbl_unidades')->where('id', $this->id_unidad)->first();
                 $direccion = $reg_unidad->direccion;
                 $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion'));
@@ -959,19 +964,19 @@ class grupovoboController extends Controller
     }
 
     public function generarApertura(Request $request){
-        if ($_SESSION['folio_grupo']) {
+        if (session('folio_grupo')) {
             $data = $cursos = []; $unidad = '';
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
-            $alum = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->first();
+            $alum = DB::table('alumnos_registro')->where('folio_grupo',session('folio_grupo'))->where('eliminado',false)->first();
 
 
-            $memo = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('eliminado',false)->value('mpreapertura');
+            $memo = DB::table('alumnos_registro')->where('folio_grupo',session('folio_grupo'))->where('eliminado',false)->value('mpreapertura');
             $date = date('Y-m-d');
             if (DB::table('alumnos_registro')->where('mpreapertura',$memo)->value('fmpreapertura')) {
                 $date = DB::table('alumnos_registro')->where('mpreapertura',$memo)->value('fmpreapertura');
             }
             if ($memo AND ($memo!='')) {
-                $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->where('turnado','=','VINCULACION')->update(['fmpreapertura'=>$date]);
+                $result = DB::table('alumnos_registro')->where('folio_grupo',session('folio_grupo'))->where('turnado','=','VINCULACION')->update(['fmpreapertura'=>$date]);
                 $cursos = DB::table('tbl_cursos as tc')
                     ->select(
                         'tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
@@ -1314,7 +1319,7 @@ class grupovoboController extends Controller
     /**Jose Luis Generación PDF Convenio Especifico y Acta de acuerdo */
 
     public function pdf_actaAcuerdo(){
-        $folio_grupo =  $_SESSION['folio_grupo'];
+        $folio_grupo =  session('folio_grupo');
 
         //Busqueda 1,2,3
         $data1 = DB::table('tbl_cursos')->select( 'muni', 'fcespe', 'unidad', 'dia', 'hini', 'hfin', 'tcapacitacion', 'nombre', 'curso', 'cespecifico', 'inicio', 'termino', 'efisico',
@@ -1344,7 +1349,7 @@ class grupovoboController extends Controller
         return $pdf->stream('Acta_Acuerdo');
     }
     public function pdf_convenio(Request $request){
-        $folio_grupo =  $_SESSION['folio_grupo'];
+        $folio_grupo =  session('folio_grupo');
         $convenio_esp = DB::table('tbl_cursos')->select('cespecifico', 'firma_user', 'firma_cerss_one', 'firma_cerss_two')->where('folio_grupo','=',"$folio_grupo")->first();
         $conv_especifico = $convenio_esp->cespecifico;
 
@@ -1481,7 +1486,7 @@ class grupovoboController extends Controller
 
     #Se encarga de subir los pdfs
     public function upload_pdfs(Request $request) {
-        $folio_grupo =  $_SESSION['folio_grupo'];
+        $folio_grupo =  session('folio_grupo');
         $cursoInfo = DB::table('tbl_cursos')
         ->selectRaw('id as idcurso, EXTRACT(YEAR FROM inicio) as anio')->where('folio_grupo', $folio_grupo)->first();
 
