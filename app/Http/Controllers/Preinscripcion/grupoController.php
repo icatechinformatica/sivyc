@@ -49,7 +49,6 @@ class grupoController extends Controller
     public $activar;
     function __construct()
     {
-        session_start();
         $this->ejercicio = date("y");
         $this->path = "/expedientes/";
         $this->path_uploadFiles = env("APP_URL").'/storage/uploadFiles';
@@ -436,7 +435,7 @@ class grupoController extends Controller
     public function save(Request $request)
     {
         // 2) Chequeo de sesión con folio (sin confiar ciegamente en el request)
-        $folioSession = session()->get('folio_grupo');
+        $folioSession = $_SESSION['folio_grupo'] ?? NULL;
         // $objeto_curp = array('url' => ''); //Para json doc_soporte
         if ($folioSession === $request->folio_grupo) {
             $curp = $request->busqueda;    //dd($request->all());
