@@ -33,7 +33,7 @@ class ftcontroller extends Controller {
                 ->where([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%unidad%']])
                 ->orwhere([['role_user.user_id', '=', $id_user], ['roles.slug', 'like', '%admin%']])
                 ->get();
-        $_SESSION['unidades'] = NULL;
+        session(['unidades' => null]);
         $meses = array(1 => 'enero', 2 => 'febrero', 3 => 'marzo', 4 => 'abril', 5 => 'mayo', 6 => 'junio', 7 => 'Julio', 8 => 'agosto', 9 => 'septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'diciembre');
         $enFirma = DB::table('tbl_cursos')->where('status', '=', 'EN_FIRMA')->get();
         $retornoUnidad = DB::table('tbl_cursos')->where('status', 'RETORNO_UNIDAD')->get();
@@ -44,9 +44,9 @@ class ftcontroller extends Controller {
                 $unidad = Auth::user()->unidad;
 
                 $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
-                $_SESSION['unidad'] = $unidad;
+                session(['unidad' => $unidad]);
             }
-            $var_cursos = dataFormatoT($_SESSION['unidad'],null,null,null, ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
+            $var_cursos = dataFormatoT(session('unidad'),null,null,null, ['NO REPORTADO', 'EN_FIRMA', 'RETORNO_UNIDAD'], null);
             foreach ($var_cursos as $value) {
 
                 //--- RUBRO FEDERAL ---
@@ -394,7 +394,7 @@ class ftcontroller extends Controller {
                     if(count($rol) > 0){
                         $unidad = Auth::user()->unidad;
                         $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
-                        $_SESSION['unidad'] = $unidad;
+                        session(['unidad' => $unidad]);
                     }
                     $mes=date("m");
 
@@ -404,7 +404,7 @@ class ftcontroller extends Controller {
                     ->where('status', 'EN_FIRMA')
                     ->groupby('unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA', DB::raw("observaciones_formato_t->'OBSERVACION_PARA_FIRMA'->>'OBSERVACION_FIRMA'"), 'arc', 'nota', 'observaciones')->get();
 
-                    $reg_unidad=DB::table('tbl_unidades')->select('unidad','ubicacion','codigo_postal')->where('unidad',$_SESSION['unidad'])->whereNotIn('direccion', ['N/A', 'null'])->first();
+                    $reg_unidad=DB::table('tbl_unidades')->select('unidad','ubicacion','codigo_postal')->where('unidad',session('unidad'))->whereNotIn('direccion', ['N/A', 'null'])->first();
 
                     $leyenda = Instituto::first();
                     $leyenda = $leyenda->distintivo;
