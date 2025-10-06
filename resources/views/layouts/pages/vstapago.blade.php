@@ -1450,13 +1450,17 @@
         //By Jose Luis Valid Reporte fotografico / Mostrar documento firmado electronicamente en caso de que exisitiera
         //de lo contrario mostrar el documento de manera tradicional
         let data = { "_token": $("meta[name='csrf-token']").attr("content"), "id": id['0'] }
+        console.log(data);
         $.ajax({
             type:"post",
             url: "{{ route('supre.busqueda.reportefoto') }}",
             data: data,
             dataType: "json",
             success: function (response) {
-                if(response.id_curso != ''){
+                console.log('entrada');
+                console.log(response);
+                if(response.id_curso != '' && response.id_curso != null){
+                    console.log('entro');
                     const repoFotograficoLink = document.getElementById('show_evidencia_fotograficav');
                     const repoFotUrl = "/reportefoto/pdf/" + response.id_curso;
                     repoFotograficoLink.href = repoFotUrl;
