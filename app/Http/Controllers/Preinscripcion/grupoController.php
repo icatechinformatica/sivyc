@@ -630,18 +630,18 @@ class grupoController extends Controller
     {
         $message = "Operación fallida, por favor intente de nuevo!!";
 
-        if (session('folio_grupo') == $request->folio_grupo) {
+        if ($_SESSION['folio_grupo'] == $request->folio_grupo) {
             $folio_grupo = $request->folio_grupo;
             $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
 
             if ($request->tcurso == "CERTIFICACION" and $horas == 10 or $request->tcurso == "CURSO") {
                 if ($request->inicio <= $request->termino) {
-                    $folio = session('folio_grupo');
+                    $folio = $_SESSION['folio_grupo'];
                     $mapertura = $request->mapertura;
 
                     $tc_curso = DB::table('tbl_cursos')
                         ->where('unidad', $request->unidad)
-                        ->where('folio_grupo', session('folio_grupo'))
+                        ->where('folio_grupo', $_SESSION['folio_grupo'])
                         ->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')
                         ->first();
 
@@ -813,7 +813,7 @@ class grupoController extends Controller
                             // Optimización 4: Procesar costos de forma eficiente
                             $total_pago = 0;
                             if (!(DB::table('exoneraciones')
-                                ->where('folio_grupo', session('folio_grupo'))
+                                ->where('folio_grupo', $_SESSION['folio_grupo'])
                                 ->where('status','!=', 'CAPTURA')
                                 ->where('status','!=','CANCELADO')
                                 ->exists())){
@@ -840,7 +840,7 @@ class grupoController extends Controller
                                         'abrinscri' => $abrins
                                     ];
 
-                                    if (($tc_curso->status_curso == 'EDICION') AND session('folio_grupo')) {
+                                    if (($tc_curso->status_curso == 'EDICION') AND $_SESSION['folio_grupo']) {
                                         $inscripcion_updates[] = [
                                             'alumno_id' => $key,
                                             'costo' => $pago,
@@ -888,7 +888,7 @@ class grupoController extends Controller
                                     // Ejecutar un solo UPDATE masivo
                                     DB::table('tbl_inscripcion')
                                         ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
-                                        ->where('tbl_inscripcion.folio_grupo', session('folio_grupo'))
+                                        ->where('tbl_inscripcion.folio_grupo', $_SESSION['folio_grupo'])
                                         ->whereIn('alumnos_registro.id', $alumnoIds)
                                         ->update([
                                             'tbl_inscripcion.costo' => DB::raw($costoExpression),
@@ -905,7 +905,7 @@ class grupoController extends Controller
                                     DB::raw("SUM(CASE WHEN substring(curp,11,1) ='M' THEN 1 ELSE 0 END) as mujer"),
                                     DB::raw("SUM(costo) as costo")
                                 )
-                                ->where('folio_grupo',session('folio_grupo'))
+                                ->where('folio_grupo',$_SESSION['folio_grupo'])
                                 ->first();
 
                             //TOTAL PAGADO
@@ -972,7 +972,7 @@ class grupoController extends Controller
 
                             if($tc_curso->status_curso=='EDICION'){
                                 $result_curso = DB::table('tbl_cursos')
-                                    ->where('folio_grupo', session('folio_grupo'))
+                                    ->where('folio_grupo', $_SESSION['folio_grupo'])
                                     ->update([
                                         'inicio' => $request->inicio,
                                         'termino' => $termino,
@@ -1015,7 +1015,7 @@ class grupoController extends Controller
 
                                 if($tc_curso->cp == $cp AND $result_curso){
                                     $result_curso = DB::table('tbl_cursos')
-                                        ->where('folio_grupo', session('folio_grupo'))
+                                        ->where('folio_grupo', $_SESSION['folio_grupo'])
                                         ->update([
                                             'id_instructor' => $instructor->id,
                                             'modinstructor' => $tipo_honorario,
@@ -1034,7 +1034,7 @@ class grupoController extends Controller
 
                                 if($result_curso){
                                     $result_alumnos = DB::table('alumnos_registro')
-                                        ->where('folio_grupo', session('folio_grupo'))
+                                        ->where('folio_grupo', $_SESSION['folio_grupo'])
                                         ->update([
                                             'clave_localidad' => $request->localidad,
                                             'organismo_publico' => $request->dependencia,
@@ -1067,13 +1067,13 @@ class grupoController extends Controller
                                 }
 
                             } elseif (DB::table('exoneraciones')
-                                ->where('folio_grupo',session('folio_grupo'))
+                                ->where('folio_grupo',$_SESSION['folio_grupo'])
                                 ->where('status','!=', 'CAPTURA')
                                 ->where('status','!=','CANCELADO')
                                 ->exists()) {
 
                                 $result_alumnos = DB::table('alumnos_registro')
-                                    ->where('folio_grupo',session('folio_grupo'))
+                                    ->where('folio_grupo',$_SESSION['folio_grupo'])
                                     ->where('turnado','VINCULACION')
                                     ->update([
                                         'id_instructor' => $instructor->id,
@@ -1093,7 +1093,7 @@ class grupoController extends Controller
 
                                 if ($result_alumnos) {
                                     $result_curso = DB::table('tbl_cursos')
-                                        ->where('folio_grupo', session('folio_grupo'))
+                                        ->where('folio_grupo', $_SESSION['folio_grupo'])
                                         ->where('id', $ID)
                                         ->update([
                                             'comprobante_pago' => $url_comprobante,
@@ -1134,7 +1134,7 @@ class grupoController extends Controller
 
                             } else {
                                 $result_alumnos = DB::table('alumnos_registro')
-                                    ->where('folio_grupo', session('folio_grupo'))
+                                    ->where('folio_grupo', $_SESSION['folio_grupo'])
                                     ->where('turnado','VINCULACION')
                                     ->update([
                                         'id_unidad' => $unidad->id,
@@ -1175,7 +1175,7 @@ class grupoController extends Controller
                                     $result_curso = DB::table('tbl_cursos')
                                         ->where('clave', '0')
                                         ->updateOrInsert(
-                                            ['folio_grupo' => session('folio_grupo')],
+                                            ['folio_grupo' => $_SESSION['folio_grupo']],
                                             [
                                                 'id' => $ID,
                                                 'cct' => $unidad->cct,
