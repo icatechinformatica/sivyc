@@ -21,16 +21,16 @@ class consultasController extends Controller
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
             ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
             ->value('roles.slug');
-        $_SESSION['unidades']=NULL;
+        session(['unidades' => null]);
         //var_dump($rol);exit;
         if($rol){
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
             $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad');
             if(count($unidades)==0) $unidades =[$unidad];
-            $_SESSION['unidades'] = $unidades;
+            session(['unidades' => $unidades]);
         }
-        //var_dump($_SESSION['unidades']);exit;
+        //var_dump(session('unidades'));exit;
 
         $clave = $request->clave;
         $data = $message = NULL;
@@ -41,7 +41,7 @@ class consultasController extends Controller
                 if($is_string) $data = $data->where('nombre','like','%'.$clave.'%');
                 else $data = $data->where('clave',$clave);
             }
-           if($_SESSION['unidades'])$data = $data->whereIn('unidad',$_SESSION['unidades']);
+           if(session('unidades'))$data = $data->whereIn('unidad',session('unidades'));
             $data = $data->orderby('inicio','DESC')->paginate(15);
 
         if(!$data) $message = "Clave inválida.";

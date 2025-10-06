@@ -264,7 +264,7 @@ class CalificacionController extends Controller
                 DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),
                 'u.plantel'
             )->where('tbl_cursos.id',$id);
-            // if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
+            // if(session('unidades')) $curso = $curso->whereIn('u.ubicacion',session('unidades'));
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')->first();
             if($curso) {
                 $documento = DocumentosFirmar::where('numero_o_clave', $curso->clave)
@@ -378,7 +378,7 @@ class CalificacionController extends Controller
             DB::raw("to_char(termino, 'DD/MM/YYYY') as fechafin"),
             'u.plantel'
         )->where('tbl_cursos.clave',$clave);
-        // if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
+        // if( session('unidades')) $curso = $curso->whereIn('u.ubicacion', session('unidades'));
         $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')->first();
         if($curso) {
             $consec_curso = $curso->id_curso;
