@@ -415,7 +415,7 @@ class aperturaController extends Controller
                     Auth::user()->name,
                     $folio_grupo,
                 ]);
-                if(DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->where('status','NO_REPORTADO')->exists()){
+                if($cespecifico && $fcespe){
                     $result = DB::statement("
                         UPDATE alumnos_registro
                         SET
