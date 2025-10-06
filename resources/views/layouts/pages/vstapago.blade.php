@@ -1457,10 +1457,7 @@
             data: data,
             dataType: "json",
             success: function (response) {
-                console.log('entrada');
-                console.log(response);
                 if(response.id_curso != '' && response.id_curso != null){
-                    console.log('entro');
                     const repoFotograficoLink = document.getElementById('show_evidencia_fotograficav');
                     const repoFotUrl = "/reportefoto/pdf/" + response.id_curso;
                     repoFotograficoLink.href = repoFotUrl;
