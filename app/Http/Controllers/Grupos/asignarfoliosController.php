@@ -288,7 +288,7 @@ class asignarfoliosController extends Controller
             ->where('ti.status','INSCRITO')
             ->where('tf.motivo', 'ACREDITADO');
             if($matricula)$alumnos = $alumnos->where('tf.matricula',$matricula);
-            $alumnos = $alumnos->where('tc.id', $curso->id)->groupBy('ti.matricula', 'ti.alumno', 'ti.curp', 'tf.folio')->orderby('ti.alumno')->get();
+            $alumnos = $alumnos->where('ti.id_curso', $curso->id)->groupBy('ti.matricula', 'ti.alumno', 'ti.curp', 'tf.folio')->orderby('ti.alumno')->get();
 
 
             if($firm_academico && $firm_director && $alumnos){
