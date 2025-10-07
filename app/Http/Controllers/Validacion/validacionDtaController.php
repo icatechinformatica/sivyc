@@ -215,7 +215,8 @@ class validacionDtaController extends Controller {
                 # hacemos un switch
                 switch ($validacion) {
                     case 'GenerarMemorandum':
-                        $_SESSION['memo_retorno1'] = $nume_memo = $request->num_memo_devolucion;
+                        session(['memo_retorno1' => $request->num_memo_devolucion]);
+                        $nume_memo = $request->num_memo_devolucion;
                         # entramos a un loop y antes checamos que se haya seleccionado cursos para realizar esta operacion
                         $unidadSeleccionada = $request->get('unidadActual');
                         if ($unidadSeleccionada != 'all') {
