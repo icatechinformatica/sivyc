@@ -560,7 +560,7 @@ class aperturasController extends Controller
                                 ELSE ''
                             END
                             || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
-                            /*||' ' || tc.nota*/
+                            ||' ' || tc.nota
                            )
                         ELSE
                             tc.observaciones
