@@ -551,7 +551,7 @@ class turnarAperturaController extends Controller
                             ELSE ''
                         END
                         || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
-                        ||' ' || tc.nota
+                        || ' ' || COALESCE(tc.nota, '')
                     ) AS observaciones
                 ")
                 );
