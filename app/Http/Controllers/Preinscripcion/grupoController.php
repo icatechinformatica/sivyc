@@ -1580,8 +1580,11 @@ class grupoController extends Controller
                 $cursos = DB::table('tbl_cursos as tc')
                     ->select(
                         'tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
-                        'tc.costo',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante as depen_repre',
+                        'tc.costo',DB::raw("(tc.hombre + tc.mujer) as tpar"),'tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral',
+                        'tc.depen','tc.depen_representante as depen_repre',
                         'tc.depen_telrepre as tel_repre','tc.nombre','ar.realizo as vincu','tc.obs_preapertura as nota_vincu',
+                        DB::raw('COALESCE(tc.fcespe , ar.fcespe ) as  fcespe '),
+                        DB::raw('COALESCE(tc.cespecifico, ar.cespecifico) as cespecifico'),
                         DB::raw('COALESCE(tc.efisico, ar.efisico) as efisico'),'tc.unidad','tc.solicita',
                         DB::raw('COALESCE(tc.fpreapertura, null) as fecha_turnado'),
                         DB::raw('COALESCE(tc.vb_dg, false) as vb_dg'), //NUEVO VOBO
@@ -1637,19 +1640,16 @@ class grupoController extends Controller
                                     ELSE ''
                                 END
                                 || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
-                                || ' ' || COALESCE(tc.nota, '')
+                               /* || ' ' || COALESCE(tc.nota, '')*/
                             ) AS observaciones
                         ")
-
-
-
                     )
                     ->leftJoin('alumnos_registro as ar', 'tc.folio_grupo', 'ar.folio_grupo')
                     ->where('ar.folio_grupo', $folio_grupo)
                     ->where('ar.eliminado', false)
                     ->groupBy('tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                     'tc.costo','tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante','tc.depen_telrepre','tc.nombre','ar.realizo',
-                    'tc.obs_preapertura','tc.efisico','ar.efisico','tc.unidad','tc.fpreapertura','tc.solicita','tc.nota',
+                    'tc.obs_preapertura','tc.efisico','ar.efisico','tc.unidad','tc.fpreapertura','tc.solicita','tc.nota','tc.fcespe','ar.fcespe','ar.cespecifico',
                     'tc.vb_dg','tc.clave','tc.modinstructor','tc.tipo','tc.instructor_mespecialidad' //NUEVO VOBO
                     )
                     ->orderBy('folio_grupo')
