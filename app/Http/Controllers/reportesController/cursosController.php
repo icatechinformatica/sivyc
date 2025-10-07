@@ -29,16 +29,16 @@ class cursosController extends Controller
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
             ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
             ->value('roles.slug');
-        $_SESSION['unidades']=NULL;
+        session(['unidades'=> null]);
         //var_dump($rol);exit;
         if($rol){
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
             $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad');
             if(count($unidades)==0) $unidades =[$unidad];
-            $_SESSION['unidades'] = $unidades;
+            session(['unidades' => $unidades]);
         }
-        //var_dump($_SESSION['unidades']);exit;
+        //var_dump(session('unidades'));exit;
         return view('reportes.cursos.index');
     }
 
@@ -53,7 +53,7 @@ class cursosController extends Controller
             DB::raw("CONCAT ('C. ',trim(substring(u.academico , position('.' in u.academico)+1,char_length(u.academico)))) as academico"),
             'u.pacademico', 'u.ubicacion')
             ->where('clave',$clave);
-            if($_SESSION['unidades'])$curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
+            if(session('unidades'))$curso = $curso->whereIn('u.ubicacion',session('unidades'));
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
             ->first();
             //var_dump($curso);exit;
@@ -104,7 +104,7 @@ class cursosController extends Controller
             DB::raw("CONCAT ('C. ',trim(substring(u.academico , position('.' in u.academico)+1,char_length(u.academico)))) as academico"),
             'u.pacademico','u.ubicacion')
             ->where('clave',$clave);
-            if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
+            if(session('unidades')) $curso = $curso->whereIn('u.ubicacion',session('unidades'));
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
             ->first();
            // var_dump($curso);exit;
@@ -139,7 +139,7 @@ class cursosController extends Controller
             DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),'u.plantel',
             'u.academico','u.pacademico','u.ubicacion')
             ->where('clave',$clave);
-            if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
+            if(session('unidades')) $curso = $curso->whereIn('u.ubicacion',session('unidades'));
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
             ->first();
            // var_dump($curso);exit;
@@ -175,7 +175,7 @@ class cursosController extends Controller
             DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),'u.plantel',
             'u.academico','u.pacademico','u.ubicacion')
             ->where('clave',$clave);
-            if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
+            if(session('unidades')) $curso = $curso->whereIn('u.ubicacion',session('unidades'));
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
             ->first();
 
@@ -217,7 +217,7 @@ class cursosController extends Controller
             DB::raw('EXTRACT(MONTH FROM termino)  as mes_termino'),'u.plantel',
             'u.academico','u.pacademico','u.ubicacion')
             ->where('clave',$clave);
-            if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
+            if(session('unidades')) $curso = $curso->whereIn('u.ubicacion',session('unidades'));
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tbl_cursos.unidad')
             ->first();
             //var_dump($curso);exit;
@@ -260,7 +260,7 @@ class cursosController extends Controller
             DB::raw('EXTRACT(YEAR FROM termino)  as anio_termino'),
             'c.duracion as horas_certificacion','tc.tipo_curso as servicio','tc.nplantel')
             ->where('tc.clave',$clave);
-            if($_SESSION['unidades']) $curso = $curso->whereIn('u.ubicacion',$_SESSION['unidades']);
+            if(session('unidades')) $curso = $curso->whereIn('u.ubicacion',session('unidades'));
             $curso = $curso->leftjoin('tbl_unidades as u','u.unidad','tc.unidad')
             ->leftjoin('cursos as c','c.id','tc.id_curso')
             ->first();

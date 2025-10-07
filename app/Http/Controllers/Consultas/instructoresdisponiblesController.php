@@ -24,26 +24,26 @@ class instructoresdisponiblesController extends Controller
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
             $this->realizo = Auth::user()->name;
-            $this->id_unidad = Auth::user()->unidad;            
+            $this->id_unidad = Auth::user()->unidad;
             $this->data = $this->unidades_user('unidad');
-            $_SESSION['unidades'] =  $this->data['unidades'];
+            session(['unidades' => $this->data['unidades']]);
             return $next($request);
         });
     }
 
     public function index(Request $request){
-       $unidad = $request->unidad;       
+       $unidad = $request->unidad;
        $consulta = $cursos = [];
        if($request->id_curso){
-            $consulta = $this->instructores_disponibles($request);   
+            $consulta = $this->instructores_disponibles($request);
             $cursos = DB::table('cursos')
                     ->where('tipo_curso', $request->tipo)
                     ->where('cursos.estado', true)
                     ->where('modalidad','like',"%$request->mod%")
                     ->whereJsonContains('unidades_disponible', [$unidad])->orderby('cursos.nombre_curso')->pluck('nombre_curso', 'cursos.id');
-         
+
        }
-       $unidades = $_SESSION['unidades'];
+       $unidades = session('unidades');
        //var_dump($unidades);exit;
        return view('consultas.instructoresdisponibles',compact('consulta','request','unidades','cursos'));
     }

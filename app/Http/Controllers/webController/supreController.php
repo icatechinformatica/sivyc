@@ -115,7 +115,7 @@ class supreController extends Controller
             ->WHERE('tbl_cursos.inicio', '<=', $año_referencia2)
             ->WHERE('tabla_supre.status', '!=', 'Cancelado');
 
-        if($roles->role_name != 'admin' && $roles->role_name != 'planeacion') {
+        if($roles->role_name != 'admin' && !str_contains($roles->role_name, 'planeacion')) {
             $data = $data->Where('unidad_capacitacion', $unidaduser->ubicacion);
         }
 
@@ -130,8 +130,18 @@ class supreController extends Controller
             ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion','curso','depen']);
 
         $unidades = tbl_unidades::SELECT('unidad')->WHERE('id', '!=', '0')->GET();
+        $user = Auth::user()->load('roles.permissions');
+        $permisos = [
+            'supre_create' => $user->can('supre.create'),
+            'supre_validar' => $user->can('supre.validar'),
+            'supre_upload_supre' => $user->can('supre.upload_supre'),
+            'supre_edit' => $user->can('supre.edit'),
+            'supre_upload_valsupre' => $user->can('supre.upload_valsupre'),
+            'supre_restart' => $user->can('supre.restart'),
+            'folio_modificar' => $user->can('folio.modificar'),
+        ];
 
-        return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades','array_ejercicio','año_pointer'));
+        return view('layouts.pages.vstasolicitudsupre', compact('data', 'unidades','array_ejercicio','año_pointer','permisos'));
     }
 
     public function frm_formulario() {

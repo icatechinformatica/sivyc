@@ -29,7 +29,7 @@ class poaController extends Controller
             $this->data = $this->unidad_user();
             $unidades = $this->data['unidades'];
             unset($unidades["ECE-CONOCER"]);
-            $_SESSION['unidades'] =  $unidades;
+            session(['unidades' => $unidades]);
             return $next($request);
         });
     }
@@ -42,7 +42,7 @@ class poaController extends Controller
 
     public function data($request){
 
-        $unidades = $_SESSION['unidades'];
+        $unidades = session('unidades');
         if(!$request->fecha1) $request->fecha1 = date('Y-01-01');
         if(!$request->fecha2) $request->fecha2 = date('Y-m-d');
 
@@ -55,13 +55,13 @@ class poaController extends Controller
                 case "CUOTA":
                     $desercion = DB::table('tbl_inscripcion as d')
                     ->select('d.id_curso', DB::raw('MIN(d.costo) as icosto'), DB::raw("sum(CASE WHEN d.status= 'INSCRITO' and d.calificacion='NP' THEN 1 ELSE 0 END)  as desercion"))
-                    ->groupby('d.id_curso');                   
+                    ->groupby('d.id_curso');
 
-                    $data = DB::table('tbl_cursos as tc')                        
+                    $data = DB::table('tbl_cursos as tc')
                         ->select('tc.unidad',
                         DB::raw('icosto as costo'),
                         DB::raw('count(tc.id) as cursos_reportados'),
-                        DB::raw("sum(hombre+mujer) as inscritos"),                        
+                        DB::raw("sum(hombre+mujer) as inscritos"),
                         DB::raw('sum(d.desercion) as desercion'),
                         DB::raw('sum(c.costo*(hombre+mujer)) as importe')
                         )
@@ -71,10 +71,10 @@ class poaController extends Controller
                         })
                         ->where('tc.proceso_terminado',true)->where('tc.status_curso','AUTORIZADO')
                         ->where('tc.fecha_turnado','>=',$fecha1)
-                        ->where('tc.fecha_turnado','<=',$fecha2)                                             
-                        ->groupby('tc.unidad','icosto')                        
-                        ->orderby('icosto','ASC')->orderby(DB::raw('count(tc.id)'),'DESC')->orderby('tc.unidad','ASC')                        
-                        ->get();                    
+                        ->where('tc.fecha_turnado','<=',$fecha2)
+                        ->groupby('tc.unidad','icosto')
+                        ->orderby('icosto','ASC')->orderby(DB::raw('count(tc.id)'),'DESC')->orderby('tc.unidad','ASC')
+                        ->get();
                 break;
                 default:
                     $desercion = DB::table('tbl_inscripcion as d')
@@ -83,54 +83,54 @@ class poaController extends Controller
 
                     $inicio_nuevoTab = date('Y-m-d',strtotime('2023-10-12')); //renumeración de id de criterios
 
-                                        
-                    $query_costos = "SUM(CASE 
-                        WHEN tc.ze ='II' THEN  
-                        (SELECT 
-                                CASE WHEN impuestos = 'false' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
+
+                    $query_costos = "SUM(CASE
+                        WHEN tc.ze ='II' THEN
+                        (SELECT
+                                CASE WHEN impuestos = 'false' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16)
                                 ELSE monto::numeric * tc.dura
-                                END								 	
+                                END
                             FROM ( SELECT id,
                                 (jsonb_array_elements(ze2->'vigencias')->>'fecha')::date AS fecha_vigencia,
                                 (jsonb_array_elements(ze2->'vigencias')->>'monto')::numeric AS monto,
                                 (jsonb_array_elements(ze2->'vigencias')->>'incluye_impuestos') AS impuestos
-                                FROM criterio_pago 
+                                FROM criterio_pago
                             WHERE  id =
-                                CASE 
-                                    WHEN  fecha_apertura<'2023-10-12' and tc.cp>=5  THEN tc.cp-1 
+                                CASE
+                                    WHEN  fecha_apertura<'2023-10-12' and tc.cp>=5  THEN tc.cp-1
                                     WHEN fecha_apertura<'2023-10-12' and tc.cp=5 THEN 55
                                     ELSE tc.cp
-                                END			   
+                                END
                             ) subquery  WHERE  tc.fecha_apertura >= fecha_vigencia ORDER BY fecha_vigencia DESC LIMIT 1)
-                        WHEN tc.ze ='III' THEN  
-                        (SELECT 
-                                CASE WHEN impuestos = 'false' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16) 
+                        WHEN tc.ze ='III' THEN
+                        (SELECT
+                                CASE WHEN impuestos = 'false' THEN (monto::numeric * tc.dura)+(monto::numeric * tc.dura*.16)
                                 ELSE monto::numeric * tc.dura
-                                END								 	
+                                END
                             FROM ( SELECT id,
                                 (jsonb_array_elements(ze3->'vigencias')->>'fecha')::date AS fecha_vigencia,
                                 (jsonb_array_elements(ze3->'vigencias')->>'monto')::numeric AS monto,
                                 (jsonb_array_elements(ze3->'vigencias')->>'incluye_impuestos') AS impuestos
                                 FROM criterio_pago
-                            WHERE id = 
-                                CASE 
-                                    WHEN  fecha_apertura<'2023-10-12' and tc.cp>=5  THEN tc.cp-1 
+                            WHERE id =
+                                CASE
+                                    WHEN  fecha_apertura<'2023-10-12' and tc.cp>=5  THEN tc.cp-1
                                     WHEN fecha_apertura<'2023-10-12' and tc.cp=5 THEN 55
                                     ELSE tc.cp
-                                END			   
+                                END
                             ) subquery  WHERE  tc.fecha_apertura >= fecha_vigencia ORDER BY fecha_vigencia DESC LIMIT 1)
                         END) as costo_aperturado";
 
-            /*TOTAL POR UNIDAD*/                    
+            /*TOTAL POR UNIDAD*/
 
                     $data_total = DB::table('tbl_unidades as u')
                     ->select('poa.id_unidad','u.ubicacion as unidad',DB::raw('poa.total_cursos as cursos_programados'),
-                    DB::raw("count(*)  as cursos_autorizados"),
-                    DB::raw('count(f.*) as suficiencia_autorizada'),
-                    DB::raw("count(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN 1 ELSE NULL END) AS recep_financ"),
-                    DB::raw("count(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE NULL END) AS valid_financ"), 
+                    DB::raw('COUNT(DISTINCT tc.id) as cursos_autorizados'),
+                    DB::raw('COUNT(DISTINCT f.*) as suficiencia_autorizada'),
+                    DB::raw("COUNT(DISTINCT CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN p.id END) AS recep_financ"),
+                    DB::raw("COUNT(DISTINCT CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion='VALIDADO' THEN p.id END) AS valid_financ"),
 
-                    DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
+                     DB::raw("COUNT(DISTINCT CASE WHEN tc.proceso_terminado = true THEN tc.id END) as cursos_reportados"),
                     DB::raw('MAX(poa.total_horas) as horas_programadas'),
                     DB::raw("sum(tc.dura)  as horas_impartidas"),
 
@@ -162,12 +162,12 @@ class poaController extends Controller
                             $join->on('tc.id','=','d.id_curso');
                         })
                         ->leftjoin('folios as f', function ($join){
-                            $join->on('f.id_cursos','=','tc.id')                            
+                            $join->on('f.id_cursos','=','tc.id')
                             ->leftjoin('tabla_supre as supre', function ($join){
                                 $join->on('f.id_supre','=','supre.id');
                             });
                         })
-                        
+
                         ->leftjoin('pagos as p', function ($join){
                             $join->on('p.id_curso','=','tc.id');
                         });
@@ -188,8 +188,8 @@ class poaController extends Controller
                  order by p.id_unidad) AS total_curso"),
                 DB::raw("count(tc.*)  as cursos_autorizados"),
                 DB::raw('count(f.*) as suficiencia_autorizada'),
-                DB::raw("SUM(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN 1 ELSE 0 END) AS recep_financ"),                
-                DB::raw("SUM(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE 0 END) AS valid_financ"), 
+                DB::raw("SUM(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN 1 ELSE 0 END) AS recep_financ"),
+                DB::raw("SUM(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE 0 END) AS valid_financ"),
 
                 DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
                 /*HORAS */
@@ -197,9 +197,9 @@ class poaController extends Controller
                 DB::raw("sum(tc.dura)  as horas_impartidas"),
 
                  /***COSTOS ***/
-                DB::raw($query_costos),                 
+                DB::raw($query_costos),
                 DB::raw("sum(CASE WHEN supre.status='Validado' THEN  f.importe_total ELSE 0 END)  as costo_supre"),
-                DB::raw("sum(CASE WHEN p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),                    
+                DB::raw("sum(CASE WHEN p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),
 
                 /***FORMATO T ***/
                  DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
@@ -225,12 +225,12 @@ class poaController extends Controller
                      })
 
                      ->leftjoin('folios as f', function ($join){
-                        $join->on('f.id_cursos','=','tc.id')                        
+                        $join->on('f.id_cursos','=','tc.id')
                         ->leftjoin('tabla_supre as supre', function ($join){
                             $join->on('f.id_supre','=','supre.id');
                         });
                     })
-                    
+
                     ->leftjoin('pagos as p', function ($join){
                         $join->on('p.id_curso','=','tc.id');
                     });
@@ -239,7 +239,7 @@ class poaController extends Controller
                 ->wherein('u.ubicacion', $unidades)->orwherein('u.unidad', $unidades)
                 ->WhereNotNull('poa.ze')->WhereNotNull('u.ze')
                  ->groupby('u.ubicacion','poa.id_unidad','u.ze','poa.ze');
-                 
+
                  /*->get();
 
                  dd($data_total_ze);*/
@@ -248,18 +248,18 @@ class poaController extends Controller
 
                  $data_unidad = DB::table('tbl_unidades as u')
                  ->select(DB::raw('poa.id_unidad'),'u.unidad','poa.total_cursos as cursos_programados',
-                  DB::raw("count(tc.*)  as cursos_autorizados"),                  
+                  DB::raw("count(tc.*)  as cursos_autorizados"),
                   DB::raw('count(f.*) as suficiencia_autorizada'),
                   DB::raw("COUNT(CASE WHEN p.status_recepcion IS NOT NULL AND p.status_recepcion <> 'Rechazado' THEN 1 ELSE NULL END) AS recep_financ"),
-                  DB::raw("count(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE NULL END) AS valid_financ"), 
+                  DB::raw("count(CASE WHEN p.status_recepcion='recepcion tradicional' OR p.status_recepcion = 'VALIDADO' THEN 1 ELSE NULL END) AS valid_financ"),
                   DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN 1 ELSE 0 END ) as cursos_reportados'),
                   'poa.total_horas as horas_programadas',
                   DB::raw("sum(tc.dura)  as horas_impartidas"),
 
                   /**COSTOS***/
-                  DB::raw($query_costos),                 
+                  DB::raw($query_costos),
                   DB::raw("sum(CASE WHEN supre.status='Validado' THEN  f.importe_total ELSE 0 END)  as costo_supre"),
-                  DB::raw("sum(CASE WHEN p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),                    
+                  DB::raw("sum(CASE WHEN p.status_transferencia='PAGADO' OR f.status='Finalizado' THEN f.importe_total ELSE 0 END)  as pagado"),
 
                   /**FORMATO T **/
                   DB::raw('sum(CASE WHEN tc.proceso_terminado=true THEN tc.hombre+tc.mujer ELSE 0 END ) as inscritos'),
@@ -280,15 +280,15 @@ class poaController extends Controller
                       ->whereBetween('fecha_apertura', [$fecha1, $fecha2])
                       ->leftjoinSub($desercion, 'd', function($join){
                           $join->on('tc.id','=','d.id_curso');
-                    })                     
+                    })
                     ->leftjoin('folios as f', function ($join){
                         $join->on('f.id_cursos','=','tc.id')
-                        
+
                         ->leftjoin('tabla_supre as supre', function ($join){
                             $join->on('f.id_supre','=','supre.id');
                         });
                     })
-                    
+
                     ->leftjoin('pagos as p', function ($join){
                         $join->on('p.id_curso','=','tc.id');
                     });
@@ -303,7 +303,7 @@ class poaController extends Controller
                  $data = DB::table(DB::raw("($data2 order by id_unidad,orden ASC) as a"))->mergeBindings($data_unidad)->get();
                 break;
             }
-        } 
+        }
         return $data;
     }
 

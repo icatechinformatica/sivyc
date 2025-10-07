@@ -46,20 +46,20 @@ class MetavanceController extends Controller
         $sel_eje = $request->sel_ejercicio;
         $ejercicio = [];
         for ($i=2023; $i <= intval(date('Y')); $i++) {array_push($ejercicio, $i);}
-        if($sel_eje == null && isset($_SESSION['eje_pat_registros']) == ''){
-            $_SESSION['eje_pat_registros'] = date('Y');
-        }elseif($sel_eje != null){
-            $_SESSION['eje_pat_registros'] = $sel_eje;
+        if ($sel_eje == null && !session()->has('eje_pat_registros')) {
+            session(['eje_pat_registros' => date('Y')]);
+        } elseif ($sel_eje != null) {
+            session(['eje_pat_registros' => $sel_eje]);
         }
-        $anio_eje = $_SESSION['eje_pat_registros'];
+        $anio_eje = session('eje_pat_registros');
 
 
         $json_org = Auth::user()->id_organismos_json;
         $array_org = json_decode($json_org, true);
         $id_orgconst = $idorg;
         $id_organismo = ($id_orgconst) ? $id_orgconst = intval($id_orgconst) : $id_orgconst = $array_org[0];
-        $_SESSION['id_organsmog'] = $id_organismo;
-        $organismo = $_SESSION['id_organsmog'];
+        session(['id_organsmog' => $id_organismo]);
+        $organismo = session('id_organsmog');
 
         //MOSTRAR FECHA
         $mesGlob = $this->arrayMes;
@@ -299,7 +299,7 @@ class MetavanceController extends Controller
         //CONSULTA PARA FECHAS Y STATUS
         $fecha_meta_avance = FechasPat::select('fecha_meta', 'fechas_avance', 'status_meta', 'status_avance')
             ->where('id_org', '=', $organismo)
-            ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
+            ->where('periodo', '=', session('eje_pat_registros'))->first();
 
         //CONVERTIR FECHAS EN TIPO NUMERO PARA PODER COMPARARLOS
         $fecha_actual = date('d-m-Y');
@@ -444,7 +444,7 @@ class MetavanceController extends Controller
      */
     public function valid_planeacion($id_getuser)
     {
-        $anio_eje = $_SESSION['eje_pat_buzon'];  // La sesion del año se crea cuando se ingresa al buzon de validacion
+        $anio_eje = session('eje_pat_buzon');  // La sesion del año se crea cuando se ingresa al buzon de validacion
         $id_organismo = $id_getuser;
         $dif_perfil = true;
 
@@ -592,7 +592,7 @@ class MetavanceController extends Controller
 
         //Obtener el id de la tabla de fechas que contienen los status
         $id_fech_pat = FechasPat::select('id')->where('id_org', '=', $id_org)
-        ->where('periodo', '=', $_SESSION['eje_pat_buzon'])->first();
+        ->where('periodo', '=', session('eje_pat_buzon'))->first();
 
         $id_reg_fecha = $id_fech_pat->id;
 
@@ -761,8 +761,8 @@ class MetavanceController extends Controller
             $metavances->save();
         }
         /**Busqueda de id para agregar fechas al registro */
-        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])
-        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
+        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', session('id_organsmog'))
+        ->where('periodo', '=', session('eje_pat_registros'))->first();
         $statusmeta = FechasPat::find($id_reg_fecha->id);
         $statusf = $statusmeta->fecha_meta;
         $statusf['fecmetasave'] = date("Y-m-d H:i");
@@ -803,8 +803,8 @@ class MetavanceController extends Controller
         $datos = $request->datos;
         $mesUpdate = $datos[0][0];
 
-        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])
-        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
+        $id_reg_fecha = FechasPat::select('id')->where('id_org', '=', session('id_organsmog'))
+        ->where('periodo', '=', session('eje_pat_registros'))->first();
         $statusavance = FechasPat::find($id_reg_fecha->id);
 
         for ($i=0; $i < count($datos); $i++) {
@@ -868,8 +868,8 @@ class MetavanceController extends Controller
             if ($idorg != 'null') {
                 $organismo = $idorg;
             }else {
-                // $organismo = $_SESSION['id_organsmog'];
-                $organismo = $_SESSION['id_organsmog'];
+                // $organismo = session('id_organsmog');
+                $organismo = session('id_organsmog');
             }
         } catch (\Throwable $th) {
             //throw $th;
@@ -903,10 +903,10 @@ class MetavanceController extends Controller
 
         ##Validamos las variables globales de planeacion y area normal
         $global_ejercicio = strval(date('Y'));
-        if (isset($_SESSION['eje_pat_buzon'])){
-            $global_ejercicio = $_SESSION['eje_pat_buzon'];
-        }else if(isset($_SESSION['eje_pat_registros'])){
-            $global_ejercicio = $_SESSION['eje_pat_registros'];
+        if (session()->has('eje_pat_buzon')){
+            $global_ejercicio = session('eje_pat_buzon');
+        }else if(session()->has('eje_pat_registros')){
+            $global_ejercicio = session('eje_pat_registros');
         }
         //CONSULTA DE PROCEDIMIENTOS POR FUNCION
         $procedimientos = [];
@@ -931,7 +931,7 @@ class MetavanceController extends Controller
 
             array_push($procedimientos, $proced);
         }
-        //$_SESSION['eje_pat_registros']
+        //session('eje_pat_registros')
         //Consulta de fechas
         $fechasPat = function ($organismo, $anio_eje){
             $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)
@@ -1374,8 +1374,8 @@ class MetavanceController extends Controller
      */
     public function uploadpdfmeta(Request $request)
     {
-        $id = FechasPat::select('id')->where('id_org', '=', $_SESSION['id_organsmog'])
-        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
+        $id = FechasPat::select('id')->where('id_org', '=', session('id_organsmog'))
+        ->where('periodo', '=', session('eje_pat_registros'))->first();
         $mensaje = "";
 
         if($request->hasFile('archivoPDF') and $id->id != null){
@@ -1409,8 +1409,8 @@ class MetavanceController extends Controller
      */
     public function uploadpdfavance(Request $request)
     {
-        $id = FechasPat::select('id','fechas_avance')->where('id_org', '=', $_SESSION['id_organsmog'])
-        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
+        $id = FechasPat::select('id','fechas_avance')->where('id_org', '=', session('id_organsmog'))
+        ->where('periodo', '=', session('eje_pat_registros'))->first();
         $mensaje = "";
 
         if($request->hasFile('archivoPDF') and $id->id != null){
@@ -1445,7 +1445,7 @@ class MetavanceController extends Controller
     {
         //Obtenemos los id org, area del usuario quien ingresa
         try {
-            // $organismo = $_SESSION['id_organsmog'];
+            // $organismo = session('id_organsmog');
             $organismo = $id_org;
         } catch (\Throwable $th) {
             //throw $th;
@@ -1485,7 +1485,7 @@ class MetavanceController extends Controller
             'metas_avances_pat.iduser_updated', 'um.numero', 'um.unidadm', 'um.tipo_unidadm')
             ->Join('funciones_proced as f', 'f.id', 'metas_avances_pat.id_proced')
             ->Join('unidades_medida as um', 'f.id_unidadm', 'um.id')
-            ->where('ejercicio', '=', $_SESSION['eje_pat_registros'])
+            ->where('ejercicio', '=', session('eje_pat_registros'))
             ->whereIn('f.id', function($query)use($val)  {
             $query->select('id')
                     ->from('funciones_proced')
@@ -1501,7 +1501,7 @@ class MetavanceController extends Controller
 
         #CONSULTA DE FECHAS
         $tblFechas = FechasPat::select('id', 'fechas_avance', 'fecha_meta')->where('id_org', '=', $organismo)
-        ->where('periodo', '=', $_SESSION['eje_pat_registros'])->first();
+        ->where('periodo', '=', session('eje_pat_registros'))->first();
 
         if ($meta_avance == 'meta') {
             #DATOS META
@@ -2298,8 +2298,8 @@ class MetavanceController extends Controller
             if ($idorg != 'null') {
                 $organismo = $idorg;
             }else {
-                // $organismo = $_SESSION['id_organsmog'];
-                $organismo = $_SESSION['id_organsmog'];
+                // $organismo = session('id_organsmog');
+                $organismo = session('id_organsmog');
             }
         } catch (\Throwable $th) {
             //throw $th;
@@ -2327,10 +2327,10 @@ class MetavanceController extends Controller
 
         ##Validamos las variables globales de planeacion y area normal
         $global_ejercicio = strval(date('Y'));
-        if (isset($_SESSION['eje_pat_buzon'])){
-            $global_ejercicio = $_SESSION['eje_pat_buzon'];
-        }else if(isset($_SESSION['eje_pat_registros'])){
-            $global_ejercicio = $_SESSION['eje_pat_registros'];
+        if (session()->has('eje_pat_buzon')){
+            $global_ejercicio = session('eje_pat_buzon');
+        }else if(session()->has('eje_pat_registros')){
+            $global_ejercicio = session('eje_pat_registros');
         }
         //CONSULTA DE PROCEDIMIENTOS POR FUNCION
         $procedimientos = [];
@@ -2786,8 +2786,8 @@ class MetavanceController extends Controller
     public function show_pdf_efirma($id_registro){
         $cadena_html_meta  = $qrCodeBase64 = $uuid = $cadena_sello = $fecha_sello = $no_oficio = '';
         $firmantes = $firmantesData = [];
-        $id_organismo = $_SESSION['id_organsmog'];
-        // dd($_SESSION['id_organsmog']);
+        $id_organismo = session('id_organsmog');
+        // dd(session('id_organsmog'));
         $ids_org = DB::table('tbl_organismos as o')
         ->join('tbl_organismos as p', 'o.id_parent', '=', 'p.id')
         ->where('o.id', $id_organismo)

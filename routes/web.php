@@ -96,6 +96,7 @@ Route::post('/instructor/mod/especialidadimpartir/eliminar', 'webController\Inst
 Route::post('/instructor/alta-baja/save','webController\InstructorController@alta_baja_save')->name('instructor-alta-baja-save');
 Route::post('/instructor/generate/solicitudpdf', 'webController\InstructorController@solicitud_validacion_pdf')->name('generate-solicitud-instructor');
 Route::get('/instructor/reenvio/credenciales/{idins}', 'webController\InstructorController@reenvio_wsp')->name('reenviar-wsp-instructor');
+Route::get('/instructor/envio/credenciales/instructor/{idins}', 'webController\InstructorController@envio_credenciales_wsp')->name('enviar-alta-wsp-instructor');
 Route::middleware(['auth'])->group(function(){
 Route::middleware(['admin'])->group(function () {
 Route::get('/alumnos_registrados/modificar/index', 'adminController\AlumnoRegistradoModificarController@index')->name('alumno_registrado.modificar.index');

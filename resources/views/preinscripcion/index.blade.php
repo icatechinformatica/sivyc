@@ -156,7 +156,7 @@
                             @elseif ($grupo->exo_nrevision )
                                 <span>EXONERACIÓN/REDUCCIÓN No. REVISIÓN:&nbsp;&nbsp;<strong>{{$grupo->exo_nrevision}}</strong></span>
                             @elseif ($grupo->tipo != 'PINS' )
-                                <span>EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong class="text-danger">TRÁMITE PENDIENTE</strong></span>
+                                <span>EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong class="text-danger">PENDIENTE</strong></span>
                             @endif
                             @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
                             @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
@@ -398,7 +398,7 @@
                     <!--Body-->
                     <div class="modal-body">
                         <div aria-live="assertive" aria-atomic="true" style="position: relative; top: 0; left: 0;" role="alert" class="toast mt-1 mr-1" data-autohide="false">
-                            <div class="toast-header bg-primary">
+                            <div class="toast-header bg-danger">
                                 <strong id="titleToast" class="mr-auto text-white"></strong>
                                 <button type="button" class="ml-2 mb-1 close text-white" data-dismiss="toast" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
@@ -577,9 +577,16 @@
                         '_token': $("meta[name='csrf-token']").attr("content")
                     },
                     success: function(msg) {
-                        console.log(msg);
-                        calendar.refetchEvents();
-                        limpiarFormulario();
+                        if(msg){
+                            objEvento = null;
+                            $('#titleToast').html('Cambio no permitido:');
+                            $("#msgVolumen").html(msg);
+                            $(".toast").toast("show");
+                        }else{
+                            $(".toast").toast("hide");
+                            calendar.refetchEvents();
+                            limpiarFormulario();
+                        }
                     },
                     error: function(jqXHR, textStatus) {
                         // console.log(textStatus);

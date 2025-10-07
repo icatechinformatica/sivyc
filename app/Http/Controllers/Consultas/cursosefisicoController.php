@@ -25,7 +25,8 @@ class cursosefisicoController extends Controller
         $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
             ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
             ->value('roles.slug');
-        $_SESSION['unidades'] = $unidades = $message = $data = NULL;
+        $unidades = $message = $data = NULL;
+        session(['unidades' => null]);
         if(session('message')) $message = session('message');
         // $rol="unidad";
         if($rol){
@@ -33,12 +34,13 @@ class cursosefisicoController extends Controller
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
             $unidades = DB::table('tbl_unidades')->ORDERBY('unidad','asc')->pluck('unidad','unidad');
             if(count($unidades)==0) $unidades =[$unidad];
-            $_SESSION['unidades'] = $unidades;
+            session(['unidades' => $unidades]);
         }
-       // var_dump($_SESSION['unidades']);exit;
+       // var_dump(session('unidades'));exit;
         if(!$unidades ){
             $unidades = DB::table('tbl_unidades')->orderby('unidad','ASC')->pluck('unidad','unidad');
-            $_SESSION['unidades'] = $unidades;
+            session(['unidades' => $unidades]);
+
         }
 
        $unidad = $request->unidad;
@@ -64,7 +66,7 @@ class cursosefisicoController extends Controller
               $data =  $data->orderby('c.unidad')->orderby('c.inicio','DESC');
            }
              if($request->unidad) $data = $data->where('c.unidad',$request->unidad);
-             if($_SESSION['unidades'])$data = $data->whereIn('c.unidad',$_SESSION['unidades']);
+             if(session('unidades'))$data = $data->whereIn('c.unidad',session('unidades'));
 
            $data = $data->get();
        }
@@ -99,7 +101,7 @@ class cursosefisicoController extends Controller
                 $data =  $data->orderby('c.unidad')->orderby('c.inicio','DESC');
             }
             if($request->unidad) $data = $data->where('c.unidad',$request->unidad);
-            if($_SESSION['unidades'])$data = $data->whereIn('c.unidad',$_SESSION['unidades']);
+            if(session('unidades'))$data = $data->whereIn('c.unidad',session('unidades'));
 
             $data = $data->get();
 

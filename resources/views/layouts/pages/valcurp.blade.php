@@ -180,11 +180,11 @@
                         <input name='busqueda' id='busqueda' oninput="validarInput(this)" type="text" class="form-control" placeholder="CURP" value="{{old('curp')}}"/>
                         <pre id="resultado"></pre>
                     </div>
-                    @can('alumnos.inscripcion-paso2')
+                    @if($permisos['alumnos-inscripcion-paso2'])
                         <div class="col-md-2"><br />
                             <button type="button" id="nuevo" class="btn">NUEVO ASPIRANTE</button>
                         </div>
-                    @endcan
+                    @endif
                     <div class="col-md-2"><br />
                         <a class="btn" href="{{ route('alumnos.index') }}"> REGRESAR </a>
                     </div>
@@ -1093,11 +1093,11 @@
                         <hr/>
 
                     </div>
-                    @can('alumnos.inscripcion-paso2')
+                    @if($permisos['alumnos-inscripcion-paso2'])
                         <div class="form-row justify-content-end ">
                             <button type="submit" class="btn" id="update" >GUARDAR CAMBIOS</button>
                         </div>
-                    @endcan
+                    @endif
                 </div>
             @endif
         </form>

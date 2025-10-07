@@ -88,7 +88,17 @@ class CursosController extends Controller
                         'cursos.created_at', 'cursos.updated_at',
                         DB::raw("COALESCE(duracion_total.horas_tematico, 0) as horas_tematico")
                     ]);
-        return view('layouts.pages.vstacursosinicio',compact('data'));
+
+        $user = Auth::user();
+        $permisos = [
+            'cursos_create' => $user->can('cursos.create'),
+            'cursos_show' => $user->can('cursos.show'),
+            'paqueterias_didacticas' => $user->can('paqueteriasdidacticas'),
+            'exportar_cursosdv' => $user->can('exportar.cursosdv'),
+            'academico_catalogo_cursos' => $user->can('academico.catalogo.cursos'),
+            'academico_catalogo_cursos_all' => $user->can('academico.catalogo.cursosall')
+        ];
+        return view('layouts.pages.vstacursosinicio',compact('data','permisos'));
     }
 
     /**

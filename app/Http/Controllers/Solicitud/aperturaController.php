@@ -50,12 +50,22 @@ class aperturaController extends Controller
         'observaciones.required' => 'Favor de ingresar las Observaciones.'
     ];
 
+    protected $ejercicio;
+    protected $id_user;
+    protected $realizo;
+    protected $path_pdf;
+    protected $path_uploadFiles;
+    protected $path_files;
+    protected $path_files_cancelled;
+    protected $id_unidad;
+    protected $tcuota;
+    protected $data;
+
     function __construct() {
         session_start();
         $this->ejercicio = date("y");
         $this->middleware('auth');
         $this->path_pdf = "/DTA/solicitud_folios/";
-        //$this->path_files = env("APP_URL").'/storage/uploadFiles';
 
         $this->path_uploadFiles = env("APP_URL").'/storage/uploadFiles';
         $this->path_files = env("APP_URL").'/storage/';
@@ -73,17 +83,42 @@ class aperturaController extends Controller
     }
 
     public function index(Request $request){
-        $folio_grupo =  $grupo = $alumnos = $message = $medio_virtual = $exoneracion = $instructor = $plantel = $programa = $tcurso = $tcuota =
-        //$muni =
-        $instructores = $convenio = $localidad = $exonerado = $num_oficio_sop = $titular_sop = $ValidaInstructorPDF = NULL;
+        // Variables principales
+        $folio_grupo = null;
+        $grupo = null;
+        $alumnos = null;
+        $message = null;
+        // Variables de configuración
+        $medio_virtual = null;
+        $exoneracion = null;
+        $instructor = null;
+        $plantel = null;
+        $programa = null;
+        // Variables de curso
+        $tcurso = null;
+        $tcuota = null;
+        $instructores = null;
+        // Variables adicionales
+        $convenio = null;
+        $localidad = null;
+        $exonerado = null;
+        $num_oficio_sop = null;
+        $titular_sop = null;
+        $ValidaInstructorPDF = null;
+
         $recibo =[];
         $url_soporte = '';
-        if($request->folio_grupo)  $folio_grupo = $request->folio_grupo;
-        elseif(isset($_SESSION['folio_grupo'])) $folio_grupo = $_SESSION['folio_grupo'];
-        //$_SESSION['alumnos'] = NULL;
+        if($request->folio_grupo){
+            $folio_grupo = $request->folio_grupo;
+        }
+        elseif(isset($_SESSION['folio_grupo'])){
+            $folio_grupo = $_SESSION['folio_grupo'];
+        }
 
         //NUEVO
-        if($folio_grupo) list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);       // dd($grupo);
+        if($folio_grupo){
+            list($grupo, $alumnos) = $this->grupo_alumnos($folio_grupo);
+        }
         if($grupo){
             #consultamos registros para generar pdf soporte de constancias
             $sop_expediente = DB::table('tbl_cursos_expedientes')->select('sop_constancias')->where('folio_grupo', '=', $folio_grupo)->first();
@@ -109,73 +144,53 @@ class aperturaController extends Controller
 
             $_SESSION['alumnos'] = $alumnos;
             $_SESSION['grupo'] = $grupo;
-            //dd($alumnos);
             $plantel = $this->plantel();
-            /*
-            if($grupo->depen AND $grupo->mod=='CAE'){
-                    $organismo = $grupo->depen; // DB::table('organismos_publicos')->where('id',$grupo->id_organismo)->value('organismo');
-                    $convenio_t = DB::table('convenios')
-                        ->select('no_convenio',db::raw("to_char(DATE (fecha_firma)::date, 'YYYY-MM-DD') as fecha_firma"))
-                        ->where(db::raw("to_char(DATE (fecha_vigencia)::date, 'YYYY-MM-DD')"),'>=',$grupo->termino)
-                        ->where('institucion',$organismo)
-                        ->where('activo','true')->first();
-                    $convenio = [];
-                    if ($convenio_t) {
-                        foreach ($convenio_t as $key=>$value) {
-                            $convenio[$key] = $value;
-                        }
-                    }else {
-                        $convenio['no_convenio'] = '0';
-                        $convenio['fecha_firma'] = '';
-                        $convenio['sector'] = null;
-                    }
+            $programa = $this->programa();
+
+            $instructor = $this->instructor($grupo->id_instructor);
+            $instructores = $this->instructores($grupo);    //dd($instructores);
+            $exoneracion = $this->exoneracion($this->id_unidad);
+            $exoneracion["NINGUNO"] = "NINGUNO";
+            $exonerado = DB::table('exoneraciones')->where('folio_grupo',$grupo->folio_grupo)->where('status','<>','CAPTURA')->where('status','<>','CANCELADO')->exists();
+
+            $medio_virtual = $this->medio_virtual();
+
+            $tcurso = $this->tcurso();
+            if($grupo->clave !='0'){
+                $message = "Clave de Apertura Asignada";
             }
-            if(!$convenio){
-                    $convenio['no_convenio'] = '0';
-                    $convenio['fecha_firma'] = '';
-                    $convenio['sector'] = null;
+            elseif($grupo->status_curso){
+                $message = "Estatus: ". $grupo->status_curso;
             }
-                */
-                $programa = $this->programa();
 
-                $instructor = $this->instructor($grupo->id_instructor);
-                $instructores = $this->instructores($grupo);    //dd($instructores);
-                $exoneracion = $this->exoneracion($this->id_unidad);
-                $exoneracion["NINGUNO"] = "NINGUNO";
-                //$efisico = $this->efisico();
-                $exonerado = DB::table('exoneraciones')->where('folio_grupo',$grupo->folio_grupo)->where('status','<>','CAPTURA')->where('status','<>','CANCELADO')->exists();
-
-                $medio_virtual = $this->medio_virtual();
-
-                $tcurso = $this->tcurso();
-                //var_dump($instructor);exit;
-                if($grupo->clave !='0') $message = "Clave de Apertura Asignada";
-                elseif($grupo->status_curso) $message = "Estatus: ". $grupo->status_curso;
-                if($grupo->tipo) $tcuota = $this->tcuota[$grupo->tipo];
-                $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status_folio','ENVIADO')->first();
-                $grupo_mespecialidad = $grupo->instructor_mespecialidad;
-                $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
-                    ->where('id_instructor', $grupo->id_instructor)
-                    ->whereExists(function ($query) use ($grupo_mespecialidad){
-                    $query->select(\DB::raw("elem->>'arch_val'"))
-                        ->from(\DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
-                        ->where(\DB::raw("elem->>'memo_val'"), '=', $grupo_mespecialidad);
-                })
-                ->value(\DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$grupo_mespecialidad') as pdfvalida"));
+            if($grupo->tipo){
+                $tcuota = $this->tcuota[$grupo->tipo];
+            }
+            $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status_folio','ENVIADO')->first();
+            $grupo_mespecialidad = $grupo->instructor_mespecialidad;
+            $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
+                ->where('id_instructor', $grupo->id_instructor)
+                ->whereExists(function ($query) use ($grupo_mespecialidad){
+                $query->select(DB::raw("elem->>'arch_val'"))
+                    ->from(DB::raw("jsonb_array_elements(hvalidacion) AS elem"))
+                    ->where(DB::raw("elem->>'memo_val'"), '=', $grupo_mespecialidad);
+            })
+            ->value(DB::raw("(SELECT elem->>'arch_val' FROM jsonb_array_elements(hvalidacion) AS elem WHERE elem->>'memo_val' = '$grupo_mespecialidad') as pdfvalida"));
 
 
-        }else $message = "El folio de grupo ".$folio_grupo ." no está disponible. Por favor, verifique si el grupo ha sido turnado por Vinculación o si el folio es correcto.";
+        } else {
+            $message = "El folio de grupo ".$folio_grupo ." no está disponible. Por favor, verifique si el grupo ha sido turnado por Vinculación o si el folio es correcto.";
+        }
         $tinscripcion = $this->tinscripcion();
 
 
-        if(session('message')) $message = session('message');//dd($grupo);
+        if(session('message')){
+            $message = session('message');
+        }
+
         return view('solicitud.apertura.index', compact('message','grupo','alumnos','plantel','programa',
         'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','instructores','convenio','localidad','exonerado',
         'num_oficio_sop', 'titular_sop','recibo','ValidaInstructorPDF', 'url_soporte'));
-
-        /*return view('solicitud.apertura.index', compact('comprobante','efisico','message','grupo','alumnos','plantel','depen','sector','programa',
-            'instructor','exoneracion','medio_virtual','tcurso','tinscripcion','tcuota','instructores','convenio','localidad','exonerado',
-            'num_oficio_sop', 'titular_sop','recibo','ValidaInstructorPDF', 'url_soporte'));*/
     }
 
 
@@ -184,7 +199,7 @@ class aperturaController extends Controller
         $grupo =  DB::table('tbl_cursos as tc')->where('tc.folio_grupo', $folio_grupo)
             ->select(//DE LA APERTURA
                 'tc.*',
-                'c.costo as costo_individual',                
+                'c.costo as costo_individual',
                 DB::raw("COALESCE(
                     CASE WHEN tc.hini LIKE '%p%' and SUBSTRING(tc.hini, 1, 2)::integer <> 12 THEN (SUBSTRING(tc.hini, 1, 5)::time+'12:00')::text
                          ELSE SUBSTRING(tc.hini, 1, 5)
@@ -203,7 +218,7 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(tr.fecha_expedicion, COALESCE(tc.fecha_pago, ar.fecha_pago)) as fecha_pago'),
                 DB::raw("COALESCE(tc.solicita, CONCAT(tu.vinculacion,', ',pvinculacion)) as solicita"),
                 DB::raw('COALESCE(tc.tdias, null) as tdias'),
-                DB::raw('ar.turnado as  turnado_grupo'),                
+                DB::raw('ar.turnado as  turnado_grupo'),
                 DB::raw("CASE WHEN tu.vinculacion=tu.dunidad THEN true ELSE false END as editar_solicita"),
                 DB::raw("CASE WHEN tr.folio_recibo is not null THEN true ELSE false END as es_recibo_digital"),
                 DB::raw("COALESCE(tc.clave, '0') as clave"),
@@ -338,14 +353,14 @@ class aperturaController extends Controller
             $munidad = $request->munidad;
             $folio_grupo = $request->folio_grupo;
 
-            if(DB::table('tbl_cursos')->where('munidad', $munidad)->where('folio_grupo','!=',$folio_grupo)->exists()) $munidad = Null;             
+            if(DB::table('tbl_cursos')->where('munidad', $munidad)->where('folio_grupo','!=',$folio_grupo)->exists()) $munidad = Null;
 
             $result =  DB::table('tbl_cursos')->where('clave', '0')->whereNull('status_curso')
                 ->where(function ($q) {
                     $q->whereIn('status_solicitud', ['RETORNO'])
                     ->orWhereNull('status_solicitud');
-                })            
-                ->where('folio_grupo', $folio_grupo)->update(                
+                })
+                ->where('folio_grupo', $folio_grupo)->update(
                 [
                     'munidad' => $munidad,
                     'plantel' => $request->plantel,
@@ -357,7 +372,7 @@ class aperturaController extends Controller
                     'status_solicitud' =>null
                 ]
             );
-            if(!$munidad)$message = 'El memorádum No. '.$request->munidad.' ya está asignado a otro grupo. Verifique e intente de nuevo.';            
+            if(!$munidad)$message = 'El memorádum No. '.$request->munidad.' ya está asignado a otro grupo. Verifique e intente de nuevo.';
             elseif($result) $message = 'Operación Exitosa!!';
         }
         return redirect('solicitud/apertura')->with('message', $message);
@@ -372,7 +387,7 @@ class aperturaController extends Controller
         $fcespe = $request->fespe;
         $message = "La operación ha fallado, favor de volver a intentar.";
         try {
-            if($folio_grupo && $mpreapertura && $fpreapertura) {                
+            if($folio_grupo && $mpreapertura && $fpreapertura) {
                 $result = DB::statement("
                     UPDATE tbl_cursos
                     SET
@@ -400,24 +415,24 @@ class aperturaController extends Controller
                     Auth::user()->name,
                     $folio_grupo,
                 ]);
-                if(DB::table('tbl_cursos')->where('folio_grupo',$folio_grupo)->where('status','NO_REPORTADO')->exists()){
+                if($cespecifico && $fcespe){
                     $result = DB::statement("
                         UPDATE alumnos_registro
                         SET
                             cespecifico = ?,
-                            fcespe = ?                        
+                            fcespe = ?
                         WHERE folio_grupo = ?
                     ", [
                         $cespecifico,
-                        $fcespe,                    
+                        $fcespe,
                         $folio_grupo,
                     ]);
-                    if($result) $message = "Operación Exitosa!"; 
+                    if($result) $message = "Operación Exitosa!";
                 }else $message = "EL CONVENIO ESPECÍFICO NO PUEDE SER EDITADO, EL GRUPO HA SIDO REPORTADO EN FORMATO T.";
 
-                          
+
             }else $message = "Por favor, ingrese los datos requeridos.";
-            
+
             return $message;
 
         } catch (\Throwable $th) {

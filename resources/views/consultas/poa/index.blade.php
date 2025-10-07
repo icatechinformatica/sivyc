@@ -39,6 +39,14 @@
 @endsection
 @section('script_content_js')
     <script language="javascript">
+        $(function(){
+            
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+        });
         $(document).ready(function(){
                 $("#botonFILTRAR" ).click(function(){ $('#frm').attr('action', "{{route('consultas.poa')}}"); $("#frm").attr("target", '_self'); $('#frm').submit(); });
                 $("#botonXLS" ).click(function(){ $('#frm').attr('action', "{{route('consultas.poa.xls')}}"); $("#frm").attr("target", '_blanck');$('#frm').submit();});
@@ -46,5 +54,41 @@
 
             });
         });
+
+      function DetalleCursos(unidad) {
+            let fecha1  = $("#fecha1").val();
+            let fecha2  = $("#fecha2").val();
+            let opcion  = 'AUTORIZADOS';            
+            let url     = '/consultas/cursosaperturados';
+            // siempre lo tratamos como arreglo
+            let unidades = [unidad];
+
+            // Crear formulario dinámico y enviarlo
+            let form = $('<form>', {
+                method: 'POST',
+                action: url,
+                target: '_blank'
+            });
+
+            // CSRF token de Laravel
+            form.append($('<input>', {
+                type: 'hidden',
+                name: '_token',
+                value: $('meta[name="csrf-token"]').attr('content')
+            }));
+
+            // parámetros
+            form.append($('<input>', { type: 'hidden', name: 'fecha1', value: fecha1 }));
+            form.append($('<input>', { type: 'hidden', name: 'fecha2', value: fecha2 }));
+            form.append($('<input>', { type: 'hidden', name: 'opcion', value: opcion }));
+            unidades.forEach(val => {
+                form.append($('<input>', { type: 'hidden', name: 'unidad[]', value: val }));
+            });
+
+            $('body').append(form);
+            form.submit();
+            form.remove();
+        }
+    
     </script>
 @endsection

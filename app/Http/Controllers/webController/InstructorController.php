@@ -57,57 +57,98 @@ class InstructorController extends Controller
         $tipoEspecialidad = $request->get('tipo_especialidad');
         $unidadUser = Auth::user()->unidad;
         $message = null;
-        $userId = Auth::user()->id;
 
-        $roles = DB::table('role_user')
-            ->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
-            ->SELECT('roles.slug AS role_name')
-            ->WHERE('role_user.user_id', '=', $userId)
-            ->GET();
+        // Eager load user with roles and permissions
+        $user = Auth::user()->load(['roles', 'permissions']);
 
-        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)->WHERE('instructores.id', '!=', '0')
-            ->LEFTJOIN('especialidad_instructores',function($join){
-                $join->on('instructores.id','=','especialidad_instructores.id_instructor');
-                $join->where('especialidad_instructores.status','=','VALIDADO');
-                $join->groupby('especialidad_instructores.id_instructor');
+        // Check permission using loaded data instead of can() method
+        $canViewAll = $user->hasPermissionTo('instructores.all') ||
+              $user->roles->contains(function ($role) {
+                  return $role && method_exists($role, 'hasPermissionTo') &&
+                         $role->hasPermissionTo('instructores.all');
+              });
+
+        $data = instructor::searchinstructor($tipoInstructor, $busquedaInstructor, $tipoStatus, $tipoEspecialidad)
+            ->where('instructores.id', '!=', '0')
+            ->leftJoin('especialidad_instructores', function($join) {
+                $join->on('instructores.id', '=', 'especialidad_instructores.id_instructor')
+                    ->where('especialidad_instructores.status', '=', 'VALIDADO')
+                    ->groupBy('especialidad_instructores.id_instructor');
             });
 
-            if(!Auth::user()->can('instructores.all')){   //RESTRICCION PARA UNIDADES
-                $data = $data->whereIn('instructores.estado', [true])
-                ->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA']);
-            }else{
-                //$data = $data->WHEREIN('estado', [true,false])
-                $data = $data->WHEREIN('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA','INHABILITADO']);
+        // Use the pre-loaded permission check
+        if(!$canViewAll) {
+            $data = $data->whereIn('instructores.estado', [true])
+                ->whereIn('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA']);
+        } else {
+            $data = $data->whereIn('instructores.status', ['EN CAPTURA','VALIDADO','BAJA','PREVALIDACION','REACTIVACION EN CAPTURA','INHABILITADO']);
+        }
+
+        // Rest of your code remains the same...
+        if($tipoInstructor == 'nombre_curso') {
+            $buscando = explode(' - ', $busquedaInstructor);
+            if (isset($buscando[0]) && is_numeric($buscando[0])) {
+                $data = $data->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $buscando[0]);
+            } else {
+                $message = "SELECCIONE UNA OPCIÓN DE LA LISTA DE CURSOS";
             }
-            if($tipoInstructor=='nombre_curso'){
-                $buscando = explode(' - ', $busquedaInstructor);
-                if (isset($buscando[0]) && is_numeric($buscando[0])){
-                    $data = $data->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $buscando[0]);
-                    // ->join('especialidad_instructor_curso','id_especialidad_instructor','especialidad_instructores.id')
-                    // ->where('especialidad_instructor_curso.activo','true')
-                    // ->where('curso_id', $buscando[0]);
-                    // dd($buscando);
-                }else $message = "SELECCIONE UNA OPCIÓN DE LA LISTA DE CURSOS";
+        }
 
-            }
+        $data = $data->paginate(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
+            'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado','activo_curso',
+            DB::raw('min(fecha_validacion) as fecha_validacion'),
+            DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
+            DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia"),
+            DB::raw('(SELECT hvalidacion FROM especialidad_instructores
+            WHERE especialidad_instructores.id_instructor = instructores.id
+            AND especialidad_instructores.status = \'VALIDADO\'
+            ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
+        ]);
 
-            $data = $data->PAGINATE(25, ['nombre', 'curp', 'telefono', 'instructores.status', 'apellidoPaterno', 'apellidoMaterno',
-                'numero_control', 'instructores.id', 'archivo_alta','curso_extra','estado','activo_curso', DB::raw('min(fecha_validacion) as fecha_validacion'),
-                DB::raw("(min(fecha_validacion) + CAST('11 month' AS INTERVAL)) as por_vencer"),
-                DB::raw("(min(fecha_validacion) + CAST('1 year' AS INTERVAL) - CAST('15 day' AS INTERVAL) ) as vigencia"),
-                DB::raw('(SELECT hvalidacion FROM especialidad_instructores
-                  WHERE especialidad_instructores.id_instructor = instructores.id
-                  AND especialidad_instructores.status = \'VALIDADO\'
-                  ORDER BY especialidad_instructores.updated_at DESC LIMIT 1) as hvalidacion')
-            ]);
-            $data->appends($request->only(['unidadbusquedaPorInstructor', 'tipo_busqueda_instructor']));
+        $data->appends($request->only(['unidadbusquedaPorInstructor', 'tipo_busqueda_instructor']));
 
-        $especialidades = especialidad::SELECT('id','nombre')->WHERE('activo','true')->ORDERBY('nombre','ASC')->GET();
-        $old = $request->all(); //dd($old['tipo_busqueda_instructor']);
-        if(!$old)  $old['tipo_busqueda_instructor'] = null;
-        $tipo_busqueda = ['nombre_curso'=>'CURSO','clave_instructor'=>'CLAVE','nombre_instructor'=>'NOMBRE','curp'=>'CURP','telefono_instructor'=>'TELÉFONO','estatus_instructor'=>'ESTATUS','especialidad'=>'ESPECIALIDAD'];
+        // Batch check for curp existence to avoid N+1
+        $curps = $data->pluck('curp')->unique()->toArray();
+        $existingCurps = \DB::connection('mysql')->table('users')
+            ->whereIn('curp', $curps)
+            ->pluck('curp')
+            ->toArray();
+
+        foreach ($data as $item) {
+            $item->usuario_efirma = in_array($item->curp, $existingCurps);
+        }
+
+        $especialidades = especialidad::select('id','nombre')
+            ->where('activo','true')
+            ->orderBy('nombre','ASC')
+            ->get();
+
+        $old = $request->all();
+        if(!$old) $old['tipo_busqueda_instructor'] = null;
+
+        $tipo_busqueda = [
+            'nombre_curso'=>'CURSO',
+            'clave_instructor'=>'CLAVE',
+            'nombre_instructor'=>'NOMBRE',
+            'curp'=>'CURP',
+            'telefono_instructor'=>'TELÉFONO',
+            'estatus_instructor'=>'ESTATUS',
+            'especialidad'=>'ESPECIALIDAD'
+        ];
+
         $busquedaPorInstructor = $request->busquedaPorInstructor;
-        return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old','tipo_busqueda','busquedaPorInstructor'));
+
+        $user = Auth::user()->load('roles.permissions');
+        // Calcula solo los permisos que realmente usas en el blade
+        $permisos = [
+            'instructor_create' => $user->can('instructor.create'),
+            'academico_exportar_instructores' => $user->can('academico.exportar.instructores'),
+            'only_admin' => $user->can('only.admin'),
+            'instructor_validar' => $user->can('instructor.validar'),
+            'reenvio_credenciales_instructor' => $user->can('reenvio_credenciales_instructor')
+        ];
+
+        return view('layouts.pages.initinstructor', compact('data', 'especialidades','message','old','tipo_busqueda','busquedaPorInstructor','permisos'));
     }
 
     public function cursosAutocomplete(Request $request) {
@@ -4980,7 +5021,7 @@ class InstructorController extends Controller
         }
         $infowhats = [
             'nombre' => $dataInstructor->instructor,
-            'correo' => $dataInstructor->correo,
+            'usuario' => $dataInstructor->correo,
             'pwd' => $dataInstructor->rfc,
             'telefono' => $dataInstructor->telefono,
             'sexo' => $dataInstructor->sexo
@@ -4996,13 +5037,75 @@ class InstructorController extends Controller
         // termina el envio de mensaje de WhatsApp
     }
 
+    public function envio_credenciales_wsp($idins)
+    {
+        $dataInstructor = instructor::Where('id', $idins)->First();
+        $dataInstructor->instructor = $dataInstructor->nombre . ' ' . $dataInstructor->apellidoPaterno . ' ' . $dataInstructor->apellidoMaterno;
+        //envio de credenciales de instructor para Efirma
+        $userInstructor = DB::Connection('mysql')->Table('users')->Where('curp', $dataInstructor->curp)->First();//se checa si existe el usuario
+        if(is_null($userInstructor)) {
+            $userId = DB::Connection('mysql')->Table('users')->InsertGetId([
+                'name' => $dataInstructor->instructor,
+                'email' => $dataInstructor->correo,
+                'password' => Hash::make($dataInstructor->rfc), // Always hash passwords!
+                'created_at' => now(),
+                'updated_at' => now(),
+                'tipo_usuario' => '3',
+                'curp' => $dataInstructor->curp,
+                'id_sivyc' => $dataInstructor->id
+            ]);
+            //end of create user
+        } else {
+            DB::Connection('mysql')->Table('users')
+                ->where('curp', $dataInstructor->curp)
+                ->update(['password' => Hash::make($dataInstructor->rfc)]);
+        }
+        $infowhats = [
+            'nombre' => $dataInstructor->instructor,
+            'usuario' => $dataInstructor->correo,
+            'pwd' => $dataInstructor->rfc,
+            'telefono' => $dataInstructor->telefono,
+            'sexo' => $dataInstructor->sexo
+        ];
+
+        $response = $this->whatsapp_envio_usuario_instructor_msg($infowhats, app(WhatsAppService::class));
+
+        if (isset($response['status']) && $response['status'] === false) {
+            // Handle the error as you wish
+            return back()->with('error', 'Error al enviar mensaje de WhatsApp: ' . ($response['respuesta']['error'] ?? 'Error desconocido'));
+        }
+        return back()->with('success', 'Mensaje de WhatsApp enviado correctamente.');
+        // termina el envio de mensaje de WhatsApp
+    }
+
     private function whatsapp_reenvio_usuario_instructor_msg($instructor, WhatsAppService $whatsapp)
     {
         $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'restablecer_pwd_instructor')->First();
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
             ['{{nombre}}', '{{usuario}}', '{{pwd}}','\n'],
-            [$instructor['nombre'], $instructor['correo'], $instructor['pwd'],"\n"],
+            [$instructor['nombre'], $instructor['usuario'], $instructor['pwd'],"\n"],
+            $plantilla->plantilla
+        );
+
+        if ($instructor['sexo'] == 'MASCULINO') {
+            $mensaje = str_replace(['(a)'], [''], $mensaje);
+        } else {
+            $mensaje = str_replace(['o(a)','r(a)'], ['a','ra'], $mensaje);
+        }
+
+         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
+
+        return $callback;
+    }
+
+    private function whatsapp_envio_usuario_instructor_msg($instructor, WhatsAppService $whatsapp)
+    {
+        $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'alta_efirma_instructores')->First();
+        // Reemplazar variables en plantilla
+        $mensaje = str_replace(
+            ['{{nombre}}', '{{usuario}}', '{{pwd}}','\n'],
+            [$instructor['nombre'], $instructor['usuario'], $instructor['pwd'],"\n"],
             $plantilla->plantilla
         );
 
