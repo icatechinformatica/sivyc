@@ -283,7 +283,10 @@ class asignarfoliosController extends Controller
             $alumnos = DB::table('tbl_cursos as tc')->select('ti.matricula', 'ti.alumno', 'ti.curp', 'tf.folio')
             ->join('tbl_folios as tf', 'tc.id', 'tf.id_curso')
             ->join('tbl_banco_folios as bf', 'bf.id', 'tf.id_banco_folios')
-            ->join('tbl_inscripcion as ti', 'ti.matricula', 'tf.matricula')
+            ->join('tbl_inscripcion as ti', function ($join) {
+                $join->on('ti.matricula', '=', 'tf.matricula')
+                    ->on('ti.id_curso', '=', 'tf.id_curso'); // <-- clave para evitar “colados”
+            })
             ->where('bf.mod', 'EFIRMA')
             ->where('ti.status','INSCRITO')
             ->where('tf.motivo', 'ACREDITADO');
