@@ -153,14 +153,17 @@ Route::middleware(['auth'])->group(function(){
 /**Generar pdf expedientes unicos */
 Route::get('vista/expedientes/genpdf/{folio}', 'ExpeController\ExpedienteController@pdf_expediente')->name('expunico.gen.pdfexpe');
 
-/** MODULO DE EFIRMA BUZON FOLIO ALUMNOS */
-Route::get('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
-Route::post('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
-Route::post('grupos/efirma/buzon/eliminar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@cancelar_doc')->name('grupo.efirma.canceldoc');
-Route::get('grupos/efirma/pdf/{id}', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generar_pdf')->name('grupo.efirma.pdf');
-Route::post('grupos/efirma/token', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generarToken')->name('efirma.token');
-Route::post('grupos/efirma/buzon/update', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@firmar_documento')->name('grupo.efirma.update');
-Route::post('grupos/efirma/buzon/sellar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@sellar_documento')->name('grupo.efirma.sellar');
+Route::middleware(['auth'])->group(function(){
+    /** MODULO DE EFIRMA BUZON FOLIO ALUMNOS */
+    Route::get('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
+    // Route::post('grupos/efirma/buzon', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@index')->name('grupo.efirma.index');
+    Route::post('grupos/efirma/buzon/eliminar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@cancelar_doc')->name('grupo.efirma.canceldoc');
+    Route::get('grupos/efirma/pdf/{id}', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generar_pdf')->name('grupo.efirma.pdf');
+    Route::post('grupos/efirma/token', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@generarToken')->name('efirma.token');
+    Route::post('grupos/efirma/buzon/update', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@firmar_documento')->name('grupo.efirma.update');
+    Route::post('grupos/efirma/buzon/sellar', 'Grupos\efirmaFoliosAlumnos\BuzonFoliosController@sellar_documento')->name('grupo.efirma.sellar');
+});
+
 
 
 //Ruta para le boton de generar xml de folios en el modulo de asigar folios
