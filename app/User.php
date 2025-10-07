@@ -82,4 +82,14 @@ class User extends Authenticatable
             }
         }
     }
+
+    public function canAny(array $permissions): bool
+    {
+        foreach ($permissions as $permission) {
+            if ($this->can($permission)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
