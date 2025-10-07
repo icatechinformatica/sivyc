@@ -77,7 +77,7 @@ class turnarAperturaController extends Controller
         elseif(session('opt')) $opt = session('opt');
         else $opt = "ARC01";
 
-        session(['grupos' => null]); // En lugar de $_SESSION['grupos'] = NULL;
+        session(['grupos' => null]); // En lugar de session(['grupos' => NULL]);
         $grupos = $mextemporaneo = [];
         $ids_extemp = [];
 

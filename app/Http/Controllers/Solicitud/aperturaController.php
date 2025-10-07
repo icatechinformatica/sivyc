@@ -77,7 +77,7 @@ class aperturaController extends Controller
             $this->id_unidad = Auth::user()->unidad;
             $this->tcuota = $this->tcuota();
             $this->data = $this->unidades_user('unidad');
-            $_SESSION['unidades'] =  $this->data['unidades'];
+            session(['unidades' =>  $this->data['unidades']]);
             return $next($request);
         });
     }
@@ -111,8 +111,8 @@ class aperturaController extends Controller
         if($request->folio_grupo){
             $folio_grupo = $request->folio_grupo;
         }
-        elseif(isset($_SESSION['folio_grupo'])){
-            $folio_grupo = $_SESSION['folio_grupo'];
+        elseif(session()->has('folio_grupo')) {
+            $folio_grupo = session('folio_grupo');
         }
 
         //NUEVO
@@ -138,12 +138,12 @@ class aperturaController extends Controller
             }
 
 
-            $_SESSION['folio_grupo'] = $grupo->folio_grupo;
+            session(['folio_grupo' => $grupo->folio_grupo]);
             $anio_hoy = date('y');
             $localidad = DB::table('tbl_localidades')->where('clave',$grupo->clave_localidad)->pluck('localidad')->first();
 
-            $_SESSION['alumnos'] = $alumnos;
-            $_SESSION['grupo'] = $grupo;
+            session(['alumnos' => $alumnos]);
+            session(['grupo' => $grupo]);
             $plantel = $this->plantel();
             $programa = $this->programa();
 
@@ -166,7 +166,7 @@ class aperturaController extends Controller
             if($grupo->tipo){
                 $tcuota = $this->tcuota[$grupo->tipo];
             }
-            $recibo = DB::table('tbl_recibos')->where('folio_grupo',$_SESSION['folio_grupo'])->where('status_folio','ENVIADO')->first();
+            $recibo = DB::table('tbl_recibos')->where('folio_grupo',session('folio_grupo'))->where('status_folio','ENVIADO')->first();
             $grupo_mespecialidad = $grupo->instructor_mespecialidad;
             $ValidaInstructorPDF = DB::table('especialidad_instructores')->where('especialidad_id', $grupo->id_especialidad)
                 ->where('id_instructor', $grupo->id_instructor)
@@ -334,12 +334,12 @@ class aperturaController extends Controller
 
     public function regresar(Request $request){
        $message = 'Operación fallida, vuelva a intentar..';
-        if($_SESSION['folio_grupo'] == $request->folio_grupo){
-            $result = DB::table('alumnos_registro')->where('folio_grupo',$_SESSION['folio_grupo'])->update(['turnado' => "VINCULACION", 'fecha_turnado'=>null]);
-            DB::table('tbl_cursos')->where('folio_grupo', $_SESSION['folio_grupo'])->update(['fecha_arc01'=>null, 'fpreapertura'=>null]);
+        if(session('folio_grupo') == $request->folio_grupo){
+            $result = DB::table('alumnos_registro')->where('folio_grupo',session('folio_grupo'))->update(['turnado' => "VINCULACION", 'fecha_turnado'=>null]);
+            DB::table('tbl_cursos')->where('folio_grupo', session('folio_grupo'))->update(['fecha_arc01'=>null, 'fpreapertura'=>null]);
             if($result){
                 $message = "El grupo fué turnado correctamente a VINCULACIÓN";
-                unset($_SESSION['folio_grupo']);
+                session()->forget('folio_grupo');
             }
         }
         return redirect('solicitud/apertura')->with('message',$message);
@@ -443,14 +443,14 @@ class aperturaController extends Controller
    public function aperturar(Request $request){///PROCESO DE INSCRIPCION
         $result =  NULL;
         $message = "No hay datos para Aperturar.";
-        if($_SESSION['alumnos'] AND $_SESSION['folio_grupo'] == $request->folio_grupo){
-            $grupo = DB::table('tbl_cursos as c')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('c.folio_grupo',$_SESSION['folio_grupo'])->first();
+        if(session('alumnos') AND session('folio_grupo') == $request->folio_grupo){
+            $grupo = DB::table('tbl_cursos as c')->where('status_curso','AUTORIZADO')->where('status','NO REPORTADO')->where('c.folio_grupo',session('folio_grupo'))->first();
             if($grupo){
                 $abrinscri = $this->abrinscri();
                 $result = false;
                 $bandera=0;
-                //var_dump($_SESSION['alumnos']);exit;
-                $alumnos = $_SESSION['alumnos']; //dd($alumnos);
+                //var_dump(session('alumnos'));exit;
+                $alumnos = session('alumnos'); //dd($alumnos);
                 foreach($alumnos as $a){
                     $tinscripcion = $a->tinscripcion;
                     $abrinscriTMP = $a->abrinscri;
@@ -461,7 +461,7 @@ class aperturaController extends Controller
 
                     if($matricula){
                         DB::table('alumnos_pre')->where('id', $a->id_pre)->where('matricula',null)->update(['matricula'=>$matricula]);
-                        DB::table('alumnos_registro')->where('id_pre', $a->id_pre)->where('no_control',null)->where('folio_grupo',$_SESSION['folio_grupo'])->update(['no_control'=>$matricula]);
+                        DB::table('alumnos_registro')->where('id_pre', $a->id_pre)->where('no_control',null)->where('folio_grupo',session('folio_grupo'))->update(['no_control'=>$matricula]);
 
                         $result = Inscripcion::updateOrCreate(
                         ['matricula' =>  $matricula, 'id_curso' =>  $grupo->id, 'folio_grupo' =>  $grupo->folio_grupo],
@@ -540,7 +540,7 @@ class aperturaController extends Controller
     }
 
     public function showCalendar($id){
-        $folio = $_SESSION['folio_grupo'];
+        $folio = session('folio_grupo');
         $data['agenda'] =  Agenda::where('id_instructor', '=', $id)->where('id_curso','=',$folio)->get();
         return response()->json($data['agenda']);
     }
@@ -561,8 +561,8 @@ class aperturaController extends Controller
         $horaInicio = date("H:i", strtotime($request->start));
         $horaTermino = date("H:i", strtotime($request->end));
         $id_instructor = $request->id_instructor;
-        $id_curso = $_SESSION['folio_grupo'];
-        $grupo = $_SESSION['grupo'];
+        $id_curso = session('folio_grupo');
+        $grupo = session('grupo');
         $period = CarbonPeriod::create($fechaInicio,$fechaTermino);
         $minutos_curso = Carbon::parse($horaTermino)->diffInMinutes($horaInicio);
         $es_lunes= Carbon::parse($fechaInicio)->is('monday');
@@ -971,8 +971,8 @@ class aperturaController extends Controller
         $distintivo = DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
 
         #recuperamos el id del curso a traves del folio
-        $folio_grupo =  $_SESSION['folio_grupo']; #folio de grupo
-        $id_curso = DB::table('tbl_cursos')->where('folio_grupo',$_SESSION['folio_grupo'])->pluck('id')->first(); #id curso
+        $folio_grupo =  session('folio_grupo'); #folio de grupo
+        $id_curso = DB::table('tbl_cursos')->where('folio_grupo',session('folio_grupo'))->pluck('id')->first(); #id curso
         $dta_certificacion = DB::table('tbl_funcionarios')->where('id', 18)->pluck('nombre')->first();
 
          #consulta de organismo o en su caso partimos el texto del campo titular
@@ -1125,7 +1125,7 @@ class aperturaController extends Controller
 
     #Se encarga de subir los pdfs
     public function upload_pdfsoporte(Request $request) {
-        $folio_grupo =  $_SESSION['folio_grupo'];
+        $folio_grupo =  session('folio_grupo');
         $cursoInfo = DB::table('tbl_cursos')
         ->selectRaw('id as idcurso, EXTRACT(YEAR FROM inicio) as anio')->where('folio_grupo', $folio_grupo)->first();
 
