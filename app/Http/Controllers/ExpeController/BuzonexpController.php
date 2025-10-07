@@ -36,7 +36,7 @@ class BuzonexpController extends Controller
         $unidades_env = null;
         $ejercicio = [];
         $boton_excel = false;
-        $_SESSION['consulta_todos'] = '';
+        session(['consulta_todos' => '']);
         for ($i=2021; $i <= intval(date('Y')); $i++) {array_push($ejercicio, $i);}
 
         #OBTENERMOS VALORES DEL REQUEST
@@ -74,12 +74,12 @@ class BuzonexpController extends Controller
                 $data_admin = $this->consulta_todos($sel_eje, $unidades_env, $txtbuscar);
                 //Hacer una consulta general y meterlo en un arreglo global para genera un excel en un futuro
                 if(!empty($data_admin)){
-                    $_SESSION['consulta_todos'] = [$sel_eje, $unidades_env, $txtbuscar];
+                    session(['consulta_todos' => [$sel_eje, $unidades_env, $txtbuscar]]);
                     $boton_excel = true;
                 }
 
             }else{
-                $_SESSION['consulta_todos'] = '';
+                session(['consulta_todos' => '']);
                 $data_admin = $this->consulta_datos($sel_status, $sel_eje, $unidades_env, $txtbuscar);
             }
 
@@ -246,7 +246,7 @@ class BuzonexpController extends Controller
     }
 
     public function generar_excel(Request $request) {
-        $consulta = $_SESSION['consulta_todos'];
+        $consulta = session('consulta_todos');
         $sel_eje = $consulta[0];
         $unidades_env = $consulta[1];
         $txtbuscar = $consulta[2];

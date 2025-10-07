@@ -15,35 +15,36 @@ use App\Models\tbl_curso;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
-class foliosController extends Controller {   
+class foliosController extends Controller {
     function __construct() {
         session_start();
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
     }
-    
+
     public function index(Request $request){
 
         $id_user = Auth::user()->id;
         $message = $folios = $unidad = $mod = $finicial = $ffinal= NULL;
         $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-        
-        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')            
+
+        $rol = DB::table('role_user')->LEFTJOIN('roles', 'roles.id', '=', 'role_user.role_id')
             ->WHERE('role_user.user_id', '=', $id_user)->WHERE('roles.slug', 'like', '%unidad%')
-            ->value('roles.slug');        
-        $_SESSION['unidades'] = $unidades = $message = $data = NULL;
+            ->value('roles.slug');
+        session()->forget('unidades');
+        $unidades = $message = $data = NULL;
         if(session('message')) $message = session('message');
        // $rol="unidad";
-        if ($rol) { 
+        if ($rol) {
             $unidad = Auth::user()->unidad;
             $unidad = DB::table('tbl_unidades')->where('id',$unidad)->value('unidad');
             $unidades = DB::table('tbl_unidades')->where('ubicacion',$unidad)->pluck('unidad','unidad');
-            if(count($unidades)==0) $unidades =[$unidad];       
-            $_SESSION['unidades'] = $unidades;           
+            if(count($unidades)==0) $unidades =[$unidad];
+            session(['unidades' => $unidades]);
         }
 
         if (!$unidades ) {
             $unidades = DB::table('tbl_unidades')->orderby('unidad','ASC')->pluck('unidad','unidad');
-            $_SESSION['unidades'] = $unidades;   
+            session(['unidades' => $unidades]);
         }
 
         $folios = [];
@@ -62,7 +63,7 @@ class foliosController extends Controller {
                     $mod = $request->mod;
                     $finicial = $request->finicial;
                     $ffinal = $request->ffinal;
-                                    
+
                     $folios = DB::table('tbl_folios as f')
                         ->select(
                             'c.unidad',
@@ -92,12 +93,12 @@ class foliosController extends Controller {
                         if($request->mod && $request->mod != 'GRAL') $folios = $folios->where('f.mod',$request->mod);
                         if($request->finicial) $folios = $folios->where('f.folio','>=',$request->finicial);
                         if($request->ffinal) $folios = $folios->where('f.folio','<=',$request->ffinal);
-                        if($request->unidad) $folios = $folios->where('c.unidad',$request->unidad);  
-                        if($_SESSION['unidades'])$folios = $folios->whereIn('f.unidad',$_SESSION['unidades']);
-                                              
-                        $folios = $folios->Join('tbl_inscripcion as i', function($join) {                                        
+                        if($request->unidad) $folios = $folios->where('c.unidad',$request->unidad);
+                        if(session('unidades'))$folios = $folios->whereIn('f.unidad',session('unidades'));
+
+                        $folios = $folios->Join('tbl_inscripcion as i', function($join) {
                             $join->on('f.id_curso', '=', 'i.id_curso');
-                            $join->on('f.matricula', '=', 'i.matricula');                            
+                            $join->on('f.matricula', '=', 'i.matricula');
                         })
                         ->join('tbl_cursos as c','c.id','i.id_curso')
                         ->orderby('f.folio')->get();
@@ -117,19 +118,19 @@ class foliosController extends Controller {
             $value->mes = $meses[Carbon::parse($value->termino)->month - 1];
         }
 
-       $path_file = $this->path_files;         
-        return view('consultas.folios', compact('message','unidades','folios','unidad', 'mod', 'finicial', 'ffinal', 'path_file', 'busquedaGeneral', 'buscarComboC', 'buscarDatoC', 'buscarDatoClave', 'buscarCombo', 'buscarDato'));     
-    }  
-    
+       $path_file = $this->path_files;
+        return view('consultas.folios', compact('message','unidades','folios','unidad', 'mod', 'finicial', 'ffinal', 'path_file', 'busquedaGeneral', 'buscarComboC', 'buscarDatoC', 'buscarDatoClave', 'buscarCombo', 'buscarDato'));
+    }
+
     public function xls(Request $request){
 
         $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
-        
+
         $unidad = $request->unidad;
         $mod = $request->mod;
         $finicial = $request->finicial;
         $ffinal = $request->ffinal;
-        
+
         $folios = [];
         $busquedaGeneral = $request->busquedaGeneral;
         switch ($busquedaGeneral) {
@@ -164,26 +165,26 @@ class foliosController extends Controller {
                     if($request->finicial) $folios = $folios->where('f.folio','>=',$request->finicial);
                     if($request->ffinal) $folios = $folios->where('f.folio','<=',$request->ffinal);
                     if($request->unidad) $folios = $folios->where('f.unidad',$request->unidad);
-                    if($_SESSION['unidades'])$folios = $folios->whereIn('f.unidad',$_SESSION['unidades']);                        
-                    $folios = $folios->Join('tbl_inscripcion as i', function($join){                                        
+                    if(session('unidades'))$folios = $folios->whereIn('f.unidad',session('unidades'));
+                    $folios = $folios->Join('tbl_inscripcion as i', function($join){
                         $join->on('f.id_curso', '=', 'i.id_curso');
-                        $join->on('f.matricula', '=', 'i.matricula');                            
+                        $join->on('f.matricula', '=', 'i.matricula');
                     })
                     ->join('tbl_cursos as c','c.id','i.id_curso')
                     ->orderby('f.folio')->get();
                     $name= "FOLIOS_ASIGNADOS_".$unidad.".xlsx";
-                    $title = "FOLIOS_ASIGANDOS_".$unidad;    
+                    $title = "FOLIOS_ASIGANDOS_".$unidad;
                 break;
             case '1':
                 $claveCurso = $request->claveCurso;
                 $folios = $this->getDataForCurso($claveCurso);
                 $name= "FOLIOS_ASIGNADOS_".$claveCurso.".xlsx";
-                $title = "FOLIOS_ASIGANDOS_".$claveCurso;    
+                $title = "FOLIOS_ASIGANDOS_".$claveCurso;
                 break;
             case '2':
                 $folios = $this->getDataForAlumno($request->alumnoS, $request->datoAlumno);
                 $name = "FOLIOS_ASIGNADOS_".$request->datoAlumno.".xlsx";
-                $title = "FOLIOS_ASIGANDOS_".$request->datoAlumno;   
+                $title = "FOLIOS_ASIGANDOS_".$request->datoAlumno;
                 break;
         }
 
@@ -194,13 +195,13 @@ class foliosController extends Controller {
             $value->mes = $meses[Carbon::parse($value->termino)->month - 1];
         }
         if(count($folios)==0){ return "NO REGISTROS QUE MOSTRAR";exit;}
-                                
-        $head = ['UNIDAD', 'CLAVE', 'CURSO', 'FOLIO','MOD','EXPEDICION','ESTATUS','MOTIVO','MATRICULA','ALUMNO', 'DURACION', 'INICIO', 'TERMINO', 'MES TERMINO', 'HORARIO', 'DIAS', 'INSTRUCTOR', 'MUNICIPIO', 'DEPENDENCIA BENEFICIADA', 'ESPACIO', 'ESTATUS FORMATO T', 'CAPACITACION', 'ESTATUS APERTURA'];            
-        
-        if(count($folios)>0)return Excel::download(new xlsFoliosAsignados($folios,$head, $title), $name);
-            
 
-        /* if($unidad){                    
+        $head = ['UNIDAD', 'CLAVE', 'CURSO', 'FOLIO','MOD','EXPEDICION','ESTATUS','MOTIVO','MATRICULA','ALUMNO', 'DURACION', 'INICIO', 'TERMINO', 'MES TERMINO', 'HORARIO', 'DIAS', 'INSTRUCTOR', 'MUNICIPIO', 'DEPENDENCIA BENEFICIADA', 'ESPACIO', 'ESTATUS FORMATO T', 'CAPACITACION', 'ESTATUS APERTURA'];
+
+        if(count($folios)>0)return Excel::download(new xlsFoliosAsignados($folios,$head, $title), $name);
+
+
+        /* if($unidad){
             $folios = DB::table('tbl_folios as f')
                 ->select('f.unidad',
                     'c.clave',
@@ -230,29 +231,29 @@ class foliosController extends Controller {
                 if($request->finicial) $folios = $folios->where('f.folio','>=',$request->finicial);
                 if($request->ffinal) $folios = $folios->where('f.folio','<=',$request->ffinal);
                 if($request->unidad) $folios = $folios->where('f.unidad',$request->unidad);
-                 if($_SESSION['unidades'])$folios = $folios->whereIn('f.unidad',$_SESSION['unidades']);                        
-                $folios = $folios->Join('tbl_inscripcion as i', function($join){                                        
+                 if(session('unidades'))$folios = $folios->whereIn('f.unidad',session('unidades'));
+                $folios = $folios->Join('tbl_inscripcion as i', function($join){
                     $join->on('f.id_curso', '=', 'i.id_curso');
-                    $join->on('f.matricula', '=', 'i.matricula');                            
+                    $join->on('f.matricula', '=', 'i.matricula');
                 })
                 ->join('tbl_cursos as c','c.id','i.id_curso')
                 ->orderby('f.folio')->get();
-            
+
             foreach ($folios as $value) {
                 $value->mes = $meses[Carbon::parse($value->termino)->month - 1];
             }
-            
+
             if(count($folios)==0){ return "NO REGISTROS QUE MOSTRAR";exit;}
-                                
-            $head = ['UNIDAD', 'CLAVE', 'CURSO', 'FOLIO','MOD','EXPEDICION','ESTATUS','MOTIVO','MATRICULA','ALUMNO', 'DURACION', 'INICIO', 'TERMINO', 'MES TERMINO', 'HORARIO', 'DIAS', 'INSTRUCTOR', 'MUNICIPIO', 'DEPENDENCIA BENEFICIADA', 'ESPACIO', 'ESTATUS FORMATO T', 'CAPACITACION', 'ESTATUS APERTURA'];            
+
+            $head = ['UNIDAD', 'CLAVE', 'CURSO', 'FOLIO','MOD','EXPEDICION','ESTATUS','MOTIVO','MATRICULA','ALUMNO', 'DURACION', 'INICIO', 'TERMINO', 'MES TERMINO', 'HORARIO', 'DIAS', 'INSTRUCTOR', 'MUNICIPIO', 'DEPENDENCIA BENEFICIADA', 'ESPACIO', 'ESTATUS FORMATO T', 'CAPACITACION', 'ESTATUS APERTURA'];
             $name= "FOLIOS_ASIGNADOS_".$unidad.".xlsx";
-            $title = "FOLIOS_ASIGANDOS_".$unidad;    
-    
+            $title = "FOLIOS_ASIGANDOS_".$unidad;
+
             if(count($folios)>0)return Excel::download(new xlsFoliosAsignados($folios,$head, $title), $name);
-             
-                
-        }else return "SELECCIONE LA UNIDAD"; */        
-    } 
+
+
+        }else return "SELECCIONE LA UNIDAD"; */
+    }
 
     public function cursoAutocomplete(Request $request) {
         $search = $request->search;
@@ -418,5 +419,5 @@ class foliosController extends Controller {
         }
         return $folios;
     }
-    
+
 }

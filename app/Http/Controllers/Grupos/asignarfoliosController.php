@@ -200,8 +200,8 @@ class asignarfoliosController extends Controller
                 //elseif(count($alumnos)>0) if($alumnos[0]->folio)$message = "Curso con folios expedidos. ";
                 /*
                 if(!$message){
-                    $_SESSION['clave'] = $curso->clave;
-                    $_SESSION['matricula'] = $matricula;
+                    session('clave') = $curso->clave;
+                    session('matricula') = $matricula;
                 }
                 */
 
@@ -283,12 +283,15 @@ class asignarfoliosController extends Controller
             $alumnos = DB::table('tbl_cursos as tc')->select('ti.matricula', 'ti.alumno', 'ti.curp', 'tf.folio')
             ->join('tbl_folios as tf', 'tc.id', 'tf.id_curso')
             ->join('tbl_banco_folios as bf', 'bf.id', 'tf.id_banco_folios')
-            ->join('tbl_inscripcion as ti', 'ti.matricula', 'tf.matricula')
+            ->join('tbl_inscripcion as ti', function ($join) {
+                $join->on('ti.matricula', '=', 'tf.matricula')
+                    ->on('ti.id_curso', '=', 'tf.id_curso'); // <-- clave para evitar “colados”
+            })
             ->where('bf.mod', 'EFIRMA')
             ->where('ti.status','INSCRITO')
             ->where('tf.motivo', 'ACREDITADO');
             if($matricula)$alumnos = $alumnos->where('tf.matricula',$matricula);
-            $alumnos = $alumnos->where('tc.id', $curso->id)->groupBy('ti.matricula', 'ti.alumno', 'ti.curp', 'tf.folio')->orderby('ti.alumno')->get();
+            $alumnos = $alumnos->where('ti.id_curso', $curso->id)->groupBy('ti.matricula', 'ti.alumno', 'ti.curp', 'tf.folio')->orderby('ti.alumno')->get();
 
 
             if($firm_academico && $firm_director && $alumnos){

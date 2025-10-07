@@ -43,12 +43,12 @@ class BuzonController extends Controller
         $ejercicio = [];
         for ($i=2023; $i <= intval(date('Y')); $i++) {array_push($ejercicio, $i);}
 
-        if($sel_eje == null && isset($_SESSION['eje_pat_buzon']) == ''){
-            $_SESSION['eje_pat_buzon'] = date('Y');
-        }elseif($sel_eje != null){
-            $_SESSION['eje_pat_buzon'] = $sel_eje;
+        if ($sel_eje == null && !session()->has('eje_pat_buzon')) {
+            session(['eje_pat_buzon' => date('Y')]);
+        } elseif ($sel_eje != null) {
+            session(['eje_pat_buzon' => $sel_eje]);
         }
-        $anio = $_SESSION['eje_pat_buzon'];
+        $anio = session('eje_pat_buzon');
 
         //Busqueda por el autocomplete
         if (!empty($txt_auto)) {
@@ -99,8 +99,8 @@ class BuzonController extends Controller
     {
         //Obtenemos viariable global
         $global_ejercicio = strval(date('Y'));
-        if (isset($_SESSION['eje_pat_buzon'])){
-            $global_ejercicio = $_SESSION['eje_pat_buzon'];
+        if (session()->has('eje_pat_buzon')){
+            $global_ejercicio = session('eje_pat_buzon');
         }
         //MOSTRAR FECHA
         $mesGlob = $this->arrayMes;
@@ -585,7 +585,7 @@ class BuzonController extends Controller
         $cadena_html_meta  = $qrCodeBase64 = $uuid = $cadena_sello = $fecha_sello = $no_oficio = '';
         $firmantes = [];
         $id_organismo = $id_org;
-        // dd($_SESSION['id_organsmog']);
+        // dd(session('id_organsmog'));
         $ids_org = DB::table('tbl_organismos as o')
         ->join('tbl_organismos as p', 'o.id_parent', '=', 'p.id')
         ->where('o.id', $id_organismo)

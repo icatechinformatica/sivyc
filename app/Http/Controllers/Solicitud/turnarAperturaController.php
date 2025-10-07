@@ -32,6 +32,7 @@ class turnarAperturaController extends Controller
 
     public function __construct() {
         // Remover session_start() - Laravel maneja las sesiones automáticamente
+        session_start();
         $this->ejercicio = date("y");
         $this->middleware('auth');
         $this->path_pdf = "/UNIDAD/arc01/";
@@ -76,7 +77,7 @@ class turnarAperturaController extends Controller
         elseif(session('opt')) $opt = session('opt');
         else $opt = "ARC01";
 
-        session(['grupos' => null]); // En lugar de $_SESSION['grupos'] = NULL;
+        session(['grupos' => null]); // En lugar de session(['grupos' => NULL]);
         $grupos = $mextemporaneo = [];
         $ids_extemp = [];
 

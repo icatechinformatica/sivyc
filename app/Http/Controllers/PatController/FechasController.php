@@ -30,12 +30,12 @@ class FechasController extends Controller
         $sel_eje = $request->sel_ejercicio;
         $ejercicio = [];
         for ($i=2023; $i <= intval(date('Y')); $i++) {array_push($ejercicio, $i);}
-        if($sel_eje == null && isset($_SESSION['eje_pat_fechas']) == ''){
-            $_SESSION['eje_pat_fechas'] = date('Y');
-        }elseif($sel_eje != null){
-            $_SESSION['eje_pat_fechas'] = $sel_eje;
+        if ($sel_eje == null && !session()->has('eje_pat_fechas')) {
+            session(['eje_pat_fechas' => date('Y')]);
+        } elseif ($sel_eje != null) {
+            session(['eje_pat_fechas' => $sel_eje]);
         }
-        $anio = $_SESSION['eje_pat_fechas'];
+        $anio = session('eje_pat_fechas');
 
         $mes_avance_get = $tipo;
 
@@ -75,7 +75,7 @@ class FechasController extends Controller
 
          //Hacemos una consulta para hacer un update despues de todos los registros
          $registros = FechasPat::select('id', 'status_meta', 'status_avance')
-         ->where('periodo', '=', $_SESSION['eje_pat_fechas'])->get();
+         ->where('periodo', '=', session('eje_pat_fechas'))->get();
         //  dd($registros[0]->status_meta['proceso']);
 
         //SELECT META
@@ -151,7 +151,7 @@ class FechasController extends Controller
         //CONTULTA A LA BD DE FECHAS
         $registros = FechasPat::select('id', 'fecha_meta', 'fechas_avance')
          ->where('id', '=', $request->id)
-         ->where('periodo', '=', $_SESSION['eje_pat_fechas'])->get();
+         ->where('periodo', '=', session('eje_pat_fechas'))->get();
 
         if ($request->tipo == 'meta') {
             //Modificar formato de fechas para enviarlos a la vista
