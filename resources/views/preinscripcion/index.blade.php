@@ -523,9 +523,7 @@
                 $("#generar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.generar')}}", 'target':'_target'}); $('#frm').submit(); });
                 $("#gape").click(function(){
                     if ($('#mapertura').val() == ''||$('#mapertura').val() == ' ') {
-                        alert("Guarde el número de memorándum de la solicitud de apertura..");
-                    } else if ($('#observaciones').val() == ''||$('#observaciones').val() == ' ') {
-                        alert("Llenar el campo de observaciones..");
+                        alert("Guarde el número de memorándum de la solicitud de apertura..");                    
                     } else {
                         $('#frm').attr({'action':"{{route('preinscripcion.grupo.gape')}}", 'target':'_target'}); $('#frm').submit();
                     }

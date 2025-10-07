@@ -1637,10 +1637,7 @@ class grupoController extends Controller
                                     ELSE ''
                                 END
                                 || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
-                                /*||
-                                CASE
-                                WHEN tc.nota is not null THEN ' ' || tc.nota
-                                END*/
+                                || ' ' || COALESCE(tc.nota, '')
                             ) AS observaciones
                         ")
 
@@ -1652,7 +1649,7 @@ class grupoController extends Controller
                     ->where('ar.eliminado', false)
                     ->groupBy('tc.folio_grupo','tc.tipo_curso','tc.espe','tc.curso','tc.mod','tc.tcapacitacion','tc.dura','tc.inicio','tc.termino','ar.horario','tc.dia','tc.horas',
                     'tc.costo','tc.hombre','tc.mujer','tc.mexoneracion','tc.cgeneral','tc.cespecifico','tc.depen','tc.depen_representante','tc.depen_telrepre','tc.nombre','ar.realizo',
-                    'tc.obs_preapertura','tc.efisico','ar.efisico','tc.unidad','tc.fpreapertura','tc.solicita',
+                    'tc.obs_preapertura','tc.efisico','ar.efisico','tc.unidad','tc.fpreapertura','tc.solicita','tc.nota',
                     'tc.vb_dg','tc.clave','tc.modinstructor','tc.tipo','tc.instructor_mespecialidad' //NUEVO VOBO
                     )
                     ->orderBy('folio_grupo')
