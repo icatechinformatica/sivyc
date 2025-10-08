@@ -52,6 +52,8 @@
         <!-- FOOTER PORTAL DE GOBIERNO -->
         @include('theme.sivyc.footer')
 
+        {{-- ✅ Loader global reutilizable --}}
+        @include('components.loader')
 
 
         <script src="{{asset('vendor/jquery/jquery.min.js')}}"></script>
