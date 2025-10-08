@@ -951,3 +951,6 @@ Route::get('/test/error/{codigo}', function ($codigo) {
 //agregar curso a un instructor sin prevalidacion
 Route::post('/instructor/asignar-cursos-especialidad', 'webController\InstructorController@asignarCursosEspecialidad')->name('asignar.cursos.especialidad');
 
+Route::get('/test/newrelicerror', function () {
+    throw new ErrorException("Error controlado para prueba de New Relic - tipo 2" . date('H:i:s'));
+});

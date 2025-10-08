@@ -19,16 +19,11 @@ use PDF;
 class BuzonFoliosController extends Controller
 {
     function __construct() {
-        session_start();
+
     }
 
     public function index(Request $request)
     {
-        ## Buzon de folios
-        // Verificar si hay usuario autenticado
-        if (!Auth::check()) {
-            return redirect()->route('login')->with('error', 'Debe iniciar sesión para acceder a esta página.');
-        }
 
         $user = Auth::user();
 
@@ -63,22 +58,11 @@ class BuzonFoliosController extends Controller
             'cancelado' => 'CANCELADO'
         ];
 
-        ### Recopilamos los datos del request
-        if(session('ejercicio_e')) $ejercicio_e = session('ejercicio_e');
-        else $ejercicio_e = date('Y');
-        if($ejercicio_e) session(['ejercicio_e' => $ejercicio_e]);
+        $ejercicio_e = $request->input('anio', date('Y'));
+        $filtro_e = $request->input('status', null);
+        $clave_e = $request->input('txtclave', null);
+        $matricula = $request->input('txtmatricula', null);
 
-        if(session('filtro_e')) $filtro_e = session('filtro_e');
-        else $filtro_e = $request->status;
-        if($filtro_e) session(['filtro_e' => $filtro_e]);
-
-        if(session('clave_e')) $clave_e = session('clave_e');
-        else $clave_e = $request->txtclave;
-        if($clave_e) session(['clave_e' => $clave_e]);
-
-        if(session('matricula')) $matricula = session('matricula');
-        else $matricula = $request->txtmatricula;
-        if($matricula) session(['matricula' => $matricula]);
 
         ##Realizamos la busqueda en la base de datos de efolios_alumnos
         if(!is_null($ejercicio_e) && !is_null($filtro_e) && !is_null($clave_e)){
@@ -114,11 +98,7 @@ class BuzonFoliosController extends Controller
                             ->get();
 
                 if($data == null || count($data) == 0){
-                    return back()->with([
-                        'message' => 'No se encontraron registros',
-                        'clave_e' => $clave_e,
-                        'matricula' => $matricula
-                    ]);
+                    return redirect()->route('grupo.efirma.index')->with(['message' => 'No se encontraron registros de la Clave: '. $clave_e, 'clave_e' => $clave_e, 'matricula' => $matricula, 'filtro_e' => $filtro_e, 'ejercicio_e' => $ejercicio_e]);
                 }
             } catch (\Throwable $th) {
                 return back()->with('message', '¡ERROR AL REALIZAR LA BUSQUEDA DE REGISTROS! '.$th->getMessage());
