@@ -131,9 +131,9 @@ class aperturaController extends Controller
                     $titular_sop = ($sop_constancias->titular_depen != "" && $sop_constancias->cargo_titular != "") ? $sop_constancias->titular_depen.', '.$sop_constancias->cargo_titular : '';
 
                     $bddoc_soporte = ExpeUnico::select('academico->doc_25->url_documento as url_documento')
-                    ->where('sop_constancias->num_oficio', $num_oficio_sop)->where('academico->doc_25->url_documento', '<>', '')->first();
+                    ->where('sop_constancias->num_oficio', $num_oficio_sop)->where('academico->doc_25->url_documento', '<>', '')->where('folio_grupo', $folio_grupo)->first();
 
-                    $url_soporte = ($bddoc_soporte !== null) ? $this->path_files.$bddoc_soporte->url_documento : '';
+                    $url_soporte = ($bddoc_soporte !== null) ? $this->path_uploadFiles.$bddoc_soporte->url_documento : '';
                 }
             }
 
