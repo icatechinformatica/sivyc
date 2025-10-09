@@ -8,16 +8,12 @@
         .contenedor{
             margin-left: 1cm;
             margin-right: 1cm;
+            margin-top: 1cm;
         }
         body{
-            /* margin-top: 70px; */
-            /* margin-bottom: -120px; */
-            padding-top: 45px;
-            padding-bottom: 60px;
-            /* background-color: aqua; */
+            padding-top: 185px;
         }
         .bloque_uno{
-            padding-top: 40px;
             font-weight: bold;
             font-size: 13px;
             font: bold;
@@ -55,9 +51,6 @@
     </style>
 @endsection
 @php
-    // dd($distintivo, $direccion, $data, $unidad, $organismo, $numficio,
-    //     $partes_titu, $municipio, $fecha_comp, $tabla_contenido, $rango_mes, $total_cursos, $total_folios);
-    // dd($municipio);
     $nombre_titular = $cargo_fun = 'DATO REQUERIDO';
     if ($organismo) {
         $nombre_titular = $organismo->nombre_titular;
@@ -71,7 +64,7 @@
             <p class="delet_space_p color_text">OFICIO NÚM. {{$numficio}}</p>
             <p class="delet_space_p color_text">{{$municipio}}, CHIAPAS; <span class="color_text">{{strtoupper($fecha_comp)}}</span></p>
         </div>
-        <br><br><br>
+        <br><br>
         <div class="bloque_dos" align="left">
             <p class="delet_space_p color_text">C.
                 @if (count($partes_titu) > 0)
