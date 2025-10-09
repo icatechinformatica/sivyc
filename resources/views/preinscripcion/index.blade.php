@@ -17,60 +17,6 @@
         .btn { font-size: 11px;}
         #div_instructor {  display: none; }
 
-        /* Estilo del loader */
-        #loader-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
-            z-index: 9999; /* Asegura que esté por encima de otros elementos */
-            display: none; /* Ocultar inicialmente */
-        }
-
-        #loader {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 60px;
-            height: 60px;
-            border: 6px solid #fff;
-            border-top: 6px solid #621132;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {transform: translate(-50%, -50%) rotate(0deg);}
-            100% {transform: translate(-50%, -50%) rotate(360deg);}
-        }
-
-        #loader-text {
-            color: #fff;
-            margin-top: 150px;
-            text-align: center;
-            font-size: 20px;
-        }
-
-        /* Texto loader */
-        #loader-text span {
-            opacity: 0; /* Inicia los puntos como invisibles */
-            font-size: 30px;
-            font-weight: bold;
-            animation: fadeIn 1s infinite; /* Aplica la animación de aparecer */
-        }
-
-        @keyframes fadeIn {
-            0%, 100% { opacity: 0; }
-            50% { opacity: 1; }
-        }
-
-        #loader-text span:nth-child(1) {animation-delay: 0.5s; }
-        #loader-text span:nth-child(2) {animation-delay: 1s; }
-        #loader-text span:nth-child(3) {animation-delay: 1.5s;}
-
     </style>
 @endsection
 @section('content')
@@ -96,12 +42,6 @@
         if($turnado!='VINCULACION' AND !$message AND $turnado) $message = "Grupo turnado a  ".$turnado;
         $consec = 1;
     @endphp
-    <div id="loader-overlay">
-        <div id="loader"></div>
-        <div id="loader-text">
-            Espere un momento mientras se valida la información .<span> . </span><span> . </span><span> . </span>
-        </div>
-    </div>
     <div class="card-header">
         Preinscripci&oacute;n / Registro de Grupo
     </div>
@@ -109,7 +49,7 @@
         @if($message ?? '')
             <div class="row ">
                 <div class="col-md-12 alert alert-danger">
-                    <p>{{ $message ?? '' }}</p>
+                    <p>{!! $message ?? '' !!}</p>
                 </div>
             </div>
         @endif
@@ -503,7 +443,10 @@
                 $("#gen_acta_acuerdo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.acuerdo_pdf')}}",'target':'_blank'}); $('#frm').submit(); });
                 $("#gen_convenio_esp").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.convenio_pdf')}}",'target':'_blank'}); $('#frm').submit(); });
 
-                $("#agregar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.save')}}",'target':'_self'}); $('#frm').submit(); });
+                $("#agregar").click(function(){
+                    loader('show');
+                    $('#frm').attr({'action':"{{route('preinscripcion.grupo.save')}}",'target':'_self'}); $('#frm').submit(); 
+                });
                 $("#nuevo").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.nuevo')}}",'target':'_self'}); $('#frm').submit(); });
 
                 $("#update").click(function(e){
@@ -523,9 +466,7 @@
                 $("#generar").click(function(){ $('#frm').attr({'action':"{{route('preinscripcion.grupo.generar')}}", 'target':'_target'}); $('#frm').submit(); });
                 $("#gape").click(function(){
                     if ($('#mapertura').val() == ''||$('#mapertura').val() == ' ') {
-                        alert("Guarde el número de memorándum de la solicitud de apertura..");
-                    } else if ($('#observaciones').val() == ''||$('#observaciones').val() == ' ') {
-                        alert("Llenar el campo de observaciones..");
+                        alert("Guarde el número de memorándum de la solicitud de apertura..");                    
                     } else {
                         $('#frm').attr({'action':"{{route('preinscripcion.grupo.gape')}}", 'target':'_target'}); $('#frm').submit();
                     }
@@ -889,11 +830,7 @@
             }
             */
 
-        function loader(make) {
-            if(make == 'hide') make = 'none';
-            if(make == 'show') make = 'block';
-            document.getElementById('loader-overlay').style.display = make;
-        }
+       
         </script>
     @endsection
 @endsection

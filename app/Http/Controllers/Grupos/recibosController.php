@@ -460,7 +460,14 @@ class recibosController extends Controller
                                 ELSE false
                             END) as editar"),
                         DB::raw("COALESCE(tc.clave, '0') as clave"),///NUEVO VOBO
-                        DB::raw('COALESCE(tc.vb_dg, false) as vb_dg')//NUEVO VOBO
+                        DB::raw('COALESCE(tc.vb_dg, false) as vb_dg'),//NUEVO VOBO
+                        DB::raw("(
+                            SELECT memorandum
+                            FROM tbl_rf001
+                            CROSS JOIN LATERAL json_array_elements(tbl_rf001.movimientos) AS elem
+                            WHERE elem->>'folio' = tr.folio_recibo
+                            LIMIT 1
+                        ) AS memo_rf001")
                     )
                     ->where(DB::raw('CONCAT(tr.folio_recibo,tc.folio_grupo)'), 'ILIKE', '%'.$valor.'%')
                     ->wherein('tc.unidad',$this->unidades)
