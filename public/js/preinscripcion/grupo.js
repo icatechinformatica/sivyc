@@ -193,11 +193,18 @@
              
             
     function validarInput(input) {
-        if( !$('#cerss_ok').prop('checked') ){                        
+        if( !$('#cerss_ok').prop('checked') ){          
+            
+            
             var curp = input.value.toUpperCase(),
             resultado = document.getElementById("resultado"),valido = "No válido";
                         
-            if (curpValida(curp)) {
+          
+            let patron = /^[0-9][A-Z]-\d{6}$/;
+            //console.log( patron.test(curp));
+
+
+            if (curpValida(curp) || patron.test(curp)) {
                 valido = "Válido";
                 resultado.classList.add("ok");
             } else {

@@ -84,7 +84,8 @@
                         <div class="form-group col-md-6">TOTAL CUOTA DE RECUPERACIÓN: <b>$ {{ number_format($data->costo, 2, '.', ',') }}</b></div>                    
                         <div class="form-group col-md-6">HORARIO: <b>DE {{ $data->hini }} A {{ $data->hfin }} </b></div>
                         @if($data->status_recibo )<div class="form-group col-md-6">ESTATUS RECIBO: <b>{{ $data->status_recibo }}</b></div>@endif
-                        <div class="form-group col-md-6">TIPO DE PAGO: <b>{{ $data->tpago }}</b></div>                        
+                        @if(isset($data->memo_rf001) )<div class="form-group col-md-6">RF001: <b>{{ $data->memo_rf001 }}</b></div>@endif
+                        <div class="form-group col-md-6">TIPO DE PAGO: <b>{{ $data->tpago }}</b></div>
                     </div> 
                 @elseif($data->status_folio == 'ENVIADO')                             
                     <div class="row bg-light" style="padding:35px; line-height: 1.5em;">   

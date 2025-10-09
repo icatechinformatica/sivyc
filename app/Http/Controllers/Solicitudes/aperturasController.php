@@ -37,7 +37,7 @@ class aperturasController extends Controller
             $this->id_unidad = Auth::user()->unidad;
 
             $this->data = $this->unidades_user('unidad');
-            $_SESSION['unidades'] =  $this->data['unidades'];
+            session(['unidades' =>  $this->data['unidades']]);
             return $next($request);
         });
     }
@@ -46,13 +46,13 @@ class aperturasController extends Controller
         $opt = $memo = $message = $file = $status_solicitud = $extemporaneo = $motivo_soporte = NULL;
 
         if($request->memo)  $memo = $request->memo;
-        elseif(isset($_SESSION['memo'])) $memo = $_SESSION['memo'];
+        elseif(session()->has('memo')) $memo = session('memo');
 
         if($request->opt)  $opt = $request->opt;
-        elseif(isset($_SESSION['opt'])) $opt = $_SESSION['opt'];
+        elseif(session()->has('opt')) $opt = session('opt');
         else $opt = 'ARC01';
 
-        $_SESSION['grupos'] = NULL;
+        session(['grupos' => NULL]);
         $grupos = $movimientos = [];
         //echo $memo;
         $path = $this->path_files;
@@ -78,9 +78,9 @@ class aperturasController extends Controller
                'e.memo_soporte_dependencia','e.nrevision','tr.file_pdf','tr.status_folio','tr.motivo')->get();
                 //dd($grupos);
             if(count($grupos)>0){
-                $_SESSION['grupos'] = $grupos;
-                $_SESSION['memo'] = $memo;
-                $_SESSION['opt'] = $opt;
+                session(['grupos' => $grupos]);
+                session(['memo' => $memo]);
+                session(['opt' => $opt]);
                 $estatus = DB::table('tbl_cursos')->wherein('status_curso', ['SOLICITADO','EN FIRMA','AUTORIZADO']);
                 if($opt == 'ARC01'){
                     $estatus = $estatus->where('munidad',$memo);
@@ -145,8 +145,8 @@ class aperturasController extends Controller
                 }
 
                  if($status_solicitud =='TURNADO'){ //TURNADO PRELIMINAR
-                    $movimientos += ['' => '- SELECCIONAR -']; 
-                    if($grupos[0]->arc == '02')  $movimientos += ['EDICION' =>'AUTORIZAR EDICION']; 
+                    $movimientos += ['' => '- SELECCIONAR -'];
+                    if($grupos[0]->arc == '02')  $movimientos += ['EDICION' =>'AUTORIZAR EDICION'];
                      $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR'];
                 }
 
@@ -157,16 +157,16 @@ class aperturasController extends Controller
                     $movimientos += ['' => '- SELECCIONAR -'];
                     if($grupos[0]->arc == '02'){
                         $movimientos += ['EDICION' =>'AUTORIZAR EDICION', 'PRETORNADO'=>'RETORNAR A UNIDAD','VALIDADO'=>'VALIDAR PRELIMINAR','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
-                    }else{                        
+                    }else{
                         $movimientos += ['PRETORNADO'=>'RETORNAR A UNIDAD','VoBo'=>'VALIDAR Y SOLICITAR VoBo'];
                     }
                 }elseif($status_solicitud =='TURNADO' and $grupos[0]->turnado=='VoBo' and $grupos[0]->vb_dg==false){ //DESHACER ENVIO voBo
                     $movimientos = ['' => '- SELECCIONAR -', 'DESHACER'=>'DESHACER MOVIMIENTO'];
-                }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG                    
+                }elseif($status_solicitud =='TURNADO' and $grupos[0]->vb_dg==true){ //TURNADO Y AUTORIZADO DG
                     $movimientos = ['' => '- SELECCIONAR -', 'PRETORNADO'=>'RETORNAR A UNIDAD', 'VALIDADO'=>'VALIDAR PRELIMINAR']; //INHABILITAR VOBO DG
                 }
                 */
-                
+
             }else $message = "No se encuentran registros que mostrar.";
         }
 //dd($grupos);
@@ -189,7 +189,7 @@ class aperturasController extends Controller
                         WHEN BOOL_AND(tc.turnado = 'DGA' AND tc.vb_dg = true) THEN 'AUTORIZADO DG'
                         WHEN BOOL_AND(tc.turnado = 'DGA' AND tc.vb_dg = false) THEN 'RECHAZADO DG'
                         ELSE 'PREVALIDACION'
-                        END                          
+                        END
                     ) as status_solicitud
                 ")
             )
@@ -218,19 +218,19 @@ class aperturasController extends Controller
         $titulo = ''; $cuerpo = '';
         $message = 'Operación fallida, vuelva a intentar..';
 
-        if($_SESSION['memo'] AND $_SESSION['opt'] ){
+        if(session('memo') AND session('opt') ){
             if ($request->hasFile('file_autorizacion')) {
-                $name_file = str_replace('/','-',$_SESSION['memo'])."_".date('ymdHis')."_".$this->id_user;
+                $name_file = str_replace('/','-',session('memo'))."_".date('ymdHis')."_".$this->id_user;
                 $file = $request->file('file_autorizacion');
                 $file_result = $this->upload_file($file,$name_file);
                 $url_file = "https://www.sivyc.icatech.gob.mx/storage/uploadFiles/".$file_result["url_file"];
 
                 if($file_result){
-                    switch($_SESSION['opt']){
+                    switch(session('opt')){
                         case "ARC01":
                             $titulo = 'Autorización de Apertura';
-                            $cuerpo = 'La autorización de clave de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
-                            $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
+                            $cuerpo = 'La autorización de clave de apertura del memo '.session('memo').' ha sido procesada';
+                            $result = DB::table('tbl_cursos')->where('munidad',session('memo'))
                             ->where('clave','<>','0')
                             //->where('turnado','UNIDAD')
                             ->where('status_curso','EN FIRMA')
@@ -239,14 +239,14 @@ class aperturasController extends Controller
                         break;
                         case "ARC02":
                             if($request->movimiento=='CANCELADO'){
-                                //var_dump($_SESSION['grupos'] );
+                                //var_dump(session('grupos') );
 
-                                $folio_grupo = $_SESSION['grupos'][0]->folio_grupo;
+                                $folio_grupo = session('grupos')[0]->folio_grupo;
 
                                 //exit;
                                 $titulo = 'Cancelación de apertura';
-                                $cuerpo = 'La cancelación de la apertura del memo '.$_SESSION['memo'].' ha sido procesada';
-                                $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
+                                $cuerpo = 'La cancelación de la apertura del memo '.session('memo').' ha sido procesada';
+                                $result = DB::table('tbl_cursos')->where('nmunidad',session('memo'))
                                 ->where('clave','<>','0')
                                 ->where('turnado','UNIDAD')
                                 ->where('status_curso','EN FIRMA')
@@ -258,8 +258,8 @@ class aperturasController extends Controller
 
                             }else{
                                 $titulo = 'Autorización de modificación de apertura';
-                                $cuerpo = 'La autorización de modificación de apertura del memo '.$_SESSION['memo'].' ha sido procesada';
-                                $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
+                                $cuerpo = 'La autorización de modificación de apertura del memo '.session('memo').' ha sido procesada';
+                                $result = DB::table('tbl_cursos')->where('nmunidad',session('memo'))
                                 ->where('clave','<>','0')
                                 ->where('turnado','UNIDAD')
                                 ->where('status_curso','EN FIRMA')
@@ -270,7 +270,7 @@ class aperturasController extends Controller
                     }
                     if($result) {
                         $url = 'https://sivyc.icatech.gob.mx/solicitud/turnar solicitud';
-                        $notification = $this->getDataNotification($_SESSION['opt'], $_SESSION['memo'], $titulo, $cuerpo, $url);
+                        $notification = $this->getDataNotification(session('opt'), session('memo'), $titulo, $cuerpo, $url);
                         event(new NotificationEvent($notification['users'], $notification['data']));
                         $message = "La AUTORIZACIÓN fué enviada correctamente";
                     }
@@ -282,12 +282,12 @@ class aperturasController extends Controller
 
     public function cambiarmemo(Request $request){ //CAMBIAR NÚMERO DE MEMORÁNDUM Y QUIEN VALIDÓ
         $message = 'Operación fallida, vuelva a intentar..';
-        if($_SESSION['memo'] AND $_SESSION['opt'] AND $request->mrespuesta AND $request->fecha ){
+        if(session('memo') AND session('opt') AND $request->mrespuesta AND $request->fecha ){
             $mrespuesta = $request->mrespuesta;
             $fecha = $request->fecha;
-            switch($_SESSION['opt']){
+            switch(session('opt')){
                 case "ARC01":
-                        $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
+                        $result = DB::table('tbl_cursos')->where('munidad',session('memo'))
                         ->where('clave','<>','0')
                         ->where('turnado','UNIDAD')
                         ->where('status_curso','EN FIRMA')
@@ -296,7 +296,7 @@ class aperturasController extends Controller
                         if($result)$message = "OPERACIÓN EXITOSA!!";
                 break;
                 case "ARC02":
-                    $result = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])
+                    $result = DB::table('tbl_cursos')->where('nmunidad',session('memo'))
                         ->where('clave','<>','0')
                         ->where('turnado','UNIDAD')
                         ->where('status_curso','EN FIRMA')
@@ -311,12 +311,12 @@ class aperturasController extends Controller
 
     public function deshacer(Request $request){ //DESHACER CLAVES
         $message = 'Operación fallida, vuelva a intentar..';
-        if($_SESSION['memo'] AND $_SESSION['opt']){
-            switch($_SESSION['opt']){
+        if(session('memo') AND session('opt')){
+            switch(session('opt')){
                 case "ARC01":
-                   $memo = $_SESSION['memo'];
+                   $memo = session('memo');
                     if($this->son_mayores ($memo)){
-                        $result = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])
+                        $result = DB::table('tbl_cursos')->where('munidad',session('memo'))
                         ->where('clave','<>','0')
                         ->where('turnado','UNIDAD')
                         ->where('status_curso','EN FIRMA')
@@ -334,10 +334,10 @@ class aperturasController extends Controller
 
     public function asignar(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
-        if($_SESSION['memo'] AND $request->mrespuesta AND $request->fecha AND $_SESSION['opt']){
+        if(session('memo') AND $request->mrespuesta AND $request->fecha AND session('opt')){
             $mrespuesta = $request->mrespuesta;
             $fecha = $request->fecha;
-            switch($_SESSION['opt'] ){
+            switch(session('opt') ){
                 case "ARC01":
                     $result = DB::table('tbl_cursos as tc')
                         ->select('tc.id',DB::raw("CONCAT(
@@ -351,7 +351,7 @@ class aperturasController extends Controller
                         ->where('tc.turnado','UNIDAD')
                         ->where('tc.status_curso','SOLICITADO')
                         ->where('tc.status','NO REPORTADO')
-                        ->where('tc.munidad',$_SESSION['memo'])->orderby('termino','ASC')->orderby('hfin','ASC')
+                        ->where('tc.munidad',session('memo'))->orderby('termino','ASC')->orderby('hfin','ASC')
                         ->get();
                          //var_dump($result);exit;
                         foreach($result as $r){
@@ -365,7 +365,7 @@ class aperturasController extends Controller
 
                 break;
                 case "ARC02":
-                    $rest = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])->update(['status_curso' => 'EN FIRMA', 'nmacademico' => $mrespuesta,'fecha_modificacion' => $fecha,'valido' => $this->realizo]);
+                    $rest = DB::table('tbl_cursos')->where('nmunidad',session('memo'))->update(['status_curso' => 'EN FIRMA', 'nmacademico' => $mrespuesta,'fecha_modificacion' => $fecha,'valido' => $this->realizo]);
                     if($rest)$message = "Operación Exitosa!!";
 
                 break;
@@ -376,47 +376,47 @@ class aperturasController extends Controller
 
     public function retornar(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
-        if($_SESSION['memo']){
-            switch($_SESSION['opt'] ){
+        if(session('memo')){
+            switch(session('opt') ){
                 case "ARC01":
                     $titulo = 'Apertura retornada';
-                    $cuerpo = 'La apertura con número de memo '.$_SESSION['memo'].' fue retornada a su unidad';
-                    $rev = DB::table('tbl_cursos')->where('munidad',$_SESSION['memo'])->value('num_revision');
+                    $cuerpo = 'La apertura con número de memo '.session('memo').' fue retornada a su unidad';
+                    $rev = DB::table('tbl_cursos')->where('munidad',session('memo'))->value('num_revision');
                     $result = DB::table('tbl_cursos')
                     ->where('clave','0')
                     ->where('turnado','UNIDAD')
                     ->where('status_curso','SOLICITADO')
                     ->where('status','NO REPORTADO')
-                    ->where('munidad',$_SESSION['memo'])->update(['status_curso' => null,'updated_at'=>date('Y-m-d H:i:s'), 'munidad' => $rev,
+                    ->where('munidad',session('memo'))->update(['status_curso' => null,'updated_at'=>date('Y-m-d H:i:s'), 'munidad' => $rev,
                                                                 'fecha_arc01'=>null,'file_arc01' => null,'status_solicitud'=>null]);
                     if($result){
                         $folios = DB::table('tbl_cursos')->where('munidad',$rev)->pluck('folio_grupo');
                         //var_dump($folios);exit;
                         $rest = DB::table('alumnos_registro')->whereIn('folio_grupo',$folios)->update(['turnado' => "UNIDAD",'fecha_turnado' => date('Y-m-d')]);
                         if($rest)$message = "SOLICITUD ARC-01 RETORNADA EXITOSAMENTE.";
-                        unset($_SESSION['memo']);
+                        session()->forget('memo');
                      }
                 break;
                 case "ARC02":
                     $titulo = 'Modificación de Apertura';
-                    $cuerpo = 'La modificación de apertura del memo '.$_SESSION['memo'].' ha sido retornada a su unidad';
-                    $rev = DB::table('tbl_cursos')->where('nmunidad',$_SESSION['memo'])->value('num_revision_arc02');
+                    $cuerpo = 'La modificación de apertura del memo '.session('memo').' ha sido retornada a su unidad';
+                    $rev = DB::table('tbl_cursos')->where('nmunidad',session('memo'))->value('num_revision_arc02');
                     $result = DB::table('tbl_cursos')
                     ->where('arc','02')
                     ->where('turnado','UNIDAD')
                     ->where('status_curso','SOLICITADO')
                     ->wherein('status',['NO REPORTADO','RETORNO_UNIDAD'])
-                    ->where('nmunidad',$_SESSION['memo'])->update(['status_curso' => 'AUTORIZADO','updated_at'=>date('Y-m-d H:i:s'),'status_solicitud_arc02'=>null,
+                    ->where('nmunidad',session('memo'))->update(['status_curso' => 'AUTORIZADO','updated_at'=>date('Y-m-d H:i:s'),'status_solicitud_arc02'=>null,
                                                                     'nmunidad' => $rev]);
                    // echo "pasa";exit;
                     if($result)$message = "SOLICITUD ARC-02 RETORNADA EXITOSAMENTE.";
-                    //unset($_SESSION['memo']);
+                    //unset(session('memo'));
                 break;
             }
 
             /*if ($result) {
                 $url = 'https://sivyc.icatech.gob.mx/solicitud/turnar solicitud';
-                $notification = $this->getDataNotification($_SESSION['opt'], $_SESSION['memo'], $titulo, $cuerpo, $url);
+                $notification = $this->getDataNotification(session('opt'), session('memo'), $titulo, $cuerpo, $url);
                 event(new NotificationEvent($notification['users'], $notification['data']));
             }*/
         }
@@ -425,8 +425,8 @@ class aperturasController extends Controller
 
    public function soporte_pago(Request $request){
         $message = 'Operación fallida, vuelva a intentar..';
-        if($_SESSION['memo'] AND $_SESSION['opt']){
-            switch($_SESSION['opt']){
+        if(session('memo') AND session('opt')){
+            switch(session('opt')){
                 case "ARC01":
                     if($request->movimiento=='ACEPTADO ARC' OR $request->movimiento=='DENEGADO ARC'){ //SOPORTE ARC
                         if($request->movimiento=='ACEPTADO ARC'){
@@ -452,8 +452,8 @@ class aperturasController extends Controller
                         ]);
                         if($result) $message = "Operación exitosa!";
                     }else{ //SOPORTE DE PAGO
-                        $memo = $_SESSION['memo'];
-                        $ids = DB::table('tbl_cursos as tc')->where('tc.munidad',$_SESSION['memo'])
+                        $memo = session('memo');
+                        $ids = DB::table('tbl_cursos as tc')->where('tc.munidad',session('memo'))
                             ->leftjoin('tbl_recibos as tr', function ($join) {
                             $join->on('tc.folio_grupo','=','tr.folio_grupo')->where('tr.status_folio','SOPORTE');
                             })->pluck('tr.id','tr.id');
@@ -510,11 +510,11 @@ class aperturasController extends Controller
                 DB::raw("
                           (
                             SELECT string_agg(
-                            CASE 
+                            CASE
                                 WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                                 ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                             END
-                            
+
                             || ' ' ||
                             CASE
                                 WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
@@ -545,32 +545,32 @@ class aperturasController extends Controller
                                 WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
                                 WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
                                 ELSE ''
-                            END 
-                            || 
-                            CASE 
+                            END
+                            ||
+                            CASE
                                 WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
                                 WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
                                 ELSE ''
-                            END                      
+                            END
                             ||
-                            CASE 
-                                WHEN tc.tipo != 'EXO' THEN 
+                            CASE
+                                WHEN tc.tipo != 'EXO' THEN
                                     'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
-                                    'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00') 
+                                    'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00')
                                 ELSE ''
                             END
                             || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
-                            /*||' ' || tc.nota*/
+                            || ' ' || COALESCE(tc.nota, '')
                            )
                         ELSE
                             tc.observaciones
                         END
-                         
+
                         ) AS observaciones
                     ")
             );
-            if($_SESSION['unidades'])$reg_cursos = $reg_cursos->whereIn('unidad',$_SESSION['unidades']);
-            switch($_SESSION['opt'] ){
+            if(session('unidades'))$reg_cursos = $reg_cursos->whereIn('unidad',session('unidades'));
+            switch(session('opt') ){
                 case "ARC01":
                      $reg_cursos = $reg_cursos->WHERE('munidad', $memo_apertura)->orderby('espe')->get();
                      if($reg_cursos[0]->status_solicitud=="VALIDADO") $marca = false;
@@ -637,16 +637,16 @@ class aperturasController extends Controller
         return ['users' => $usersNotification, 'data' => $dataNotification];
     }
 
-    public function validar_preliminar(Request $request){ 
+    public function validar_preliminar(Request $request){
         $memo = $request->memo;
         $opt = $request->opt;
         $message = 'Operación fallida, vuelva a intentar..';
-        
+
         if ($memo AND ($opt == 'ARC01' OR $opt == 'ARC02')) {
             switch($request->movimiento){
-                case "DESHACER": 
+                case "DESHACER":
                      $result = DB::table('tbl_cursos')->where('munidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->where('turnado','VoBo')->update(['turnado' => 'UNIDAD']);
-                    if($result)$message = "SOLICITUD RETORNADA DE VoBo.";                  
+                    if($result)$message = "SOLICITUD RETORNADA DE VoBo.";
                 break;
                 case "EDICION":
                     $result = DB::table('tbl_cursos')->where('nmunidad',$memo)->whereIn('status',['NO REPORTADO','RETORNO_UNIDAD'])->update(['status_curso' => 'EDICION']);
@@ -657,7 +657,7 @@ class aperturasController extends Controller
                         UPDATE tbl_cursos
                         SET
                             turnado = ?,
-                            vb_dg = ?,                            
+                            vb_dg = ?,
                             movimientos = COALESCE(movimientos, '[]'::jsonb)
                                 || jsonb_build_array(
                                     jsonb_build_object(
@@ -674,7 +674,7 @@ class aperturasController extends Controller
                         WHERE munidad = ? AND status IN ('NO REPORTADO','RETORNO_UNIDAD')",
                     [
                         'VoBo',
-                        false,                        
+                        false,
                         date('Y-m-d H:i:s'),
                         Auth::user()->name,
                         $memo,
@@ -694,7 +694,7 @@ class aperturasController extends Controller
                         $llave = 'nmunidad';
                     }
                     $ids = array_keys($request->prespuesta);
-                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'turnado'=>'UNIDAD', 'obspreliminar' => null]);                  
+                    $result = DB::table('tbl_cursos')->where($llave,$memo)->wherein('id',$ids)->update([$status => 'VALIDADO', 'turnado'=>'UNIDAD', 'obspreliminar' => null]);
                     if($result)$message = "SOLICITUD TURNADA A UNIDAD.";
                 break;
             }
@@ -865,11 +865,11 @@ class aperturasController extends Controller
                     (
                         SELECT json_agg(
                             json_build_object(
-                                'fecha', 
-                                CASE 
-                                    WHEN DATE(start) = DATE(\"end\") THEN 
+                                'fecha',
+                                CASE
+                                    WHEN DATE(start) = DATE(\"end\") THEN
                                         TO_CHAR(DATE(start), 'DD/MM/YYYY')
-                                    ELSE 
+                                    ELSE
                                         TO_CHAR(DATE(start), 'DD/MM/YYYY') || ' AL ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
                                 END,
                                 'horario',
@@ -886,30 +886,30 @@ class aperturasController extends Controller
                 "),
                 DB::raw("
                     (
-                        SELECT SUM(                        
+                        SELECT SUM(
                             (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600)*((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1)
                         )
                         FROM agenda
                         WHERE id_curso = tc.folio_grupo
                     ) AS total_horas
                 ")
-            );    
-         
+            );
+
             if($request->opt=='ARC01'){
                 $data = $data->where('tc.munidad', $request->memo);
             }elseif($request->opt=='ARC02'){
                 $data = $data->where('tc.nmunidad', $request->memo);
-            }            
+            }
             $data = $data->get(); //dd($data);
         }
-        
+
         if($data){
             $direccion = null;
             $pdf = PDF::loadView('solicitudes.aperturas.pdfAgendaAnexo',compact('data','direccion'));
             $pdf->setpaper('letter','landscape');
             return $pdf->stream('Agenda-Anexo.pdf');
         }else return "MEMORÁNDUM NO VÁLIDO";
-        
+
     }
-    
+
 }
