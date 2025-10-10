@@ -226,7 +226,7 @@ class EPagoController extends Controller
     public function create_body($id_folio, $numOficio = NULL) {
         $body_html = NULL;
         $data = folio::SELECT('tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.mod','tbl_cursos.inicio','tbl_cursos.tipo_curso','tbl_cursos.instructor_mespecialidad',
-                'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','tbl_unidades.ubicacion','tbl_cursos.soportes_instructor','instructores.nombre',
+                'tbl_cursos.termino','tbl_cursos.modinstructor','tbl_cursos.dura','tbl_cursos.hini','tbl_cursos.hfin','tbl_cursos.id AS id_curso','tbl_unidades.ubicacion','tbl_cursos.soportes_instructor','instructores.nombre',
                 'instructores.apellidoPaterno','instructores.apellidoMaterno','especialidad_instructores.id', 'tbl_cursos.instructor_mespecialidad as memorandum_validacion',//'especialidad_instructores.memorandum_validacion',
                 'instructores.rfc','instructores.id AS id_instructor','instructores.banco','instructores.no_cuenta',
                 'instructores.interbancaria','folios.importe_total','folios.id_folios','contratos.unidad_capacitacion',
@@ -317,7 +317,7 @@ class EPagoController extends Controller
                 </tr>
                 <tr>
                     <td><small>Fecha de Inicio y Término: '.$data->inicio.' AL '.$data->termino.'</small></td>
-                    <td><small>Horario: '.$data->hini.' A '.$data->hfin.'</small></td>
+                    <td><small>Total Horas Curso: '.$data->dura.'</small></td>
                 </tr>
             </tbody>
         </table>
