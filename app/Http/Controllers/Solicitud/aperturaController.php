@@ -394,6 +394,8 @@ class aperturaController extends Controller
                         mpreapertura = ?,
                         fpreapertura = ?,
                         obs_preapertura = ?,
+                         cespecifico = ?,
+                        fcespe = ?,
                         movimientos = COALESCE(movimientos, '[]'::jsonb)
                             || jsonb_build_array(
                                 jsonb_build_object(
@@ -411,6 +413,8 @@ class aperturaController extends Controller
                     $mpreapertura,
                     $fpreapertura,
                     $obs_preapertura,
+                    $cespecifico,
+                    $fcespe,
                     Carbon::now()->format('Y-m-d H:i:s'),
                     Auth::user()->name,
                     $folio_grupo,
