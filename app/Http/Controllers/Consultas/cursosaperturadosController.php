@@ -20,7 +20,7 @@ class cursosaperturadosController extends Controller
         $this->ejercicio = date("y");
         $this->middleware('auth');
         $this->middleware(function ($request, $next) {
-            $this->data = $this->unidad_user();
+            $this->data = $this->unidades_user('unidad');
             $this->unidades = $this->data['unidades'];      
             unset($this->unidades["ECE-CONOCER"]);      
             return $next($request);
@@ -44,7 +44,7 @@ class cursosaperturadosController extends Controller
     }
 
     public function xls(Request $request){
-        $data = $this->data($request);     
+        $data = $this->data($request, true);     
         $opcion = $request->opcion;
 
         if(count($data)>0){
