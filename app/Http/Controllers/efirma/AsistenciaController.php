@@ -198,7 +198,9 @@ class AsistenciaController extends Controller
                     return $pdf->stream($file);
 
                     // if ($fecha_valida < 0) $message = "No prodece el registro de calificaciones, la fecha de termino del curso es el $curso->termino.";
-                } // else $message = "El Curso fué $curso->status y turnado a $curso->turnado.";
+                } else {
+                    return back()->with('error', 'El curso no se encuentra autorizado, no es posible generar la lista de asistencia');
+                }
             }
         }
     }

@@ -843,7 +843,7 @@ class InstructorController extends Controller
                             break;
                             case 'REACTIVACION EN PREVALIDACION';
                                 $especialidades[$llave]->status = 'REACTIVACION EN FIRMA';
-                                $especialidades[$llave]->fecha_baja = $request->fechadocs;
+                                $especialidades[$llave]->fecha_validacion = $request->fechadocs;
                                 $especialidades[$llave]->memorandum_baja = NULL;
                                 $especialidades[$llave]->memorandum_solicitud = NULL;
                                 $especialidades[$llave]->fecha_solicitud = $request->fechadocs;
@@ -1126,7 +1126,7 @@ class InstructorController extends Controller
                 if(in_array($cadwell->status, $arrtemp) || ($regimen_actual != $saveInstructor->tipo_honorario && $cadwell->status != 'BAJA'))
                 {
                     if(($cadwell->status != 'BAJA EN FIRMA' && is_null($cadwell->memorandum_validacion)) || ($cadwell->status == 'BAJA EN FIRMA' && isset($cadwell->memorandum_baja) && is_null($cadwell->memorandum_baja)))
-                    {dd($cadwell);
+                    {
                         return back()->with('error','Error al intentar registrar el numero de memorandum de validación, favor de volver a generar el documento de validacion, verificar que los datos sean correctos y volver a intentar.');
                     }
                     $hvalidacion = $cadwell->hvalidacion;
@@ -1431,8 +1431,8 @@ class InstructorController extends Controller
                 {
                     if(in_array($cadwell->status, $stat_arr))
                     {
-                        $especialidades[$space]->fecha_solicitud = NULL;
-                        $especialidades[$space]->memorandum_solicitud = NULL;
+                        // $especialidades[$space]->fecha_solicitud = NULL;
+                        // $especialidades[$space]->memorandum_solicitud = NULL;
                         $especialidad = especialidad::WHERE('id', '=', $cadwell->especialidad_id)->SELECT('nombre')->FIRST();
                         switch ($cadwell->status)
                         {
