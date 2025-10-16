@@ -1616,7 +1616,7 @@ class grupoController extends Controller
                                     ELSE ''
                                 END
                                 || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || COALESCE(tc.instructor_mespecialidad,'<b>NO DISPONIBLE<b>') ||'.</div>'
-                                || ' ' || COALESCE(tc.nota, '')
+                                || ' ' || COALESCE(tc.obs_preapertura, '')
                             ) AS observaciones
                         ")
                     )
