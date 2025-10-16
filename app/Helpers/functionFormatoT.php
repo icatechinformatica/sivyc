@@ -183,7 +183,38 @@ function dataFormatoT($unidad, $turnado=null, $fecha=null, $mesSearch=null, $sta
 
             'c.arc',
             DB::raw("c.observaciones_formato_t->'OBSERVACION_FIRMA' AS observaciones_firma"),
-            DB::raw("case when c.arc='01' then nota else observaciones end as tnota"),
+            DB::raw("
+                                (
+                                CASE
+                                    WHEN c.arc='01'  AND c.nota ILIKE '%INSTRUCTOR%' THEN c.nota
+                                    WHEN c.arc='01' THEN(
+                                        CASE
+                                                WHEN c.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || c.modinstructor || ', '
+                                                WHEN c.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || c.modinstructor || ', '
+                                                ELSE ''
+                                        END
+                                            ||
+                                        CASE
+                                                WHEN c.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || c.mexoneracion || ', '
+                                                WHEN c.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || c.mexoneracion || ', '
+                                                ELSE ''
+                                        END
+                                            ||
+                                        CASE
+                                        WHEN c.tipo != 'EXO' THEN
+                                                    'CUOTA DE RECUPERACIÓN $' || ROUND((c.costo)/(c.hombre+c.mujer),2) || ' POR PERSONA, ' ||
+                                                    'TOTAL CURSO $' || TO_CHAR(ROUND(c.costo, 2), 'FM999,999,999.00')
+                                        ELSE ''
+                                        END
+                                            || ' MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || c.instructor_mespecialidad
+                                            || ' ' || COALESCE(c.nota, '')
+                                        )
+                                    ELSE
+                                            c.observaciones
+                                END
+
+                                ) AS tnota
+                            "),
             DB::raw("c.observaciones_formato_t->'OBSERVACION_ENLACES_RETORNO_UNIDAD' AS comentario_enlaces_retorno"), //new
             DB::raw("c.observaciones_formato_t->'COMENTARIOS_UNIDAD' AS observaciones_unidad"), // new
             'c.status_solicitud_arc02',
