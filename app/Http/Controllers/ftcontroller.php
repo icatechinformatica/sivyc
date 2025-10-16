@@ -398,11 +398,56 @@ class ftcontroller extends Controller {
                     }
                     $mes=date("m");
 
-                    $reg_cursos=DB::table('tbl_cursos')->select(db::raw("sum(case when extract(month from termino) = ".$mes." then 1 else 0 end) as tota"),'unidad','curso','mod','inicio','termino',db::raw("sum(hombre + mujer) as cupo"),'nombre','clave','ciclo',
+                    $reg_cursos=DB::table('tbl_cursos')->select('id', db::raw("sum(case when extract(month from termino) = ".$mes." then 1 else 0 end) as tota"),'arc','unidad','curso','mod','inicio','termino',db::raw("sum(hombre + mujer) as cupo"),'nombre','clave','ciclo',
                                 'memos->TURNADO_EN_FIRMA->FECHA as fecha', DB::raw("case when arc='01' then nota else observaciones end as tnota"))
                     ->where(DB::raw("memos->'TURNADO_EN_FIRMA'->>'NUMERO'"), $numero_memo)
                     ->where('status', 'EN_FIRMA')
-                    ->groupby('unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA', DB::raw("observaciones_formato_t->'OBSERVACION_PARA_FIRMA'->>'OBSERVACION_FIRMA'"), 'arc', 'nota', 'observaciones')->get();
+                    ->groupby('id','unidad','curso','mod','inicio','termino','nombre','clave','ciclo','memos->TURNADO_EN_FIRMA->FECHA', DB::raw("observaciones_formato_t->'OBSERVACION_PARA_FIRMA'->>'OBSERVACION_FIRMA'"), 'arc', 'nota', 'observaciones')->get();
+
+                    foreach($reg_cursos as $val) {
+                        if(is_null($val->tnota)) {
+                            $observacion = DB::table('tbl_cursos as c')->Where('id',$val->id)->Select(DB::raw("
+                                (
+                                CASE
+                                    WHEN c.arc='01'  AND c.nota ILIKE '%INSTRUCTOR%' THEN c.nota
+                                    WHEN c.arc='01' THEN(
+                                        CASE
+                                                WHEN c.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || c.modinstructor || ', '
+                                                WHEN c.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || c.modinstructor || ', '
+                                                ELSE ''
+                                        END
+                                            ||
+                                        CASE
+                                                WHEN c.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || c.mexoneracion || ', '
+                                                WHEN c.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || c.mexoneracion || ', '
+                                                ELSE ''
+                                        END
+                                            ||
+                                        CASE
+                                        WHEN c.tipo != 'EXO' THEN
+                                                    'CUOTA DE RECUPERACIÓN $' || ROUND((c.costo)/(c.hombre+c.mujer),2) || ' POR PERSONA, ' ||
+                                                    'TOTAL CURSO $' || TO_CHAR(ROUND(c.costo, 2), 'FM999,999,999.00')
+                                        ELSE ''
+                                        END
+                                            || ' MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || c.instructor_mespecialidad
+                                            || ' ' || COALESCE(c.nota, '')
+                                        )
+                                    ELSE
+                                            c.observaciones
+                                END
+
+                                ) AS tnota
+                            "))->First();
+
+                            $val->tnota = $observacion->tnota;
+
+                            if($val->arc == '01') {
+                                DB::table('tbl_cursos')->where('id',$val->id)->update(['nota'=>$observacion->tnota]);
+                            } else {
+                                DB::table('tbl_cursos')->where('id',$val->id)->update(['observaciones'=>$observacion->tnota]);
+                            }
+                        }
+                    }
 
                     $reg_unidad=DB::table('tbl_unidades')->select('unidad','ubicacion','codigo_postal')->where('unidad',session('unidad'))->whereNotIn('direccion', ['N/A', 'null'])->first();
 
