@@ -1585,7 +1585,7 @@ class grupoController extends Controller
                                 TO_CHAR(
                                     (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
                                     ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
-                                    'FM999990.##'
+                                    'FM999990.0'
                                 ) || 'hrs.)'|| '</div>',
                                 E'\n'
                                 ORDER BY DATE(start)
@@ -1604,19 +1604,19 @@ class grupoController extends Controller
                                 END
                                 ||
                                 CASE
-                                    WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
-                                    WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
+                                    WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
+                                    WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
                                     ELSE ''
                                 END
                                 ||
                                 CASE
                                     WHEN tc.tipo != 'EXO' THEN
-                                        'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
+                                        'CUOTA DE RECUPERACIÓN $' || COALESCE(ROUND((tc.costo)/(tc.hombre+tc.mujer),2),0) || ' POR PERSONA, ' ||
                                         'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00')
                                     ELSE ''
                                 END
-                                || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
-                               /* || ' ' || COALESCE(tc.nota, '')*/
+                                || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || COALESCE(tc.instructor_mespecialidad,'<b>NO DISPONIBLE<b>') ||'.</div>'
+                                || ' ' || COALESCE(tc.obs_preapertura, '')
                             ) AS observaciones
                         ")
                     )
