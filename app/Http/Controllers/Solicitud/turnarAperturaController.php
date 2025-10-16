@@ -520,7 +520,7 @@ class turnarAperturaController extends Controller
                         TO_CHAR(
                             (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
                             ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
-                            'FM999990.##'
+                            'FM999990.0'
                         ) || 'hrs.)'|| '</div>',
                         E'\n'
                         ORDER BY DATE(start)

@@ -527,7 +527,7 @@ class aperturasController extends Controller
                             TO_CHAR(
                                 (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
                                 ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
-                                'FM999990.##'
+                                'FM999990.0'
                             ) || 'h)',
                             E'\n'
                             ORDER BY DATE(start)
