@@ -1597,26 +1597,30 @@ class grupoController extends Controller
 
                         DB::raw("
                             (
-                                CASE
-                                    WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
-                                    WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
-                                    ELSE ''
-                                END
-                                ||
-                                CASE
-                                    WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
-                                    WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
-                                    ELSE ''
-                                END
-                                ||
-                                CASE
-                                    WHEN tc.tipo != 'EXO' THEN
-                                        'CUOTA DE RECUPERACIÓN $' || COALESCE(ROUND((tc.costo)/(tc.hombre+tc.mujer),2),0) || ' POR PERSONA, ' ||
-                                        'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00')
-                                    ELSE ''
-                                END
-                                || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || COALESCE(tc.instructor_mespecialidad,'<b>NO DISPONIBLE<b>') ||'.</div>'
-                                || ' ' || COALESCE(tc.obs_preapertura, '')
+                            CASE
+                                WHEN tc.obs_preapertura ILIKE '%INSTRUCTOR%' THEN tc.obs_preapertura
+                            ELSE
+                                    CASE
+                                        WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
+                                        WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
+                                        ELSE ''
+                                    END
+                                    ||
+                                    CASE
+                                        WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
+                                        WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
+                                        ELSE ''
+                                    END
+                                    ||
+                                    CASE
+                                        WHEN tc.tipo != 'EXO' THEN
+                                            'CUOTA DE RECUPERACIÓN $' || COALESCE(ROUND((tc.costo)/(tc.hombre+tc.mujer),2),0) || ' POR PERSONA, ' ||
+                                            'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00')
+                                        ELSE ''
+                                    END
+                                    || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || COALESCE(tc.instructor_mespecialidad,'<b>NO DISPONIBLE<b>') ||'.</div>'
+                                    || ' ' || COALESCE(tc.obs_preapertura, '')
+                            END
                             ) AS observaciones
                         ")
                     )
