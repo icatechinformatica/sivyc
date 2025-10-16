@@ -254,7 +254,14 @@ class grupoController extends Controller
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
-            ->WHERE('fecha_validacion','<',$data->inicio)
+            //->WHERE('fecha_validacion','<',$data->inicio)
+            ->whereRaw("
+                (
+                    SELECT MAX((elem->>'fecha_val')::date)
+                    FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
+                    WHERE (elem->>'fecha_val')::date < ?
+                ) IS NOT NULL
+            ", [$data->inicio])
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
             ->whereNotIn('instructores.id', $internos)
             ->groupBy('t.id_instructor','instructores.id')
@@ -748,13 +755,14 @@ class grupoController extends Controller
                                 'tipo_identificacion',
                                 'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
                                 'banco','no_cuenta','interbancaria','tipo_honorario',
-                                DB::raw("(
+                                DB::raw("
+                                    (
                                         SELECT elem->>'memo_val'
                                         FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
                                         WHERE (elem->>'fecha_val')::date < '$request->inicio'
-                                        ORDER BY elem->>'fecha_val' DESC
+                                        ORDER BY (elem->>'fecha_val')::date DESC
                                         LIMIT 1
-                                    ) as mespecialidad")
+                                    ) AS mespecialidad")                              
                                 )
                             ->WHERE('estado', true)
                             ->WHERE('instructores.status', '=', 'VALIDADO')
@@ -762,7 +770,14 @@ class grupoController extends Controller
                             ->where('instructores.id', $request->instructor)
                             ->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
                             ->WHERE('especialidad_instructores.activo', 'true')
-                            ->WHERE('fecha_validacion','<',$request->inicio)
+                            //->WHERE('fecha_validacion','<',$request->inicio)
+                            ->whereRaw("
+                                (
+                                    SELECT MAX((elem->>'fecha_val')::date)
+                                    FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
+                                    WHERE (elem->>'fecha_val')::date < ?
+                                ) IS NOT NULL
+                            ", [$request->inicio])
                             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
                             ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
                             ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
