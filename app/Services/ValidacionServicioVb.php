@@ -414,7 +414,7 @@ class ValidacionServicioVb
             ->groupby('i.id');
 
             $query = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', 'especialidad_instructores.fecha_validacion', // Subquery para contar cursos en 2025
+            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', 'especialidad_instructores.fecha_validacion', // fecha de validacion ya no se ocupa ya que se obtiene de hvalidacion jsonb
             DB::raw("(SELECT COUNT(tc.id) FROM tbl_cursos AS tc WHERE tc.id_instructor = instructores.id and tc.status_curso = 'AUTORIZADO' AND EXTRACT(YEAR FROM tc.created_at) = {$ejercicio}) AS total_cursos") ) //DB::raw('count(id_curso) as total')
             ->rightJoin('instructores','t.id_instructor','=','instructores.id')
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
@@ -429,7 +429,14 @@ class ValidacionServicioVb
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$curso->id_especialidad)
-            ->WHERE('fecha_validacion','<',$curso->inicio)
+            // ->WHERE('fecha_validacion','<',$curso->inicio)
+            ->whereRaw("
+                (
+                    SELECT MAX((elem->>'fecha_val')::date)
+                    FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
+                    WHERE (elem->>'fecha_val')::date < ?
+                ) IS NOT NULL
+            ", [$curso->inicio])
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$curso->termino)
             ->whereNotIn('instructores.id', $internos);
 
@@ -521,7 +528,14 @@ class ValidacionServicioVb
             ->where('instructores.status', '=', 'VALIDADO')
             ->where('instructores.nombre', '!=', '')
             ->where('especialidad_instructores.especialidad_id', $curso->id_especialidad)
-            ->where('fecha_validacion', '<', $curso->inicio)
+            // ->where('fecha_validacion', '<', $curso->inicio)
+            ->whereRaw("
+                (
+                    SELECT MAX((elem->>'fecha_val')::date)
+                    FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
+                    WHERE (elem->>'fecha_val')::date < ?
+                ) IS NOT NULL
+            ", [$curso->inicio])
             ->where(DB::raw("(fecha_validacion + INTERVAL '1 year')::timestamp::date"), '>=', $curso->termino);
 
         if ($curso->curso_alfa == true) {
