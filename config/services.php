@@ -30,4 +30,10 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'crosschex' => [
+        'sign'     => env('CROSSCHEX_SIGN', ''),
+        'password' => env('CROSSCHEX_PASSWORD', ''),
+    ],
+
+
 ];

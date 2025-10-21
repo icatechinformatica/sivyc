@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController\Api\PassportController;
 use App\Http\Controllers\Api\FotosController;
 use App\Http\Controllers\Api\PreregistroinsController;
+use App\Http\Controllers\Api\CrossChexController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -112,3 +113,6 @@ Route::prefix('v1')->group(function (){
     //api para recibir pdf desde web icatech del registro de instructores
     Route::post('catchpdfs', [PreregistroinsController::class, 'recibirpdfs']);
 });
+
+// By Orlando Chávez - webhook de crosschex cloud para recepcion de datos de asistencias
+Route::post('/webhooks/crosschex', [CrossChexController::class, 'handle']);
