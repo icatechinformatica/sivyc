@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Webhooks;
+namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
+use App\Models\CrosschexLive;
 use Illuminate\Http\JsonResponse;
 
 class CrossChexController extends Controller
@@ -23,22 +23,16 @@ class CrossChexController extends Controller
 
         $payload = $request->json()->all();
 
-        if (empty($headers['nameSpace']) || empty($headers['nameAction']) || empty($headers['requestId'])) {
-            Log::channel('crosschex')->warning('crosschex.bad_headers', [
-                'headers' => $headers,
-                'payload' => $payload,
-            ]);
-            return response()->json(['code' => '200', 'msg' => 'accepted_with_warnings']);
-        }
-
-        Log::channel('crosschex')->info('crosschex.event', [
-            'ts'       => now()->toIso8601ZuluString(),
-            'headers'  => $headers,
-            'payload'  => $payload,
-            'ip'       => $request->ip(),
-            'ua'       => $request->userAgent(),
+        // Guardar en BD
+        CrosschexLive::create([
+            'headers'     => $headers,
+            'payload'     => $payload,
+            'ip'          => $request->ip(),
+            'user_agent'  => $request->userAgent(),
+            'received_at' => now(),
         ]);
 
+        // Devuelve la respuesta esperada por CrossChex
         return response()->json(['code' => '200', 'msg' => 'success'], 200);
     }
 }
