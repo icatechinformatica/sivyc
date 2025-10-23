@@ -116,3 +116,5 @@ Route::prefix('v1')->group(function (){
 
 // By Orlando Chávez - webhook de crosschex cloud para recepcion de datos de asistencias
 Route::post('/webhooks/crosschex', [CrossChexController::class, 'handle']);
+Route::get('/crosschex/live/metrics', [CrossChexController::class, 'metrics']);
+Route::get('/crosschex/live/recent',  [CrossChexController::class, 'recent']);

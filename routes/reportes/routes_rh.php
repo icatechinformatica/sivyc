@@ -1,5 +1,8 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SseController;
+use App\Http\Controllers\Api\CrossChexController;
+
 Route::middleware(['auth'])->group(function(){
     // Seccion modulo RH
     Route::get('/recursos-humanos/index', 'reportesController\RHController@index')->name('rh.index')->middleware('can:RH.tarjetatiempo');;
@@ -10,4 +13,6 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/recursos-humanos/reporte/quincenal/detalles/{id}', 'reportesController\RHController@reporte_quincenal_detalles')->name('rh.reporte.detalles');
     Route::post('/asistencia/upload', 'reportesController\RHController@upload')->name('asistencia.upload');
     Route::get('/agregar/justificante', 'reportesController\RHController@agregar_justificante')->name('rh.agregar.justificante');
+    Route::get('/crosschex/live/stream', [SseController::class, 'stream'])->name('crosschex.live.stream');
+    Route::get('/crosschex/live', [CrossChexController::class, 'index'])->name('crosschex.live');
 });
