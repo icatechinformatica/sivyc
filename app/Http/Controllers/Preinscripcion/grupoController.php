@@ -1306,7 +1306,7 @@ class grupoController extends Controller
     public function turnar(Request $request)
     {
         $message = null;
-        $response = $this->consultar_instructores ($request);
+        $response = $this->instructor_disponible ($request->folio_grupo);
         $respon = $response->getData(true);
         $status_inst = $respon['status'];
         if($status_inst == 500){
@@ -1821,8 +1821,21 @@ class grupoController extends Controller
             $agenda->id_municipio = $id_municipio;
             $agenda->clave_localidad = $clave_localidad;
             $agenda->iduser_created = Auth::user()->id;
-            $agenda->save();
+            $agenda->save();            
+            
+             
+            ///VALIDA INSTRUCTOR  
+            $message = null;
+            $response = $this->instructor_disponible($id_curso);
+            $respon = $response->getData(true);            
+            if($respon['status'] == 500){
+                if ($agenda->id_curso == $id_curso) $agenda->delete();
+                return $respon['mensaje'];
+            }            
+
+            ///ACTUALIZA TOTAL DIAS            
             $this->actualiza_dias($id_curso);
+           
         } catch (QueryException $ex) {
             //dd($ex);
             return 'duplicado';
@@ -2424,10 +2437,9 @@ class grupoController extends Controller
         return $json_vacios;
     }
 
-    ##Función para la validacion de instructores
- public function consultar_instructores (Request $request){
-    try {
-            $folio_grupo = $request->folio_grupo;
+ ##Función para la validacion de instructores
+ public function instructor_disponible($folio_grupo){
+    try {            
             $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
             $grupo = DB::table('alumnos_registro')->select('id_curso','inicio', 'alumnos_registro.id_especialidad', 'termino', 'folio_grupo', 'id_instructor', 'cursos.curso_alfa')
             ->JOIN('cursos', 'cursos.id', '=' ,'alumnos_registro.id_curso')
