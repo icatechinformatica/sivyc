@@ -44,67 +44,75 @@ class CrossChexController extends Controller
         return view('tablero.crosschex.live');
     }
 
-    public function metrics(Request $request)
+    public function metrics(\Illuminate\Http\Request $request)
     {
         $minutes = (int) $request->query('minutes', 60);
-        if ($minutes < 1)  $minutes = 1;
-        if ($minutes > 720) $minutes = 720;
+        $minutes = max(1, min($minutes, 720));
 
-        // ❶ Zona horaria de la app (local)
-        $tz = config('app.timezone', 'UTC');
+        $tz = config('app.timezone', 'America/Mexico_City');
 
-        // Serie por minuto en ZONA LOCAL: series + counts(local) + join
-        $perMinute = DB::select("
-            WITH series AS (
-                SELECT gs AS bucket_local
-                FROM generate_series(
-                    date_trunc('minute', timezone(?, now()) - (interval '1 minute' * ?)),
-                    date_trunc('minute', timezone(?, now())),
+        // Serie y conteos en la MISMA referencia: (now() AT TIME ZONE tz) y (received_at AT TIME ZONE tz)
+        $perMinute = \DB::select("
+            WITH
+            local_now AS (
+                SELECT now() AT TIME ZONE ? AS t   -- timestamp (sin tz) en hora local
+            ),
+            series AS (
+                SELECT generate_series(
+                    date_trunc('minute', (SELECT t FROM local_now) - (interval '1 minute' * ?)),
+                    date_trunc('minute', (SELECT t FROM local_now)),
                     interval '1 minute'
-                ) AS gs
+                ) AS bucket_local
             ),
             counts AS (
                 SELECT
-                  date_trunc('minute', timezone(?, received_at)) AS bucket_local,
-                  COUNT(*) AS c
+                date_trunc('minute', received_at AT TIME ZONE ?) AS bucket_local,
+                COUNT(*) AS c
                 FROM crosschex_live
-                WHERE timezone(?, received_at) >= timezone(?, now()) - (interval '1 minute' * ?)
+                WHERE (received_at AT TIME ZONE ?) >= (SELECT t FROM local_now) - (interval '1 minute' * ?)
                 GROUP BY 1
             )
             SELECT
-              to_char(s.bucket_local, 'HH24:MI') AS label,
-              COALESCE(c.c, 0)                  AS value
+            to_char(s.bucket_local, 'HH24:MI') AS label,
+            COALESCE(c.c, 0)                   AS value
             FROM series s
-            LEFT JOIN counts c ON c.bucket_local = s.bucket_local
+            LEFT JOIN counts c USING (bucket_local)
             ORDER BY s.bucket_local
-        ", [$tz, $minutes, $tz, $tz, $tz, $tz, $minutes]);
+        ", [$tz, $minutes, $tz, $tz, $minutes]);
 
-        // Top unidades (ventana local)
-        $perUnidad = DB::select("
+        // Top unidades en la misma ventana local
+        $perUnidad = \DB::select("
+            WITH local_now AS (
+                SELECT now() AT TIME ZONE ? AS t
+            )
             SELECT
-              COALESCE(
+            COALESCE(
                 payload->'records'->0->'employee'->>'department',
                 payload->'employee'->>'department',
                 '—'
-              ) AS unidad,
-              COUNT(*) AS total
+            ) AS unidad,
+            COUNT(*) AS total
             FROM crosschex_live
-            WHERE timezone(?, received_at) >= timezone(?, now()) - (interval '1 minute' * ?)
+            WHERE (received_at AT TIME ZONE ?) >= (SELECT t FROM local_now) - (interval '1 minute' * ?)
             GROUP BY 1
             ORDER BY total DESC
             LIMIT 10
         ", [$tz, $tz, $minutes]);
 
-        // KPIs (totales del día dependen de tu necesidad; dejo total global y últimos 5m)
-        $totals = DB::selectOne("
+        // KPIs en local
+        $totals = \DB::selectOne("
+            WITH local_now AS ( SELECT now() AT TIME ZONE ? AS t )
             SELECT
-              COUNT(*) AS total_all,
-              SUM(CASE WHEN timezone(?, received_at) >= timezone(?, now()) - interval '5 minutes' THEN 1 ELSE 0 END) AS total_5min
+            COUNT(*) AS total_all,
+            SUM(CASE WHEN (received_at AT TIME ZONE ?) >= (SELECT t FROM local_now) - interval '5 minutes'
+                    THEN 1 ELSE 0 END) AS total_5min
             FROM crosschex_live
         ", [$tz, $tz]);
 
-        // Hora local del servidor (string ya formateado)
-        $serverTimeLocal = DB::selectOne("SELECT to_char(timezone(?, now()), 'YYYY-MM-DD HH24:MI:SS') AS t", [$tz])->t;
+        // Hora del servidor en local (string)
+        $serverTimeLocal = \DB::selectOne("
+            SELECT to_char(now() AT TIME ZONE ?, 'YYYY-MM-DD HH24:MI:SS') AS t
+        ", [$tz])->t;
 
         return response()->json([
             'windowMinutes'   => $minutes,
@@ -114,6 +122,7 @@ class CrossChexController extends Controller
             'serverTimeLocal' => $serverTimeLocal,
         ]);
     }
+
 
     public function recent(Request $request)
     {
