@@ -89,6 +89,7 @@ class exoneracionController extends Controller
                          from agenda
                          where id_curso = tc.folio_grupo) as t) as horas_agenda"),'ar.id_unidad','ar.cct','tc.tipo','tc.cgeneral','ar.ejercicio','tc.status_solicitud',
                          'tc.dura','tc.status_curso','ar.id_organismo','ar.folio_grupo','tc.status','tc.status_curso','tc.arc','tc.status_solicitud_arc02')
+                        ->join('agenda', 'agenda.id_curso','=','tc.folio_grupo')
                         ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                         ->where('ar.id_organismo','!=',242)
                         ->whereIn('tc.tipo',['EXO','EPAR'])
@@ -164,7 +165,7 @@ class exoneracionController extends Controller
                     $message = "Las horas agendadas no corresponden a la duración del curso..";
                 }
             }else {
-                $message = "No se encontro el registro disponible..";
+                $message = "No se encontro disponible el grupo ".$request->grupo.", verifique que se haya creado y agendado correctamente.";
             }
         }
         return redirect()->route('solicitud.exoneracion')->with(['message' => $message]);
