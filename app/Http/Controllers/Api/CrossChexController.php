@@ -13,30 +13,35 @@ use Carbon\CarbonImmutable;
 class CrossChexController extends Controller
 {
     public function handle(Request $request): JsonResponse
-{
-    $headers = [
-        'nameSpace'      => $request->header('nameSpace'),
-        'nameAction'     => $request->header('nameAction'),
-        'version'        => $request->header('version'),
-        'requestId'      => $request->header('requestId'),
-        'content-type'   => $request->header('content-type'),
-        'authorize-type' => $request->header('authorize-type'),
-        'authorize-sign' => $request->header('authorize-sign'),
-    ];
+    {
+        $headers = [
+            'nameSpace'      => $request->header('nameSpace'),
+            'nameAction'     => $request->header('nameAction'),
+            'version'        => $request->header('version'),
+            'requestId'      => $request->header('requestId'),
+            'content-type'   => $request->header('content-type'),
+            'authorize-type' => $request->header('authorize-type'),
+            'authorize-sign' => $request->header('authorize-sign'),
+        ];
 
-    $payload = $request->json()->all();
+        $payload = $request->json()->all();
 
-    \App\Models\CrosschexLive::create([
-        'headers'     => $headers,
-        'payload'     => $payload,
-        'ip'          => $request->ip(),
-        'user_agent'  => $request->userAgent(),
-        // 👇 Guardamos el instante de recepción en UTC
-        'received_at' => now(),
-    ]);
+        // Zona local (Chiapas/MX). Asegúrate en config/app.php: 'timezone' => 'America/Mexico_City'
+        $localTz = config('app.timezone', 'America/Mexico_City');
 
-    return response()->json(['code' => '200', 'msg' => 'success'], 200);
-}
+        // Momento de llegada en zona local con offset (e.g., "2025-10-27T13:11:27-06:00")
+        $receivedLocalIso = CarbonImmutable::now($localTz)->toIso8601String();
+
+        CrosschexLive::create([
+            'headers'     => $headers,
+            'payload'     => $payload,
+            'ip'          => $request->ip(),
+            'user_agent'  => $request->userAgent(),
+            'received_at' => $receivedLocalIso, // ✅ Incluye -06:00
+        ]);
+
+        return response()->json(['code' => '200', 'msg' => 'success'], 200);
+    }
 
 
     public function index()
@@ -132,37 +137,33 @@ class CrossChexController extends Controller
 
         $tz = config('app.timezone', 'America/Mexico_City');
 
-        $rows = DB::select("
+        $rows = \DB::select("
             SELECT
-            id,
-            received_at,
-            to_char(timezone(?, received_at), 'YYYY-MM-DD HH24:MI:SS') AS received_local,
-            to_char(timezone(?, received_at), 'HH24:MI:SS')             AS received_time,
-            payload->'records'->0->'employee'->>'workno'        AS workno,
-            payload->'records'->0->'employee'->>'first_name'    AS first_name,
-            payload->'records'->0->'employee'->>'last_name'     AS last_name,
-            COALESCE(
-                payload->'records'->0->'employee'->>'department',
-                payload->'employee'->>'department','—'
-            ) AS unidad,
-            payload->'records'->0->'device'->>'name'            AS device_name,
-            payload->'records'->0->'device'->>'serial_number'   AS serial_number,
-
-            -- 🔽 check_time formateado en hora de Chiapas, sin zona
-            to_char(
+                id,
+                received_at,
+                to_char(timezone(?, received_at), 'HH24:MI:SS')             AS received_time,   -- 👈 Recibido (solo hora)
+                to_char(
                 timezone(?, (payload->'records'->0->>'check_time')::timestamptz),
                 'YYYY-MM-DD HH24:MI:SS'
-            ) AS check_time_local,
-
-            payload->'records'->0->>'check_type'                AS check_type
+                )                                                           AS check_time_local, -- 👈 Check time formateado local
+                payload->'records'->0->'employee'->>'workno'                AS workno,
+                payload->'records'->0->'employee'->>'first_name'            AS first_name,
+                payload->'records'->0->'employee'->>'last_name'             AS last_name,
+                COALESCE(payload->'records'->0->'employee'->>'department',
+                        payload->'employee'->>'department','—')            AS unidad,
+                payload->'records'->0->'device'->>'name'                    AS device_name,
+                payload->'records'->0->'device'->>'serial_number'           AS serial_number,
+                payload->'records'->0->>'check_type'                        AS check_type
             FROM crosschex_live
             ORDER BY received_at DESC
             LIMIT ?
-        ", [$tz, $tz, $tz, $limit]);
+            ", [$tz, $tz, $limit]);
+
+        $serverTimeLocal = \DB::selectOne("SELECT to_char(timezone(?, now()), 'YYYY-MM-DD HH24:MI:SS') AS t", [$tz])->t;
 
         return response()->json([
             'rows'            => $rows,
-            'serverTimeLocal' => DB::selectOne("SELECT to_char(timezone(?, now()), 'YYYY-MM-DD HH24:MI:SS') AS t", [$tz])->t,
+            'serverTimeLocal' => $serverTimeLocal,
         ]);
     }
 }

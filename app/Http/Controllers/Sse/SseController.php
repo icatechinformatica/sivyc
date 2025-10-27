@@ -27,34 +27,27 @@ class SseController extends Controller
             while (true) {
                 if (time() >= $deadline) { echo ": closing\n\n"; @ob_flush(); @flush(); break; }
 
-                $rows = DB::select("
+                $rows = \DB::select("
                     SELECT
-                    id,
-                    received_at,
-                    to_char(timezone(?, received_at), 'YYYY-MM-DD HH24:MI:SS') AS received_local,
-                    to_char(timezone(?, received_at), 'HH24:MI:SS')             AS received_time,
-                    payload->'records'->0->'employee'->>'workno'      AS workno,
-                    payload->'records'->0->'employee'->>'first_name'  AS first_name,
-                    payload->'records'->0->'employee'->>'last_name'   AS last_name,
-                    COALESCE(
-                        payload->'records'->0->'employee'->>'department',
-                        payload->'employee'->>'department','—'
-                    ) AS unidad,
-                    payload->'records'->0->'device'->>'name'          AS device_name,
-                    payload->'records'->0->'device'->>'serial_number' AS serial_number,
-
-                    -- 🔽 check_time local sin zona
-                    to_char(
+                        id,
+                        to_char(timezone(?, received_at), 'HH24:MI:SS')             AS received_time,   -- 👈
+                        to_char(
                         timezone(?, (payload->'records'->0->>'check_time')::timestamptz),
                         'YYYY-MM-DD HH24:MI:SS'
-                    ) AS check_time_local,
-
-                    payload->'records'->0->>'check_type'              AS check_type
+                        )                                                           AS check_time_local, -- 👈
+                        payload->'records'->0->'employee'->>'workno'                AS workno,
+                        payload->'records'->0->'employee'->>'first_name'            AS first_name,
+                        payload->'records'->0->'employee'->>'last_name'             AS last_name,
+                        COALESCE(payload->'records'->0->'employee'->>'department',
+                                payload->'employee'->>'department','—')            AS unidad,
+                        payload->'records'->0->'device'->>'name'                    AS device_name,
+                        payload->'records'->0->'device'->>'serial_number'           AS serial_number,
+                        payload->'records'->0->>'check_type'                        AS check_type
                     FROM crosschex_live
                     WHERE (? IS NULL OR id > ?)
                     ORDER BY id ASC
                     LIMIT 200
-                ", [$tz, $tz, $tz, $lastId, $lastId]);
+                ", [$tz, $tz, $lastId, $lastId]);
 
                 if ($rows) {
                     $lastId = end($rows)->id;
