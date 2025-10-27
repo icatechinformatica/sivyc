@@ -26,18 +26,20 @@ class CrossChexController extends Controller
 
         $payload = $request->json()->all();
 
-        // Zona local (Chiapas/MX). Asegúrate en config/app.php: 'timezone' => 'America/Mexico_City'
         $localTz = config('app.timezone', 'America/Mexico_City');
 
-        // Momento de llegada en zona local con offset (e.g., "2025-10-27T13:11:27-06:00")
-        $receivedLocalIso = CarbonImmutable::now($localTz)->toIso8601String();
+        // 1) “Momento de llegada” en hora local (-06)
+        $arrivalLocal = CarbonImmutable::now($localTz);          // 2025-10-27T13:11:27-06:00
 
-        CrosschexLive::create([
+        // 2) El MISMO instante en UTC para persistir (estándar con timestamptz)
+        $arrivalUtc   = $arrivalLocal->utc();                    // 2025-10-27T19:11:27+00:00
+
+        \App\Models\CrosschexLive::create([
             'headers'     => $headers,
             'payload'     => $payload,
             'ip'          => $request->ip(),
             'user_agent'  => $request->userAgent(),
-            'received_at' => $receivedLocalIso, // ✅ Incluye -06:00
+            'received_at' => $arrivalUtc->toIso8601String(),     // ✅ UTC real del instante
         ]);
 
         return response()->json(['code' => '200', 'msg' => 'success'], 200);

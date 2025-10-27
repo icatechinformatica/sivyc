@@ -30,7 +30,7 @@ class SseController extends Controller
                 $rows = \DB::select("
                     SELECT
                         id,
-                        to_char(timezone(?, received_at), 'HH24:MI:SS')             AS received_time,   -- 👈
+                        to_char(timezone('America/Mexico_City', received_at), 'HH24:MI:SS') AS received_time,   -- 👈
                         to_char(
                         timezone(?, (payload->'records'->0->>'check_time')::timestamptz),
                         'YYYY-MM-DD HH24:MI:SS'

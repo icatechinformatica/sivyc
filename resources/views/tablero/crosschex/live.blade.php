@@ -194,7 +194,7 @@ async function loadRecent() {
   for (const r of json.rows) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${r.received_time ?? '—'}</td>  <!-- Recibido -->
+      <td>${r.received_time ?? '—'}</td>
       <td>${(r.first_name ?? '')} ${(r.last_name ?? '')} - ${(r.workno ?? '')}</td>
       <td>${r.unidad ?? '—'}</td>
       <td>${(r.device_name ?? '—')} <span class="muted">${r.serial_number ?? ''}</span></td>
@@ -216,7 +216,7 @@ function attachRowsIntoTable(rowsAsc) {
   for (const r of rowsAsc.reverse()) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${r.received_time ?? '—'}</td>  <!-- Recibido -->
+      <td>${r.received_time ?? '—'}</td>
       <td>${(r.workno ?? '')} ${(r.first_name ?? '')} ${(r.last_name ?? '')}</td>
       <td>${r.unidad ?? '—'}</td>
       <td>${(r.device_name ?? '—')} <span class="muted">${r.serial_number ?? ''}</span></td>
