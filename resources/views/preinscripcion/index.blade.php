@@ -99,7 +99,7 @@
                                 <span>EXONERACIÓN/REDUCCIÓN:&nbsp;&nbsp;<strong class="text-danger">PENDIENTE</strong></span>
                             @endif
                             @if($grupo->tdias)<span>TOTAL DIAS:&nbsp;&nbsp;<strong>{{$grupo->tdias}}</strong></span>@endif
-                            @if($grupo->dia)<span>DIAS:&nbsp;&nbsp;<strong>{{$grupo->dia}}</strong></span>@endif
+                            
                             @if($grupo->dura)<span>DURACIÓN:&nbsp;&nbsp;<strong>{{$grupo->dura}} HORAS</strong></span>@endif
                             @if ($grupo->cgeneral!='0')
                                 <span>CONVENIO GENERAL:&nbsp;&nbsp;<strong>{{$grupo->cgeneral}}</strong></span>

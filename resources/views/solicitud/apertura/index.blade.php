@@ -85,8 +85,7 @@
                 <span>FECHA INICIO:  &nbsp;&nbsp;<strong>{{ $grupo->inicio }}</strong></span> <input type="hidden" name="inicio" id="inicio" value="{{$grupo->inicio}}">
                 <span>FECHA TERMINO:  &nbsp;&nbsp;<strong>{{ $grupo->termino }}</strong></span> <input type="hidden" name="termino" id="termino" value="{{$grupo->termino}}">
                 @if ($grupo->tdias)
-                    <span>TOTAL DIAS: &nbsp;&nbsp;<strong>{{ $grupo->tdias }}</strong></span>  
-                    <span>DIAS: &nbsp;&nbsp;<strong>{{ $grupo->dia }}</strong></span>  
+                    <span>TOTAL DIAS: &nbsp;&nbsp;<strong>{{ $grupo->tdias }}</strong></span>                      
                 @endif
                     <span>MUNICIPIO: &nbsp;&nbsp;<strong>{{ $grupo->muni }}</strong></span>
                     <span>LOCALIDAD: &nbsp;&nbsp;<strong>{{ $localidad }}</strong></span>
