@@ -99,6 +99,14 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'crosschex' => [
+        'driver' => 'daily', // RotatingFileHandler (archivos diarios)
+        'path'   => storage_path('logs/crosschex.log'),
+        'level'  => env('CROSSCHEX_LOG_LEVEL', 'info'),
+        'days'   => 14, // conserva 14 días
+        'tap'    => [App\Logging\CustomizeJsonFormatter::class],
+    ],
     ],
 
 ];

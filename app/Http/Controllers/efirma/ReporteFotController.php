@@ -235,7 +235,7 @@ class ReporteFotController extends Controller
         #Unidad de capacitacion
         $meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE'];
 
-        $cursopdf = tbl_curso::select('nombre', 'curso', 'tcapacitacion', 'inicio', 'termino', 'evidencia_fotografica',
+        $cursopdf = tbl_curso::select('nombre', 'curso', 'tcapacitacion', 'inicio', 'termino', 'evidencia_fotografica', 'dura',
         'clave', 'hini', 'hfin', 'tbl_cursos.unidad', 'uni.dunidad', 'uni.ubicacion', 'uni.direccion', 'uni.municipio')
         ->join('tbl_unidades as uni', 'uni.unidad', 'tbl_cursos.unidad')
         ->where('tbl_cursos.id', '=', $id_curso)->first();
@@ -303,7 +303,7 @@ class ReporteFotController extends Controller
                 </tr>
                 <tr class="estilo_colum">
                     <td class="estilo_colum"><b>CLAVE: </b>'. $cursopdf->clave. '</td>
-                    <td class="estilo_colum"><b>HORARIO: </b>'. $cursopdf->hini. ' A '. $cursopdf->hfin. '</td>
+                    <td class="estilo_colum"><b>TOTAL HORAS CURSO: </b>'. $cursopdf->dura. '</td>
                 </tr>
                 <tr class="estilo_colum">
                     <td class="estilo_colum"><b>NOMBRE DEL TITULAR DE LA U.C: </b>'. $cursopdf->dunidad. '</td>

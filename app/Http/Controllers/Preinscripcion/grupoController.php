@@ -254,7 +254,14 @@ class grupoController extends Controller
             ->WHERE('estado',true)
             ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
             ->WHERE('especialidad_instructores.especialidad_id',$data->id_especialidad)
-            ->WHERE('fecha_validacion','<',$data->inicio)
+            //->WHERE('fecha_validacion','<',$data->inicio)
+            ->whereRaw("
+                (
+                    SELECT MAX((elem->>'fecha_val')::date)
+                    FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
+                    WHERE (elem->>'fecha_val')::date < ?
+                ) IS NOT NULL
+            ", [$data->inicio])
             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$data->termino)
             ->whereNotIn('instructores.id', $internos)
             ->groupBy('t.id_instructor','instructores.id')
@@ -748,13 +755,14 @@ class grupoController extends Controller
                                 'tipo_identificacion',
                                 'folio_ine','domicilio','archivo_domicilio','archivo_ine','archivo_bancario','rfc','archivo_rfc',
                                 'banco','no_cuenta','interbancaria','tipo_honorario',
-                                DB::raw("(
+                                DB::raw("
+                                    (
                                         SELECT elem->>'memo_val'
                                         FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
                                         WHERE (elem->>'fecha_val')::date < '$request->inicio'
-                                        ORDER BY elem->>'fecha_val' DESC
+                                        ORDER BY (elem->>'fecha_val')::date DESC
                                         LIMIT 1
-                                    ) as mespecialidad")
+                                    ) AS mespecialidad")                              
                                 )
                             ->WHERE('estado', true)
                             ->WHERE('instructores.status', '=', 'VALIDADO')
@@ -762,7 +770,14 @@ class grupoController extends Controller
                             ->where('instructores.id', $request->instructor)
                             ->WHERE('especialidad_instructores.especialidad_id', $id_especialidad)
                             ->WHERE('especialidad_instructores.activo', 'true')
-                            ->WHERE('fecha_validacion','<',$request->inicio)
+                            //->WHERE('fecha_validacion','<',$request->inicio)
+                            ->whereRaw("
+                                (
+                                    SELECT MAX((elem->>'fecha_val')::date)
+                                    FROM jsonb_array_elements(especialidad_instructores.hvalidacion) AS elem
+                                    WHERE (elem->>'fecha_val')::date < ?
+                                ) IS NOT NULL
+                            ", [$request->inicio])
                             ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$request->termino)
                             ->LEFTJOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
                             ->LEFTJOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
@@ -1291,7 +1306,7 @@ class grupoController extends Controller
     public function turnar(Request $request)
     {
         $message = null;
-        $response = $this->consultar_instructores ($request);
+        $response = $this->instructor_disponible ($request->folio_grupo);
         $respon = $response->getData(true);
         $status_inst = $respon['status'];
         if($status_inst == 500){
@@ -1585,7 +1600,7 @@ class grupoController extends Controller
                                 TO_CHAR(
                                     (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
                                     ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
-                                    'FM999990.##'
+                                    'FM999990.0'
                                 ) || 'hrs.)'|| '</div>',
                                 E'\n'
                                 ORDER BY DATE(start)
@@ -1597,26 +1612,30 @@ class grupoController extends Controller
 
                         DB::raw("
                             (
-                                CASE
-                                    WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
-                                    WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
-                                    ELSE ''
-                                END
-                                ||
-                                CASE
-                                    WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
-                                    WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
-                                    ELSE ''
-                                END
-                                ||
-                                CASE
-                                    WHEN tc.tipo != 'EXO' THEN
-                                        'CUOTA DE RECUPERACIÓN $' || ROUND((tc.costo)/(tc.hombre+tc.mujer),2) || ' POR PERSONA, ' ||
-                                        'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00')
-                                    ELSE ''
-                                END
-                                || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || tc.instructor_mespecialidad ||'.</div>'
-                                || ' ' || COALESCE(tc.nota, '')
+                            CASE
+                                WHEN tc.obs_preapertura ILIKE '%INSTRUCTOR%' THEN tc.obs_preapertura
+                            ELSE
+                                    CASE
+                                        WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
+                                        WHEN (tc.vb_dg = true  OR tc.clave !='0') AND tc.modinstructor = 'HONORARIOS' THEN 'INSTRUCTOR POR ' || tc.modinstructor || ', '
+                                        ELSE ''
+                                    END
+                                    ||
+                                    CASE
+                                        WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
+                                        WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
+                                        ELSE ''
+                                    END
+                                    ||
+                                    CASE
+                                        WHEN tc.tipo != 'EXO' THEN
+                                            'CUOTA DE RECUPERACIÓN $' || COALESCE(ROUND((tc.costo)/(tc.hombre+tc.mujer),2),0) || ' POR PERSONA, ' ||
+                                            'TOTAL CURSO $' || TO_CHAR(ROUND(tc.costo, 2), 'FM999,999,999.00')
+                                        ELSE ''
+                                    END
+                                    || '<div >MEMORÁNDUM DE VALIDACIÓN DEL INSTRUCTOR ' || COALESCE(tc.instructor_mespecialidad,'<b>NO DISPONIBLE<b>') ||'.</div>'
+                                    || ' ' || COALESCE(tc.obs_preapertura, '')
+                            END
                             ) AS observaciones
                         ")
                     )
@@ -1802,8 +1821,21 @@ class grupoController extends Controller
             $agenda->id_municipio = $id_municipio;
             $agenda->clave_localidad = $clave_localidad;
             $agenda->iduser_created = Auth::user()->id;
-            $agenda->save();
+            $agenda->save();            
+            
+             
+            ///VALIDA INSTRUCTOR  
+            $message = null;
+            $response = $this->instructor_disponible($id_curso);
+            $respon = $response->getData(true);            
+            if($respon['status'] == 500){
+                if ($agenda->id_curso == $id_curso) $agenda->delete();
+                return $respon['mensaje'];
+            }            
+
+            ///ACTUALIZA TOTAL DIAS            
             $this->actualiza_dias($id_curso);
+           
         } catch (QueryException $ex) {
             //dd($ex);
             return 'duplicado';
@@ -2405,10 +2437,9 @@ class grupoController extends Controller
         return $json_vacios;
     }
 
-    ##Función para la validacion de instructores
- public function consultar_instructores (Request $request){
-    try {
-            $folio_grupo = $request->folio_grupo;
+ ##Función para la validacion de instructores
+ public function instructor_disponible($folio_grupo){
+    try {            
             $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
             $grupo = DB::table('alumnos_registro')->select('id_curso','inicio', 'alumnos_registro.id_especialidad', 'termino', 'folio_grupo', 'id_instructor', 'cursos.curso_alfa')
             ->JOIN('cursos', 'cursos.id', '=' ,'alumnos_registro.id_curso')

@@ -527,7 +527,7 @@ class aperturasController extends Controller
                             TO_CHAR(
                                 (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
                                 ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
-                                'FM999990.##'
+                                'FM999990.00'
                             ) || 'h)',
                             E'\n'
                             ORDER BY DATE(start)
@@ -539,7 +539,9 @@ class aperturasController extends Controller
 
                         DB::raw("
                         (
-                         CASE WHEN tc.arc='01' THEN(
+                         CASE 
+                         WHEN  tc.arc='01'  AND tc.nota ILIKE '%INSTRUCTOR%' THEN tc.nota                         
+                         WHEN tc.arc='01' THEN(
 
                             CASE
                                 WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '

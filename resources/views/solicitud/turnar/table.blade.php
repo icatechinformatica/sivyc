@@ -51,48 +51,79 @@
                 @foreach($grupos as $g)
                     <?php
                     $aviso = NULL;
-                    if( ($g->option =='ARC01' AND ($g->turnado_solicitud != 'UNIDAD' OR  $g->clave!='0'))
-                        OR ($g->option =='ARC02'
-                        AND ( $g->status_solicitud_arc02 == 'AUTORIZADO' OR $g->status_curso!='AUTORIZADO' OR $g->turnado!='UNIDAD' OR $g->status == 'TURNADO_DTA' OR $g->status == 'TURNADO_PLANEACION' OR $g->status == 'REPORTADO'))){
+                    if ($g->status_curso === 'SOLICITADO') {
                         $activar = false;
-                        $aviso = "Grupo turnado a ".$g->turnado_solicitud.", Clave de Apertura ".$g->status_curso." y Estatus: ".$g->status;
-                    }else if( ($g->status_solicitud_arc02 == 'TURNADO' AND $g->option =='ARC02') OR ($g->status_solicitud == 'TURNADO' AND $g->option =='ARC01') ){
+                        $aviso = "GRUPO SOLICITADO A DTA.";
+                    }elseif (
+                        ($g->option === 'ARC01' && ($g->turnado_solicitud !== 'UNIDAD' || $g->clave !== '0')) ||
+                        ($g->option === 'ARC02' && (
+                            $g->status_solicitud_arc02 === 'AUTORIZADO' ||
+                            $g->status_curso !== 'AUTORIZADO' ||
+                            $g->turnado !== 'UNIDAD' ||
+                            in_array($g->status, ['TURNADO_DTA', 'TURNADO_PLANEACION', 'REPORTADO'], true)
+                        ))
+                    ) {
                         $activar = false;
-                        $aviso = "Grupo turnado a revisión";
-                    }else if( $g->turnado_solicitud == 'VINCULACION'  ){
+                        $aviso = "GRPO TURNADO A {$g->turnado_solicitud}, CALVE DE APERTURA {$g->status_curso} Y ESTATUS: {$g->status}";
+                    }elseif (
+                        ($g->status_solicitud_arc02 === 'TURNADO' && $g->option === 'ARC02') ||
+                        ($g->status_solicitud === 'TURNADO' && $g->option === 'ARC01')
+                    ){
+                        $activar = false;
+                        $aviso = "GRUPO TURNADO A REVISIÓN.";
+                    }
+
+                    elseif ($g->turnado_solicitud === 'VINCULACION') {
                         $activar = false;
                         $rojo = true;
-                        $aviso = "GRUPO TURNADO A VINCULACIOÓN";
-                    }elseif( $g->option =='ARC01' AND (($g->horas_agenda < $g->dura) or ($g->horas_agenda > $g->dura)) ){
+                        $aviso = "GRUPO TURNADO A VINCULACIÓN";
+                    }
+
+                    elseif( $g->option =='ARC01' AND (($g->horas_agenda < $g->dura) or ($g->horas_agenda > $g->dura)) ){
                         $activar = false;
                         $rojo = true;
                         $aviso = "HORAS AGENDADAS NO CORRESPONDIENTES A LA DURACIÓN DEL CURSO";
                     }
-                    /*else if( $g->option =='ARC01' AND ( $g->soltermino < date('Y-m-d') ) ){
+
+                    /*
+                    elseif ($g->option === 'ARC01' && ($g->soltermino < date('Y-m-d'))) {
                         $activar = false;
                         $rojo = true;
-                        $aviso = "EL CURSO HA SOBREPASADO EL LIMITE DE TIEMPO PARA REALIZAR SU SOLICITUD ARC 01";
-                    }*/
-                    else if( !$g->nombre ){
+                        $aviso = "EL CURSO HA SOBREPASADO EL LÍMITE DE TIEMPO PARA REALIZAR SU SOLICITUD ARC 01";
+                    }
+                    */
+
+                    elseif (empty($g->nombre)) {
                         $activar = false;
                         $rojo = true;
                         $aviso = "EL NOMBRE DEL INSTRUCTOR NO SE HA REGISTRADO";
-                    }elseif($g->tipo!='PINS' AND ($g->mexoneracion=='NINGUNO' OR $g->mexoneracion==null OR $g->mexoneracion=='0') AND ($g->depen!='INSTITUTO DE CAPACITACION Y VINCULACION TECNOLOGICA DEL ESTADO DE CHIAPAS')) {
+                    }
+                    elseif (
+                        $g->tipo !== 'PINS' &&
+                        (empty($g->mexoneracion) || $g->mexoneracion === 'NINGUNO' || $g->mexoneracion === '0') &&
+                        $g->depen !== 'INSTITUTO DE CAPACITACION Y VINCULACION TECNOLOGICA DEL ESTADO DE CHIAPAS'
+                    ) {
                         $activar = false;
                         $rojo = true;
-                        $aviso = "INGRESE EL MEMORÁNDUM DE EXONERACÓN";
-                    }elseif($g->status_folio<>'ENVIADO'){
-                        if((!$g->comprobante_pago OR !$g->folio_pago OR !$g->fecha_pago ) AND $g->tipo!='EXO') {
+                        $aviso = "REALICE EL TRÁMITE EXONERACIÓN O REDUCCIÓN DE CUOTA.";
+                    }
+
+                    elseif ($g->status_folio !== 'ENVIADO') {
+                        if (
+                            ($g->tipo !== 'EXO') &&
+                            (empty($g->comprobante_pago) || empty($g->folio_pago) || empty($g->fecha_pago))
+                        ) {
                             $activar = false;
                             $rojo = true;
-                            $aviso = "CARGE EL COMPROBANTE DE PAGO";
+                            $aviso = "CARGUE EL COMPROBANTE DE PAGO.";
                         }
-                    }else $rojo = false;
+                    }else { $rojo = false;}
 
-                    if ($g->option =='ARC01'){
+                    if ($g->option === 'ARC01') {
                         $id_mextemporaneo = $g->mextemporaneo;
                         $rextemporaneo = $g->rextemporaneo;
-                    }else if($g->option =='ARC02'){
+                    }
+                    elseif ($g->option === 'ARC02') {
                         $id_mextemporaneo = $g->mextemporaneo_arc02;
                         $rextemporaneo = $g->rextemporaneo_arc02;
                     }

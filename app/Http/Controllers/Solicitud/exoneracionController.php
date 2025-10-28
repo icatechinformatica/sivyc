@@ -89,6 +89,7 @@ class exoneracionController extends Controller
                          from agenda
                          where id_curso = tc.folio_grupo) as t) as horas_agenda"),'ar.id_unidad','ar.cct','tc.tipo','tc.cgeneral','ar.ejercicio','tc.status_solicitud',
                          'tc.dura','tc.status_curso','ar.id_organismo','ar.folio_grupo','tc.status','tc.status_curso','tc.arc','tc.status_solicitud_arc02')
+                        ->join('agenda', 'agenda.id_curso','=','tc.folio_grupo')
                         ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                         ->where('ar.id_organismo','!=',242)
                         ->whereIn('tc.tipo',['EXO','EPAR'])
@@ -164,7 +165,7 @@ class exoneracionController extends Controller
                     $message = "Las horas agendadas no corresponden a la duración del curso..";
                 }
             }else {
-                $message = "No se encontro el registro disponible..";
+                $message = "No se encontro disponible el grupo ".$request->grupo.", verifique que se haya creado y agendado correctamente.";
             }
         }
         return redirect()->route('solicitud.exoneracion')->with(['message' => $message]);
@@ -290,8 +291,40 @@ class exoneracionController extends Controller
                                         'tc.nombre as instructor','e.tipo_exoneracion','e.no_convenio','e.noficio',DB::raw("to_char(DATE (e.foficio)::date, 'DD-MM-YYYY') as foficio"),
                                         'e.razon_exoneracion','e.observaciones','tc.hini','tc.hfin',
                                         'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia',
-                                        'tc.folio_grupo','e.no_memorandum',DB::raw("to_char(DATE (e.fecha_memorandum)::date, 'DD-MM-YYYY') as fecha_memorandum"))
-                                ->leftJoin('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
+                                        'tc.folio_grupo','e.no_memorandum',DB::raw("to_char(DATE (e.fecha_memorandum)::date, 'DD-MM-YYYY') as fecha_memorandum"),
+                                        DB::raw("
+                                            (
+                                                SELECT string_agg( '<div>' ||
+                                                CASE
+                                                    WHEN DATE(\"start\") = DATE(\"end\") THEN TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                                                    ELSE TO_CHAR(DATE(\"start\"), 'DD/MM/YYYY') || ' - ' || TO_CHAR(DATE(\"end\"), 'DD/MM/YYYY')
+                                                END
+
+                                                || ' ' ||
+                                                CASE
+                                                    WHEN TO_CHAR(\"start\", 'MI') = '00' THEN TO_CHAR(\"start\", 'HH24')
+                                                    ELSE TO_CHAR(\"start\", 'HH24:MI')
+                                                END || '-' ||
+                                                CASE
+                                                    WHEN TO_CHAR(\"end\", 'MI') = '00' THEN TO_CHAR(\"end\", 'HH24')
+                                                    ELSE TO_CHAR(\"end\", 'HH24:MI')
+                                                END || 'h. (' ||
+                                                TO_CHAR(
+                                                    (EXTRACT(EPOCH FROM ((CAST(\"end\" AS time) - CAST(\"start\" AS time)))) / 3600) *
+                                                    ((DATE_TRUNC('day', \"end\")::date - DATE_TRUNC('day', \"start\")::date) + 1),
+                                                    'FM999990.0'
+                                                ) || 'hrs.)'|| '</div>',
+                                                E'\n'
+                                                ORDER BY DATE(start)
+                                                ) AS agenda_texto
+                                                FROM agenda
+                                                WHERE id_curso = tc.folio_grupo
+                                            )::text AS agenda
+                                            ")
+                            )                               
+                                ->join('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
+                                ->join('agenda','agenda.id_curso','=','e.folio_grupo')
+                            
                                 ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                                 ->leftJoin('cursos as c','ar.id_curso','=','c.id')
                                 ->where('e.nrevision',session('revision'))
@@ -324,6 +357,7 @@ class exoneracionController extends Controller
                     $data[$key]['horario'] = $horario;
                     $data[$key]['inicio'] = $value->inicio;
                     $data[$key]['termino'] = $value->termino;
+                    $data[$key]['agenda'] = $value->agenda;
                     $data[$key]['tcapacitacion'] = $value->tcapacitacion;
                     if ($value->tcapacitacion=='PRESENCIAL') {
                         $data[$key]['lugar'] = $value->efisico;
