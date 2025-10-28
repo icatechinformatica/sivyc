@@ -175,7 +175,7 @@ async function loadMetrics() {
 
   document.getElementById('kpi-total').textContent = fmt(json.totals?.total_all ?? 0);
   document.getElementById('kpi-5min').textContent  = fmt(json.totals?.total_5min ?? 0);
-  document.getElementById('kpi-time').textContent  = new Date(json.serverTime).toLocaleTimeString();
+  document.getElementById('kpi-time').textContent = json.serverTimeLocal;
 
   perMinuteChart.data.labels = json.perMinute.map(p => p.label);
   perMinuteChart.data.datasets[0].data = json.perMinute.map(p => Number(p.value));
@@ -194,11 +194,11 @@ async function loadRecent() {
   for (const r of json.rows) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${new Date(r.received_at).toLocaleTimeString()}</td>
-      <td>${(r.workno ?? '')} ${(r.first_name ?? '')} ${(r.last_name ?? '')}</td>
+      <td>${r.received_time ?? '—'}</td>
+      <td>${(r.first_name ?? '')} ${(r.last_name ?? '')} - ${(r.workno ?? '')}</td>
       <td>${r.unidad ?? '—'}</td>
       <td>${(r.device_name ?? '—')} <span class="muted">${r.serial_number ?? ''}</span></td>
-      <td>${r.check_time ?? '—'}</td>
+     <td>${r.check_time_local ?? '—'}</td>
       <td>${r.check_type ?? '—'}</td>`;
     tbody.appendChild(tr);
   }
@@ -216,11 +216,11 @@ function attachRowsIntoTable(rowsAsc) {
   for (const r of rowsAsc.reverse()) {
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${new Date(r.received_at).toLocaleTimeString()}</td>
+      <td>${r.received_time ?? '—'}</td>
       <td>${(r.workno ?? '')} ${(r.first_name ?? '')} ${(r.last_name ?? '')}</td>
       <td>${r.unidad ?? '—'}</td>
       <td>${(r.device_name ?? '—')} <span class="muted">${r.serial_number ?? ''}</span></td>
-      <td>${r.check_time ?? '—'}</td>
+      <td>${r.check_time_local ?? '—'}</td>
       <td>${r.check_type ?? '—'}</td>`;
     tbody.prepend(tr);
   }
