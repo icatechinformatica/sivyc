@@ -694,7 +694,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/solicitudes/exoneracion/busqueda','Solicitudes\exoneracionesController@search')->name('solicitudes.exoneracion.search')->middleware('can:solicitudes.exoneracion');
     Route::post('/solicitudes/exoneracion/denegar','Solicitudes\exoneracionesController@denegar')->name('solicitudes.exoneracion.denegar')->middleware('can:solicitudes.exoneracion');
     Route::post('/solicitudes/exoneracion/aceptar','Solicitudes\exoneracionesController@aceptar')->name('solicitudes.exoneracion.aceptar')->middleware('can:solicitudes.exoneracion');
-    Route::post('/solicitudes/exoneracion/generar}','Solicitudes\exoneracionesController@generar')->name('solicitudes.exoneracion.borrador');
+    Route::post('/solicitudes/exoneracion/generar','Solicitudes\exoneracionesController@generar')->name('solicitudes.exoneracion.borrador');
     Route::post('/solicitudes/exoneracion/editar','Solicitudes\exoneracionesController@editar')->name('solicitudes.exoneracion.editar')->middleware('can:solicitudes.exoneracion');
 
     //paqueterias didacticas

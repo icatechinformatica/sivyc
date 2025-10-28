@@ -62,8 +62,7 @@
                         <th rowspan="2">MOD</th>
                         <th rowspan="2">COSTO</th>
                         <th rowspan="2">HORAS</th>
-                        <th rowspan="2">FECHA INICIO</th>
-                        <th rowspan="2">FECHA TERMINO</th>
+                        <th rowspan="2">FECHAS/HORARIOS<br/>(HORAS)</th>
                         <th rowspan="2">CUPO</th>
                         <th colspan="2">SEXO</th>
                         <th colspan="2">FOLIAJE EXONERACION</th>
@@ -93,8 +92,7 @@
                         <td>{{$item->mod}}</td>
                         <td>{{$item->costo}}</td>
                         <td>{{$item->dura}}</td>
-                        <td>{{$item->inicio}}</td>
-                        <td>{{$item->termino}}</td>
+                        <td><div style="width: 90px">{!! $item->agenda !!}<div></td>
                         <td>{{$total}}</td>
                         <td>{{$item->mujer}}</td>
                         <td>{{$item->hombre}}</td>
@@ -213,11 +211,7 @@
                         <th>TIPO DE CAPACITACIÓN</th>
                         <th colspan="6">A DISTANCIA</th>
                         @endif
-                    </tr>
-                    <tr>
-                        <th>DIAS</th>
-                        <th colspan="6">{{$item['dias']}}</th>
-                    </tr>
+                    </tr>                   
                     <tr>
                         <th colspan="7">LISTA DE ALUMNOS</th>
                     </tr>
