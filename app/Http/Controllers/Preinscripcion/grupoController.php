@@ -1623,7 +1623,7 @@ class grupoController extends Controller
                                     ||
                                     CASE
                                         WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
-                                        WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
+                                        WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCCIÓN DE CUOTA No. ' || COALESCE(tc.mexoneracion,'<b>NO DISPONIBLE</b>') || ', '
                                         ELSE ''
                                     END
                                     ||
