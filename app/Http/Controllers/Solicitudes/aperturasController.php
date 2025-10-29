@@ -551,7 +551,7 @@ class aperturasController extends Controller
                             ||
                             CASE
                                 WHEN tc.tipo = 'EXO' THEN 'MEMORÁNDUM DE EXONERACIÓN No. ' || tc.mexoneracion || ', '
-                                WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
+                                WHEN tc.tipo = 'EPAR' THEN 'MEMORÁNDUM DE REDUCCIÓN DE CUOTA No. ' || tc.mexoneracion || ', '
                                 ELSE ''
                             END
                             ||
