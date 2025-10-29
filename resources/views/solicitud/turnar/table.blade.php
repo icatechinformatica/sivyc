@@ -79,7 +79,7 @@
                         $aviso = "GRUPO TURNADO A VINCULACIÓN";
                     }
 
-                    elseif ($g->option === 'ARC01' && ($g->horas_agenda !== $g->dura)) {
+                    elseif( $g->option =='ARC01' AND (($g->horas_agenda < $g->dura) or ($g->horas_agenda > $g->dura)) ){
                         $activar = false;
                         $rojo = true;
                         $aviso = "HORAS AGENDADAS NO CORRESPONDIENTES A LA DURACIÓN DEL CURSO";
