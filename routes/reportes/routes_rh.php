@@ -1,6 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\SseController;
+use App\Http\Controllers\Sse\SseController;
 use App\Http\Controllers\Api\CrossChexController;
 
 Route::middleware(['auth'])->group(function(){

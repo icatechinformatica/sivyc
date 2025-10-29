@@ -14,6 +14,7 @@ class CrossChexController extends Controller
 {
     public function handle(Request $request): JsonResponse
     {
+        // Extraer headers básicos del webhook
         $headers = [
             'nameSpace'      => $request->header('nameSpace'),
             'nameAction'     => $request->header('nameAction'),
@@ -24,24 +25,23 @@ class CrossChexController extends Controller
             'authorize-sign' => $request->header('authorize-sign'),
         ];
 
+        // Cuerpo del webhook
         $payload = $request->json()->all();
 
-        $localTz = config('app.timezone', 'America/Mexico_City');
-
-        // 1) “Momento de llegada” en hora local (-06)
-        $arrivalLocal = CarbonImmutable::now($localTz);          // 2025-10-27T13:11:27-06:00
-
-        // 2) El MISMO instante en UTC para persistir (estándar con timestamptz)
-        $arrivalUtc   = $arrivalLocal->utc();                    // 2025-10-27T19:11:27+00:00
-
-        \App\Models\CrosschexLive::create([
-            'headers'     => $headers,
-            'payload'     => $payload,
+        // ⚙️ Insertar el registro en crosschex_live
+        // El trigger se encarga de:
+        //  - Derivar check_time_utc desde payload
+        //  - Calcular window_5m_id (ventana de 5 minutos)
+        //  - Evitar duplicados por (workno, window_5m_id)
+        DB::table('crosschex_live')->insertOrIgnore([
+            'headers'     => json_encode($headers, JSON_UNESCAPED_UNICODE),
+            'payload'     => json_encode($payload, JSON_UNESCAPED_UNICODE),
             'ip'          => $request->ip(),
             'user_agent'  => $request->userAgent(),
-            'received_at' => $arrivalUtc->toIso8601String(),     // ✅ UTC real del instante
+            'received_at' => now('UTC'), // guardamos hora UTC exacta de recepción
         ]);
 
+        // ✅ Respuesta exacta que CrossChex espera
         return response()->json(['code' => '200', 'msg' => 'success'], 200);
     }
 
@@ -168,4 +168,82 @@ class CrossChexController extends Controller
             'serverTimeLocal' => $serverTimeLocal,
         ]);
     }
+
+    public function punctuality(\Illuminate\Http\Request $request)
+    {
+        $tz = config('app.timezone', 'America/Mexico_City');
+
+        $rows = \DB::select("
+            WITH base AS (
+            SELECT
+                COALESCE(
+                payload->'records'->0->'employee'->>'department',
+                payload->'employee'->>'department',
+                '—'
+                ) AS unidad,
+                (timezone(?, (payload->'records'->0->>'check_time')::timestamptz))::time AS local_time,
+                (timezone(?, (payload->'records'->0->>'check_time')::timestamptz))::date AS local_date
+            FROM crosschex_live
+            ),
+            today AS (
+            SELECT *
+            FROM base
+            WHERE local_date = (timezone(?, now()))::date
+            ),
+            counts AS (
+            SELECT
+                LOWER(TRIM(unidad)) AS unidad,
+                SUM(
+                CASE
+                    WHEN (local_time BETWEEN time '07:40' AND time '08:15')
+                    OR (local_time BETWEEN time '08:45' AND time '09:15')
+                    THEN 1 ELSE 0 END
+                ) AS ontime,
+                SUM(
+                CASE
+                    WHEN (local_time BETWEEN time '08:16' AND time '08:30')
+                    OR (local_time BETWEEN time '09:16' AND time '09:30')
+                    THEN 1 ELSE 0 END
+                ) AS late
+            FROM today
+            GROUP BY LOWER(TRIM(unidad))
+            )
+            SELECT
+            u.unidad,
+            COALESCE(u.total_personas_checan, 0)::int AS total,
+            COALESCE(c.ontime, 0)::int AS ontime,
+            COALESCE(c.late, 0)::int AS late,
+            GREATEST(
+                COALESCE(u.total_personas_checan, 0)
+                - COALESCE(c.ontime, 0)
+                - COALESCE(c.late, 0),
+                0
+            )::int AS missing
+            FROM tbl_unidades u
+            LEFT JOIN counts c
+            ON LOWER(TRIM(c.unidad)) = LOWER(TRIM(u.unidad))
+            WHERE
+            u.unidad = u.ubicacion
+            AND COALESCE(u.total_personas_checan, 0) > 0
+            ORDER BY u.unidad ASC
+        ", [$tz, $tz, $tz]);
+
+        $data = array_map(fn($r) => [
+            'unidad'  => $r->unidad,
+            'total'   => (int) $r->total,
+            'ontime'  => (int) $r->ontime,
+            'late'    => (int) $r->late,
+            'missing' => (int) $r->missing,
+        ], $rows);
+
+        $serverTimeLocal = \DB::selectOne(
+            "SELECT to_char(timezone(?, now()), 'YYYY-MM-DD HH24:MI:SS') AS t", [$tz]
+        )->t;
+
+        return response()->json([
+            'serverTimeLocal' => $serverTimeLocal,
+            'items'           => $data,
+        ]);
+    }
+
 }
