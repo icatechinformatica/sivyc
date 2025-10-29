@@ -252,15 +252,16 @@ class CrossChexController extends Controller
         $type   = $request->query('type', 'ontime'); // ontime | late
         $tz     = config('app.timezone', 'America/Mexico_City');
 
-        // Ventanas de tiempo
-        // a tiempo: 07:40–08:15 y 08:45–09:15
-        // retardo: 08:16–08:30 y 09:16–09:30
+        // Ventanas (ajusta a las que uses)
+        // ontime: 08:00–08:15 y 09:00–09:15
+        // late  : 08:16–08:30 y 09:16–09:30
+        // (Si tú cambiaste a 07:40–08:15 y 08:45–09:15, cambia aquí)
         $whereTime =
             ($type === 'late')
-            ? " (t::time BETWEEN time '08:16' AND time '08:30'
-                OR t::time BETWEEN time '09:16' AND time '09:30') "
-            : " (t::time BETWEEN time '07:40' AND time '08:15'
-                OR t::time BETWEEN time '08:45' AND time '09:15') ";
+            ? " (tt BETWEEN time '08:16' AND time '08:44'
+                OR tt BETWEEN time '09:16' AND time '09:44') "
+            : " (tt BETWEEN time '07:40' AND time '08:15'
+                OR tt BETWEEN time '08:45' AND time '09:15') ";
 
         $rows = DB::select("
             WITH base AS (
@@ -270,12 +271,17 @@ class CrossChexController extends Controller
                 payload->'employee'->>'department',
                 '—'
                 ))) AS unidad_norm,
-                timezone(?, (payload->'records'->0->>'check_time')::timestamptz) AS t,  -- local timestamp
+                timezone(?, (payload->'records'->0->>'check_time')::timestamptz) AS t, -- local ts
                 payload
             FROM crosschex_live
             ),
             today AS (
-            SELECT unidad_norm, t::date AS d, t::time AS tt, t AS ts, payload
+            SELECT
+                unidad_norm,
+                t::date  AS d,
+                t::time  AS tt,      -- 👈 aquí ya exponemos el time
+                t        AS ts,      -- y el timestamp completo
+                payload
             FROM base
             WHERE t::date = (timezone(?, now()))::date
             )
@@ -284,14 +290,14 @@ class CrossChexController extends Controller
             CONCAT_WS(' ',
                 payload->'records'->0->'employee'->>'first_name',
                 payload->'records'->0->'employee'->>'last_name'
-            )                                                   AS full_name,
-            payload->'records'->0->'device'->>'name'            AS device_name,
-            payload->'records'->0->'device'->>'serial_number'   AS serial_number,
-            to_char(ts, 'YYYY-MM-DD HH24:MI:SS')                 AS check_time_local,
-            payload->'records'->0->>'check_type'                AS check_type
+            )                                                    AS full_name,
+            payload->'records'->0->'device'->>'name'             AS device_name,
+            payload->'records'->0->'device'->>'serial_number'    AS serial_number,
+            to_char(ts, 'YYYY-MM-DD HH24:MI:SS')                  AS check_time_local,
+            payload->'records'->0->>'check_type'                 AS check_type
             FROM today
             WHERE unidad_norm = ?
-            AND {$whereTime}
+            AND {$whereTime}   -- 👈 usa tt, no t
             ORDER BY ts ASC
         ", [$tz, $tz, $unidad]);
 
@@ -301,5 +307,6 @@ class CrossChexController extends Controller
             'items'  => $rows,
         ]);
     }
+
 
 }
