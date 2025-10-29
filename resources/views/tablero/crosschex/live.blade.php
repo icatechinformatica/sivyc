@@ -192,6 +192,35 @@
     </div>
   </section>
 
+  <!-- Tooltip flotante -->
+    <div id="stackTooltip" style="
+        position:fixed; left:0; top:0; transform:translate(-9999px,-9999px);
+        background:rgba(0,0,0,.85); color:#fff; padding:6px 10px; border-radius:8px;
+        font-size:.85rem; pointer-events:none; z-index:9999; white-space:nowrap;
+    "></div>
+
+    <!-- Modal listado -->
+    <div id="peopleModal" style="
+        position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; z-index:9998;
+        align-items:center; justify-content:center;
+    ">
+        <div style="
+            width:min(720px,92vw); max-height:80vh; overflow:auto;
+            background:#111; color:#eee; border:1px solid rgba(255,255,255,.1);
+            border-radius:14px; padding:16px 18px; box-shadow:0 10px 40px rgba(0,0,0,.5);
+        ">
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                <h3 id="peopleModalTitle" style="margin:0; font-weight:700;">Listado</h3>
+                <button id="peopleModalClose" style="
+                    margin-left:auto; border:0; background:#222; color:#ddd; padding:6px 10px;
+                    border-radius:8px; cursor:pointer;
+                ">Cerrar</button>
+            </div>
+            <div id="peopleModalBody" style="display:grid; gap:10px;"></div>
+        </div>
+    </div>
+
+
 <script>
 /* ========== Estado global ========== */
 let sseActive = false;
@@ -517,25 +546,44 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
         const map = new Map(items.map(i => [i.unidad, i]));
 
         for (const [unidad, item] of map){
-            let card = container.querySelector(`.exec-item[data-unidad="${CSS.escape(unidad)}"]`);
-            if (!card){
-            card = buildStackCard(item);   // tu misma función
+        let card = container.querySelector(`.exec-item[data-unidad="${CSS.escape(unidad)}"]`);
+        if (!card){
+            card = buildStackCard(item);
             container.appendChild(card);
-            }
-
-            const p = calcPercents(item);
-            animateStackTo(card, p);          // ⬅️ aquí ocurre la magia
-
-            // contador: checados = ontime + late
-            const checked = (item.ontime || 0) + (item.late || 0);
-            animateNumber(card.querySelector('.num-checked'), checked);
-            card.querySelector('.num-total').textContent = fmt(item.total);
-            card.querySelector('.exec-total').textContent = fmt(item.total);
         }
 
-        // limpia los que ya no vienen
+        // 1) Calcula porcentajes (verde/amarillo/rojo)
+        const p = calcPercents(item);
+
+        // 2) Anima barras
+        animateStackTo(card, p);
+
+        // 3) Conteo checados = a tiempo + retardos
+        const checked = (item.ontime || 0) + (item.late || 0);
+        animateNumber(card.querySelector('.num-checked'), checked);
+        card.querySelector('.num-total').textContent = fmt(item.total);
+        card.querySelector('.exec-total').textContent = fmt(item.total);
+
+        // 4) **IMPRESCINDIBLE**: setear counts + enlazar tooltip/clicks
+        const okEl   = card.querySelector('.bar-fill.ok');
+        const lateEl = card.querySelector('.bar-fill.late');
+        const missEl = card.querySelector('.bar-fill.miss');
+        okEl.dataset.count   = String(item.ontime || 0);
+        lateEl.dataset.count = String(item.late   || 0);
+        const missing = Math.max(0, (item.total||0) - (item.ontime||0) - (item.late||0));
+        missEl.dataset.count = String(missing);
+
+        // cursor “clicable” en verde y amarillo
+        okEl.style.cursor = 'pointer';
+        lateEl.style.cursor = 'pointer';
+
+        // Enlaza handlers (una sola vez por tarjeta)
+        bindSegmentHandlers(card);
+        }
+
+        // Elimina tarjetas que ya no vienen en la respuesta
         container.querySelectorAll('.exec-item').forEach(el => {
-            if (!map.has(el.dataset.unidad)) el.remove();
+        if (!map.has(el.dataset.unidad)) el.remove();
         });
     }
 
@@ -572,6 +620,142 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
       });
     }
   } catch(_) {}
+
+  const LIST_URL = "{{ route('crosschex.live.punctuality.list') }}";
+
+  // ---------- Tooltip ----------
+  const tip = document.getElementById('stackTooltip');
+  function showTip(text, x, y){
+    tip.textContent = text;
+    tip.style.transform = 'translate(0,0)';
+    // margen para que no tape el cursor
+    const pad = 12;
+    tip.style.left = (x + pad) + 'px';
+    tip.style.top  = (y + pad) + 'px';
+  }
+  function hideTip(){
+    tip.style.transform = 'translate(-9999px,-9999px)';
+  }
+
+  // ---------- Modal ----------
+  const modal = document.getElementById('peopleModal');
+  const modalTitle = document.getElementById('peopleModalTitle');
+  const modalBody  = document.getElementById('peopleModalBody');
+  document.getElementById('peopleModalClose').onclick = () => modal.style.display = 'none';
+  modal.addEventListener('click', (e)=>{ if(e.target === modal) modal.style.display = 'none'; });
+
+  function renderPeopleList(json){
+    const prettyType = json.type === 'late' ? 'Retardo' : 'A tiempo';
+    modalTitle.textContent = `${json.unidad} · ${prettyType} (${json.items.length})`;
+    modalBody.innerHTML = '';
+
+    if (!json.items.length){
+      modalBody.innerHTML = `<div style="opacity:.8;">Sin registros.</div>`;
+      return;
+    }
+
+    for (const it of json.items){
+      const card = document.createElement('div');
+      card.style.cssText = `
+        border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px 12px;
+        background:rgba(255,255,255,.03);
+      `;
+      card.innerHTML = `
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <strong>${it.full_name || '—'}</strong>
+          <span style="opacity:.8;">·</span>
+          <span>#${it.workno || '—'}</span>
+          <span style="opacity:.8;">·</span>
+          <span>${it.device_name || '—'} ${it.serial_number || ''}</span>
+          <span style="opacity:.8;">·</span>
+          <span>${it.check_time_local || '—'}</span>
+          <span style="opacity:.8;">·</span>
+          <span>Tipo: ${it.check_type || '—'}</span>
+        </div>
+      `;
+      modalBody.appendChild(card);
+    }
+  }
+
+  async function openPeopleModal(unidad, type){
+    modal.style.display = 'flex';
+    modalTitle.textContent = `${unidad} · cargando...`;
+    modalBody.innerHTML = `<div style="opacity:.8;">Cargando…</div>`;
+    try{
+      const r = await fetch(`${LIST_URL}?unidad=${encodeURIComponent(unidad)}&type=${encodeURIComponent(type)}`, {cache:'no-store'});
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      const json = await r.json();
+      renderPeopleList(json);
+    }catch(err){
+      modalBody.innerHTML = `<div style="color:#ff6b6b;">Error al cargar: ${String(err)}</div>`;
+    }
+  }
+
+  // ---------- Enlazar handlers a cada tarjeta ----------
+  function bindSegmentHandlers(card){
+    if (card.dataset.bound === '1') return; // una sola vez
+    card.dataset.bound = '1';
+
+    const unidad = card.dataset.unidad;
+    const okEl   = card.querySelector('.bar-fill.ok');
+    const lateEl = card.querySelector('.bar-fill.late');
+    const missEl = card.querySelector('.bar-fill.miss');
+
+    // tooltips (mouse)
+    const onEnter = (el, label) => (ev) => {
+      const count = Number(el.dataset.count || 0);
+      showTip(`${label}: ${count}`, ev.clientX, ev.clientY);
+    };
+    const onMove = (ev) => showTip(tip.textContent, ev.clientX, ev.clientY);
+    const onLeave = () => hideTip();
+
+    okEl.addEventListener('mouseenter', onEnter(okEl, 'A tiempo'));
+    okEl.addEventListener('mousemove',  onMove);
+    okEl.addEventListener('mouseleave', onLeave);
+
+    lateEl.addEventListener('mouseenter', onEnter(lateEl, 'Retardo'));
+    lateEl.addEventListener('mousemove',  onMove);
+    lateEl.addEventListener('mouseleave', onLeave);
+
+    missEl.addEventListener('mouseenter', onEnter(missEl, 'Faltan'));
+    missEl.addEventListener('mousemove',  onMove);
+    missEl.addEventListener('mouseleave', onLeave);
+
+    // clics para abrir modal (verde/amarillo)
+    okEl.style.cursor = 'pointer';
+    lateEl.style.cursor = 'pointer';
+    okEl.addEventListener('click',  () => openPeopleModal(unidad, 'ontime'));
+    lateEl.addEventListener('click',() => openPeopleModal(unidad, 'late'));
+  }
+
+  // ---------- Integra con tu render existente ----------
+  // En tu buildStackCard(...) añade data-unidad en root (ya lo tienes).
+  // En renderStacked(...) cuando pintes, añade:
+  //   - dataset.count en cada segmento para el tooltip
+  //   - bindSegmentHandlers(card) (una sola vez)
+
+  // Dentro de renderStacked(items), después de calcular p = {ok, late, miss}:
+  // (esto complementa lo que ya tienes)
+  function afterPaintPerCard(card, item, p){
+    const okEl   = card.querySelector('.bar-fill.ok');
+    const lateEl = card.querySelector('.bar-fill.late');
+    const missEl = card.querySelector('.bar-fill.miss');
+    okEl.dataset.count   = String(item.ontime || 0);
+    lateEl.dataset.count = String(item.late   || 0);
+    // faltantes:
+    const missing = Math.max(0, (item.total||0) - (item.ontime||0) - (item.late||0));
+    missEl.dataset.count = String(missing);
+
+    bindSegmentHandlers(card);
+  }
+
+  // Si tu renderStacked ya existe, añade esta llamada al final de la actualización de cada tarjeta:
+  // afterPaintPerCard(card, item, p);
+
+  // EJEMPLO de cómo se vería dentro de renderStacked (fragmento):
+  // const p = calcPercents(item);
+  // animateStackTo(card, p);
+  // afterPaintPerCard(card, item, p);
 </script>
 </body>
 </html>

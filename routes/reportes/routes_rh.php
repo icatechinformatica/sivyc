@@ -15,4 +15,5 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/agregar/justificante', 'reportesController\RHController@agregar_justificante')->name('rh.agregar.justificante');
     Route::get('/crosschex/live/stream', [SseController::class, 'stream'])->name('crosschex.live.stream');
     Route::get('/crosschex/live', [CrossChexController::class, 'index'])->name('crosschex.live');
+    Route::get('/crosschex/live/punctuality/list', [CrossChexController::class, 'punctualityList'])->name('crosschex.live.punctuality.list');
 });
