@@ -123,6 +123,58 @@
       .exec { grid-template-columns: 1fr; }
       .kpis { grid-template-columns: 1fr; }
     }
+
+    /* Contenedor raíz del modal */
+    #peopleModal{
+    position:fixed; inset:0;
+    display:none;                /* controlado por data-state */
+    align-items:center; justify-content:center;
+    z-index:9998;
+    }
+
+    /* Estados de visualización */
+    #peopleModal[data-state="open"]   { display:flex; }
+    #peopleModal[data-state="closed"] { display:none; }
+
+    /* Fondo */
+    #peopleModal .modal-backdrop{
+    position:absolute; inset:0;
+    background:rgba(0,0,0,.5);
+    opacity:0;                   /* animado */
+    }
+
+    /* Panel */
+    #peopleModal .modal-panel{
+    position:relative;
+    width:min(720px,92vw);
+    max-height:80vh; overflow:auto;
+    background:#111; color:#eee;
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:14px;
+    padding:16px 18px;
+    box-shadow:0 10px 40px rgba(0,0,0,.55);
+    opacity:0;                   /* animado */
+    transform:translateY(16px) scale(.985); /* animado */
+    }
+
+    /* Header */
+    #peopleModal .modal-header{
+    display:flex; align-items:center; gap:10px; margin-bottom:10px;
+    }
+    #peopleModal .modal-header h3{
+    margin:0; font-weight:700; font-size:1.1rem;
+    }
+    #peopleModal .btn-close{
+    margin-left:auto;
+    border:0; background:#222; color:#ddd;
+    padding:6px 10px; border-radius:8px; cursor:pointer;
+    }
+    #peopleModal .btn-close:hover{ background:#2a2a2a; }
+
+    /* Body */
+    #peopleModal .modal-body { gap: 6px; }
+
+
   </style>
 </head>
 <body>
@@ -199,25 +251,16 @@
         font-size:.85rem; pointer-events:none; z-index:9999; white-space:nowrap;
     "></div>
 
-    <!-- Modal listado -->
-    <div id="peopleModal" style="
-        position:fixed; inset:0; background:rgba(0,0,0,.5); display:none; z-index:9998;
-        align-items:center; justify-content:center;
-    ">
-        <div style="
-            width:min(720px,92vw); max-height:80vh; overflow:auto;
-            background:#111; color:#eee; border:1px solid rgba(255,255,255,.1);
-            border-radius:14px; padding:16px 18px; box-shadow:0 10px 40px rgba(0,0,0,.5);
-        ">
-            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                <h3 id="peopleModalTitle" style="margin:0; font-weight:700;">Listado</h3>
-                <button id="peopleModalClose" style="
-                    margin-left:auto; border:0; background:#222; color:#ddd; padding:6px 10px;
-                    border-radius:8px; cursor:pointer;
-                ">Cerrar</button>
-            </div>
-            <div id="peopleModalBody" style="display:grid; gap:10px;"></div>
+    <!-- Modal animado -->
+    <div id="peopleModal" data-state="closed">
+    <div class="modal-backdrop"></div>
+    <div class="modal-panel">
+        <div class="modal-header">
+        <h3 id="peopleModalTitle">Listado</h3>
+        <button id="peopleModalClose" class="btn-close" type="button">Cerrar</button>
         </div>
+        <div id="peopleModalBody" class="modal-body"></div>
+    </div>
     </div>
 
 
@@ -644,52 +687,65 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
   document.getElementById('peopleModalClose').onclick = () => modal.style.display = 'none';
   modal.addEventListener('click', (e)=>{ if(e.target === modal) modal.style.display = 'none'; });
 
-  function renderPeopleList(json){
-    const prettyType = json.type === 'late' ? 'Retardo' : 'A tiempo';
-    modalTitle.textContent = `${json.unidad} · ${prettyType} (${json.items.length})`;
-    modalBody.innerHTML = '';
+    function renderPeopleList(json){
+        const prettyType = json.type === 'late' ? 'Retardo' : 'A tiempo';
+        modalTitle.textContent = `${json.unidad} · ${prettyType} (${json.items.length})`;
+        modalBody.innerHTML = '';
 
-    if (!json.items.length){
-      modalBody.innerHTML = `<div style="opacity:.8;">Sin registros.</div>`;
-      return;
+        if (!json.items.length){
+            modalBody.innerHTML = `<div style="opacity:.8;">Sin registros.</div>`;
+            return;
+        }
+
+        // Lista simple: Nombre — HH:MM:SS
+        const list = document.createElement('div');
+        list.style.display = 'grid';
+        list.style.gap = '8px';
+
+        for (const it of json.items){
+            const row = document.createElement('div');
+            row.style.cssText = `
+            display:flex; align-items:center; gap:10px;
+            padding:8px 10px; border-radius:8px;
+            background:rgba(255,255,255,.03);
+            border:1px solid rgba(255,255,255,.08);
+            `;
+
+            // Nombre
+            const name = document.createElement('div');
+            name.style.flex = '1 1 auto';
+            name.style.fontWeight = '700';
+            name.textContent = it.full_name || '—';
+
+            // Hora
+            const time = document.createElement('div');
+            time.style.opacity = '.9';
+            time.style.fontVariantNumeric = 'tabular-nums';
+            time.textContent = onlyTime(it.check_time_local);
+
+            row.appendChild(name);
+            row.appendChild(time);
+            list.appendChild(row);
+        }
+
+        modalBody.appendChild(list);
     }
 
-    for (const it of json.items){
-      const card = document.createElement('div');
-      card.style.cssText = `
-        border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px 12px;
-        background:rgba(255,255,255,.03);
-      `;
-      card.innerHTML = `
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <strong>${it.full_name || '—'}</strong>
-          <span style="opacity:.8;">·</span>
-          <span>#${it.workno || '—'}</span>
-          <span style="opacity:.8;">·</span>
-          <span>${it.device_name || '—'} ${it.serial_number || ''}</span>
-          <span style="opacity:.8;">·</span>
-          <span>${it.check_time_local || '—'}</span>
-          <span style="opacity:.8;">·</span>
-          <span>Tipo: ${it.check_type || '—'}</span>
-        </div>
-      `;
-      modalBody.appendChild(card);
-    }
-  }
 
-  async function openPeopleModal(unidad, type){
-    modal.style.display = 'flex';
-    modalTitle.textContent = `${unidad} · cargando...`;
-    modalBody.innerHTML = `<div style="opacity:.8;">Cargando…</div>`;
-    try{
-      const r = await fetch(`${LIST_URL}?unidad=${encodeURIComponent(unidad)}&type=${encodeURIComponent(type)}`, {cache:'no-store'});
-      if(!r.ok) throw new Error('HTTP '+r.status);
-      const json = await r.json();
-      renderPeopleList(json);
-    }catch(err){
-      modalBody.innerHTML = `<div style="color:#ff6b6b;">Error al cargar: ${String(err)}</div>`;
+    async function openPeopleModal(unidad, type){
+        showPeopleModal(); // <-- en lugar de modal.style.display = 'flex'
+        modalTitle.textContent = `${unidad} · cargando...`;
+        modalBody.innerHTML = `<div style="opacity:.8;">Cargando…</div>`;
+
+        try{
+            const r = await fetch(`${LIST_URL}?unidad=${encodeURIComponent(unidad)}&type=${encodeURIComponent(type)}`, { cache: 'no-store' });
+            if(!r.ok) throw new Error('HTTP '+r.status);
+            const json = await r.json();
+            renderPeopleList(json); // <-- esta función ya la tienes arriba
+        }catch(err){
+            modalBody.innerHTML = `<div style="color:#ff6b6b;">Error al cargar: ${String(err)}</div>`;
+        }
     }
-  }
 
   // ---------- Enlazar handlers a cada tarjeta ----------
   function bindSegmentHandlers(card){
@@ -749,13 +805,70 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
     bindSegmentHandlers(card);
   }
 
-  // Si tu renderStacked ya existe, añade esta llamada al final de la actualización de cada tarjeta:
-  // afterPaintPerCard(card, item, p);
+  const modalEl     = document.getElementById('peopleModal');
+  const modalPanel  = modalEl.querySelector('.modal-panel');
+  const modalBack   = modalEl.querySelector('.modal-backdrop');
+  const modalClose  = document.getElementById('peopleModalClose');
 
-  // EJEMPLO de cómo se vería dentro de renderStacked (fragmento):
-  // const p = calcPercents(item);
-  // animateStackTo(card, p);
-  // afterPaintPerCard(card, item, p);
+  // Abre modal con animación
+  function showPeopleModal(){
+    if (modalEl.dataset.state === 'open') return;
+    modalEl.dataset.state = 'open'; // display:flex
+    // estado inicial (por si venimos de cerrado sin estilos)
+    modalPanel.style.opacity = 0;
+    modalPanel.style.transform = 'translateY(16px) scale(.985)';
+    modalBack.style.opacity = 0;
+
+    const tl = anime.timeline({ autoplay: true });
+    tl.add({
+      targets: modalBack,
+      opacity: [0, 1],
+      duration: 180,
+      easing: 'easeOutQuad'
+    }).add({
+      targets: modalPanel,
+      opacity: [0, 1],
+      translateY: [16, 0],
+      scale: [.985, 1],
+      duration: 220,
+      easing: 'easeOutCubic'
+    }, '-=80'); // solapar
+  }
+
+  // Cierra modal con animación
+  function hidePeopleModal(){
+    if (modalEl.dataset.state !== 'open') return;
+    const tl = anime.timeline({ autoplay: true });
+    tl.add({
+      targets: modalPanel,
+      opacity: [1, 0],
+      translateY: [0, 10],
+      scale: [1, .99],
+      duration: 180,
+      easing: 'easeInQuad'
+    }).add({
+      targets: modalBack,
+      opacity: [1, 0],
+      duration: 160,
+      easing: 'easeInQuad',
+      complete: () => {
+        modalEl.dataset.state = 'closed'; // display:none
+      }
+    }, '-=80');
+  }
+
+  // Clic en backdrop / botón cierra
+  modalBack.addEventListener('click', hidePeopleModal);
+  modalClose.addEventListener('click', hidePeopleModal);
+  // ESC
+  window.addEventListener('keydown', (e)=>{ if(e.key === 'Escape') hidePeopleModal(); });
+
+  function onlyTime(str) {
+  // espera "YYYY-MM-DD HH:MM:SS" del backend
+  if (!str) return '—';
+  const parts = str.split(' ');
+  return parts.length > 1 ? parts[1] : str;
+}
 </script>
 </body>
 </html>
