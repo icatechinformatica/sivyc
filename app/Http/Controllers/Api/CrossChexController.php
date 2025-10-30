@@ -328,10 +328,10 @@ class CrossChexController extends Controller
 
         // ontime / late → mismas ventanas por hora local
         $whereTime = ($type === 'late')
-            ? " (t::time BETWEEN time '08:16' AND time '08:30'
-                OR t::time BETWEEN time '09:16' AND time '09:30') "
-            : " (t::time BETWEEN time '08:00' AND time '08:15'
-                OR t::time BETWEEN time '09:00' AND time '09:15') ";
+            ? " (tt BETWEEN time '08:16' AND time '08:30'
+                OR tt BETWEEN time '09:16' AND time '09:30') "
+            : " (tt BETWEEN time '08:00' AND time '08:15'
+                OR tt BETWEEN time '09:00' AND time '09:15') ";
 
         $rows = DB::select("
             WITH base AS (
@@ -341,27 +341,36 @@ class CrossChexController extends Controller
                 payload->'employee'->>'department',
                 '—'
                 ))) AS unidad_norm,
-                timezone(?, (payload->'records'->0->>'check_time')::timestamptz) AS t, -- local ts
+                timezone(?, (payload->'records'->0->>'check_time')::timestamptz) AS t, -- ts local
                 payload
             FROM crosschex_live
             ),
             today AS (
-            SELECT unidad_norm, t::date AS d, t::time AS tt, t AS ts, payload
+            SELECT
+                unidad_norm,
+                t::date AS d,
+                t::time AS tt,
+                t      AS ts,
+                payload
             FROM base
             WHERE t::date = (timezone(?, now()))::date
             )
             SELECT
-            payload->'records'->0->'employee'->>'workno'       AS workno,
+            payload->'records'->0->'employee'->>'workno' AS workno,
             CONCAT_WS(' ',
                 payload->'records'->0->'employee'->>'first_name',
                 payload->'records'->0->'employee'->>'last_name'
-            )                                                 AS full_name,
-            to_char(ts, 'YYYY-MM-DD HH24:MI:SS')              AS check_time_local
+            )                                           AS full_name,
+            to_char(ts, 'YYYY-MM-DD HH24:MI:SS')        AS check_time_local
             FROM today
             WHERE unidad_norm = ?
             AND {$whereTime}
             ORDER BY ts ASC
-        ", [$tz, $tz, $u->unidad_norm]);
+        ", [
+            $tz,        // timezone(?, check_time)
+            $tz,        // timezone(?, now())
+            $u->unidad_norm, // unidad_norm normalizada de la unidad seleccionada
+        ]);
 
         return response()->json([
             'unidad' => $u->unidad_display,
