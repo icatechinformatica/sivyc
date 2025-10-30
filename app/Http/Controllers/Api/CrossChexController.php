@@ -197,8 +197,8 @@ class CrossChexController extends Controller
                 unidad_norm,
                 SUM(
                 CASE
-                    WHEN (local_time BETWEEN time '08:00' AND time '08:15')
-                    OR (local_time BETWEEN time '09:00' AND time '09:15')
+                    WHEN (local_time BETWEEN time '07:40' AND time '08:15')
+                    OR (local_time BETWEEN time '08:45' AND time '09:15')
                     THEN 1 ELSE 0 END
                 ) AS ontime,
                 SUM(
