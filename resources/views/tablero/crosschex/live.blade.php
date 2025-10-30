@@ -82,15 +82,16 @@
     </section>
 
   <!-- Feed/Últimos eventos (sin tabla) -->
-  <section class="card" style="margin-top:16px;">
-    <div class="section-head">
-      <h3 style="margin:0;">Últimos eventos</h3>
-      <span class="pill" id="last-refresh">—</span>
+    <div class="card" style="margin-bottom:16px;">
+        <div class="section-head">
+            <h3 style="margin:0;">Últimos eventos</h3>
+            <span class="pill" id="latest-updated">—</span>
+        </div>
+
+        <!-- Grid donde se pintarán las cards -->
+        <div id="latest-cards" class="latest-grid"><!-- cards aquí --></div>
     </div>
-    <div class="feed-wrap">
-      <div id="feed" class="feed"></div>
-    </div>
-  </section>
+
 
   <!-- Tooltip flotante -->
     <div id="stackTooltip" style="
