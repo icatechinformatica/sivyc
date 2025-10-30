@@ -1,17 +1,24 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <title>Checador · Dashboard Ejecutivo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8">
+    <title>Checador · Dashboard Ejecutivo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- Charts -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-  <!-- Números animados -->
-  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ asset('css/tablero/checador.css') }}">
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <!-- Números animados -->
+    <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/tablero/checador.css') }}">
+    <script>
+        window.CROSSCHEX = {
+            stream: "{{ route('crosschex.live.stream') }}",
+            punctuality: "{{ route('crosschex.live.punctuality') }}",
+            punctualityList: "{{ route('crosschex.live.punctuality.list') }}"
+        };
+    </script>
 </head>
 <body>
   <header>

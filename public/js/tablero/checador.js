@@ -159,7 +159,7 @@ async function loadPunctuality() {
 function startSSE() {
   if (typeof EventSource === 'undefined') return false;
   try {
-    const es = new EventSource(`{{ route('crosschex.live.stream') }}`);
+    const es = new EventSource(window.CROSSCHEX.stream);
     es.addEventListener('open', () => { sseActive = true; });
     es.addEventListener('batch', () => {
       // Llega un lote nuevo → refrescamos panel ejecutivo y KPIs rápido
@@ -366,7 +366,7 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
 
   async function loadPunctuality() {
     try {
-      const r = await fetch(`{{ route('crosschex.live.punctuality') }}`, { cache: 'no-store' });
+      const r = await fetch(window.CROSSCHEX.punctuality, { cache: 'no-store' });
       if (!r.ok) { console.warn('punctuality fetch failed', r.status); return; }
       const json = await r.json();
       renderStacked(json.items || []);
@@ -397,7 +397,7 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
     }
   } catch(_) {}
 
-  const LIST_URL = "{{ route('crosschex.live.punctuality.list') }}";
+  const LIST_URL = window.CROSSCHEX.punctualityList;
 
   // ---------- Tooltip ----------
   const tip = document.getElementById('stackTooltip');
