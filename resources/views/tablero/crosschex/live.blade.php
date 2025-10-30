@@ -24,11 +24,6 @@
   <header>
     <h1>Checado de Funcionarios · Actividad en tiempo real</h1>
     {{-- <div class="muted">SSE “push” + polling de respaldo. Ventana por defecto: últimos 60 minutos.</div> --}}
-    <div class="info-row">
-    <div class="info-chip"><span class="dot dot-ok"></span>A tiempo</div>
-    <div class="info-chip"><span class="dot dot-late"></span>Retardo</div>
-    <div class="info-chip"><span class="dot dot-miss"></span>Faltan</div>
-</div>
   </header>
 
   <!-- KPIs -->
@@ -52,6 +47,11 @@
         <div class="section-head" style="align-items:center; gap:12px;">
             <h3 style="margin:0;">Puntualidad por unidad</h3>
             <span class="pill" id="punctuality-updated">—</span>
+            <div class="info-row">
+                <div class="info-chip"><span class="dot dot-ok"></span>A tiempo</div>
+                <div class="info-chip"><span class="dot dot-late"></span>Retardo</div>
+                <div class="info-chip"><span class="dot dot-miss"></span>Faltan</div>
+            </div>
         </div>
 
         <div id="exec-container" class="exec exec-grid">

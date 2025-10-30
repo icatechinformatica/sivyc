@@ -430,7 +430,7 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
     });
 
     function renderPeopleList(json){
-        const prettyType = json.type === 'late' ? 'Retardo' : 'A tiempo';
+        const prettyType = ({ ontime: 'A tiempo', late: 'Retardo', missing: 'Faltan' })[json.type] ?? json.type;
         modalTitle.textContent = `${json.unidad} · ${prettyType} (${json.items.length})`;
         modalBody.innerHTML = '';
 
