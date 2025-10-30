@@ -681,11 +681,20 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
   }
 
   // ---------- Modal ----------
-  const modal = document.getElementById('peopleModal');
-  const modalTitle = document.getElementById('peopleModalTitle');
-  const modalBody  = document.getElementById('peopleModalBody');
-  document.getElementById('peopleModalClose').onclick = () => modal.style.display = 'none';
-  modal.addEventListener('click', (e)=>{ if(e.target === modal) modal.style.display = 'none'; });
+    const modal = document.getElementById('peopleModal');
+    const modalTitle = document.getElementById('peopleModalTitle');
+    const modalBody  = document.getElementById('peopleModalBody');
+
+    document.getElementById('peopleModalClose').onclick = (e) => {
+        e.preventDefault();
+        hidePeopleModal();       // <-- usa la animación
+    };
+
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            hidePeopleModal();     // <-- también animado
+        }
+    });
 
     function renderPeopleList(json){
         const prettyType = json.type === 'late' ? 'Retardo' : 'A tiempo';
@@ -780,8 +789,10 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
     // clics para abrir modal (verde/amarillo)
     okEl.style.cursor = 'pointer';
     lateEl.style.cursor = 'pointer';
+    missEl.style.cursor = 'pointer';
     okEl.addEventListener('click',  () => openPeopleModal(unidad, 'ontime'));
     lateEl.addEventListener('click',() => openPeopleModal(unidad, 'late'));
+    missEl.addEventListener('click', () => openPeopleModal(card.dataset.unidad, 'missing'));
   }
 
   // ---------- Integra con tu render existente ----------
