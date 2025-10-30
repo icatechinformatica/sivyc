@@ -330,8 +330,8 @@ class CrossChexController extends Controller
         $whereTime = ($type === 'late')
             ? " (tt BETWEEN time '08:16' AND time '08:30'
                 OR tt BETWEEN time '09:16' AND time '09:30') "
-            : " (tt BETWEEN time '08:00' AND time '08:15'
-                OR tt BETWEEN time '09:00' AND time '09:15') ";
+            : " (tt BETWEEN time '07:40' AND time '08:15'
+                OR tt BETWEEN time '08:45' AND time '09:15') ";
 
         $rows = DB::select("
             WITH base AS (
