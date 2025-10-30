@@ -117,30 +117,57 @@ async function loadMetrics() {
   perUnidadChart.update();
 }
 
+const MAX_CARDS = 20; // tope de tarjetas en pantalla
+
 async function loadRecent() {
+  // Ajusta a tu endpoint real (ya lo tenías); debe devolver rows[] e id/received_time/check_time_local
   const r = await fetch(`/api/crosschex/live/recent?limit=40`, { cache: 'no-store' });
   const json = await r.json();
+  const rows = json.rows || [];
+  if (!rows.length) return;
 
-  const feed = document.getElementById('feed');
-  feed.innerHTML = '';
-  for (const row of json.rows) {
-    const el = document.createElement('div');
-    el.className = 'feed-item';
-    el.innerHTML = `
-      <div class="badge-time">${row.received_time ?? '—'}</div>
-      <div class="feed-body">
-        <div class="feed-strong">${(row.first_name ?? '').toUpperCase()} ${(row.last_name ?? '').toUpperCase()}</div>
-        <div class="feed-subtle">· ${row.workno ?? '—'}</div>
-        <div class="feed-subtle">· ${row.unidad ?? '—'}</div>
-        <div class="feed-subtle">· ${row.device_name ?? '—'} <span style="opacity:.6">${row.serial_number ?? ''}</span></div>
-        <div class="feed-subtle">· Check: ${row.check_time_local ?? '—'}</div>
-        <div class="feed-subtle">· Tipo: ${row.check_type ?? '—'}</div>
-      </div>
-    `;
-    feed.appendChild(el);
+  // ¿primera carga?
+  const firstPaint = (lastRecentId === 0);
+
+  // Nuevos = con id mayor al último visto
+  const newOnes = firstPaint ? rows : rows.filter(x => Number(x.id) > Number(lastRecentId));
+
+  if (newOnes.length) {
+    const frag = document.createDocumentFragment();
+    const toAnimate = [];
+
+    // Insertamos NUEVOS arriba; si es primera carga, pintamos todo pero sin animar
+    for (const ev of (firstPaint ? rows : newOnes)) {
+      const wrapper = document.createElement('div');
+      wrapper.innerHTML = latestCardTpl(ev);
+      const card = wrapper.firstElementChild;
+
+      if (!firstPaint) card.classList.add('enter'); // ← activa la animación solo en nuevos
+      frag.appendChild(card);
+      if (!firstPaint) toAnimate.push(card);
+    }
+
+    if (firstPaint) {
+      latestWrap.innerHTML = '';
+      latestWrap.appendChild(frag);
+    } else {
+      latestWrap.prepend(frag);
+    }
+
+    // Recorta exceso
+    const cards = latestWrap.querySelectorAll('.latest-card');
+    if (cards.length > MAX_CARDS) {
+      for (let i = MAX_CARDS; i < cards.length; i++) cards[i].remove();
+    }
+
+    // Actualiza último id visto (asumiendo rows[0] el más reciente)
+    lastRecentId = Math.max(lastRecentId, Number(rows[0].id) || 0);
+
+    // Marca “Actualizado”
+    if (latestUpdated) latestUpdated.textContent = json.serverTimeLocal || new Date().toLocaleString();
   }
-  document.getElementById('last-refresh').textContent = `Actualizado: ${json.serverTimeLocal}`;
 }
+
 
 /** 🆕 Carga panel ejecutivo */
 async function loadPunctuality() {
@@ -613,3 +640,53 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
   const parts = str.split(' ');
   return parts.length > 1 ? parts[1] : str;
 }
+
+// Dónde pintamos y dónde mostramos el “Actualizado”
+const latestWrap    = document.getElementById('latest-cards');
+const latestUpdated = document.getElementById('latest-updated');
+
+// Mantener el último id visto para animar solo lo nuevo
+let lastRecentId = 0;
+
+// Clasifica por ventana (a tiempo / retardo / fuera)
+// ONTIME: 07:40–08:15 y 08:45–09:15
+// LATE:   08:16–08:30 y 09:16–09:30
+function classifyByMinute(hhmmss){
+  if (!hhmmss || hhmmss.length < 5) return 'miss';
+  const [H, M] = hhmmss.split(':').map(Number);
+  const x = H*60 + M;
+  const inRange = (m,a,b) => m>=a && m<=b;
+
+  if (inRange(x, 7*60+40, 8*60+15) || inRange(x, 8*60+45, 9*60+15)) return 'ok';
+  if (inRange(x, 8*60+16, 8*60+30) || inRange(x, 9*60+16, 9*60+30)) return 'late';
+  return 'miss';
+}
+
+// Construye la tarjeta ejecutiva (HTML)
+function latestCardTpl(ev){
+  const full = `${(ev.first_name||'').toUpperCase()} ${(ev.last_name||'').toUpperCase()}`.trim() || '—';
+  const hhmmss = (ev.check_time_local || '').slice(11,19) || '—';
+  const cls = classifyByMinute(hhmmss); // ok | late | miss
+  const received = ev.received_time || '—';
+
+  return `
+    <div class="latest-card ${cls}" data-id="${ev.id}">
+      <div class="latest-top">
+        <span class="latest-time">${received}</span>
+        <span class="latest-name">${full}</span>
+        <span class="latest-dot">·</span>
+        <span>${ev.workno || '—'}</span>
+      </div>
+      <div class="latest-meta">
+        <span>${ev.unidad || '—'}</span>
+        <span class="latest-dot">·</span>
+        <span>${ev.device_name || '—'} <span style="opacity:.6">${ev.serial_number || ''}</span></span>
+        <span class="latest-dot">·</span>
+        <span>Check: ${ev.check_time_local || '—'}</span>
+        <span class="latest-dot">·</span>
+        <span>Tipo: ${ev.check_type ?? '—'}</span>
+      </div>
+    </div>
+  `;
+}
+

@@ -294,3 +294,77 @@
     background: linear-gradient(90deg, var(--brand), var(--brand-2));
     -webkit-background-clip:text; background-clip:text; color:transparent;
     }
+
+        /* GRID para las cards */
+    .latest-grid{
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 12px;
+    }
+    @media (min-width: 920px){
+    .latest-grid{ grid-template-columns: 1fr 1fr; }
+    }
+
+    /* Card ejecutiva */
+    .latest-card{
+    position: relative;
+    background: #141922;
+    border-radius: 14px;
+    padding: 14px 16px 14px 14px;
+    box-shadow: 0 1px 0 rgba(255,255,255,0.03) inset, 0 8px 30px rgba(0,0,0,0.25);
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.04);
+    }
+
+    /* Acento por tipo (verde/amarillo/rojo) en el borde izquierdo */
+    .latest-card::before{
+    content: "";
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 6px;
+    border-radius: 14px 0 0 14px;
+    background: #3b82f6; /* fallback */
+    }
+    .latest-card.ok::before   { background: #19c37d; }  /* a tiempo */
+    .latest-card.late::before { background: #f2b01e; }  /* retardo */
+    .latest-card.miss::before { background: #e84141; }  /* fuera */
+
+    /* Encabezado compacto de la card */
+    .latest-top{
+    display: flex; align-items: center; gap: 10px; margin-bottom: 6px;
+    }
+    .latest-time{
+    font-weight: 700;
+    background: #1f2530;
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 6px 10px;
+    border-radius: 10px;
+    letter-spacing: .5px;
+    }
+    .latest-name{
+    font-weight: 800; letter-spacing:.4px;
+    }
+
+    /* Meta línea */
+    .latest-meta{
+    color: #aeb6c2;
+    display: flex; flex-wrap: wrap; gap: 8px;
+    font-size: .95rem;
+    }
+    .latest-dot{ opacity:.5; }
+
+    /* === Animación de entrada para cada card nueva (la activaremos en JS en el paso 2) === */
+    @keyframes feedIn {
+    from { opacity: 0; transform: translateY(6px) scale(.98); }
+    to   { opacity: 1; transform: translateY(0)    scale(1); }
+    }
+    @keyframes feedHighlight {
+    0%   { box-shadow: 0 0 0 0 rgba(97,194,255,.35); }
+    100% { box-shadow: 0 0 0 14px rgba(97,194,255,0); }
+    }
+    .latest-card.enter{
+    animation: feedIn .35s ease-out both, feedHighlight .8s ease-out .1s both;
+    }
+    @media (prefers-reduced-motion: reduce){
+    .latest-card.enter{ animation: none; }
+    }
