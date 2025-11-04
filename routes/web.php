@@ -906,8 +906,15 @@ Route::post('/formatoT/subir/resumenUnidad', 'Validacion\validacionDtaController
 
 // firma electronica
 Route::get('/firma/inicio', 'efirma\FirmaController@index')->name('firma.inicio');
-Route::post('/firma/update', 'efirma\FirmaController@update')->name('firma.update');
-Route::post('/firma/sellar', 'efirma\FirmaController@sellar')->name('firma.sellar');
+// Route::post('/firma/update', 'efirma\FirmaController@update')->name('firma.update');
+// Route::post('/firma/sellar', 'efirma\FirmaController@sellar')->name('firma.sellar');
+##Obtener cadenas
+Route::post('/firma/cadenas', 'efirma\FirmaController@obtener_cadenas')->name('firma.obtener.cadenas');
+##Firma masiva
+Route::post('/firma/update', 'efirma\FirmaController@firmar_documentos')->name('firma.update.masivo');
+##Sellado masivo
+Route::post('/firma/sellar', 'efirma\FirmaController@sellar_documentos')->name('firma.sellar.masivo');
+
 Route::post('/firma/generar', 'efirma\FirmaController@generarPDF')->name('firma.generarPdf');
 Route::post('/firma/cancelar', 'efirma\FirmaController@cancelarDocumento')->name('firma.cancelar');
 Route::post('/firma/token', 'efirma\FirmaController@generarToken')->name('firma.token');
