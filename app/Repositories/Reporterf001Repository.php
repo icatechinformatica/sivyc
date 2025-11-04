@@ -38,19 +38,31 @@ class Reporterf001Repository implements Reporterf001Interface
             ->where('tbl_unidades.unidad', $unidad)
             ->where(function($query) {
                 $query->whereNull('tbl_recibos.estado_reportado')
-                      ->orWhere('tbl_recibos.estado_reportado', 'GENERADO');
+                    ->orWhere('tbl_recibos.estado_reportado', 'GENERADO');
             })
-            ->where('tbl_cursos.status_curso', 'AUTORIZADO')
+            ->where(function($query) {
+                $query->where('tbl_cursos.status_curso', 'AUTORIZADO')
+                    ->orWhere('tbl_cursos.status_curso', 'CANCELADO');
+            })
             ->with('concepto:id,concepto')
-            ->select('tbl_recibos.*', 'cat_conceptos.concepto', 'tbl_recibos.id as id_recibo', 'tbl_unidades.clave_contrato')
+            ->select(
+                'tbl_recibos.*',
+                'cat_conceptos.concepto',
+                'tbl_recibos.id as id_recibo',
+                'tbl_unidades.clave_contrato'
+            )
             ->addSelect(DB::raw("
-                    CASE
-                        WHEN tbl_cursos.comprobante_pago <> 'null' THEN concat('uploadFiles',tbl_cursos.comprobante_pago)
-                        WHEN tbl_recibos.file_pdf <> 'null' THEN tbl_recibos.file_pdf
-                    END as file_pdf"))
+                CASE
+                    WHEN tbl_cursos.comprobante_pago <> 'null'
+                        THEN concat('uploadFiles', tbl_cursos.comprobante_pago)
+                    WHEN tbl_recibos.file_pdf <> 'null'
+                        THEN tbl_recibos.file_pdf
+                END as file_pdf
+            "))
             ->join('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
             ->join('tbl_unidades', 'tbl_unidades.unidad', '=', 'tbl_recibos.unidad')
-            ->leftJoin('tbl_cursos','tbl_cursos.folio_grupo','=', 'tbl_recibos.folio_grupo');
+            ->leftJoin('tbl_cursos', 'tbl_cursos.folio_grupo', '=', 'tbl_recibos.folio_grupo');
+
     }
 
     public function applyFilters($query, array $filters)
@@ -405,7 +417,7 @@ class Reporterf001Repository implements Reporterf001Interface
                 $verificacion = $documentoFirma->link_verificacion;
             } else {
                 // no se encuentra
-                $documentoFirma->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$noOficio";
+                $documentoFirma->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$noOficio";
                 $documentoFirma->save();
             }
             ob_start();
@@ -629,7 +641,7 @@ class Reporterf001Repository implements Reporterf001Interface
                 $verificacion = $documentoFirma->link_verificacion;
             } else {
                 // no se encuentra
-                $documentoFirma->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumentoPrueba/consulta/Certificado3?guid=$uuid&no_folio=$noOficio";
+                $documentoFirma->link_verificacion = $verificacion = "https://innovacion.chiapas.gob.mx/validacionDocumento/consulta/Certificado3?guid=$uuid&no_folio=$noOficio";
                 $documentoFirma->save();
             }
             ob_start();
