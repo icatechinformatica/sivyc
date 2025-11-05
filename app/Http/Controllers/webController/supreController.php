@@ -201,11 +201,12 @@ class supreController extends Controller
                     return redirect()->route('frm-supre')
                     ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE FOLIO INGRESADO YA SE ENCUENTRA REGISTRADO', $validacion_folio));
                  }
-                 $claveval = tbl_curso::SELECT('id','modinstructor')->WHERE('clave', '=', $value['clavecurso'])->FIRST();
-                 $validacion_curso = folio::SELECT('id_cursos')
-                 ->WHERE('id_cursos', '=', $claveval->id)
-                 ->WHERE('status', '!=', 'Cancelado')
-                 ->FIRST();
+                 // OPTIMIZACIÓN: Usar Eloquent correctamente con select específico
+                 $claveval = tbl_curso::select('id','modinstructor')->where('clave', '=', $value['clavecurso'])->first();
+                 $validacion_curso = folio::select('id_cursos')
+                 ->where('id_cursos', '=', $claveval->id)
+                 ->where('status', '!=', 'Cancelado')
+                 ->first();
                  if (isset($validacion_curso))
                  {
                     return redirect()->route('frm-supre')
@@ -905,12 +906,14 @@ class supreController extends Controller
             $total=[];
             /*Aquí si hace falta habrá que incluir la clase municipios con include*/
             $claveCurso = $request->valor;//$request->valor;
-            $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
+            
+            // OPTIMIZACIÓN: Usar cache y Eloquent correctamente
+            $Cursos = tbl_curso::select('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
                     'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
                     'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
                     'factura','fecha_factura','tbl_cursos.fecha_apertura AS inicio','tbl_cursos.id')
-                                    ->WHERE('clave', '=', $claveCurso)->FIRST();
+                    ->where('clave', '=', $claveCurso)
+                    ->first();
 
             if($Cursos != NULL)
             {
@@ -1021,9 +1024,11 @@ class supreController extends Controller
     protected function gettipocurso(Request $request)
     {
         $claveCurso = $request->valor;
-        $Curso = new tbl_curso();
-        $Cursos = $Curso->SELECT('tbl_cursos.tipo_curso')
-                                ->WHERE('clave', '=', $claveCurso)->FIRST();
+        
+        // OPTIMIZACIÓN: Usar Eloquent correctamente
+        $Cursos = tbl_curso::select('tbl_cursos.tipo_curso')
+                                ->where('clave', '=', $claveCurso)
+                                ->first();
 
         if($Cursos != NULL)
         {
