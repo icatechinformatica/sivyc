@@ -419,7 +419,7 @@
                                                 <td class="text-center">
                                                     @can('efirma.sellar')
                                                         @if ($sendValidation)
-                                                            <input type="checkbox" name="chkSellar{{$key}}" id="chkSellar{{$key}}" class="form-check-input chkSellar" value="{{ $docFirmado->id }}">
+                                                            <input type="checkbox" name="chkSellar" id="chkSellar" class="form-check-input chkSellar" value="{{ $docFirmado->id }}">
                                                         @else
                                                             <input type="checkbox" disabled class="form-check-input" title="Faltan Firmas">
                                                         @endif
