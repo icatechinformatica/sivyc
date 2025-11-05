@@ -58,3 +58,22 @@ td{ font-size: 13px; }
 
 .g-bg-black-opacity-0_8 { background-color: rgb(0, 152, 133) !important; }
 .g-brd-primary { border-color: #fff !important; }
+
+/* Estilos para spinner de carga */
+.spinner-border-sm {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.2rem;
+    margin-right: 0.5rem;
+    vertical-align: middle;
+    color: #008878;
+    border-color: #e9ecef;
+    border-right-color: #008878;
+    animation: spinner-animation 0.75s linear infinite;
+}
+
+@keyframes spinner-animation {
+    to {
+        transform: rotate(360deg);
+    }
+}

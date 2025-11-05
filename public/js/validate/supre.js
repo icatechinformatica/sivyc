@@ -33,6 +33,9 @@ $(function(){
                         return;
                     }
                     
+                    // Mostrar spinner de carga
+                    document.getElementById('addmore['+x+'][aviso]').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> <span style="color: #32a852;" > Buscando... </span>';
+                    
                     var datos = {valor: valor};
                     var url = "/supre/busqueda/curso";
                     var request = $.ajax
