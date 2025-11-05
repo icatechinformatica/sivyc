@@ -27,9 +27,9 @@ $(function(){
                     
                     // Validar que la clave no esté vacía
                     if (valor.trim() === '') {
-                        document.getElementById('addmore['+x+'][importe]').value = null;
-                        document.getElementById('addmore['+x+'][iva]').value = null;
-                        document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Ingrese una clave de curso';
+                        document.querySelector('input[name="addmore['+x+'][importe]"]').value = null;
+                        document.querySelector('input[name="addmore['+x+'][iva]"]').value = null;
+                        document.querySelector('input[name="addmore['+x+'][aviso]"]').value = 'Ingrese una clave de curso';
                         return;
                     }
                     
@@ -51,9 +51,9 @@ $(function(){
 
                         if (respuesta === 'N/A') {
                             // No hay coincidencias
-                            document.getElementById('addmore['+x+'][importe]').value = null;
-                            document.getElementById('addmore['+x+'][iva]').value = null;
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = 'No se encontraron coincidencias para la clave';
+                            document.querySelector('input[name="addmore['+x+'][importe]"]').value = null;
+                            document.querySelector('input[name="addmore['+x+'][iva]"]').value = null;
+                            document.querySelector('input[name="addmore['+x+'][aviso]"]').value = 'No se encontraron coincidencias para la clave';
                             return;
                         }
 
@@ -61,7 +61,7 @@ $(function(){
                             // El servidor devolvió un error controlado
                             console.error('Respuesta con error desde el servidor:', respuesta);
                             var mensaje = respuesta.message ? respuesta.message : 'Error interno al consultar curso';
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = mensaje;
+                            document.querySelector('input[name="addmore['+x+'][aviso]"]').value = mensaje;
                             return;
                         }
 
@@ -81,21 +81,21 @@ $(function(){
                                     document.getElementById('thiva').style.display = 'table-cell';
                                 }
 
-                                document.getElementById('addmore['+x+'][iva]').value = iva;
+                                document.querySelector('input[name="addmore['+x+'][iva]"]').value = iva;
                             } else {
                                 total = respuesta[0];
-                                document.getElementById('addmore['+x+'][iva]').value = '0.00';
+                                document.querySelector('input[name="addmore['+x+'][iva]"]').value = '0.00';
                             }
                             total = parseFloat(total).toFixed(2);
 
-                            document.getElementById('addmore['+x+'][importe]').value = total;
+                            document.querySelector('input[name="addmore['+x+'][importe]"]').value = total;
                             document.getElementById('no_recibo').value = respuesta['folio_recibo'] || '';
                             document.getElementById('fecha_expedicion').value = respuesta['fecha_expedicion'] || '';
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
+                            document.querySelector('input[name="addmore['+x+'][aviso]"]').value = '';
                             console.log('✅ Consulta exitosa - Sistema funcionando correctamente');
                         } catch (err) {
                             console.error('Error procesando respuesta del servidor:', err, respuesta);
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Respuesta inválida del servidor';
+                            document.querySelector('input[name="addmore['+x+'][aviso]"]').value = 'Respuesta inválida del servidor';
                         }
                     });
 
@@ -125,19 +125,19 @@ $(function(){
                         }
                         
                         if (textStatus === 'timeout') {
-                            document.getElementById('addmore['+x+'][importe]').value = null;
-                            document.getElementById('addmore['+x+'][iva]').value = null;
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Timeout - intente de nuevo';
+                            document.querySelector('input[name="addmore['+x+'][importe]"]').value = null;
+                            document.querySelector('input[name="addmore['+x+'][iva]"]').value = null;
+                            document.querySelector('input[name="addmore['+x+'][aviso]"]').value = 'Timeout - intente de nuevo';
                             alert('⚠️ ALERTA: Timeout en búsqueda de curso\n\nProblema: La consulta tardó más de 10 segundos\nClave buscada: ' + valor + '\n\nVerificar servidor de base de datos');
                         } else if (textStatus === 'error' || jqXHR.status === 0) {
-                            document.getElementById('addmore['+x+'][importe]').value = null;
-                            document.getElementById('addmore['+x+'][iva]').value = null;
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Error en la conexión - intente de nuevo';
+                            document.querySelector('input[name="addmore['+x+'][importe]"]').value = null;
+                            document.querySelector('input[name="addmore['+x+'][iva]"]').value = null;
+                            document.querySelector('input[name="addmore['+x+'][aviso]"]').value = 'Error en la conexión - intente de nuevo';
                             alert('🔴 ALERTA: Error de conexión a servidor\n\nProblema: ' + textStatus + '\nEstado HTTP: ' + jqXHR.status + '\n\nVerificar si el servidor está caído o hay problemas de conexión a BD');
                         } else {
-                            document.getElementById('addmore['+x+'][importe]').value = null;
-                            document.getElementById('addmore['+x+'][iva]').value = null;
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Error en la consulta';
+                            document.querySelector('input[name="addmore['+x+'][importe]"]').value = null;
+                            document.querySelector('input[name="addmore['+x+'][iva]"]').value = null;
+                            document.querySelector('input[name="addmore['+x+'][aviso]"]').value = 'Error en la consulta';
                             alert('❌ Error: ' + textStatus + '\nDetalles: ' + jqXHR.responseText);
                         }
                     });
