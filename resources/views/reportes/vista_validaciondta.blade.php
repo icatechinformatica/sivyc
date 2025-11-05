@@ -3,7 +3,7 @@
 <!--llamar a la plantilla -->
 @section('title', 'Revisón FormatoT DTA | SIVyC Icatech')
 @section('content_script_css')
-    <link rel="stylesheet" href="{{asset('css/global.css') }}" />    
+    <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
         #spinner:not([hidden]) {
             position: fixed;

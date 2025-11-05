@@ -118,3 +118,4 @@ Route::prefix('v1')->group(function (){
 Route::post('/webhooks/crosschex', [CrossChexController::class, 'handle']);
 Route::get('/crosschex/live/metrics', [CrossChexController::class, 'metrics']);
 Route::get('/crosschex/live/recent',  [CrossChexController::class, 'recent']);
+Route::get('/crosschex/live/punctuality', [CrossChexController::class, 'punctuality'])->name('crosschex.live.punctuality');

@@ -234,7 +234,7 @@
                                                 <i class="fa fa-history fa-2x fa-lg text-danger"></i>
                                             </button>
                                         @endif
-                                        @if($permisos['folio.modificar'])
+                                        @if($permisos['folio_modificar'])
                                         <button type="button" style="margin-left: -10px; background-color:transparent; border-color:transparent;"
                                             data-toggle="modal" data-placement="top"
                                             data-target="#modfolioModal"
