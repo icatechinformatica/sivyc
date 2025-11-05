@@ -44,50 +44,58 @@ $(function(){
                         timeout: 10000 // Timeout de 10 segundos
                     });
 
-                    request.done(( respuesta) =>
-                    {
+                    request.done(( respuesta) => {
                         console.log(respuesta);
                         // Reset error counter en respuesta exitosa
                         errorCount = 0;
-                        
-                        if (respuesta == 'N/A') {
+
+                        if (respuesta === 'N/A') {
+                            // No hay coincidencias
                             document.getElementById('addmore['+x+'][importe]').value = null;
                             document.getElementById('addmore['+x+'][iva]').value = null;
-                            document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Clave de Curso Invalida';
-                        } else {
-                            if(!respuesta.hasOwnProperty('error')){
-                                iva = respuesta[0] * 0.16;
-                                iva = parseFloat(iva).toFixed(2);
-                                if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS')
-                                {
-                                    console.log(respuesta)
-                                    if(respuesta['tabuladorConIva'] == true) {
-                                        total = respuesta[0];
-                                        document.getElementById('tdiva').style.display = 'none';
-                                        document.getElementById('thiva').style.display = 'none';
-                                    } else {
-                                        total = respuesta[0]*1.16
-                                        document.getElementById('tdiva').style.display = 'table-cell';
-                                        document.getElementById('thiva').style.display = 'table-cell';
-                                    }
+                            document.getElementById('addmore['+x+'][aviso]').innerHTML = 'No se encontraron coincidencias para la clave';
+                            return;
+                        }
 
-                                    document.getElementById('addmore['+x+'][iva]').value = iva;
-                                }
-                                else
-                                {
-                                    total = respuesta[0]
-                                    document.getElementById('addmore['+x+'][iva]').value = 0.00;
-                                }
-                                total = parseFloat(total).toFixed(2);
+                        if (respuesta && respuesta.error) {
+                            // El servidor devolvió un error controlado
+                            console.error('Respuesta con error desde el servidor:', respuesta);
+                            var mensaje = respuesta.message ? respuesta.message : 'Error interno al consultar curso';
+                            document.getElementById('addmore['+x+'][aviso]').innerHTML = mensaje;
+                            return;
+                        }
 
-                                document.getElementById('addmore['+x+'][importe]').value = total;
-                                document.getElementById('no_recibo').value = respuesta['folio_recibo'];
-                                document.getElementById('fecha_expedicion').value = respuesta['fecha_expedicion'];
-                                document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
-                                console.log('✅ Consulta exitosa - Sistema funcionando correctamente');
-                            }else{
-                                console.log("ESto es una respuesta" + respuesta);
+                        // Caso exitoso: procesar respuesta
+                        try {
+                            var iva = respuesta[0] * 0.16;
+                            iva = parseFloat(iva).toFixed(2);
+                            if(respuesta[1] == 'HONORARIOS' || respuesta[1] == 'HONORARIOS Y ASIMILADOS A SALARIOS') {
+                                console.log(respuesta);
+                                if(respuesta['tabuladorConIva'] == true) {
+                                    total = respuesta[0];
+                                    document.getElementById('tdiva').style.display = 'none';
+                                    document.getElementById('thiva').style.display = 'none';
+                                } else {
+                                    total = respuesta[0]*1.16;
+                                    document.getElementById('tdiva').style.display = 'table-cell';
+                                    document.getElementById('thiva').style.display = 'table-cell';
+                                }
+
+                                document.getElementById('addmore['+x+'][iva]').value = iva;
+                            } else {
+                                total = respuesta[0];
+                                document.getElementById('addmore['+x+'][iva]').value = '0.00';
                             }
+                            total = parseFloat(total).toFixed(2);
+
+                            document.getElementById('addmore['+x+'][importe]').value = total;
+                            document.getElementById('no_recibo').value = respuesta['folio_recibo'] || '';
+                            document.getElementById('fecha_expedicion').value = respuesta['fecha_expedicion'] || '';
+                            document.getElementById('addmore['+x+'][aviso]').innerHTML = null;
+                            console.log('✅ Consulta exitosa - Sistema funcionando correctamente');
+                        } catch (err) {
+                            console.error('Error procesando respuesta del servidor:', err, respuesta);
+                            document.getElementById('addmore['+x+'][aviso]').innerHTML = 'Respuesta inválida del servidor';
                         }
                     });
 
