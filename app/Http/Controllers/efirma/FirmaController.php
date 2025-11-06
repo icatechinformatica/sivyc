@@ -24,6 +24,7 @@ use Illuminate\Support\Facades\Storage;
 use PDF;
 use PHPQRCode\QRcode;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Validator;
 
 // use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
@@ -31,7 +32,8 @@ class FirmaController extends Controller {
 
     // php artisan serve --port=8001
     public function index(Request $request) {
-
+        //Prueba de generar token
+        // dd($this->generarToken($request));
         $seleccion = request('section'); ##Paginacion
         $seleccion2 = $request->seccion; ##Busqueda
 
@@ -175,130 +177,6 @@ class FirmaController extends Controller {
         return view('layouts.FirmaElectronica.firmaElectronica', compact('docsFirmar', 'email', 'docsFirmados', 'docsValidados', 'docsCancelados', 'busqueda_clave', 'token','rol','curpUser','seleccion'));
     }
 
-    public function update(Request $request) {
-        // dd($request->serieFirmante);
-        //verificacion de firmado, debe ser con firma del SAT, de lo contratio se abortara la firma y regresara al modulo anterior
-        // if(strlen($request->serieFirmante) != 20){
-        //     return redirect()->route('firma.inicio')->with('warning', 'Error: El proceso de firma ha sido rechazado. Por favor, firme el documento utilizando su firma del SAT. (5)');
-        // }
-
-        $documento = DocumentosFirmar::where('id', $request->idFile)->first();
-        // dd($documento);
-
-        $obj_documento = json_decode($documento->obj_documento, true);
-        $obj_documento_interno = json_decode($documento->obj_documento_interno, true);
-
-        if (empty($obj_documento['archivo']['_attributes']['md5_archivo'])) {
-            $obj_documento['archivo']['_attributes']['md5_archivo'] = $documento->md5_file;
-        }
-
-        foreach ($obj_documento['firmantes']['firmante'][0] as $key => $value) {
-            if ($value['_attributes']['curp_firmante'] == $request->curp) {
-                $value['_attributes']['fecha_firmado_firmante'] = $request->fechaFirmado;
-                $value['_attributes']['no_serie_firmante'] = $request->serieFirmante;
-                $value['_attributes']['firma_firmante'] = $request->firma;
-                $value['_attributes']['certificado'] = $request->certificado;
-                $obj_documento['firmantes']['firmante'][0][$key] = $value;
-            }
-        }
-        // foreach ($obj_documento_interno['firmantes']['firmante'][0] as $key => $value) {
-        //     if ($value['_attributes']['curp_firmante'] == $request->curp) {
-        //         $value['_attributes']['fecha_firmado_firmante'] = $request->fechaFirmado;
-        //         $value['_attributes']['no_serie_firmante'] = $request->serieFirmante;
-        //         $value['_attributes']['firma_firmante'] = $request->firma;
-        //         $value['_attributes']['certificado'] = $request->certificado;
-        //         $obj_documento_interno['firmantes']['firmante'][0][$key] = $value;
-        //     }
-        // }
-
-        $array = XmlToArray::convert($documento->documento);
-        // $array2 = XmlToArray::convert($documento->documento_interno);
-        $array['DocumentoChis']['firmantes'] = $obj_documento['firmantes'];
-        // $array2['DocumentoChis']['firmantes'] = $obj_documento_interno['firmantes'];
-
-        ##By Jose Luis Moreno/ Creamos nuevo array para ordenar el xml
-        $ArrayXml['emisor'] = $obj_documento['emisor'];
-
-        if(isset($obj_documento['receptores'])){
-            $ArrayXml['receptores'] = $obj_documento['receptores'];
-        }
-
-        $ArrayXml["archivo"] = $obj_documento['archivo'];
-
-        if(isset($obj_documento['anexos'])){
-            $ArrayXml["anexos"] = $obj_documento['anexos'];
-        }
-
-        $ArrayXml["firmantes"] = $obj_documento['firmantes'];
-
-        $obj_documento = $ArrayXml;
-
-        $result = ArrayToXml::convert($obj_documento, [
-            'rootElementName' => 'DocumentoChis',
-            '_attributes' => [
-                'version' => $array['DocumentoChis']['_attributes']['version'],
-                'fecha_creacion' => $array['DocumentoChis']['_attributes']['fecha_creacion'],
-                'no_oficio' => $array['DocumentoChis']['_attributes']['no_oficio'],
-                'dependencia_origen' => $array['DocumentoChis']['_attributes']['dependencia_origen'],
-                'asunto_docto' => $array['DocumentoChis']['_attributes']['asunto_docto'],
-                'tipo_docto' => $array['DocumentoChis']['_attributes']['tipo_docto'],
-                'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
-            ],
-        ]);
-
-        // $result2 = ArrayToXml::convert($obj_documento_interno, [
-        //     'rootElementName' => 'DocumentoChis',
-        //     '_attributes' => [
-        //         'version' => $array2['DocumentoChis']['_attributes']['version'],
-        //         'fecha_creacion' => $array2['DocumentoChis']['_attributes']['fecha_creacion'],
-        //         'no_oficio' => $array2['DocumentoChis']['_attributes']['no_oficio'],
-        //         'dependencia_origen' => $array2['DocumentoChis']['_attributes']['dependencia_origen'],
-        //         'asunto_docto' => $array2['DocumentoChis']['_attributes']['asunto_docto'],
-        //         'tipo_docto' => $array2['DocumentoChis']['_attributes']['tipo_docto'],
-        //         'xmlns' => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
-        //     ],
-        // ]);
-
-        DocumentosFirmar::where('id', $request->idFile)
-            ->update([
-                'obj_documento' => json_encode($obj_documento),
-                // 'obj_documento_interno' => json_encode($obj_documento_interno),
-                'documento' => $result,
-                // 'documento_interno' => $result2
-            ]);
-
-        return redirect()->route('firma.inicio')->with('success', 'Documento firmado exitosamente!');
-    }
-
-    public function sellar(Request $request) {
-        $documento = DocumentosFirmar::where('id', $request->txtIdFirmado)->first();
-        $xmlBase64 = base64_encode($documento->documento);
-
-        $getToken = Tokens_icti::Where('sistema', 'sivyc')->First();
-        $response = $this->sellarFile($xmlBase64, $getToken->token);
-        if ($response->json() == null) {
-            $request = new Request();
-            $token = $this->generarToken($request);
-            $response = $this->sellarFile($xmlBase64, $token);
-        }
-        if ($response->json()['status'] == 1) { //exitoso
-            $decode = base64_decode($response->json()['xml']);
-            $test = DocumentosFirmar::where('id', $documento->id)
-                ->update([
-                    'status' => 'VALIDADO',
-                    'uuid_sellado' => $response->json()['uuid'],
-                    'fecha_sellado' => $response->json()['fecha_Sellado'],
-                    'documento' => $decode,
-                    'cadena_sello' => $response->json()['cadenaSello']
-                ]);
-
-            // dd($tes)
-            return redirect()->route('firma.inicio')->with('warning', 'Documento validado exitosamente!');
-        } else {
-            $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
-            return redirect()->route('firma.inicio')->with('danger', $respuesta_icti);
-        }
-    }
 
     public function cancelarDocumento(Request $request) {
         // dd($request);
@@ -380,7 +258,7 @@ class FirmaController extends Controller {
                 }
             }
 
-            return redirect()->route('firma.inicio')->with('warning', 'Documento cancelado exitosamente!');
+            return redirect()->route('firma.inicio')->with('warning', 'Documento cancelado de manera exitosa!');
         } else {
             return redirect()->route('firma.inicio')->with('danger', 'Debe ingresar el motivo de cancelación');
         }
@@ -430,8 +308,8 @@ class FirmaController extends Controller {
         // $resToken = Http::withHeaders([
         //     'Accept' => 'application/json'
         // ])->post('https://interopera.chiapas.gob.mx/gobid/api/AppAuth/AppTokenAuth', [
-        //     'nombre' => 'FirmaElectronica',
-        //     'key' => '19106D6F-E91F-4C20-83F1-1700B9EBD553'
+        //     'nombre' => 'FIRMELEC_DOCGOB',
+        //     'key' => '332295ED-CFE9-41F5-BEDB-54618833A7F4'
         // ]);
 
         $token = $resToken->json();
@@ -537,6 +415,287 @@ class FirmaController extends Controller {
         $cadwell = implode(".", $part);
         return ($cadwell);
     }
+
+    ##Nueva funcion para obtener cadenas originales
+    public function obtener_cadenas(Request $request)
+    {
+        // Validar que vengan ids como arreglo no vacío
+        $validator = Validator::make($request->all(), [
+            'ids' => 'required|array|min:1',
+            'ids.*' => 'integer'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => 422,
+                'mensaje' => 'Parámetros inválidos.',
+                'errores' => $validator->errors()
+            ], 422);
+        }
+
+        $ids = $request->input('ids', []);
+        $consulta = DocumentosFirmar::whereIn('id', $ids)->get(['id', 'cadena_original']);
+        $cadenas_originales = $consulta->pluck('cadena_original', 'id')->toArray();
+
+        return response()->json([
+            'status'           => 200,
+            'cadena_original'  => $cadenas_originales,
+            'mensaje'          => 'Se realizó exitosamente'
+        ]);
+    }
+
+
+
+    ##Nuevas funciones para el firmado masivo
+    public function firmar_documentos(Request $request)
+    {
+        $respuesta = $request->input('respuesta');
+        $correctos = $request->input('correctos');
+        $errores   = $request->input('errores');
+        $msnError  = $request->input('mensaje');
+        $curp      = $request->input('curp');
+
+        if (empty($respuesta) || empty($curp)) {
+            return redirect()->route('firma.inicio')->with([
+                'warning' => 'No hay respuesta para procesar: ' . "\n" . $msnError,
+            ]);
+        }
+
+        $arrayRespuesta = json_decode($respuesta, true);
+        if (!is_array($arrayRespuesta) || count($arrayRespuesta) === 0) {
+            return redirect()->route('firma.inicio')->with([
+                'warning' => 'Formato de respuesta inválido.'
+            ]);
+        }
+
+        try {
+            DB::transaction(function () use ($arrayRespuesta, $curp) {
+
+                $ids = collect($arrayRespuesta)->pluck('idCadena')->all();
+                $documentos = DocumentosFirmar::whereIn('id', $ids)->get()->keyBy('id');
+
+                foreach ($arrayRespuesta as $res) {
+                    if (!isset($documentos[$res['idCadena']])) {
+                        continue; // si el documento no existe
+                    }
+
+                    $documento = $documentos[$res['idCadena']];
+                    $obj_documento = json_decode($documento->obj_documento, true);
+
+                    // Garantizar que md5_archivo exista
+                    if (empty($obj_documento['archivo']['_attributes']['md5_archivo'])) {
+                        $obj_documento['archivo']['_attributes']['md5_archivo'] = $documento->md5_file;
+                    }
+
+                    // Actualizar firmante correspondiente
+                    foreach ($obj_documento['firmantes']['firmante'][0] as $key => $value) {
+                        if ($value['_attributes']['curp_firmante'] == $curp) {
+                            $obj_documento['firmantes']['firmante'][0][$key]['_attributes'] = array_merge(
+                                $value['_attributes'],
+                                [
+                                    'fecha_firmado_firmante' => $res['fechafirma'] ?? null,
+                                    'no_serie_firmante'      => $res['no_seriefirmante'] ?? null,
+                                    'firma_firmante'         => $res['firma_cadena'] ?? null,
+                                    'certificado'            => $res['certificado'] ?? null,
+                                ]
+                            );
+                        }
+                    }
+
+                    // Reconstruir XML actualizado
+                    $array = XmlToArray::convert($documento->documento);
+
+                    // ¡IMPORTANTE! Reiniciar el array para no arrastrar claves de la iteración previa
+                    $ArrayXml = [];
+
+                    $ArrayXml['emisor'] = $obj_documento['emisor'];
+
+                    if (isset($obj_documento['receptores'])) {
+                        $ArrayXml['receptores'] = $obj_documento['receptores'];
+                    }
+
+                    $ArrayXml["archivo"] = $obj_documento['archivo'];
+
+
+                    if (isset($obj_documento['anexos'])) {
+                        $ArrayXml["anexos"] = $obj_documento['anexos'];
+                    }
+
+                    $ArrayXml["firmantes"] = $obj_documento['firmantes'];
+
+                    // Reemplazamos $obj_documento por el array ordenado
+                    $obj_documento = $ArrayXml;
+
+                    $resultXml = ArrayToXml::convert($obj_documento, [
+                        'rootElementName' => 'DocumentoChis',
+                        '_attributes' => [
+                            'version'            => $array['DocumentoChis']['_attributes']['version'] ?? '',
+                            'fecha_creacion'     => $array['DocumentoChis']['_attributes']['fecha_creacion'] ?? '',
+                            'no_oficio'          => $array['DocumentoChis']['_attributes']['no_oficio'] ?? '',
+                            'dependencia_origen' => $array['DocumentoChis']['_attributes']['dependencia_origen'] ?? '',
+                            'asunto_docto'       => $array['DocumentoChis']['_attributes']['asunto_docto'] ?? '',
+                            'tipo_docto'         => $array['DocumentoChis']['_attributes']['tipo_docto'] ?? '',
+                            'xmlns'              => 'http://firmaelectronica.chiapas.gob.mx/GCD/DoctoGCD',
+                        ],
+                    ]);
+
+                    // Guardar cambios en DB
+                    $documento->update([
+                        'obj_documento' => json_encode($obj_documento),
+                        'documento' => $resultXml,
+                    ]);
+                }
+            });
+
+            return redirect()->route('firma.inicio')->with([
+                'success'   => "Documento(s) firmado(s): \nExitoso(s): $correctos \n, Detalles: $errores $msnError"
+            ]);
+
+        } catch (\Throwable $th) {
+            return redirect()->route('firma.inicio')->with([
+                'danger'   => 'Error: ' . $th->getMessage()
+            ]);
+        }
+    }
+
+    #### FUNCION DEL SELLADO MASIVO
+    public function sellar_documentos(Request $request)
+    {
+        // 1) Validar campo recibido
+        $raw = $request->input('ids_sellar'); // puede venir como JSON string o arreglo
+
+        if (empty($raw)) {
+            return redirect()->route('firma.inicio')
+                ->with(['message' => 'No se recibieron IDs para procesar el sellado.']);
+        }
+
+        // 2) Decodificar JSON si aplica
+        $ids = is_array($raw) ? $raw : json_decode($raw, true);
+
+        if (!is_array($ids) || empty($ids)) {
+            return redirect()->route('firma.inicio')
+                ->with(['message' => 'El formato de los IDs no es válido.']);
+        }
+
+        // 3) Limpiar IDs (solo enteros positivos y únicos)
+        $ids = array_values(array_unique(array_filter(array_map('intval', $ids), function ($v) {
+            return $v > 0;
+        })));
+
+        if (empty($ids)) {
+            return redirect()->route('firma.inicio')
+                ->with(['message' => 'No hay IDs válidos para procesar.']);
+        }
+
+        // 4) Obtener documentos en un solo query
+        $documentos = DocumentosFirmar::select('id', 'documento', 'status')->whereIn('id', $ids)->get()->keyBy('id');
+
+        if ($documentos->isEmpty()) {
+            return redirect()->route('firma.inicio')
+                ->with(['message' => 'No se encontraron documentos con esos IDs.']);
+        }
+
+        // 5) Intentar obtener token actual
+        $tokenRow = Tokens_icti::where('sistema', 'sivyc')->first();
+        $token = $tokenRow ? $tokenRow->token : null;
+
+        $exitos = 0;
+        $errores = [];
+
+        // 6) Recorrer los documentos
+        foreach ($ids as $id) {
+            // Validar existencia
+            if (!$documentos->has($id)) {
+                $errores[$id] = 'Documento no encontrado.';
+                continue;
+            }
+
+            $doc = $documentos[$id];
+
+            // Omitir documentos ya validados
+            if ($doc->status === 'VALIDADO') {
+                continue;
+            }
+
+            try {
+                $xmlBase64 = base64_encode($doc->documento);
+
+                // Intento 1: usar token actual
+                $response = $token ? $this->sellarFile($xmlBase64, $token) : null;
+
+                // Si no responde correctamente, generar token nuevo una sola vez
+                if (!$response || !$response->json()) {
+                    $tokenNuevo = $this->generarToken(new Request());
+                    if (!empty($tokenNuevo)) {
+                        $token = $tokenNuevo;
+                        $response = $this->sellarFile($xmlBase64, $token);
+                    }
+                }
+
+                // Validar respuesta
+                if (!$response || !$response->json()) {
+                    $errores[$id] = 'Respuesta del servicio inválida.';
+                    continue;
+                }
+
+                $body = $response->json();
+
+                if (!isset($body['status'])) {
+                    $errores[$id] = 'No se recibió estado del servicio.';
+                    continue;
+                }
+
+                // Éxito
+                if ((int)$body['status'] === 1) {
+                    $xmlDecoded = base64_decode(isset($body['xml']) ? $body['xml'] : '', true);
+                    if ($xmlDecoded === false) {
+                        $errores[$id] = 'XML inválido recibido.';
+                        continue;
+                    }
+
+                    DocumentosFirmar::where('id', $id)->update([
+                        'status'        => 'VALIDADO',
+                        'uuid_sellado'  => isset($body['uuid']) ? $body['uuid'] : null,
+                        'fecha_sellado' => isset($body['fecha_Sellado']) ? $body['fecha_Sellado'] : now(),
+                        'documento'     => $xmlDecoded,
+                        'cadena_sello'  => isset($body['cadenaSello']) ? $body['cadenaSello'] : null,
+                        'updated_at'    => now(),
+                    ]);
+
+                    $exitos++;
+                } else {
+                    $errores[$id] = isset($body['descripcionError'])
+                        ? $body['descripcionError']
+                        : 'Error desconocido al sellar.';
+                }
+
+            } catch (\Throwable $th) {
+                $errores[$id] = $th->getMessage();
+            }
+        }
+
+        // 7) Preparar mensaje final
+        $total = count($ids);
+        $fallos = count($errores);
+        $msg = $exitos . " Documento(s) sellado(s) de {$total}.";
+
+        if ($fallos > 0) {
+            // Mostrar primeros 5 errores
+            $detalles = '';
+            $contador = 0;
+            foreach ($errores as $k => $v) {
+                $detalles .= "#{$k}: {$v} | ";
+                $contador++;
+                if ($contador >= 5) break;
+            }
+            $msg .= " {$fallos} Documento(s) con error. : " . trim($detalles, ' |');
+            if ($fallos > 5) $msg .= ' ...';
+        }
+
+        // 8) Redirigir con resultado
+        return redirect()->route('firma.inicio')->with(['success' => $msg]);
+    }
+
 
 
 }
