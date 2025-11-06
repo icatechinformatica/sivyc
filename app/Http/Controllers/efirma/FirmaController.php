@@ -505,6 +505,9 @@ class FirmaController extends Controller {
                     // Reconstruir XML actualizado
                     $array = XmlToArray::convert($documento->documento);
 
+                    // ¡IMPORTANTE! Reiniciar el array para no arrastrar claves de la iteración previa
+                    $ArrayXml = [];
+
                     $ArrayXml['emisor'] = $obj_documento['emisor'];
 
                     if (isset($obj_documento['receptores'])) {
