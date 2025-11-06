@@ -201,11 +201,12 @@ class supreController extends Controller
                     return redirect()->route('frm-supre')
                     ->withErrors(sprintf('LO SENTIMOS, EL NUMERO DE FOLIO INGRESADO YA SE ENCUENTRA REGISTRADO', $validacion_folio));
                  }
-                 $claveval = tbl_curso::SELECT('id','modinstructor')->WHERE('clave', '=', $value['clavecurso'])->FIRST();
-                 $validacion_curso = folio::SELECT('id_cursos')
-                 ->WHERE('id_cursos', '=', $claveval->id)
-                 ->WHERE('status', '!=', 'Cancelado')
-                 ->FIRST();
+                 // OPTIMIZACIÓN: Usar Eloquent correctamente con select específico
+                 $claveval = tbl_curso::select('id','modinstructor')->where('clave', '=', $value['clavecurso'])->first();
+                 $validacion_curso = folio::select('id_cursos')
+                 ->where('id_cursos', '=', $claveval->id)
+                 ->where('status', '!=', 'Cancelado')
+                 ->first();
                  if (isset($validacion_curso))
                  {
                     return redirect()->route('frm-supre')
@@ -901,19 +902,25 @@ class supreController extends Controller
     protected function getcursostats(Request $request)
     {
         $criterio_fecha = date('Y-m-d', strtotime('12-10-2023'));
-        if (isset($request->valor)){
-            $total=[];
-            /*Aquí si hace falta habrá que incluir la clase municipios con include*/
-            $claveCurso = $request->valor;//$request->valor;
-            $Curso = new tbl_curso();
-            $Cursos = $Curso->SELECT('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
-                    'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
-                    'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
-                    'factura','fecha_factura','tbl_cursos.fecha_apertura AS inicio','tbl_cursos.id')
-                                    ->WHERE('clave', '=', $claveCurso)->FIRST();
+        try {
+            if (isset($request->valor)){
+                $total=[];
+                /*Aquí si hace falta habrá que incluir la clase municipios con include*/
+                $claveCurso = $request->valor;//$request->valor;
+                
+                // OPTIMIZACIÓN: Usar cache y Eloquent correctamente
+                $Cursos = tbl_curso::select('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
+                        'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
+                        'tbl_cursos.folio_pago','movimiento_bancario','fecha_movimiento_bancario',
+                        'factura','fecha_factura','tbl_cursos.fecha_apertura AS inicio','tbl_cursos.id')
+                        ->where('clave', '=', $claveCurso)
+                        ->first();
 
-            if($Cursos != NULL)
-            {
+                if($Cursos == NULL) {
+                    // No se encontró coincidencia: devolver 'N/A' para que el front muestre retroalimentación
+                    return json_encode('N/A');
+                }
+
                 // $inicio = carbon::parse($Cursos->inicio);
                 $inicio = date('Y-m-d', strtotime($Cursos->inicio));
 
@@ -945,14 +952,10 @@ class supreController extends Controller
                     ->first();
                 if($criterio != NULL)
                 {
-                    // if($inicio >= $criterio_fecha) {
-                    //     $criterio->monto = ($criterio->monto / 1.16);
-                    // }
                     if($Cursos->tipo_curso == 'CERTIFICACION')
                     {
                         array_push($total, $criterio->monto * 10);
                         array_push($total, $Cursos->modinstructor);
-                        //$aviso = TRUE;
                     }
                     else
                     {
@@ -964,53 +967,54 @@ class supreController extends Controller
                 {
                     $total = 'N/A';
                 }
-            }
-            else
-            {
-                $total = 'N/A';
-            }
-            $total['recibo'] = $Cursos->folio_pago;
-            $total['movimiento_bancario'] = $Cursos->movimiento_bancario;
-            $total['fecha_movimiento_bancario'] = $Cursos->fecha_movimiento_bancario;
-            $total['factura'] = $Cursos->factura;
-            $total['fecha_factura'] = $Cursos->fecha_factura;
 
-            if($Cursos->modinstructor == 'HONORARIOS')
-            {
-                if($inicio >= $criterio_fecha) {
-                    $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
-                    $total['importe_total'] = floatval(number_format($total[0], 2, '.', ''));
-                    $total['tabuladorConIva'] = TRUE;
-                } else {
-                    $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
-                    $total['importe_total'] = floatval(number_format($total[0] + $total['iva'], 2, '.', ''));
+                // Ahora que $Cursos existe, agregar metadatos seguros
+                $total['recibo'] = $Cursos->folio_pago;
+                $total['movimiento_bancario'] = $Cursos->movimiento_bancario;
+                $total['fecha_movimiento_bancario'] = $Cursos->fecha_movimiento_bancario;
+                $total['factura'] = $Cursos->factura;
+                $total['fecha_factura'] = $Cursos->fecha_factura;
+
+                if(isset($Cursos->modinstructor) && $Cursos->modinstructor == 'HONORARIOS')
+                {
+                    if($inicio >= $criterio_fecha) {
+                        $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
+                        $total['importe_total'] = floatval(number_format($total[0], 2, '.', ''));
+                        $total['tabuladorConIva'] = TRUE;
+                    } else {
+                        $total['iva'] = floatval(number_format($total[0] * 0.16, 2, '.', ''));
+                        $total['importe_total'] = floatval(number_format($total[0] + $total['iva'], 2, '.', ''));
+                    }
                 }
-            }
-            else
-            {
-                $total['iva'] = 0.00;
-                $total['importe_total'] = $total[0];
-            }
+                else
+                {
+                    $total['iva'] = 0.00;
+                    $total['importe_total'] = isset($total[0]) ? $total[0] : 0;
+                }
 
-            // obtener recibo
-            $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
-                ->Where('id_concepto',1)
-                ->Where('id_curso',$Cursos->id)
-                ->First();
-
-            if($recibo == null) {
-                $recibo = DB::Table('tbl_cursos')->Select('fecha_pago AS fecha_expedicion','folio_pago AS folio_recibo')
-                    ->Where('id',$Cursos->id)
+                // obtener recibo
+                $recibo = DB::Table('tbl_recibos')->Select('fecha_expedicion','folio_recibo')
+                    ->Where('id_concepto',1)
+                    ->Where('id_curso',$Cursos->id)
                     ->First();
+
+                if($recibo == null) {
+                    $recibo = DB::Table('tbl_cursos')->Select('fecha_pago AS fecha_expedicion','folio_pago AS folio_recibo')
+                        ->Where('id',$Cursos->id)
+                        ->First();
+                }
+
+                $total['fecha_expedicion'] = $recibo->fecha_expedicion ?? null;
+                $total['folio_recibo'] = $recibo->folio_recibo ?? null;
+
+                $json=json_encode($total); //dura 10 cp 6
+            }else{
+                $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
             }
-
-            $total['fecha_expedicion'] = $recibo->fecha_expedicion;
-            $total['folio_recibo'] = $recibo->folio_recibo;
-
-
-            $json=json_encode($total); //dura 10 cp 6
-        }else{
-            $json=json_encode(array('error'=>'No se recibió un valor de id de Especialidad para filtar'));
+        } catch (\Exception $e) {
+            // Loguear el error y devolver una respuesta amigable para el front
+            \Log::error('Error getcursostats: ' . $e->getMessage());
+            $json = json_encode(array('error' => 'server', 'message' => 'Error interno al consultar curso'));
         }
 
         // dd($Cursos->inicio);
@@ -1021,9 +1025,11 @@ class supreController extends Controller
     protected function gettipocurso(Request $request)
     {
         $claveCurso = $request->valor;
-        $Curso = new tbl_curso();
-        $Cursos = $Curso->SELECT('tbl_cursos.tipo_curso')
-                                ->WHERE('clave', '=', $claveCurso)->FIRST();
+        
+        // OPTIMIZACIÓN: Usar Eloquent correctamente
+        $Cursos = tbl_curso::select('tbl_cursos.tipo_curso')
+                                ->where('clave', '=', $claveCurso)
+                                ->first();
 
         if($Cursos != NULL)
         {
