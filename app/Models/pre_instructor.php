@@ -18,7 +18,7 @@ class pre_instructor extends Model
     'tipo_identificacion','expiracion_identificacion','solicito','turnado','nacionalidad','entidad_nacimiento',
     'municipio_nacimiento','localidad_nacimiento','clave_loc_nacimiento','codigo_postal','telefono_casa','curriculum',
     'id_oficial','registro_activo','archivo_curriculum_personal','tipo_instructor','data_especialidad','instructor_alfa',
-    'datos_alfa','certificados','fecha_entrevista'];
+    'datos_alfa','certificados','fecha_entrevista','fecha_curriculum_entrevista'];
 
     protected $casts = [
         'unidades_disponible' => 'array',
