@@ -1,10 +1,18 @@
 {{--  AGC  --}}
 @extends('theme.sivyc.layout')
 @section('title', 'Exoneración y/o Reducción de Cuota | SIVyC Icatech')
-@section('content')
+@section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
-    
+    <style>
+        input[type="text"].gris {
+            background-color: #ddd;
+            color: #666;
+            border: 1px solid #aaa;
+        }
+    </style>
+@endsection
+@section('content')
     <div class="card-header">
         Solicitudes / Exoneración y/o Reducción de Cuota
     </div>
@@ -15,10 +23,15 @@
             <div class="form-group col-md-3">
                     {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'No. Revisión / No. Memorándum', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 25]) }}
             </div>
+            @if (count($cursos)>0)            
+                <div class="form-group col-md-2">
+                {{ form::date('fecha', $cursos[0]->fecha_memorandum ?? null, ['id' => 'fecha','class'=>'form-control gris']) }}
+            </div>       
+            @endif
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
-            </div> 
-            @if (count($cursos)>0)
+            </div>
+            @if(count($cursos)>0)     
                 <div class="form-group col-md-4 text-right">
                     <div class="dropdown show">
                         <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -154,6 +167,34 @@
     </div>
     @section('script_content_js') 
         <script language="javascript">              
+             $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+
+            function guardar_fecha(memo_arc){
+                if (confirm("Está seguro de guardar cambios del ARC?") == true) {
+                    var fecha_nuevo = $("#fecha_memorandum").val();
+                    var memo_nuevo = $("#memo").val();
+                    var opt = $("#opt").val();
+                    $.ajax({
+                                url: "aperturas/guardar_fecha",
+                                method: 'POST',
+                                data: {
+                                    memo: memo_nuevo,
+                                    fecha: fecha_nuevo,
+                                    memo_arc: memo_arc,
+                                    opt: opt
+                                },
+                                success: function(data) {
+                                //$('#result_table').html(data);
+                                alert(data);
+                            }
+                    });
+                }
+            }
+        
             $(document).ready(function(){
                 $("#buscar" ).click(function(){ $('#frm').attr('action', "{{route('solicitudes.exoneracion')}}"); $('#frm').attr('target', '_self').submit();});
                 
@@ -173,7 +214,7 @@
                         }else alert("POR FAVOR, SELECCIONE UN MOVIMIENTO.");
                     }                    
                 });
-                $('#borrador').click(function(){$('#frm').attr('action', "{{route('solicitudes.exoneracion.borrador')}}"); $('#frm').attr('target', '_blank').submit();});
+                $('#borrador').click(function(){$('#frm').attr('action', "{{route('solicitud.exoneracion.generar')}}"); $('#frm').attr('target', '_blank').submit();});
             });   
 
             $("#movimiento" ).change(function(){
