@@ -27,7 +27,7 @@ class exoneracionesController extends Controller
             $cursos = DB::table('exoneraciones as e')
                         ->select('e.id','e.folio_grupo','e.nrevision','tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','e.foficio',
                             'tc.hombre','tc.mujer','e.fini','e.ffin','tc.nombre as instructor','e.tipo_exoneracion','e.noficio','e.razon_exoneracion','e.observaciones',
-                            'e.no_memorandum','e.status','e.turnado','e.memo_soporte_dependencia','e.pobservacion','e.no_convenio','tc.depen','e.motivo','tc.hini','tc.hfin')
+                            'e.no_memorandum','e.status','e.turnado','e.memo_soporte_dependencia','e.pobservacion','e.no_convenio','tc.depen','e.motivo','tc.hini','tc.hfin','e.fecha_memorandum')
                         ->leftJoin('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
                         ->leftJoin('alumnos_registro as ar','e.folio_grupo','=','ar.folio_grupo')
                         ->leftJoin('cursos as c','ar.id_curso','=','c.id')
@@ -154,8 +154,14 @@ class exoneracionesController extends Controller
         return redirect()->route('solicitudes.exoneracion')->with(['message' => $message]);
     }
 
-    public function generar(Request $request){
+    public function generar(Request $request){ //NO SE UTILIZA
         if (session('revision')) {
+            if($request->fecha) $fecha = $request->fecha;
+            else $fecha =date("Y-m-d");
+
+            //$result = DB::table('exoneraciones')->where('nrevision', session('revision'))->where('status','CAPTURA')
+            //->update(['fecha_memorandum' => $fecha]);
+        
             $mexoneracion = $date = $alumnos = null;
             $marca = true;  $data = [];
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
@@ -244,7 +250,7 @@ class exoneracionesController extends Controller
             }
             $direccion = $reg_unidad->direccion;
             setlocale(LC_TIME, "spanish");
-            $fecha_act =date("Y-m-d");
+            $fecha_act = $cursos[0]->fecha_memorandum ?: date("Y-m-d");
 
             $meses = ['01'=>'enero','02'=>'febrero','03'=>'marzo','04'=>'abril','05'=>'mayo','06'=>'junio','07'=>'julio','08'=>'agosto','09'=>'septiembre','10'=>'octubre','11'=>'noviembre','12'=>'diciembre'];
             $mes = $meses[date('m',strtotime($fecha_act))];
