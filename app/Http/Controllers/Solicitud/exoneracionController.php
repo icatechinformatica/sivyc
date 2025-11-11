@@ -184,11 +184,11 @@ class exoneracionController extends Controller
     public function delete(Request $request){
         $id = $request->id;
         if ($id) {
-            if ((DB::table('exoneraciones')->where('nrevision',session('revision'))->where('id',$id)->value('fini')) OR
-            (DB::table('exoneraciones')->where('nrevision',session('revision'))->where('id',$id)->value('ffin'))) {
+            if ((DB::table('exoneraciones')->where('id',$id)->value('fini')) OR
+            (DB::table('exoneraciones')->where('id',$id)->value('ffin'))) {
                 $result = false;
             } else {
-                $result = DB::table('exoneraciones')->where('nrevision',session('revision'))->where('id',$id)->delete();
+                $result = DB::table('exoneraciones')->where('status','CAPTURA')->where('id',$id)->delete();
             }
         } else {
             $result = false;
