@@ -110,8 +110,8 @@ Route::get('/registrados/consecutivos/index', 'adminController\AlumnoRegistradoM
 // Route::get('/administracion/index', function () {
 //     return view('layouts.pages_admin.index');
 // })->name('administracion.index');
-// });
-// });
+});
+});
 /**
 * UNIDADES DE CAPACITACION
 */
