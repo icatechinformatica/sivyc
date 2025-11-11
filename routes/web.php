@@ -682,7 +682,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/solicitud/exoneracion','Solicitud\exoneracionController@index')->name('solicitud.exoneracion')->middleware('can:solicitud.exoneracion');
     Route::post('/solicitud/exoneracion/busqueda','Solicitud\exoneracionController@search')->name('solicitud.exoneracion.search')->middleware('can:solicitud.exoneracion');
     Route::post('/solicitud/exoneracion/agregar','Solicitud\exoneracionController@store')->name('solicitud.exoneracion.agregar')->middleware('can:solicitud.exoneracion');
-    Route::post('/solicitud/exoneracion/generar','Solicitud\exoneracionController@generar')->name('solicitud.exoneracion.generar')->middleware('can:solicitud.exoneracion');
+    Route::post('/solicitud/exoneracion/generar','Solicitud\exoneracionController@generar')->name('solicitud.exoneracion.generar') ->middleware(['can:solicitud.exoneracion', 'can:solicitudes.exoneracion']);
     Route::get('/solicitud/exoneracion/eliminar','Solicitud\exoneracionController@delete')->name('solicitud.exoneracion.eliminar')->middleware('can:solicitud.exoneracion');
     Route::post('/solicitud/exoneracion/nuevo','Solicitud\exoneracionController@nuevo')->name('solicitud.exoneracion.nuevo')->middleware('can:solicitud.exoneracion');
     Route::post('/solicitud/exoneracion/preliminar','Solicitud\exoneracionController@preliminar')->name('solicitud.exoneracion.preliminar')->middleware('can:solicitud.exoneracion');
