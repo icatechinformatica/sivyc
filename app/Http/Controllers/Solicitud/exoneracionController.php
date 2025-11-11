@@ -207,11 +207,14 @@ class exoneracionController extends Controller
                 $url_file = $file_result["url_file"];
                 if ($file_result) {//dd($file_result);exit;
                     $this->history( session('revision'));
+                    $fecha = $request->fecha ?: date('Y-m-d');
                     $result = DB::table('exoneraciones')
                                 ->where('nrevision',session('revision'))
                                 ->where('status', 'CAPTURA')
                                 ->update(['status'=>'PREVALIDACION', 'fenvio'=>date('Y-m-d H:i:s'), 'frespuesta'=>null, 'memo_soporte_dependencia'=>$url_file,
-                                        'turnado'=>'DTA']);
+                                        'turnado'=>'DTA',
+                                        'fecha_memorandum' => DB::raw("CASE WHEN fecha_memorandum IS NULL THEN '" .$fecha. "' ELSE fecha_memorandum END")
+                                    ]);
                     if ($result) {
                         $message = "La PREVALIDACION fué turnada correctamente a la DTA";
                     } else {
