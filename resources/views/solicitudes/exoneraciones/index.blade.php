@@ -214,7 +214,7 @@
                         }else alert("POR FAVOR, SELECCIONE UN MOVIMIENTO.");
                     }                    
                 });
-                $('#borrador').click(function(){$('#frm').attr('action', "{{route('solicitud.exoneracion.generar')}}"); $('#frm').attr('target', '_blank').submit();});
+                $('#borrador').click(function(){$('#frm').attr('action', "{{route('solicitudes.exoneracion.generar')}}"); $('#frm').attr('target', '_blank').submit();});
             });   
 
             $("#movimiento" ).change(function(){
