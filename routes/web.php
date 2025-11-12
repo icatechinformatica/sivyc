@@ -107,9 +107,9 @@ Route::get('/alumnos_registrados/modificar/delete/{id}/{id_pre}', 'adminControll
 Route::get('/registros/unidad/index', 'adminController\AlumnoRegistradoModificarController@indexUnidad')->name('registro_unidad.index');
 Route::post('/alumnos_registrados/consecutivos', 'adminController\AlumnoRegistradoModificarController@indexConsecutivo')->name('registrado_consecutivo.index');
 Route::get('/registrados/consecutivos/index', 'adminController\AlumnoRegistradoModificarController@registradosConsecutivos')->name('registrados.consecutivos');
-Route::get('/administracion/index', function () {
-    return view('layouts.pages_admin.index');
-})->name('administracion.index');
+// Route::get('/administracion/index', function () {
+//     return view('layouts.pages_admin.index');
+// })->name('administracion.index');
 });
 });
 /**
