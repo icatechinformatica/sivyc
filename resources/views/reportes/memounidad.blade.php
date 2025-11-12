@@ -10,7 +10,7 @@
         .tablag tr td { font-size: 8px; padding: 0px;}
         .contenedor {
         position:RELATIVE;
-        top:120px;
+        top:10px;
         width:100%;
         margin:auto;
 
@@ -55,18 +55,18 @@
                     </thead>
                     <tbody>
                         @foreach($reg_cursos as $index => $a)
-                        <tr>
-                            <th>{{ $num }}</th>
-                            <th>{{ $a->mes }}</th>
-                            <th>{{ $a->unidad }}</th>
-                            <th>{{ $a->espe }}</th>
-                            <th>{{ $a->curso }}</th>
-                            <th>{{ $a->clave }}</th>
-                            <th>{{ json_decode($a->comentario_enlaces_retorno, JSON_UNESCAPED_SLASHES) }}</th>
-                        </tr>
-                            @php
-                                $num=$num+1;
-                            @endphp
+                            <tr>
+                                <th>{{ $num }}</th>
+                                <th>{{ $a->mes }}</th>
+                                <th>{{ $a->unidad }}</th>
+                                <th>{{ $a->espe }}</th>
+                                <th>{{ $a->curso }}</th>
+                                <th>{{ $a->clave }}</th>
+                                <th>{{ json_decode($a->comentario_enlaces_retorno, JSON_UNESCAPED_SLASHES) }}</th>
+                            </tr>
+                                @php
+                                    $num=$num+1;
+                                @endphp
                         @endforeach
                     </tbody>
                 </table>

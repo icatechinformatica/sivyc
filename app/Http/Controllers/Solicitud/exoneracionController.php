@@ -17,13 +17,16 @@ class exoneracionController extends Controller
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
     }
 
-    public function index(Request $request){
+    public function index(Request $request){// dd(session('valor'));
         $message = $valor = $memo = $activar = $nrevision = $pdf = null;
         $agregar = true;
         $cursos = $movimientos = [];
-        if ($request->valor) {
+        if ($request->memo) {
+            session(['valor' => $request->memo]);
+        }elseif ($request->valor) {
             session(['valor' => $request->valor]);
         }
+        //else $valor = session('valor');
         if (session()->has('valor')) {
             $cursos = DB::table('exoneraciones as e')
                         ->select('e.id','e.folio_grupo','e.nrevision','tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','e.foficio',
@@ -181,11 +184,11 @@ class exoneracionController extends Controller
     public function delete(Request $request){
         $id = $request->id;
         if ($id) {
-            if ((DB::table('exoneraciones')->where('nrevision',session('revision'))->where('id',$id)->value('fini')) OR
-            (DB::table('exoneraciones')->where('nrevision',session('revision'))->where('id',$id)->value('ffin'))) {
+            if ((DB::table('exoneraciones')->where('id',$id)->value('fini')) OR
+            (DB::table('exoneraciones')->where('id',$id)->value('ffin'))) {
                 $result = false;
             } else {
-                $result = DB::table('exoneraciones')->where('nrevision',session('revision'))->where('id',$id)->delete();
+                $result = DB::table('exoneraciones')->where('status','CAPTURA')->where('id',$id)->delete();
             }
         } else {
             $result = false;
@@ -204,11 +207,14 @@ class exoneracionController extends Controller
                 $url_file = $file_result["url_file"];
                 if ($file_result) {//dd($file_result);exit;
                     $this->history( session('revision'));
+                    $fecha = $request->fecha ?: date('Y-m-d');
                     $result = DB::table('exoneraciones')
                                 ->where('nrevision',session('revision'))
                                 ->where('status', 'CAPTURA')
                                 ->update(['status'=>'PREVALIDACION', 'fenvio'=>date('Y-m-d H:i:s'), 'frespuesta'=>null, 'memo_soporte_dependencia'=>$url_file,
-                                        'turnado'=>'DTA']);
+                                        'turnado'=>'DTA',
+                                        'fecha_memorandum' => DB::raw("CASE WHEN fecha_memorandum IS NULL THEN '" .$fecha. "' ELSE fecha_memorandum END")
+                                    ]);
                     if ($result) {
                         $message = "La PREVALIDACION fué turnada correctamente a la DTA";
                     } else {
@@ -254,17 +260,43 @@ class exoneracionController extends Controller
         return redirect()->route('solicitud.exoneracion')->with(['message' => $message]);
     }
 
-    public function generar(Request $request){
-        if ($request->memo AND session('revision')) {
-            if(session('memo')!=$request->memo){
-                $fecha =date("Y-m-d");
-                $result = DB::table('exoneraciones')->where('nrevision', session('revision'))->where('status','VALIDADO')
-                ->update(['no_memorandum' => $request->memo, 'fecha_memorandum' => $fecha]);
+    public function generar(Request $request){ 
+        if ($request->valor) {            
+                $valor = $request->valor;
+                $fecha = $request->fecha ?: date('Y-m-d');
+                // VALIDA SI EL MEMO NO SE ENCUENTRA EN USO
+                $existe_memo = DB::table('exoneraciones')->where('no_memorandum',$request->memo)->where('status', 'AUTORIZADO')->exists();
+                
+                if($existe_memo) return "EL NÚMERO DE MEMORÁNDUM INGRESADO YA SE ENCUENTRA ASIGNADO. LE SUGERIMOS VERIFICAR E INGRESAR UN NÚMERO LIBRE.";
+                
+                // Actualiza los registros con status VALIDADO
+                $result_memo = DB::table('exoneraciones')
+                    ->where(function ($query) use ($valor) {
+                        $query->where('nrevision', $valor)
+                            ->orWhere('no_memorandum', $valor);
+                    })->where('status', 'VALIDADO')->update(['no_memorandum' => $request->memo,
+                    'fecha_memorandum' => DB::raw("CASE WHEN fecha_memorandum IS NULL THEN '" .$fecha. "' ELSE fecha_memorandum END"),
+                ]);
 
-                session(['memo' => $request->memo]);
-            }
+                // Actualiza los registros con status CAPTURA
+                $result_fecha = DB::table('exoneraciones')
+                    ->where(function ($query) use ($valor) {
+                        $query->where('nrevision', $valor)
+                            ->orWhere('no_memorandum', $valor);
+                    })->where('status', 'CAPTURA')->update(['fecha_memorandum' => $fecha]);
 
-            $cursos = DB::table('exoneraciones')->where('nrevision',session('revision'))->get();
+                $marca = $result_memo ? null : true;
+                if($result_memo) $valor = $request->memo;
+
+                session(['memo' => $request->memo,'valor'=>$valor]);
+            
+
+            $cursos = DB::table('exoneraciones')
+            ->where(function($query) use ($valor) {
+                    $query->where('nrevision', $valor)
+                        ->orWhere('no_memorandum', $valor);
+                })
+            ->get();
             foreach ($cursos as $key => $value) {
                 $year = date('y');
                 if (!($value->fini) OR !($value->ffin)) {
@@ -277,10 +309,10 @@ class exoneracionController extends Controller
                     $fin = (DB::table('exoneraciones')->where('ejercicio',$year)->where('cct',$value->cct)->value(DB::raw('max(ffin)')))+$alumnos;
                     $result2 = DB::table('exoneraciones')->where('id',$value->id)->update(['fini'=>$ini, 'ffin'=>$fin]);
                 }
-            }
+            } 
             if($cursos) {
                 $mexoneracion = $date = $alumnos = null;
-                $marca = null;  $data = [];
+                $data = [];
                 $director= DB::table('tbl_instituto')->select('titular', 'cargo')->first();
                 $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
                 $cursos =  DB::table('exoneraciones as e')
@@ -290,7 +322,7 @@ class exoneracionController extends Controller
                                         'tc.mujer','tc.hombre','e.fini','e.ffin',
                                         'tc.nombre as instructor','e.tipo_exoneracion','e.no_convenio','e.noficio',DB::raw("to_char(DATE (e.foficio)::date, 'DD-MM-YYYY') as foficio"),
                                         'e.razon_exoneracion','e.observaciones','tc.hini','tc.hfin',
-                                        'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia',
+                                        'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia','e.nrevision',
                                         'tc.folio_grupo','e.no_memorandum',DB::raw("to_char(DATE (e.fecha_memorandum)::date, 'DD-MM-YYYY') as fecha_memorandum"),
                                         DB::raw("
                                             (
@@ -327,17 +359,21 @@ class exoneracionController extends Controller
                             
                                 ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                                 ->leftJoin('cursos as c','ar.id_curso','=','c.id')
-                                ->where('e.nrevision',session('revision'))
+                                ->where(function($query) use ($valor) {
+                                    $query->where('nrevision', $valor)
+                                        ->orWhere('no_memorandum', $valor);
+                                })
                                 ->groupBy('tc.tipo_curso','tc.unidad','tc.curso','c.costo','tc.dura','tc.inicio','tc.termino','tc.mujer','tc.hombre','e.fini','e.ffin',
                                 'tc.nombre','e.tipo_exoneracion','e.no_convenio','e.noficio','e.foficio','e.razon_exoneracion','e.observaciones',
                                 'tc.depen','e.id_unidad_capacitacion','tc.mod','ar.horario','tc.efisico','tc.tcapacitacion','tc.medio_virtual','tc.dia','tc.folio_grupo',
-                                'e.no_memorandum','e.fecha_memorandum','tc.hini','tc.hfin')
+                                'e.no_memorandum','e.fecha_memorandum','tc.hini','tc.hfin','e.nrevision')
                                 ->orderBy('e.fini','asc')
                                 ->get();    //dd($cursos);
                 $reg_unidad = DB::table('tbl_unidades')->select('ubicacion','dgeneral','dunidad','academico','vinculacion','dacademico','pdgeneral','pdacademico',
                                     'pdunidad','pacademico','pvinculacion','municipio','direccion')
                                     ->where('id',$cursos[0]->id_unidad_capacitacion)
                                     ->first(); //dd($reg_unidad);
+                                    
                 $depen = $cursos[0]->depen;
                 $date = $cursos[0]->fecha_memorandum;
                 if($cursos[0]->no_memorandum)$mexoneracion = $cursos[0]->no_memorandum;
@@ -384,7 +420,7 @@ class exoneracionController extends Controller
                 return "Error al cargar el memorándum, volver a intentar.";exit;
             }
         } else {
-            return "ACCIÓN INVÁlIDA";exit;
+            return "ACCIÓN INVÁLIDA";exit;
         }
     }
 

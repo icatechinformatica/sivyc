@@ -3504,21 +3504,26 @@ class InstructorController extends Controller
         return  $pdf->stream('entrevista_instructor.pdf');
     }
 
-    public function curriculumicatech_pdf($idins)
+    public function curriculumicatech_pdf(Request $request)
     {
-        // dd($idins);
+        // dd($request);
+        $idins = $request->idins;
+        $fecha = $request->fecha;
         $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $data = pre_instructor::WHERE('id', '=', $idins)->WHERE('registro_activo', TRUE)->FIRST();
         if(!isset($data))
         {
             $data = instructor::WHERE('id', '=', $idins)->FIRST();
             $perfiles = InstructorPerfil::WHERE('numero_control', '=', $data->id)->GET();
+            $fecha = $data->fecha_curriculum_entrevista;
         }
         else
         {
             $perfiles = $this->make_collection($data->data_perfil);
+            $data->fecha_curriculum_entrevista = $fecha;
+            $data->save();
         }
-        $date = strtotime(carbon::now()->toDateString());
+        $date = strtotime($fecha);
         $funcionarios  = $this->funcionarios('TUXTLA');
 
         $D = date('d', $date);
@@ -4790,6 +4795,7 @@ class InstructorController extends Controller
         $instructor->instructor_alfa = $saveInstructor->instructor_alfa;
         $instructor->datos_alfa = $saveInstructor->datos_alfa;
         $instructor->nacionalidad = $saveInstructor->nacionalidad;
+        $instructor->fecha_curriculum_entrevista = $saveInstructor->fecha_curriculum_entrevista;
         $instructor->save();
 
         $data_ins_curso = tbl_curso::Select('tbl_cursos.id')

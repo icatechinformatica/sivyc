@@ -107,9 +107,9 @@ Route::get('/alumnos_registrados/modificar/delete/{id}/{id_pre}', 'adminControll
 Route::get('/registros/unidad/index', 'adminController\AlumnoRegistradoModificarController@indexUnidad')->name('registro_unidad.index');
 Route::post('/alumnos_registrados/consecutivos', 'adminController\AlumnoRegistradoModificarController@indexConsecutivo')->name('registrado_consecutivo.index');
 Route::get('/registrados/consecutivos/index', 'adminController\AlumnoRegistradoModificarController@registradosConsecutivos')->name('registrados.consecutivos');
-Route::get('/administracion/index', function () {
-    return view('layouts.pages_admin.index');
-})->name('administracion.index');
+// Route::get('/administracion/index', function () {
+//     return view('layouts.pages_admin.index');
+// })->name('administracion.index');
 });
 });
 /**
@@ -205,7 +205,8 @@ Route::post('/supre/validacion/Validado', 'webController\supreController@supre_v
 Route::get('/supre/validacion/pdf/{id}', 'webController\supreController@valsupre_pdf')->name('valsupre-pdf');
 Route::get('/supre/pdf/{id}', 'webController\supreController@supre_pdf')->name('supre-pdf');
 Route::get('/instructores/entrevista/pdf/{idins}', 'webController\InstructorController@entrevista_pdf')->name('instructor-entrevista-pdf');
-Route::get('/instructores/curriculumicatech/pdf/{idins}', 'webController\InstructorController@curriculumicatech_pdf')->name('instructor-curriculumicatech-pdf');
+// Route::get('/instructores/curriculumicatech/pdf/{idins}', 'webController\InstructorController@curriculumicatech_pdf')->name('instructor-curriculumicatech-pdf');
+Route::get('/instructores/curriculumicatech/pdf', 'webController\InstructorController@curriculumicatech_pdf')->name('instructor-curriculumicatech-pdf');
 Route::post('/instructores/solicitud/pdf', 'webController\InstructorController@solicitud_instructor_pdf')->name('instructor-solicitud-pdf');
 Route::post('/instructores/solicitud/baja/pdf', 'webController\InstructorController@solicitud_baja_instructor_pdf')->name('instructor-baja-solicitud-pdf');
 Route::post('/instructores/validacion/baja/pdf', 'webController\InstructorController@validacion_baja_instructor_pdf')->name('instructor-baja-validacion-pdf');

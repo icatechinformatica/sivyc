@@ -1,9 +1,19 @@
 {{--  AGC  --}}
 @extends('theme.sivyc.layout')
 @section('title', 'Exoneración y/o Reducción de Cuota | SIVyC Icatech')
-@section('content')
+@section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <link rel="stylesheet" href="{{asset('edit-select/jquery-editable-select.min.css') }}" />
+    <style>
+        input[type="text"].gris {
+            background-color: #ddd;
+            color: #666;
+            border: 1px solid #aaa;
+            }
+
+    </style>
+@endsection
+@section('content')    
     <div class="card-header">
         Solicitud / Exoneración y/o Reducción de Cuota
     </div>
@@ -26,7 +36,7 @@
                     {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'No. REVISIÓN/ MEMORÁNDUM', 'title' => 'No. REVISIÓN/ MEMORÁNDUM', 'aria-label' => 'NUMERO', 'size' => 25]) }}
             </div>
             <div class="form-group col-md-2">
-                {{ form::date('fecha', $fecha_memorandum, ['id' => 'fecha','class'=>'form-control','readonly'=>'readonly']) }}
+                {{ form::date('fecha', $fecha_memorandum, ['id' => 'fecha','class'=>'form-control gris']) }}
             </div>
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
@@ -174,7 +184,7 @@
                                 <td class="text-center">{{$item->no_convenio}}</td>
                                 <td class="text-center">{{$item->depen}}</td>
                                 <td class="text-center">{{$item->noficio}}<br>{{$item->foficio}}</td>
-                                <td class="text-center">{{$razon[$item->razon_exoneracion]}}</td>
+                                <td class="text-center">{{$razon[$item->razon_exoneracion] ?? null}}</td>
                                 <td class="text-left"><div style="width: 400px;">{{$item->observaciones}}</div></td>
                                 <td><div style="width:200px;">{{$aviso}}</div></td>
                             </tr>
@@ -294,6 +304,7 @@
                                 memo: { required: 'Ingrese el memorándum de exoneración'}
                             }
                         });
+                        
                         $('#frm').attr('action', "{{route('solicitud.exoneracion.generar')}}"); $('#frm').attr('target', '_blank').submit();
                         if($("#movimiento option:selected").text()=='GENERAR FOLIOS Y MEMORANDUM' || $("#movimiento option:selected").text()=='CAMBIAR MEMORANDUM'){
                             $('#frm').attr('action', "{{route('solicitud.exoneracion')}}"); $('#frm').attr('target', '_self').submit();
@@ -301,7 +312,7 @@
                     }
                 });
                 $("#nuevo" ).click(function(){ $('#frm').attr('action', "{{route('solicitud.exoneracion.nuevo')}}"); $('#frm').attr('target', '_self').submit();});
-                $('#borrador').click(function(){$('#frm').attr('action', "{{route('solicitudes.exoneracion.borrador')}}"); $('#frm').attr('target', '_blank').submit();});
+                $('#borrador').click(function(){$('#frm').attr('action', "{{route('solicitud.exoneracion.generar')}}"); $('#frm').attr('target', '_blank').submit();});
             });
 
             function  eliminar(id, route){

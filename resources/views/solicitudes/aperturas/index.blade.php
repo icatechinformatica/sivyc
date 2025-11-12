@@ -284,11 +284,11 @@
                     case "VoBo":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
                         $('#frm').attr('target', '_self').submit();
-                        break;
-                    case "DESHACER":
+                        break;                    
+                    case "DESHACERVOBO":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.pvalidar')}}");
                         $('#frm').attr('target', '_self').submit();
-                        break;
+                        break;                    
                     case "RETORNADO":
                         $('#frm').attr('action', "{{route('solicitudes.aperturas.retornar')}}");
                         $('#frm').attr('target', '_self').submit();
