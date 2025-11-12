@@ -502,11 +502,10 @@ class grupoController extends Controller
     }
 
     public function save(Request $request) 
-    {
+    { 
         $matricula = $message = NULL;
         if(!$request->folio_grupo){            
-            $folio_grupo = $this->genera_folio();
-            session(['folio_grupo' => $folio_grupo]); ///TEMPORAL SE ESTA ELIMINANDO
+            $folio_grupo = $this->genera_folio();            
         }else $folio_grupo = $request->folio_grupo;
 
         
@@ -518,18 +517,17 @@ class grupoController extends Controller
         if(preg_match($patron,$request->busqueda)){ // ES FOLIO DE GRUPO
             if (Gate::allows('alumnos-masivo')) {
                 $curps = DB::table('alumnos_registro')->where('folio_grupo',$request->busqueda)->pluck('curp');
-            } else return redirect()->route('preinscripcion.grupo')->with(['message' => 'Operación no permitida!']);            
+            } else return redirect()->route('preinscripcion.grupo')->with(['message' => 'Operación no permitida!']);
         }else $curps []= $request->busqueda;
 
-        foreach($curps as $curp){
-            $resultado = $this->validaAlumno($request, $curp);
+        foreach($curps as $curp){ 
+            $resultado = $this->validaAlumno($request, $curp); //dd($resultado);
             if (isset($resultado['message'])){
-                $message .= $resultado['message'];
+                $message .= $resultado['message'];                 
                 continue;
-            }
+            }           
             $alumno = $resultado['alumno'];
-            $a_reg  = $resultado['a_reg'];
-            
+            $a_reg  = $resultado['a_reg'];            
             if($alumno and $folio_grupo) {
                 //EXTRAER MATRICULA Y GUARDAR
                 $matricula_sice = DB::table('registro_alumnos_sice')->where('eliminado', false)->where('curp', $curp)->value('no_control');
@@ -593,13 +591,13 @@ class grupoController extends Controller
                     ]
                 );
                 if ($result){
+                     session(['folio_grupo' => $folio_grupo]); ///TEMPORAL SE ESTA ELIMINANDO
                     $message = "Operación Exitosa!!";
                     if($alumno->curso_extra==true) DB::table('alumnos_pre')->where('id',$alumno->id_pre)->where('curso_extra',true)->update(['curso_extra'=>false]);
-                }                   
+                }elseif($message)return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
 
             } //else $message = "Operación no permitida!";
-        }
-        
+        }        
         return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
     }
 
