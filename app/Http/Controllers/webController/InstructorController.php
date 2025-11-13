@@ -381,7 +381,7 @@ class InstructorController extends Controller
             {
                 $saveInstructor = new instructor();
                 $save_preinstructor = new pre_instructor();
-                $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+                $uid = pre_instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
                 if ($uid['id'] === null) {
                     # si es nulo entra una vez y se le asigna un valor
                     $id = 1;
