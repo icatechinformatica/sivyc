@@ -416,7 +416,7 @@ class InstructorController extends Controller
             }
         } catch (\Throwable $e) {
         \Log::error('Error al intentar guardar el instructor: ' . $e->getMessage(), ['exception' => $e]);
-        return back()->withErrors('Ocurrió un error inesperado: ' . $e->getMessage())->withInput();
+        return back()->withErrors('Ocurrió un error inesperado, favor de intentarlo nuevamente.')->withInput();
         }
     }
 
@@ -2033,7 +2033,7 @@ class InstructorController extends Controller
 
         } catch (\Throwable $e) {
             \Log::error('Error al intentar guardar el instructor: ' . $e->getMessage(), ['exception' => $e]);
-            return back()->withErrors('Ocurrió un error inesperado: ' . $e->getMessage())->withInput();
+            return back()->withErrors('Ocurrió un error inesperado, favor de intentarlo nuevamente.')->withInput();
         }
     }
 
