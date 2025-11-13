@@ -2852,7 +2852,7 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="curriculum_fecha">Selecciona la fecha</label>
-                            <input type="date" id="curriculum_fecha" name="fecha" required disabled>
+                            <input type="date" id="curriculum_fecha" name="fecha" required>
                             <input type="hidden" id="curriculum_idins" name="idins" value="{{ $id }}">
                         </div>
                     </div>
