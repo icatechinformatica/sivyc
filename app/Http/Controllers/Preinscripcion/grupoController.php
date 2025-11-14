@@ -817,69 +817,17 @@ class grupoController extends Controller
                                         $abrins = ($diferencia > 0) ? 'EP' : 'PI';
                                     }
 
-                                    $alumno_updates[] = [
-                                        'id' => $key,
-                                        'costo' => $pago,
-                                        'tinscripcion' => $tinscripcion,
-                                        'abrinscri' => $abrins
-                                    ];
-
-                                    if (($tc_curso->status_curso == 'EDICION') AND session('folio_grupo')) {
-                                        $inscripcion_updates[] = [
-                                            'alumno_id' => $key,
-                                            'costo' => $pago,
-                                            'tinscripcion' => $tinscripcion,
-                                            'abrinscri' => $abrins
-                                        ];
-                                    }
-                                }
-
-                                // Realizar updates individuales (manteniendo la lógica original)
-                                foreach ($alumno_updates as $update) {
-                                    Alumno::where('id', $update['id'])->update([
-                                        'costo' => $update['costo'],
-                                        'tinscripcion' => $update['tinscripcion'],
-                                        'abrinscri' => $update['abrinscri']
-                                    ]);
-                                }
-
-                                // Updates para inscripción si es necesario 390cd5ce2d454baaa8667990a38d56b9
-
-                                if (!empty($inscripcion_updates)) {
-                                    // Construir las cláusulas CASE WHEN para cada campo
-                                    $costoCase = [];
-                                    $tinscripcionCase = [];
-                                    $abrinscriCase = [];
-                                    $alumnoIds = [];
-
-                                    foreach ($inscripcion_updates as $update) {
-                                        $alumnoId = $update['alumno_id'];
-                                        $costo = $update['costo'];
-                                        $tinscripcion = $update['tinscripcion'];
-                                        $abrinscri = $update['abrinscri'];
-
-                                        $costoCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN {$costo}";
-                                        $tinscripcionCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN '{$tinscripcion}'";
-                                        $abrinscriCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN '{$abrinscri}'";
-                                        $alumnoIds[] = $alumnoId;
-                                    }
-
-                                    // Construir las expresiones CASE completas
-                                    $costoExpression = "CASE " . implode(' ', $costoCase) . " ELSE tbl_inscripcion.costo END";
-                                    $tinscripcionExpression = "CASE " . implode(' ', $tinscripcionCase) . " ELSE tbl_inscripcion.tinscripcion END";
-                                    $abrinscriExpression = "CASE " . implode(' ', $abrinscriCase) . " ELSE tbl_inscripcion.abrinscri END";
-
-                                    // Ejecutar un solo UPDATE masivo
+                                    Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
                                     DB::table('tbl_inscripcion')
-                                        ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
-                                        ->where('tbl_inscripcion.folio_grupo', session('folio_grupo'))
-                                        ->whereIn('alumnos_registro.id', $alumnoIds)
-                                        ->update([
-                                            'tbl_inscripcion.costo' => DB::raw($costoExpression),
-                                            'tbl_inscripcion.tinscripcion' => DB::raw($tinscripcionExpression),
-                                            'tbl_inscripcion.abrinscri' => DB::raw($abrinscriExpression)
+                                            ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
+                                            ->where('tbl_inscripcion.folio_grupo', session('folio_grupo'))
+                                            ->where('alumnos_registro.id', $key)
+                                            ->update([
+                                                'tbl_inscripcion.costo' => $pago,
+                                                'tbl_inscripcion.tinscripcion' => $tinscripcion,
+                                                'tbl_inscripcion.abrinscri' => $abrins
                                         ]);
-                                }
+                                }                                
                             }
 
                             $sx = DB::table('alumnos_registro')
