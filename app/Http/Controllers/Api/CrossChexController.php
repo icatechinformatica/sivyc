@@ -288,45 +288,99 @@ class CrossChexController extends Controller
         }
 
         if ($type === 'missing') {
-            // Esperados: funcionarios activos y que checan en esa unidad
-            // Presentes: workno vistos hoy en crosschex_live (cualquier hora) con el department que mapea a esa unidad
             $rows = DB::select("
-            WITH unit AS (
-            SELECT ?::int AS id_unidad, ?::text AS unidad_norm
-            ),
-            expected AS (
-            SELECT
-                f.clave_empleado,
-                f.nombre_trabajador AS full_name
-            FROM tbl_funcionario f
-            JOIN unit u ON u.id_unidad = f.id_unidad
-            WHERE f.status = true AND f.checado = true
-            ),
-            present AS (
-            SELECT DISTINCT
-                payload->'records'->0->'employee'->>'workno' AS workno
-            FROM crosschex_live
-            JOIN unit u ON TRUE
-            WHERE UPPER(TRIM(COALESCE(
-                    payload->'records'->0->'employee'->>'department',
-                    payload->'employee'->>'department',
-                    '—'
-                    ))) = u.unidad_norm
-                AND (timezone(?, (payload->'records'->0->>'check_time')::timestamptz))::date
-                    = (timezone(?, now()))::date
-            )
-            SELECT e.full_name, e.clave_empleado
-            FROM expected e
-            LEFT JOIN present p ON p.workno = e.clave_empleado::text
-            WHERE p.workno IS NULL
-            ORDER BY e.full_name ASC
-        ", [$u->id_unidad, $u->unidad_norm, $tz, $tz]);
+                WITH unit AS (
+                    SELECT ?::int AS id_unidad, ?::text AS unidad_norm
+                ),
+                expected AS (
+                    -- Personas que deberían checar en esa unidad
+                    SELECT
+                        f.clave_empleado,
+                        f.nombre_trabajador AS full_name
+                    FROM tbl_funcionario f
+                    JOIN unit u ON u.id_unidad = f.id_unidad
+                    WHERE f.status  = TRUE
+                    AND f.checado = TRUE
+                ),
+                present_raw AS (
+                    -- Todos los checks de hoy para esa unidad (cualquier hora)
+                    SELECT
+                        cl.payload->'records'->0->'employee'->>'workno' AS workno,
+                        timezone(?, (cl.payload->'records'->0->>'check_time')::timestamptz) AS t
+                    FROM crosschex_live cl
+                    JOIN unit u ON TRUE
+                    WHERE UPPER(TRIM(COALESCE(
+                            cl.payload->'records'->0->'employee'->>'department',
+                            cl.payload->'employee'->>'department',
+                            '—'
+                        ))) = u.unidad_norm
+                    AND (timezone(?, (cl.payload->'records'->0->>'check_time')::timestamptz))::date
+                            = (timezone(?, now()))::date
+                ),
+                present AS (
+                    -- Primer check del día por empleado
+                    SELECT
+                        workno,
+                        MIN(t) AS first_ts
+                    FROM present_raw
+                    GROUP BY workno
+                ),
+                joined AS (
+                    -- Esperados + su primer check (si existe)
+                    SELECT
+                        e.clave_empleado,
+                        e.full_name,
+                        p.first_ts
+                    FROM expected e
+                    LEFT JOIN present p
+                        ON p.workno = e.clave_empleado::text
+                ),
+                classified AS (
+                    SELECT
+                        j.clave_empleado,
+                        j.full_name,
+                        j.first_ts,
+                        CASE
+                            WHEN j.first_ts IS NULL THEN 'missing'
+                            ELSE
+                                CASE
+                                    -- A TIEMPO: 07:40:00–08:15:59 y 08:45:00–09:15:59
+                                    WHEN (
+                                        (j.first_ts::time >= time '07:40:00' AND j.first_ts::time < time '08:16:00')
+                                        OR
+                                        (j.first_ts::time >= time '08:45:00' AND j.first_ts::time < time '09:16:00')
+                                    ) THEN 'ontime'
+                                    -- RETARDO: 08:16:00–08:30:59 y 09:16:00–09:30:59
+                                    WHEN (
+                                        (j.first_ts::time >= time '08:16:00' AND j.first_ts::time < time '08:31:00')
+                                        OR
+                                        (j.first_ts::time >= time '09:16:00' AND j.first_ts::time < time '09:31:00')
+                                    ) THEN 'late'
+                                    -- Todo lo demás: checó fuera de ventana → tratamos como falta
+                                    ELSE 'missing'
+                                END
+                        END AS status
+                    FROM joined j
+                )
+                SELECT
+                    full_name,
+                    clave_empleado,
+                    to_char(first_ts, 'YYYY-MM-DD HH24:MI:SS') AS check_time_local
+                FROM classified
+                WHERE status = 'missing'
+                ORDER BY full_name ASC
+            ", [
+                $u->id_unidad,
+                $u->unidad_norm,
+                $tz,
+                $tz,
+                $tz,
+            ]);
 
-            // Para "missing" no hay hora; devolvemos nombre + clave
             $items = array_map(fn($r) => [
-                'full_name' => $r->full_name,
-                'workno'    => $r->clave_empleado,
-                'check_time_local' => null,
+                'full_name'        => $r->full_name,
+                'workno'           => $r->clave_empleado,
+                'check_time_local' => $r->check_time_local, // puede ser null o fecha/hora local
             ], $rows);
 
             return response()->json([
@@ -335,6 +389,7 @@ class CrossChexController extends Controller
                 'items'  => $items,
             ]);
         }
+
 
         // ontime / late → mismas ventanas por hora local
         $whereTime = ($type === 'late')
