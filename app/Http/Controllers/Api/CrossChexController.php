@@ -193,22 +193,32 @@ class CrossChexController extends Controller
             WHERE t::date = (timezone(?, now()))::date
             ),
             counts AS (
-            SELECT
-                unidad_norm,
-                SUM(
-                CASE
-                    WHEN (local_time BETWEEN time '07:40' AND time '08:15')
-                    OR (local_time BETWEEN time '08:45' AND time '09:15')
-                    THEN 1 ELSE 0 END
-                ) AS ontime,
-                SUM(
-                CASE
-                    WHEN (local_time BETWEEN time '08:16' AND time '08:30')
-                    OR (local_time BETWEEN time '09:16' AND time '09:30')
-                    THEN 1 ELSE 0 END
-                ) AS late
-            FROM today
-            GROUP BY unidad_norm
+                SELECT
+                    unidad_norm,
+                    SUM(
+                        CASE
+                            -- A TIEMPO: 07:40:00–08:15:59 y 08:45:00–09:15:59
+                            WHEN (
+                                local_time >= time '07:40:00' AND local_time < time '08:16:00'
+                            ) OR (
+                                local_time >= time '08:45:00' AND local_time < time '09:16:00'
+                            )
+                            THEN 1 ELSE 0
+                        END
+                    ) AS ontime,
+                    SUM(
+                        CASE
+                            -- RETARDO: 08:16:00–08:30:59 y 09:16:00–09:30:59
+                            WHEN (
+                                local_time >= time '08:16:00' AND local_time < time '08:31:00'
+                            ) OR (
+                                local_time >= time '09:16:00' AND local_time < time '09:31:00'
+                            )
+                            THEN 1 ELSE 0
+                        END
+                    ) AS late
+                FROM today
+                GROUP BY unidad_norm
             ),
             -- Unidades principales (texto) normalizadas
             principal AS (
@@ -328,11 +338,14 @@ class CrossChexController extends Controller
 
         // ontime / late → mismas ventanas por hora local
         $whereTime = ($type === 'late')
-            ? " (tt BETWEEN time '08:16' AND time '08:30'
-                OR tt BETWEEN time '09:16' AND time '09:30') "
-            : " (tt BETWEEN time '07:40' AND time '08:15'
-                OR tt BETWEEN time '08:45' AND time '09:15') ";
-
+            ? " (
+                    (tt >= time '08:16:00' AND tt < time '08:31:00')
+                OR (tt >= time '09:16:00' AND tt < time '09:31:00')
+                ) "
+            : " (
+                    (tt >= time '07:40:00' AND tt < time '08:16:00')
+                OR (tt >= time '08:45:00' AND tt < time '09:16:00')
+            ) ";
         $rows = DB::select("
             WITH base AS (
             SELECT
