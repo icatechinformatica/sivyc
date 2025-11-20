@@ -372,13 +372,6 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
                     <span class="num-total">${fmt(item.total)}</span>
                 </div>
             </div>
-
-            <div class="exec-foot" style="display:flex; gap:16px; margin-top:8px;">
-                <span class="muted">Verde: A tiempo</span>
-                <span class="muted">Amarillo: Retardo</span>
-                <span class="muted">Rojo: Falta</span>
-                <span class="muted">Morado: Exentos</span>
-            </div>
         `;
 
         return root;
