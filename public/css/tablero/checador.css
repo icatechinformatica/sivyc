@@ -179,6 +179,7 @@
     --ok:#19c37d;             /* verde */
     --late:#f2b01e;           /* amarillo */
     --miss:#e84141;           /* rojo */
+    --exempt:#8b5cf6;         /* morado exentos */
 
     /* Otros */
     --chip:#222a36;
@@ -225,7 +226,7 @@
     padding:6px 10px; border-radius:999px; font-weight:600; font-size:.85rem;
     }
     .info-chip .dot{ width:8px; height:8px; border-radius:50%; display:inline-block; margin-right:8px; }
-    .dot-ok{ background:var(--ok); } .dot-late{ background:var(--late);} .dot-miss{ background:var(--miss);}
+    .dot-ok{ background:var(--ok); } .dot-late{ background:var(--late);} .dot-miss{ background:var(--miss);} .dot-exempt{background:var(--exempt); }
 
     /* Grid de tarjetas de unidades */
     .exec{ display:grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap:14px; }
@@ -328,6 +329,7 @@
     .latest-card.ok::before   { background: #19c37d; }  /* a tiempo */
     .latest-card.late::before { background: #f2b01e; }  /* retardo */
     .latest-card.miss::before { background: #e84141; }  /* fuera */
+    .bar-fill.exempt{ background:linear-gradient(90deg, var(--exempt), #a855f7); } /* 🟣 exentos */
 
     /* Encabezado compacto de la card */
     .latest-top{
