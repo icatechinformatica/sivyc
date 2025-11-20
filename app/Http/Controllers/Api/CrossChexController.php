@@ -175,22 +175,22 @@ class CrossChexController extends Controller
 
         $rows = DB::select("
             WITH base AS (
-            SELECT
-                COALESCE(
-                payload->'records'->0->'employee'->>'department',
-                payload->'employee'->>'department',
-                '—'
-                ) AS unidad_raw,
-                timezone(?, (payload->'records'->0->>'check_time')::timestamptz) AS t -- local timestamptz
-            FROM crosschex_live
+                SELECT
+                    COALESCE(
+                        payload->'records'->0->'employee'->>'department',
+                        payload->'employee'->>'department',
+                        '—'
+                    ) AS unidad_raw,
+                    timezone(?, (payload->'records'->0->>'check_time')::timestamptz) AS t -- local timestamptz
+                FROM crosschex_live
             ),
             today AS (
-            SELECT
-                UPPER(TRIM(unidad_raw)) AS unidad_norm,
-                t::date AS d,
-                t::time AS local_time
-            FROM base
-            WHERE t::date = (timezone(?, now()))::date
+                SELECT
+                    UPPER(TRIM(unidad_raw)) AS unidad_norm,
+                    t::date AS d,
+                    t::time AS local_time
+                FROM base
+                WHERE t::date = (timezone(?, now()))::date
             ),
             counts AS (
                 SELECT
@@ -222,29 +222,43 @@ class CrossChexController extends Controller
             ),
             -- Unidades principales (texto) normalizadas
             principal AS (
-            SELECT DISTINCT ON (UPPER(TRIM(u.unidad)))
-                u.id                                              AS id_unidad,
-                UPPER(TRIM(u.unidad))                             AS unidad_norm,
-                u.unidad                                          AS unidad_display
-            FROM tbl_unidades u
-            WHERE UPPER(TRIM(u.unidad)) = UPPER(TRIM(u.ubicacion))
-            ORDER BY UPPER(TRIM(u.unidad)), u.id
+                SELECT DISTINCT ON (UPPER(TRIM(u.unidad)))
+                    u.id                                              AS id_unidad,
+                    UPPER(TRIM(u.unidad))                             AS unidad_norm,
+                    u.unidad                                          AS unidad_display
+                FROM tbl_unidades u
+                WHERE UPPER(TRIM(u.unidad)) = UPPER(TRIM(u.ubicacion))
+                ORDER BY UPPER(TRIM(u.unidad)), u.id
             ),
-            -- Totales reales por unidad desde tbl_funcionario
+            -- Totales de personas que SÍ deben checar
             totals AS (
-            SELECT f.id_unidad, COUNT(*)::int AS total
-            FROM tbl_funcionario f
-            WHERE f.status = true AND f.checado = true
-            GROUP BY f.id_unidad
+                SELECT f.id_unidad, COUNT(*)::int AS total
+                FROM tbl_funcionario f
+                WHERE f.status = true AND f.checado = true
+                GROUP BY f.id_unidad
+            ),
+            -- Totales de EXENTOS (no checan)
+            exempt AS (
+                SELECT f.id_unidad, COUNT(*)::int AS exempt
+                FROM tbl_funcionario f
+                WHERE f.status = true AND f.checado = false
+                GROUP BY f.id_unidad
             )
             SELECT
-            p.unidad_display                                          AS unidad,
-            COALESCE(t.total, 0)                                      AS total,
-            COALESCE(c.ontime, 0)::int                                AS ontime,
-            COALESCE(c.late,   0)::int                                AS late,
-            GREATEST(COALESCE(t.total,0) - COALESCE(c.ontime,0) - COALESCE(c.late,0), 0)::int AS missing
+                p.unidad_display                                          AS unidad,
+                COALESCE(t.total, 0)                                      AS total,
+                COALESCE(e.exempt, 0)                                     AS exempt,
+                COALESCE(c.ontime, 0)::int                                AS ontime,
+                COALESCE(c.late,   0)::int                                AS late,
+                GREATEST(
+                    COALESCE(t.total,0)
+                    - COALESCE(c.ontime,0)
+                    - COALESCE(c.late,0),
+                    0
+                )::int                                                    AS missing
             FROM principal p
-            LEFT JOIN totals  t ON t.id_unidad = p.id_unidad
+            LEFT JOIN totals  t ON t.id_unidad   = p.id_unidad
+            LEFT JOIN exempt  e ON e.id_unidad   = p.id_unidad
             LEFT JOIN counts  c ON c.unidad_norm = p.unidad_norm
             WHERE COALESCE(t.total, 0) > 0
             ORDER BY p.unidad_display ASC
@@ -252,14 +266,16 @@ class CrossChexController extends Controller
 
         $data = array_map(fn($r) => [
             'unidad'  => $r->unidad,
-            'total'   => (int)$r->total,
+            'total'   => (int)$r->total,     // los que deben checar
+            'exempt'  => (int)($r->exempt ?? 0), // exentos
             'ontime'  => (int)$r->ontime,
             'late'    => (int)$r->late,
             'missing' => (int)$r->missing,
         ], $rows);
 
         $serverTimeLocal = DB::selectOne(
-            "SELECT to_char(timezone(?, now()), 'YYYY-MM-DD HH24:MI:SS') AS t", [$tz]
+            "SELECT to_char(timezone(?, now()), 'YYYY-MM-DD HH24:MI:SS') AS t",
+            [$tz]
         )->t;
 
         return response()->json([
@@ -268,15 +284,19 @@ class CrossChexController extends Controller
         ]);
     }
 
+
     public function punctualityList(Request $request)
     {
         $unidadParam = strtoupper(trim($request->query('unidad', '')));
-        $type        = $request->query('type', 'ontime'); // ontime | late | missing
+        $type        = $request->query('type', 'ontime'); // ontime | late | missing | exempt
         $tz          = config('app.timezone', 'America/Mexico_City');
 
         // Resolvemos la unidad principal e id_unidad
         $u = DB::selectOne("
-            SELECT u.id AS id_unidad, UPPER(TRIM(u.unidad)) AS unidad_norm, u.unidad AS unidad_display
+            SELECT
+                u.id AS id_unidad,
+                UPPER(TRIM(u.unidad)) AS unidad_norm,
+                u.unidad AS unidad_display
             FROM tbl_unidades u
             WHERE UPPER(TRIM(u.unidad)) = UPPER(TRIM(u.ubicacion))
             AND UPPER(TRIM(u.unidad)) = ?
@@ -284,9 +304,52 @@ class CrossChexController extends Controller
         ", [$unidadParam]);
 
         if (!$u) {
-            return response()->json(['unidad' => $unidadParam, 'type' => $type, 'items' => []]);
+            return response()->json([
+                'unidad' => $unidadParam,
+                'type'   => $type,
+                'items'  => [],
+            ]);
         }
 
+        /**
+         * ================
+         * 1) EXENTOS
+         * ================
+         * Personas activas de esa unidad con checado = false
+         */
+        if ($type === 'exempt') {
+            $rows = DB::select("
+                SELECT
+                    f.clave_empleado,
+                    f.nombre_trabajador AS full_name
+                FROM tbl_funcionario f
+                WHERE f.id_unidad = ?
+                AND f.status    = TRUE
+                AND f.checado   = FALSE
+                ORDER BY f.nombre_trabajador ASC
+            ", [$u->id_unidad]);
+
+            $items = array_map(fn($r) => [
+                'full_name'        => $r->full_name,
+                'workno'           => $r->clave_empleado,
+                'check_time_local' => null, // no checan → sin hora
+            ], $rows);
+
+            return response()->json([
+                'unidad' => $u->unidad_display,
+                'type'   => 'exempt',
+                'items'  => $items,
+            ]);
+        }
+
+        /**
+         * ================
+         * 2) FALTANTES
+         * ================
+         * (los que SÍ deben checar pero hoy:
+         *  - no checaron, o
+         *  - checaron fuera de las ventanas ontime/late)
+         */
         if ($type === 'missing') {
             $rows = DB::select("
                 WITH unit AS (
@@ -390,8 +453,11 @@ class CrossChexController extends Controller
             ]);
         }
 
-
-        // ontime / late → mismas ventanas por hora local
+        /**
+         * ================
+         * 3) A TIEMPO / RETARDO
+         * ================
+         */
         $whereTime = ($type === 'late')
             ? " (
                     (tt >= time '08:16:00' AND tt < time '08:31:00')
@@ -401,43 +467,44 @@ class CrossChexController extends Controller
                     (tt >= time '07:40:00' AND tt < time '08:16:00')
                 OR (tt >= time '08:45:00' AND tt < time '09:16:00')
             ) ";
+
         $rows = DB::select("
             WITH base AS (
-            SELECT
-                UPPER(TRIM(COALESCE(
-                payload->'records'->0->'employee'->>'department',
-                payload->'employee'->>'department',
-                '—'
-                ))) AS unidad_norm,
-                timezone(?, (payload->'records'->0->>'check_time')::timestamptz) AS t, -- ts local
-                payload
-            FROM crosschex_live
+                SELECT
+                    UPPER(TRIM(COALESCE(
+                        payload->'records'->0->'employee'->>'department',
+                        payload->'employee'->>'department',
+                        '—'
+                    ))) AS unidad_norm,
+                    timezone(?, (payload->'records'->0->>'check_time')::timestamptz) AS t, -- ts local
+                    payload
+                FROM crosschex_live
             ),
             today AS (
-            SELECT
-                unidad_norm,
-                t::date AS d,
-                t::time AS tt,
-                t      AS ts,
-                payload
-            FROM base
-            WHERE t::date = (timezone(?, now()))::date
+                SELECT
+                    unidad_norm,
+                    t::date AS d,
+                    t::time AS tt,
+                    t      AS ts,
+                    payload
+                FROM base
+                WHERE t::date = (timezone(?, now()))::date
             )
             SELECT
-            payload->'records'->0->'employee'->>'workno' AS workno,
-            CONCAT_WS(' ',
-                payload->'records'->0->'employee'->>'first_name',
-                payload->'records'->0->'employee'->>'last_name'
-            )                                           AS full_name,
-            to_char(ts, 'YYYY-MM-DD HH24:MI:SS')        AS check_time_local
+                payload->'records'->0->'employee'->>'workno' AS workno,
+                CONCAT_WS(' ',
+                    payload->'records'->0->'employee'->>'first_name',
+                    payload->'records'->0->'employee'->>'last_name'
+                )                                           AS full_name,
+                to_char(ts, 'YYYY-MM-DD HH24:MI:SS')        AS check_time_local
             FROM today
             WHERE unidad_norm = ?
             AND {$whereTime}
             ORDER BY ts ASC
         ", [
-            $tz,        // timezone(?, check_time)
-            $tz,        // timezone(?, now())
-            $u->unidad_norm, // unidad_norm normalizada de la unidad seleccionada
+            $tz,              // timezone(?, check_time)
+            $tz,              // timezone(?, now())
+            $u->unidad_norm,  // unidad_norm normalizada de la unidad seleccionada
         ]);
 
         return response()->json([
@@ -446,6 +513,5 @@ class CrossChexController extends Controller
             'items'  => $rows,
         ]);
     }
-
 
 }
