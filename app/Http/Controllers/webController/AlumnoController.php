@@ -25,6 +25,7 @@ use App\Models\AlumnosSice;
 use App\Models\cerss_a;
 use PharIo\Manifest\Author;
 use App\Models\pais;
+use App\Http\Requests\StoreAlumnoRequest;
 
 class AlumnoController extends Controller {
 
@@ -212,254 +213,313 @@ class AlumnoController extends Controller {
      * @return \Illuminate\Http\Response
      *
      */     //insercción de aspiratntes a alumnos_pre//
-    public function store(Request $request) {  // EN PRODUCCION
 
-        ###Alumno alfa###
-        // dd($request->all());
-        //Datos de alumno alfa
-        $switchValor = $request->has('switch_alfa') ? true : false;
-        // dd($switchValor);
-        $alumno_alfa = [
-            'switch_alfa' => $switchValor,
-            // 'coordzona' => request()->input('coordzona'),
-            'fec_registro' => request()->input('fec_registro'),
-            // 'dato_rfe' => request()->input('dato_rfe'),
-            'entidad_naci' => request()->input('entidad_naci'),
-            'check_habla_espa' => request()->boolean('check_habla_espa'),
-            'txt_dialecto' => request()->input('txt_dialecto'),
-            'txt_adicional_esp' => request()->input('txt_adicional_esp'),
-            'check_indigena' => request()->boolean('check_indigena'),
-            'check_afrodec' => request()->boolean('check_afrodec'),
-            'txt_tipo_vialidad' => request()->input('txt_tipo_vialidad'),
-            'txt_nom_vialidad' => request()->input('txt_nom_vialidad'),
-            'txt_num_ext' => request()->input('txt_num_ext'),
-            'txt_num_int' => request()->input('txt_num_int'),
-            'txt_tipo_asentamiento' => request()->input('txt_tipo_asentamiento'),
-            'txt_nom_asentamiento' => request()->input('txt_nom_asentamiento'),
-            'txt_tipo_entre_vialidad' => request()->input('txt_tipo_entre_vialidad'),
-            'txt_nom_entre_vialidad' => request()->input('txt_nom_entre_vialidad'),
-            'txt_Ytipo_entre_vialidad' => request()->input('txt_Ytipo_entre_vialidad'),
-            'txt_Ynom_entre_vialidad' => request()->input('txt_Ynom_entre_vialidad'),
-            'txt_Ycp_entre_vialidad' => request()->input('txt_Ycp_entre_vialidad'),
-            'check_equipo_computo' => request()->boolean('check_equipo_computo'),
-            'check_acces_internet' => request()->boolean('check_acces_internet'),
-            'txt_correo_inea' => request()->input('txt_correo_inea'),
-            'check_difi_caminar' => request()->boolean('check_difi_caminar'),
-            'check_difi_oir' => request()->boolean('check_difi_oir'),
-            'check_difi_ver' => request()->boolean('check_difi_ver'),
-            'check_difi_vestir' => request()->boolean('check_difi_vestir'),
-            'check_difi_comunicar' => request()->boolean('check_difi_comunicar'),
-            'check_difi_recordar' => request()->boolean('check_difi_recordar'),
-            'check_difi_mental' => request()->boolean('check_difi_mental'),
-            'check_jubilado' => request()->boolean('check_jubilado'),
-            'check_desempleado' => request()->boolean('check_desempleado'),
-            'check_estudiante' => request()->boolean('check_estudiante'),
-            'txt_otro_trabajo' => request()->input('txt_otro_trabajo'),
-            'check_trabajador' => request()->boolean('check_trabajador'),
-            'check_inspector' => request()->boolean('check_inspector'),
-            'check_artesano' => request()->boolean('check_artesano'),
-            'check_obrero' => request()->boolean('check_obrero'),
-            'check_ayudante' => request()->boolean('check_ayudante'),
-            'check_empleado' => request()->boolean('check_empleado'),
-            'check_operador' => request()->boolean('check_operador'),
-            'check_vendedor' => request()->boolean('check_vendedor'),
-            'check_hogar' => request()->boolean('check_hogar'),
-            'check_vigilancia' => request()->boolean('check_vigilancia'),
-            'check_quehaceres' => request()->boolean('check_quehaceres'),
-            'check_ambulante' => request()->boolean('check_ambulante'),
-            'check_deportista' => request()->boolean('check_deportista'),
-            'check_sinestudios' => request()->boolean('check_sinestudios'),
-            'check_ante_primaria' => request()->boolean('check_ante_primaria'),
-            'txt_grado_primaria' => request()->input('txt_grado_primaria'),
-            'check_ante_secundaria' => request()->boolean('check_ante_secundaria'),
-            'txt_grado_secundaria' => request()->input('txt_grado_secundaria'),
-            'check_nivel_alfa' => request()->boolean('check_nivel_alfa'),
-            'check_nivel_primaria' => request()->boolean('check_nivel_primaria'),
-            'check_nivel_primaria10' => request()->boolean('check_nivel_primaria10'),
-            'check_nivel_secundaria' => request()->boolean('check_nivel_secundaria'),
-            'check_eje_diag' => request()->boolean('check_eje_diag'),
-            'check_exam_diag' => request()->boolean('check_exam_diag'),
-            'check_reco_saberes' => request()->boolean('check_reco_saberes'),
-            'check_aten_educ' => request()->boolean('check_aten_educ'),
-            'check_hispanohabla' => request()->boolean('check_hispanohabla'),
-            'check_hablante_lengua' => request()->boolean('check_hablante_lengua'),
-            'txt_hablante_lengua' => request()->input('txt_hablante_lengua'),
-            'check_motiv_certificado' => request()->boolean('check_motiv_certificado'),
-            'check_motiv_continuar' => request()->boolean('check_motiv_continuar'),
-            'check_motiv_obtempleo' => request()->boolean('check_motiv_obtempleo'),
-            'check_motiv_condlaborales' => request()->boolean('check_motiv_condlaborales'),
-            'check_motiv_ayudar' => request()->boolean('check_motiv_ayudar'),
-            'check_motiv_superacion' => request()->boolean('check_motiv_superacion'),
-            'txt_motiv_otro' => request()->input('txt_motiv_otro'),
-            'check_difu_inea' => request()->boolean('check_difu_inea'),
-            'check_invit_personal' => request()->boolean('check_invit_personal'),
-            'txt_enterar_otro' => request()->input('txt_enterar_otro'),
-            'txt_subproyecto' => request()->input('txt_subproyecto'),
-            'txt_dependencia' => request()->input('txt_dependencia'),
-            'check_doc_fotografia' => request()->boolean('check_doc_fotografia'),
-            'check_doc_legal' => request()->boolean('check_doc_legal'),
-            'check_doc_ficha' => request()->boolean('check_doc_ficha'),
-            'check_doc_certi' => request()->boolean('check_doc_certi'),
-            'check_boletas_primaria' => request()->boolean('check_boletas_primaria'),
-            'txt_boletas_primaria' => request()->input('txt_boletas_primaria'),
-            'check_boletas_secu' => request()->boolean('check_boletas_secu'),
-            'txt_boletas_secu' => request()->input('txt_boletas_secu'),
-            'check_informe_cali' => request()->boolean('check_informe_cali'),
-            'txt_num_const_cap' => request()->input('txt_num_const_cap'),
-            'txt_hr_const_cap' => request()->input('txt_hr_const_cap'),
-            // 'text_cotejo_doc' => request()->input('text_cotejo_doc'),
-            // 'txt_fecha_cotejo' => request()->input('txt_fecha_cotejo'),
-            'txt_unidad_operativa' => request()->input('txt_unidad_operativa'),
-            'txt_circulo_estudio' => request()->input('txt_circulo_estudio'),
-            'txt_fecha_llenado' => request()->input('txt_fecha_llenado'),
-            'txt_persona_beneficiaria' => request()->input('txt_persona_beneficiaria'),
-            // 'txt_nom_tutor' => request()->input('txt_nom_tutor'),
-            // 'txt_nom_figura' => request()->input('txt_nom_figura'),
-            // 'txt_nom_coordinador' => request()->input('txt_nom_coordinador'),
-            // 'txt_nom_responsable_zona' => request()->input('txt_nom_responsable_zona'),
-            'txt_nom_capturista' => request()->input('txt_nom_capturista'),
-            //Nuevos
-            'num_hijos' => request()->input('num_hijos'),
-            'pais_nacimiento' => intval(request()->input('pais_nacimiento')),
-            'pais' => intval(request()->input('pais')),
-            // 'check_confirmado' => request()->boolean('check_confirmado'),
-            // 'check_reingreso' => request()->boolean('check_reingreso'),
-            // 'check_expevalid' => request()->boolean('check_expevalid'),
-            // 'area_observa' => request()->input('area_observa'),
-            'modelo' => request()->input('modelo'),
-            'txt_etapaeb' => request()->input('txt_etapaeb'),
-        ];
+    public function store(StoreAlumnoRequest $request){
+        $user = Auth::user();
+        // Usamos transacción para que todo quede consistente
+        DB::beginTransaction();
+        try {
+            // ==========================
+            // 1) Construir datos alfa
+            // ==========================
+            $switchValor = $request->has('switch_alfa') ? true : false;
+            $alumno_alfa = [
+                'switch_alfa' => $switchValor,
+                'fec_registro' => $request->input('fec_registro'),
+                'entidad_naci' => $request->input('entidad_naci'),
+                'check_habla_espa' => $request->boolean('check_habla_espa'),
+                'txt_dialecto' => $request->input('txt_dialecto'),
+                'txt_adicional_esp' => $request->input('txt_adicional_esp'),
+                'check_indigena' => $request->boolean('check_indigena'),
+                'check_afrodec' => $request->boolean('check_afrodec'),
+                'txt_tipo_vialidad' => $request->input('txt_tipo_vialidad'),
+                'txt_nom_vialidad' => $request->input('txt_nom_vialidad'),
+                'txt_num_ext' => $request->input('txt_num_ext'),
+                'txt_num_int' => $request->input('txt_num_int'),
+                'txt_tipo_asentamiento' => $request->input('txt_tipo_asentamiento'),
+                'txt_nom_asentamiento' => $request->input('txt_nom_asentamiento'),
+                'txt_tipo_entre_vialidad' => $request->input('txt_tipo_entre_vialidad'),
+                'txt_nom_entre_vialidad' => $request->input('txt_nom_entre_vialidad'),
+                'txt_Ytipo_entre_vialidad' => $request->input('txt_Ytipo_entre_vialidad'),
+                'txt_Ynom_entre_vialidad' => $request->input('txt_Ynom_entre_vialidad'),
+                'txt_Ycp_entre_vialidad' => $request->input('txt_Ycp_entre_vialidad'),
+                'check_equipo_computo' => $request->boolean('check_equipo_computo'),
+                'check_acces_internet' => $request->boolean('check_acces_internet'),
+                'txt_correo_inea' => $request->input('txt_correo_inea'),
+                'check_difi_caminar' => $request->boolean('check_difi_caminar'),
+                'check_difi_oir' => $request->boolean('check_difi_oir'),
+                'check_difi_ver' => $request->boolean('check_difi_ver'),
+                'check_difi_vestir' => $request->boolean('check_difi_vestir'),
+                'check_difi_comunicar' => $request->boolean('check_difi_comunicar'),
+                'check_difi_recordar' => $request->boolean('check_difi_recordar'),
+                'check_difi_mental' => $request->boolean('check_difi_mental'),
+                'check_jubilado' => $request->boolean('check_jubilado'),
+                'check_desempleado' => $request->boolean('check_desempleado'),
+                'check_estudiante' => $request->boolean('check_estudiante'),
+                'txt_otro_trabajo' => $request->input('txt_otro_trabajo'),
+                'check_trabajador' => $request->boolean('check_trabajador'),
+                'check_inspector' => $request->boolean('check_inspector'),
+                'check_artesano' => $request->boolean('check_artesano'),
+                'check_obrero' => $request->boolean('check_obrero'),
+                'check_ayudante' => $request->boolean('check_ayudante'),
+                'check_empleado' => $request->boolean('check_empleado'),
+                'check_operador' => $request->boolean('check_operador'),
+                'check_vendedor' => $request->boolean('check_vendedor'),
+                'check_hogar' => $request->boolean('check_hogar'),
+                'check_vigilancia' => $request->boolean('check_vigilancia'),
+                'check_quehaceres' => $request->boolean('check_quehaceres'),
+                'check_ambulante' => $request->boolean('check_ambulante'),
+                'check_deportista' => $request->boolean('check_deportista'),
+                'check_sinestudios' => $request->boolean('check_sinestudios'),
+                'check_ante_primaria' => $request->boolean('check_ante_primaria'),
+                'txt_grado_primaria' => $request->input('txt_grado_primaria'),
+                'check_ante_secundaria' => $request->boolean('check_ante_secundaria'),
+                'txt_grado_secundaria' => $request->input('txt_grado_secundaria'),
+                'check_nivel_alfa' => $request->boolean('check_nivel_alfa'),
+                'check_nivel_primaria' => $request->boolean('check_nivel_primaria'),
+                'check_nivel_primaria10' => $request->boolean('check_nivel_primaria10'),
+                'check_nivel_secundaria' => $request->boolean('check_nivel_secundaria'),
+                'check_eje_diag' => $request->boolean('check_eje_diag'),
+                'check_exam_diag' => $request->boolean('check_exam_diag'),
+                'check_reco_saberes' => $request->boolean('check_reco_saberes'),
+                'check_aten_educ' => $request->boolean('check_aten_educ'),
+                'check_hispanohabla' => $request->boolean('check_hispanohabla'),
+                'check_hablante_lengua' => $request->boolean('check_hablante_lengua'),
+                'txt_hablante_lengua' => $request->input('txt_hablante_lengua'),
+                'check_motiv_certificado' => $request->boolean('check_motiv_certificado'),
+                'check_motiv_continuar' => $request->boolean('check_motiv_continuar'),
+                'check_motiv_obtempleo' => $request->boolean('check_motiv_obtempleo'),
+                'check_motiv_condlaborales' => $request->boolean('check_motiv_condlaborales'),
+                'check_motiv_ayudar' => $request->boolean('check_motiv_ayudar'),
+                'check_motiv_superacion' => $request->boolean('check_motiv_superacion'),
+                'txt_motiv_otro' => $request->input('txt_motiv_otro'),
+                'check_difu_inea' => $request->boolean('check_difu_inea'),
+                'check_invit_personal' => $request->boolean('check_invit_personal'),
+                'txt_enterar_otro' => $request->input('txt_enterar_otro'),
+                'txt_subproyecto' => $request->input('txt_subproyecto'),
+                'txt_dependencia' => $request->input('txt_dependencia'),
+                'check_doc_fotografia' => $request->boolean('check_doc_fotografia'),
+                'check_doc_legal' => $request->boolean('check_doc_legal'),
+                'check_doc_ficha' => $request->boolean('check_doc_ficha'),
+                'check_doc_certi' => $request->boolean('check_doc_certi'),
+                'check_boletas_primaria' => $request->boolean('check_boletas_primaria'),
+                'txt_boletas_primaria' => $request->input('txt_boletas_primaria'),
+                'check_boletas_secu' => $request->boolean('check_boletas_secu'),
+                'txt_boletas_secu' => $request->input('txt_boletas_secu'),
+                'check_informe_cali' => $request->boolean('check_informe_cali'),
+                'txt_num_const_cap' => $request->input('txt_num_const_cap'),
+                'txt_hr_const_cap' => $request->input('txt_hr_const_cap'),
+                'txt_unidad_operativa' => $request->input('txt_unidad_operativa'),
+                'txt_circulo_estudio' => $request->input('txt_circulo_estudio'),
+                'txt_fecha_llenado' => $request->input('txt_fecha_llenado'),
+                'txt_persona_beneficiaria' => $request->input('txt_persona_beneficiaria'),
+                'txt_nom_capturista' => $request->input('txt_nom_capturista'),
+                'num_hijos' => $request->input('num_hijos'),
+                'pais_nacimiento' => (int) $request->input('pais_nacimiento'),
+                'pais' => (int) $request->input('pais'),
+                'modelo' => $request->input('modelo'),
+                'txt_etapaeb' => $request->input('txt_etapaeb'),
+            ];
+            $json_datos_alfa = json_encode($alumno_alfa);
+            // ==========================
+            // 2) Datos básicos / flags
+            // ==========================
 
-        $json_datos_alfa = json_encode($alumno_alfa);
-        // dd($alumno_alfa);
+            $checkPhone = $request->boolean('chk_bolsa');
+            $curp = strtoupper(trim($request->curp));
+            $empleado = $request->filled('trabajo'); // <- boolean consistente
 
-
-
-//$txt_tipo_entre_vialidad = $request->input('txt_tipo_entre_vialidad');
-// $check_equipo_computo = $request->boolean('check_equipo_computo');
-
-
-        $checkPhone = false;
-        if($request->chk_bolsa == true){$checkPhone = true;}
-
-        $curp= trim($request->curp);
-        if ($request->trabajo) {
-            $empleado = true;
-        } else {
-            $empleado = false;
-        }
-        //GRUPOS VULNERABLES
-        $gvulnerable = [];
-        if ($request->itemEdith) {
-            foreach ($request->itemEdith as $key => $value) {
-                $gvulnerable[]= $value;
+            // Grupos vulnerables
+            $gvulnerable = [];
+            if ($request->filled('itemEdith') && is_array($request->itemEdith)) {
+                $gvulnerable = array_values($request->itemEdith);
             }
-        }
-        $created_at = date('Y-m-d H:i:s');
-        $realizo = Auth::user()->name;
-        $unidad = Auth::user()->unidad;
-        $user_created = Auth::user()->id;
-        if (DB::table('alumnos_pre')->where('curp', 'ILIKE', $curp)->exists()) {
-            $alumno = DB::table('alumnos_pre')->where('curp', 'ILIKE', $curp)->first();
-            $created_at = $alumno->created_at;
-            $realizo = $alumno->realizo;
-            $unidad = $alumno->id_unidad;
-            $user_created = $alumno->iduser_created;
-            $curp = $alumno->curp;
-        }
-        $estado = DB::table('estados')->where('id',$request->estado)->first();
-        $municipio = DB::table('tbl_municipios')->where('id_estado',$estado->id)->where('clave',$request->municipio)->first();
-        $result = DB::table('alumnos_pre')->updateOrInsert(['curp'=>$curp],[
-            'curp'=>strtoupper($curp),
-            'nombre' => str_replace('ñ','Ñ',strtoupper($request->nombre)),
-            'apellido_paterno' => str_replace('ñ','Ñ',strtoupper($request->apellido_paterno)),
-            'apellido_materno' => str_replace('ñ','Ñ',strtoupper($request->apellido_materno)),
-            'fecha_nacimiento' => $request->fecha,
-            'sexo' => $request->sexo,
-            'nacionalidad' => $request->nacionalidad,
-            'telefono_casa' => $request->telefono_casa,
-            'telefono_personal' => $request->telefono_cel,
-            'correo' => $request->correo,
-            'created_at' => $created_at,
-            'updated_at' => date('Y-m-d H:i:s'),
-            'facebook' => $request->facebook,
-            'twitter' => $request->twitter,
-            'instagram' => $request->instagram,
-            'tiktok' => $request->tiktok,
-            'ninguna_redsocial' => $request->ninguna_redsocial == 'true' ? true : false,
-            'recibir_publicaciones' => $request->recibir_publicaciones == 'true' ? true : false,
-            'estado_civil' => $request->estado_civil,
-            'domicilio' => $request->domicilio,
-            'colonia' => $request->colonia,
-            'estado' => $estado->nombre,
-            'id_estado' => $estado->id,
-            'municipio' => $municipio->muni,
-            'clave_municipio' => $municipio->clave,
-            'clave_localidad' => $request->localidad,
-            'cp' => $request->cp,
-            'lgbt' => $request->lgbt == 'true' ? true : false,
-            'madre_soltera' => $request->madre_soltera == 'true' ? true : false,
-            'familia_migrante' => $request->familia_migrante == 'true' ? true : false,
-            'inmigrante' => $request->inmigrante == 'true' ? true : false,
-            'etnia' => $request->etnia,
-            'id_gvulnerable' => json_encode($gvulnerable),
-            'ultimo_grado_estudios' => $request->ultimo_grado_estudios,
-            'medio_entero' => ($request->input('medio_entero') === "O") ? $request->input('medio_especificar') : $request->input('medio_entero'),
-            'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion') === "O") ? $request->input('motivo_sistema_capacitacion_especificar') : $request->input('motivos_eleccion_sistema_capacitacion'),
-            'empleado'=>$empleado,
-            'empresa_trabaja' => $empleado == 'true' ? $request->empresa : 'DESEMPLEADO',
-            'antiguedad' => $empleado == 'true' ? $request->antiguedad : '',
-            'puesto_empresa' => $empleado == 'true' ? $request->puesto_empresa : '',
-            'direccion_empresa' => $empleado == 'true' ? $request->direccion_empresa : '',
-            'chk_acta_nacimiento' => $request->chk_acta == 'true' ? true : false,
-            'chk_curp' => $request->chk_curp == 'true' ? true : false,
-            'chk_comprobante_ultimo_grado' => $request->chk_escolaridad == 'true' ? true : false,
-            'chk_comprobante_calidad_migratoria' => $request->chk_comprobante_migratorio == 'true' ? true : false,
-            'chk_ficha_cerss' => $request->chk_ficha_cerss == 'true' ? true : false,
-            'es_cereso' => $request->cerss_chk == 'true' ? true : false,
-            'numero_expediente' => $request->cerss_chk == 'true' ? $request->num_expediente_cerss : '',
-            'servidor_publico' => $request->funcionario_mod == 'true' ? true : false,
-            'id_unidad' => $unidad,
-            'iduser_created' => $user_created,
-            'realizo' => $realizo,
-            'iduser_updated' => Auth::user()->id,
-            'tiene_documentacion'=> true,
-            'activo' => true,
-            'medio_confirmacion'=>$request->medio_confirmacion,
-            'check_bolsa'=> $checkPhone,
-            'datos_alfa' => $json_datos_alfa,
-        ]);
-        //si se pretende cargar nuevos archivos
-        $AspiranteId = DB::table('alumnos_pre')->where('curp',$curp)->value('id');
-        $url_documento = '';
-        if (isset($request->customFile)) {
-            $arc = $request->file('customFile');
-            $url_documento = $this->uploaded_file($arc, $AspiranteId, 'requisitos');
 
-        }
-        if($AspiranteId){ //GUARDANDO REQUISITOS
-            $affected = DB::table('alumnos_pre')->where('id', $AspiranteId)->update(['requisitos' =>
-                DB::raw("
-                    jsonb_build_object(
-                        'chk_curp',  COALESCE('$request->chk_curp', 'false'),
-                        'documento',  CASE  WHEN '$url_documento' != '' THEN '$url_documento' ELSE requisitos->>'documento' END,
-                        'chk_escolaridad', COALESCE('$request->chk_escolaridad', 'false'),
-                        'chk_acta_nacimiento', COALESCE('$request->chk_acta', 'false'),
-                        'chk_comprobante_migracion', COALESCE('$request->chk_comprobante_migratorio', 'false'),
-                        'fecha_expedicion_curp', CASE  WHEN '$request->chk_curp' != '' THEN '$request->fecha_expedicion_curp' ELSE 'null' END,
-                        'fecha_expedicion_acta_nacimiento', CASE  WHEN '$request->chk_acta' != '' THEN '$request->fecha_expedicion_acta_nacimiento' ELSE 'null' END,
-                        'fecha_vigencia_migratorio', CASE  WHEN '$request->chk_comprobante_migratorio' != '' THEN '$request->fecha_vigencia_migratorio' ELSE 'null' END
-                    )
-                ")
-            ]);
-        }
-        if(isset($request->fotografia)) {
-            $url = $request->fotografia;
-            $url_fotografia = $this->uploaded_file($url,$AspiranteId,'fotografia');
-            $opps = DB::table('alumnos_pre')->where('curp', $curp)->update(['fotografia' => $url_fotografia,'chk_fotografia'=>true]);
-        }
-        if ($result) {
-            return redirect()->route('alumnos.index')->with('success', sprintf('OPERACIÓN EXITOSA!', $curp))->with('curp',$curp);
+            $created_at = date('Y-m-d H:i:s');
+            $realizo = $user->name;
+            $unidad = $user->unidad;
+            $user_created = $user->id;
+
+            // ==========================
+            // 3) Si ya existe alumno, conservar metadata original
+            // ==========================
+            $alumnoExistente = DB::table('alumnos_pre')
+            ->whereRaw('curp ILIKE ?', [$curp])
+            ->first();
+
+            if ($alumnoExistente) {
+                $created_at   = $alumnoExistente->created_at;
+                $realizo      = $alumnoExistente->realizo;
+                $unidad       = $alumnoExistente->id_unidad;
+                $user_created = $alumnoExistente->iduser_created;
+                $curp         = $alumnoExistente->curp; // tal como está en BD
+            }
+
+            // ==========================
+            // 4) Estado y municipio
+            // ==========================
+            $estado = DB::table('estados')->where('id', $request->estado)->first();
+            $municipio = DB::table('tbl_municipios')
+                ->where('id_estado', $estado->id)
+                ->where('clave', $request->municipio)
+                ->first();
+            // ==========================
+            // 5) Upsert en alumnos_pre
+            // ==========================
+            DB::table('alumnos_pre')->updateOrInsert(
+                ['curp' => $curp],
+                [
+                    'curp' => strtoupper($curp),
+                    'nombre' => str_replace('ñ', 'Ñ', mb_strtoupper($request->nombre, 'UTF-8')),
+                    'apellido_paterno' => str_replace('ñ', 'Ñ', mb_strtoupper($request->apellido_paterno, 'UTF-8')),
+                    'apellido_materno' => str_replace('ñ', 'Ñ', mb_strtoupper((string) $request->apellido_materno, 'UTF-8')),
+                    'fecha_nacimiento' => $request->fecha,
+                    'sexo' => $request->sexo,
+                    'nacionalidad' => $request->nacionalidad,
+                    'telefono_casa' => $request->telefono_casa,
+                    'telefono_personal' => $request->telefono_cel,
+                    'correo' => $request->correo,
+                    'created_at' => $created_at,
+                    'updated_at' => now(),
+                    'facebook' => $request->facebook,
+                    'twitter' => $request->twitter,
+                    'instagram' => $request->instagram,
+                    'tiktok' => $request->tiktok,
+                    'ninguna_redsocial' => $request->boolean('ninguna_redsocial'),
+                    'recibir_publicaciones' => $request->boolean('recibir_publicaciones'),
+                    'estado_civil' => $request->estado_civil,
+                    'domicilio' => $request->domicilio,
+                    'colonia' => $request->colonia,
+                    'estado' => $estado->nombre,
+                    'id_estado' => $estado->id,
+                    'municipio' => $municipio->muni,
+                    'clave_municipio' => $municipio->clave,
+                    'clave_localidad' => $request->localidad,
+                    'cp' => $request->cp,
+                    'lgbt' => $request->boolean('lgbt'),
+                    'madre_soltera' => $request->boolean('madre_soltera'),
+                    'familia_migrante' => $request->boolean('familia_migrante'),
+                    'inmigrante' => $request->boolean('inmigrante'),
+                    'etnia' => $request->etnia,
+                    'id_gvulnerable' => json_encode($gvulnerable),
+                    'ultimo_grado_estudios' => $request->ultimo_grado_estudios,
+                    'medio_entero' => ($request->input('medio_entero') === "O")
+                        ? $request->input('medio_especificar')
+                        : $request->input('medio_entero'),
+                    'sistema_capacitacion_especificar' => ($request->input('motivos_eleccion_sistema_capacitacion') === "O")
+                        ? $request->input('motivo_sistema_capacitacion_especificar')
+                        : $request->input('motivos_eleccion_sistema_capacitacion'),
+                    'empleado' => $empleado,
+                    'empresa_trabaja' => $empleado ? $request->empresa : 'DESEMPLEADO',
+                    'antiguedad' => $empleado ? $request->antiguedad : '',
+                    'puesto_empresa' => $empleado ? $request->puesto_empresa : '',
+                    'direccion_empresa' => $empleado ? $request->direccion_empresa : '',
+                    'chk_acta_nacimiento' => $request->boolean('chk_acta'),
+                    'chk_curp' => $request->boolean('chk_curp'),
+                    'chk_comprobante_ultimo_grado' => $request->boolean('chk_escolaridad'),
+                    'chk_comprobante_calidad_migratoria' => $request->boolean('chk_comprobante_migratorio'),
+                    'chk_ficha_cerss' => $request->boolean('chk_ficha_cerss'),
+                    'es_cereso' => $request->boolean('cerss_chk'),
+                    'numero_expediente' => $request->boolean('cerss_chk') ? $request->num_expediente_cerss : '',
+                    'servidor_publico' => $request->boolean('funcionario_mod'),
+                    'id_unidad' => $unidad,
+                    'iduser_created' => $user_created,
+                    'realizo' => $realizo,
+                    'iduser_updated' => $user->id,
+                    'tiene_documentacion' => true,
+                    'activo' => true,
+                    'medio_confirmacion' => $request->medio_confirmacion,
+                    'check_bolsa' => $checkPhone,
+                    'datos_alfa' => $json_datos_alfa,
+                ]
+            );
+            // ==========================
+            // 6) Obtener ID del aspirante
+            // ==========================
+            $AspiranteId = DB::table('alumnos_pre')
+            ->where('curp', $curp)
+            ->value('id');
+
+            // ==========================
+            // 7) Archivos de requisitos
+            // ==========================
+            $url_documento = null;
+
+            if ($request->hasFile('customFile') && $AspiranteId) {
+                $file = $request->file('customFile');
+                $url_documento = $this->uploaded_file($file, $AspiranteId, 'requisitos');
+            }
+
+            if ($AspiranteId) {
+                $alumnoParaReq = DB::table('alumnos_pre')
+                ->where('id', $AspiranteId)
+                ->first();
+
+                $requisitosActual = [];
+
+                if (!empty($alumnoParaReq->requisitos)) {
+                    $decoded = json_decode($alumnoParaReq->requisitos, true);
+                    if (is_array($decoded)) {
+                        $requisitosActual = $decoded;
+                    }
+                }
+                // Actualizamos campos del JSON, sin DB::raw ni interpolación peligrosa
+                $requisitosNuevo = array_merge($requisitosActual, [
+                    'chk_curp'  => $request->boolean('chk_curp'),
+                    'chk_escolaridad' => $request->boolean('chk_escolaridad'),
+                    'chk_acta_nacimiento' => $request->boolean('chk_acta'),
+                    'chk_comprobante_migracion' => $request->boolean('chk_comprobante_migratorio'),
+                    'fecha_expedicion_curp' => $request->boolean('chk_curp')
+                        ? $request->fecha_expedicion_curp
+                        : null,
+                    'fecha_expedicion_acta_nacimiento' => $request->boolean('chk_acta')
+                        ? $request->fecha_expedicion_acta_nacimiento
+                        : null,
+                    'fecha_vigencia_migratorio' => $request->boolean('chk_comprobante_migratorio')
+                        ? $request->fecha_vigencia_migratorio
+                        : null,
+                ]);
+
+                if ($url_documento) {
+                    $requisitosNuevo['documento'] = $url_documento;
+                }
+
+                DB::table('alumnos_pre')
+                ->where('id', $AspiranteId)
+                ->update(['requisitos' => json_encode($requisitosNuevo)]);
+            }
+             // ==========================
+            // 8) Fotografía
+            // ==========================
+
+            if ($AspiranteId && $request->hasFile('fotografia')) {
+                $foto = $request->file('fotografia');
+                $url_fotografia = $this->uploaded_file($foto, $AspiranteId, 'fotografia');
+
+                DB::table('alumnos_pre')
+                    ->where('curp', $curp)
+                    ->update([
+                        'fotografia' => $url_fotografia,
+                        'chk_fotografia' => true,
+                    ]);
+            }
+            DB::commit();
+
+            return redirect()
+            ->route('alumnos.index')
+            ->with('success', 'OPERACIÓN EXITOSA!')
+            ->with('curp', $curp);
+
+        } catch (\Throwable $th) {
+            DB::rollBack();
+
+            // Loguea el error para debug
+            report($th);
+
+            return redirect()
+            ->back()
+            ->withInput()
+            ->with('error', 'Ocurrió un error al guardar el aspirante.');
         }
     }
 
@@ -1962,5 +2022,23 @@ class AlumnoController extends Controller {
             }
         }
         return redirect()->route('alumnos.index')->with('success',$message);
+    }
+
+    public function checkEmail(Request $request){
+        $correo = $request->get('correo');
+        $aspiranteId = $request->get('aspirante_id'); // Para ignorar el propio registro en edición
+        if (!$correo) {
+            return response()->json(true);
+        }
+        $query = Alumnopre::where('correo', $correo);
+
+        if ($aspiranteId) {
+            $query->where('id', '!=', $aspiranteId);
+        }
+
+        $exists = $query->exists();
+
+        // true => válido | false => ya existe
+        return response()->json(!$exists);
     }
 }
