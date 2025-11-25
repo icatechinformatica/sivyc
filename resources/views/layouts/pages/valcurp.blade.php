@@ -1277,47 +1277,73 @@
                     }
 
                 };
+
+                // Supongamos que tienes algo así en global o en tu script:
+                // const emailCheckCache = { value: "", isUnique: null };
+                // y optional: const originalEmail = "correo@que.ya.existe"; // en modo edición
+
                 $.validator.addMethod("emailUniqueCached", function (value, element) {
-                        const email = $.trim(value);
+                    const email = $.trim(value);
 
-                        // 🔹 1) Campo vacío → NO se valida unicidad, se considera válido
-                        if (email === "") {
-                            return true;
-                        }
+                    // 1) Si el campo está vacío → NO validar unicidad
+                    if (email === "") {
+                        return true;
+                    }
 
-                        // 🔹 2) Si el correo actual NO es el que está en cache,
-                        //     todavía no tenemos información para decir que está duplicado.
-                        //     Aquí simplemente NO bloqueamos.
-                        if (emailCheckCache.value !== email) {
-                            return true;
-                        }
+                    // 2) Si estamos en edición y el correo no cambió,
+                    //    lo dejamos pasar sin checar unicidad.
+                    //    Puedes usar data-original-email o una variable global.
+                    const originalEmail =
+                        $(element).data("original-email") || window.originalEmail || "";
 
-                        // 🔹 3) Si todavía no sabemos si es único (null), tampoco bloqueamos.
-                        if (emailCheckCache.isUnique === null) {
-                            return true;
-                        }
+                    if (originalEmail && email === originalEmail) {
+                        // Mismo correo que ya tenía el registro: no se dispara la validación de unicidad
+                        return true;
+                    }
 
-                        // 🔹 4) Si el cache dice que NO es único → inválido.
-                        //     Si dice que sí es único → válido.
-                        return emailCheckCache.isUnique === true;
-                },"Ya existe un aspirante con este correo.");
+                    // 3) Si el correo actual NO es el mismo que está cacheado,
+                    //    significa que todavía no tenemos información sobre este valor.
+                    //    No bloqueamos hasta que el AJAX actualice el cache.
+                    if (emailCheckCache.value !== email) {
+                        return true;
+                    }
+
+                    // 4) Si el cache aún no sabe si es único (null), tampoco bloqueamos.
+                    if (emailCheckCache.isUnique === null) {
+                        return true;
+                    }
+
+                    // 5) Decisión final: solo si el cache dice que NO es único se bloquea.
+                    return emailCheckCache.isUnique === true;
+
+                }, "Ya existe un aspirante con este correo.");
+
 
 
                 $.validator.addMethod("pdfOnly", function (value, element) {
-                    if (element.files.length === 0) return false;
+
+                    // Si no hay archivo, la validación pasa (a menos que el campo sea required)
+                    if (element.files.length === 0) return true;
 
                     const file = element.files[0];
                     const fileName = file.name.toLowerCase();
                     const mime = file.type;
 
                     const isPDFext = fileName.endsWith(".pdf");
-                    const isPDFmime = mime === "application/pdf" || mime === "";
+                    const isPDFmime =
+                        mime === "application/pdf" ||
+                        mime === ""; // algunos navegadores no mandan mime
 
                     return isPDFext && isPDFmime;
+
                 }, "El archivo debe ser un PDF válido.");
 
+
+                // Solo valida tamaño si hay archivo
                 $.validator.addMethod("maxSize", function (value, element, param) {
-                    if (element.files.length === 0) return false;
+                    // 👈 AQUÍ EL CAMBIO IMPORTANTE
+                    if (!element.files || element.files.length === 0) return true;
+
                     return element.files[0].size <= param;
                 }, "El archivo excede el tamaño permitido.");
 
@@ -1375,7 +1401,6 @@
                             email: true
                         },
                         customFile: {
-                            required: true,
                             pdfOnly: true,
                             maxSize: 5 * 1024 * 1024 // 5MB
                         }
@@ -1428,7 +1453,6 @@
                             email: "Ingresa un correo válido."
                         },
                         customFile: {
-                            required: "Por favor seleccione un archivo.",
                             pdfOnly: "Solo se permiten archivos PDF (.pdf).",
                             maxSize: "El archivo debe pesar menos de 5MB."
                         }
