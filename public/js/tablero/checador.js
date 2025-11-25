@@ -240,107 +240,143 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
     // const hasAnime = typeof window.anime === 'function';
 
     /** Calcula y normaliza porcentajes (cierra exacto a 100) */
-    function calcPercents(item){
-    const total = Math.max(1, item.total);
-    const ok   = (item.ontime || 0) * 100 / total;
-    const late = (item.late   || 0) * 100 / total;
-    const miss = Math.max(0, 100 - ok - late);
-    // 4 decimales para evitar acumulación de redondeo
-    return {
-        ok  : +ok.toFixed(4),
-        late: +late.toFixed(4),
-        miss: +miss.toFixed(4),
-    };
+    function calcPercents(item) {
+        const total = Math.max(1, item.total + (item.exempt || 0));
+
+        const ok     = ((item.ontime || 0) * 100) / total;
+        const late   = ((item.late   || 0) * 100) / total;
+        const exempt = ((item.exempt || 0) * 100) / total;
+
+        // faltan (missing) = total - ok - late - exempt
+        const miss = Math.max(0, 100 - ok - late - exempt);
+
+        return {
+            ok     : +ok.toFixed(4),
+            late   : +late.toFixed(4),
+            miss   : +miss.toFixed(4),
+            exempt : +exempt.toFixed(4),
+        };
     }
 
+
     /** Marca qué segmentos deben redondear extremos */
-    function updateCaps(card, p){
-    const okEl   = card.querySelector('.bar-fill.ok');
-    const lateEl = card.querySelector('.bar-fill.late');
-    const missEl = card.querySelector('.bar-fill.miss');
-    [okEl, lateEl, missEl].forEach(el => el.classList.remove('first','last'));
-    const nonZero = [];
-    if (p.ok   > 0.0001) nonZero.push(okEl);
-    if (p.late > 0.0001) nonZero.push(lateEl);
-    if (p.miss > 0.0001) nonZero.push(missEl);
-    if (nonZero.length){
-        nonZero[0].classList.add('first');
-        nonZero[nonZero.length-1].classList.add('last');
+    function updateCaps(card, p) {
+        const okEl     = card.querySelector('.bar-fill.ok');
+        const lateEl   = card.querySelector('.bar-fill.late');
+        const missEl   = card.querySelector('.bar-fill.miss');
+        const exemptEl = card.querySelector('.bar-fill.exempt');
+
+        [okEl, lateEl, missEl, exemptEl].forEach(el =>
+            el.classList.remove('first', 'last')
+        );
+
+        const nonZero = [];
+        if (p.ok     > 0.0001) nonZero.push(okEl);
+        if (p.late   > 0.0001) nonZero.push(lateEl);
+        if (p.miss   > 0.0001) nonZero.push(missEl);
+        if (p.exempt > 0.0001) nonZero.push(exemptEl);
+
+        if (nonZero.length) {
+            nonZero[0].classList.add('first');
+            nonZero[nonZero.length - 1].classList.add('last');
+        }
     }
-    }
+
 
     /** 🟢 Animación con anime.js (fallback a set style si no hay anime) */
     function animateStackTo(card, p){
-    const okEl   = card.querySelector('.bar-fill.ok');
-    const lateEl = card.querySelector('.bar-fill.late');
-    const missEl = card.querySelector('.bar-fill.miss');
+        const okEl     = card.querySelector('.bar-fill.ok');
+        const lateEl   = card.querySelector('.bar-fill.late');
+        const missEl   = card.querySelector('.bar-fill.miss');
+        const exemptEl = card.querySelector('.bar-fill.exempt');
 
-    if (!hasAnime){
-        okEl.style.flexBasis   = `${p.ok}%`;
-        lateEl.style.flexBasis = `${p.late}%`;
-        missEl.style.flexBasis = `${p.miss}%`;
-        okEl.style.width   = `${p.ok}%`;     // respaldo por si hay CSS viejo
-        lateEl.style.width = `${p.late}%`;
-        missEl.style.width = `${p.miss}%`;
-        updateCaps(card, p);
-        return;
+        // ─────────────────────────────
+        // 1) Sin anime.js → fallback
+        // ─────────────────────────────
+        if (!hasAnime){
+            okEl.style.flexBasis     = `${p.ok}%`;
+            lateEl.style.flexBasis   = `${p.late}%`;
+            missEl.style.flexBasis   = `${p.miss}%`;
+            exemptEl.style.flexBasis = `${p.exempt}%`;
+
+            // Compatibilidad antigua (si algún CSS usa width)
+            okEl.style.width     = `${p.ok}%`;
+            lateEl.style.width   = `${p.late}%`;
+            missEl.style.width   = `${p.miss}%`;
+            exemptEl.style.width = `${p.exempt}%`;
+
+            updateCaps(card, p);
+            return;
+        }
+
+        // ─────────────────────────────
+        // 2) Con anime.js → animación suave
+        // ─────────────────────────────
+        const cur = {
+            ok     : parseFloat(okEl.style.flexBasis)     || 0,
+            late   : parseFloat(lateEl.style.flexBasis)   || 0,
+            miss   : parseFloat(missEl.style.flexBasis)   || 0,
+            exempt : parseFloat(exemptEl.style.flexBasis) || 0,
+        };
+
+        anime.timeline({ duration: 700, easing: 'easeOutExpo' })
+            .add({
+                targets: cur,
+                ok: p.ok,
+                late: p.late,
+                miss: p.miss,
+                exempt: p.exempt,
+                update: () => {
+                    okEl.style.flexBasis     = `${cur.ok}%`;
+                    lateEl.style.flexBasis   = `${cur.late}%`;
+                    missEl.style.flexBasis   = `${cur.miss}%`;
+                    exemptEl.style.flexBasis = `${cur.exempt}%`;
+
+                    // Compat width
+                    okEl.style.width     = okEl.style.flexBasis;
+                    lateEl.style.width   = lateEl.style.flexBasis;
+                    missEl.style.width   = missEl.style.flexBasis;
+                    exemptEl.style.width = exemptEl.style.flexBasis;
+                },
+                complete: () => updateCaps(card, p),
+            });
     }
 
-    // Guarda el valor actual para animar desde ahí
-    const cur = {
-        ok  : parseFloat(okEl.style.flexBasis)   || 0,
-        late: parseFloat(lateEl.style.flexBasis) || 0,
-        miss: parseFloat(missEl.style.flexBasis) || 0,
-    };
-
-    anime.timeline({ duration: 700, easing: 'easeOutExpo' })
-        .add({
-        targets: cur,
-        ok: p.ok, late: p.late, miss: p.miss,
-        update: () => {
-            okEl.style.flexBasis   = `${cur.ok}%`;
-            lateEl.style.flexBasis = `${cur.late}%`;
-            missEl.style.flexBasis = `${cur.miss}%`;
-            // (opcional) compat: width igual a flex-basis
-            okEl.style.width   = okEl.style.flexBasis;
-            lateEl.style.width = lateEl.style.flexBasis;
-            missEl.style.width = missEl.style.flexBasis;
-        },
-        complete: () => updateCaps(card, p),
-        });
-    }
 
 
     function buildStackCard(item){
         const root = document.createElement('div');
         root.className = 'exec-item';
         root.dataset.unidad = item.unidad;
+
         root.innerHTML = `
             <div class="exec-head">
-            <div class="exec-title">${item.unidad}</div>
-            <div class="muted">Total: <strong class="exec-total">${fmt(item.total)}</strong></div>
+                <div class="exec-title">${item.unidad}</div>
+                <div class="muted">
+                    Total: <strong class="exec-total">${fmt(item.total)}</strong>
+                </div>
             </div>
 
             <div class="bar-row">
-            <div class="bar-label muted" style="width:auto;">Asistencia</div>
-            <div class="bar-track">
-                <div class="bar-fill ok"   style="flex-basis:0%"></div>
-                <div class="bar-fill late" style="flex-basis:0%"></div>
-                <!-- ⬇️ inicia al 100% en rojo para que se vea desde el primer render -->
-                <div class="bar-fill miss first last" style="flex-basis:100%"></div>
+                <div class="bar-label muted" style="width:auto;">Asistencia</div>
+                <div class="bar-track">
+                    <div class="bar-fill ok"     style="flex-basis:0%"></div>
+                    <div class="bar-fill late"   style="flex-basis:0%"></div>
+                    <!-- ⬇️ inicia al 100% en rojo para que se vea desde el primer render -->
+                    <div class="bar-fill miss first last"   style="flex-basis:100%"></div>
+                    <!-- 🟣 nuevo tramo para exentos -->
+                    <div class="bar-fill exempt" style="flex-basis:0%"></div>
+                </div>
+                <div class="muted" style="width:84px; text-align:right;">
+                    <span class="num-checked">0</span>/
+                    <span class="num-total">${fmt(item.total)}</span>
+                </div>
             </div>
-            <div class="muted" style="width:84px; text-align:right;">
-                <span class="num-checked">0</span>/<span class="num-total">${fmt(item.total)}</span>
-            </div>
-            </div>
+        `;
 
-            <div class="exec-foot" style="display:flex; gap:16px; margin-top:8px;">
-            <span class="muted">Verde: A tiempo</span>
-            <span class="muted">Amarillo: Retardo</span>
-            <span class="muted">Rojo: Falta</span>
-            </div>`;
         return root;
     }
+
 
 
 
@@ -349,46 +385,52 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
         const map = new Map(items.map(i => [i.unidad, i]));
 
         for (const [unidad, item] of map){
-        let card = container.querySelector(`.exec-item[data-unidad="${CSS.escape(unidad)}"]`);
-        if (!card){
-            card = buildStackCard(item);
-            container.appendChild(card);
-        }
+            let card = container.querySelector(`.exec-item[data-unidad="${CSS.escape(unidad)}"]`);
+            if (!card){
+                card = buildStackCard(item);
+                container.appendChild(card);
+            }
 
-        // 1) Calcula porcentajes (verde/amarillo/rojo)
-        const p = calcPercents(item);
+            // 1) Calcula porcentajes (ok / late / miss / exempt)
+            const p = calcPercents(item); // <-- aquí ya debe incluir p.exempt
 
-        // 2) Anima barras
-        animateStackTo(card, p);
+            // 2) Anima barras apiladas
+            animateStackTo(card, p);
 
-        // 3) Conteo checados = a tiempo + retardos
-        const checked = (item.ontime || 0) + (item.late || 0);
-        animateNumber(card.querySelector('.num-checked'), checked);
-        card.querySelector('.num-total').textContent = fmt(item.total);
-        card.querySelector('.exec-total').textContent = fmt(item.total);
+            // 3) Conteo checados = a tiempo + retardos
+            const checked = (item.ontime || 0) + (item.late || 0);
+            animateNumber(card.querySelector('.num-checked'), checked);
 
-        // 4) **IMPRESCINDIBLE**: setear counts + enlazar tooltip/clicks
-        const okEl   = card.querySelector('.bar-fill.ok');
-        const lateEl = card.querySelector('.bar-fill.late');
-        const missEl = card.querySelector('.bar-fill.miss');
-        okEl.dataset.count   = String(item.ontime || 0);
-        lateEl.dataset.count = String(item.late   || 0);
-        const missing = Math.max(0, (item.total||0) - (item.ontime||0) - (item.late||0));
-        missEl.dataset.count = String(missing);
+            // Totales (los que deben checar)
+            card.querySelector('.num-total').textContent  = fmt(item.total);
+            card.querySelector('.exec-total').textContent = fmt(item.total);
 
-        // cursor “clicable” en verde y amarillo
-        okEl.style.cursor = 'pointer';
-        lateEl.style.cursor = 'pointer';
+            // 4) Setear counts para tooltips / modals
+            const okEl     = card.querySelector('.bar-fill.ok');
+            const lateEl   = card.querySelector('.bar-fill.late');
+            const missEl   = card.querySelector('.bar-fill.miss');
+            const exemptEl = card.querySelector('.bar-fill.exempt');
 
-        // Enlaza handlers (una sola vez por tarjeta)
-        bindSegmentHandlers(card);
+            const ontimeCount = item.ontime || 0;
+            const lateCount   = item.late   || 0;
+            const missing     = Math.max(0, (item.total || 0) - ontimeCount - lateCount);
+            const exemptCount = item.exempt || 0;
+
+            okEl.dataset.count     = String(ontimeCount);
+            lateEl.dataset.count   = String(lateCount);
+            missEl.dataset.count   = String(missing);
+            exemptEl.dataset.count = String(exemptCount);
+
+            // Enlaza handlers (tooltip + click a modals) una sola vez
+            bindSegmentHandlers(card);
         }
 
         // Elimina tarjetas que ya no vienen en la respuesta
         container.querySelectorAll('.exec-item').forEach(el => {
-        if (!map.has(el.dataset.unidad)) el.remove();
+            if (!map.has(el.dataset.unidad)) el.remove();
         });
     }
+
 
 
   async function loadPunctuality() {
@@ -457,7 +499,7 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
     });
 
     function renderPeopleList(json){
-        const prettyType = ({ ontime: 'A tiempo', late: 'Retardo', missing: 'Faltan' })[json.type] ?? json.type;
+        const prettyType = ({ ontime: 'A tiempo', late: 'Retardo', missing: 'Faltan', exempt: "Exentos" })[json.type] ?? json.type;
         modalTitle.textContent = `${json.unidad} · ${prettyType} (${json.items.length})`;
         modalBody.innerHTML = '';
 
@@ -517,43 +559,61 @@ document.getElementById('window-select').addEventListener('change', refreshAll);
     }
 
   // ---------- Enlazar handlers a cada tarjeta ----------
-  function bindSegmentHandlers(card){
-    if (card.dataset.bound === '1') return; // una sola vez
+  function bindSegmentHandlers(card) {
+    if (card.dataset.bound === '1') return; // evitar enlaces duplicados
     card.dataset.bound = '1';
 
     const unidad = card.dataset.unidad;
-    const okEl   = card.querySelector('.bar-fill.ok');
-    const lateEl = card.querySelector('.bar-fill.late');
-    const missEl = card.querySelector('.bar-fill.miss');
 
-    // tooltips (mouse)
+    const okEl     = card.querySelector('.bar-fill.ok');
+    const lateEl   = card.querySelector('.bar-fill.late');
+    const missEl   = card.querySelector('.bar-fill.miss');
+    const exemptEl = card.querySelector('.bar-fill.exempt'); // 🟣 nuevo segmento
+
+    // ───────────────────────────────────────────────
+    // Tooltip: función compacta
+    // ───────────────────────────────────────────────
     const onEnter = (el, label) => (ev) => {
-      const count = Number(el.dataset.count || 0);
-      showTip(`${label}: ${count}`, ev.clientX, ev.clientY);
+        const count = Number(el.dataset.count || 0);
+        showTip(`${label}: ${count}`, ev.clientX, ev.clientY);
     };
-    const onMove = (ev) => showTip(tip.textContent, ev.clientX, ev.clientY);
+    const onMove  = (ev) => showTip(tip.textContent, ev.clientX, ev.clientY);
     const onLeave = () => hideTip();
 
+    // 🟢 A tiempo
     okEl.addEventListener('mouseenter', onEnter(okEl, 'A tiempo'));
     okEl.addEventListener('mousemove',  onMove);
     okEl.addEventListener('mouseleave', onLeave);
 
+    // 🟡 Retardo
     lateEl.addEventListener('mouseenter', onEnter(lateEl, 'Retardo'));
     lateEl.addEventListener('mousemove',  onMove);
     lateEl.addEventListener('mouseleave', onLeave);
 
+    // 🔴 Faltan
     missEl.addEventListener('mouseenter', onEnter(missEl, 'Faltan'));
     missEl.addEventListener('mousemove',  onMove);
     missEl.addEventListener('mouseleave', onLeave);
 
-    // clics para abrir modal (verde/amarillo)
-    okEl.style.cursor = 'pointer';
-    lateEl.style.cursor = 'pointer';
-    missEl.style.cursor = 'pointer';
-    okEl.addEventListener('click',  () => openPeopleModal(unidad, 'ontime'));
-    lateEl.addEventListener('click',() => openPeopleModal(unidad, 'late'));
-    missEl.addEventListener('click', () => openPeopleModal(card.dataset.unidad, 'missing'));
-  }
+    // 🟣 Exentos
+    exemptEl.addEventListener('mouseenter', onEnter(exemptEl, 'Exentos'));
+    exemptEl.addEventListener('mousemove',  onMove);
+    exemptEl.addEventListener('mouseleave', onLeave);
+
+    // ───────────────────────────────────────────────
+    // Click → abrir modal adecuado
+    // ───────────────────────────────────────────────
+    okEl.style.cursor     = 'pointer';
+    lateEl.style.cursor   = 'pointer';
+    missEl.style.cursor   = 'pointer';
+    exemptEl.style.cursor = 'pointer';
+
+    okEl.addEventListener('click',     () => openPeopleModal(unidad, 'ontime'));
+    lateEl.addEventListener('click',   () => openPeopleModal(unidad, 'late'));
+    missEl.addEventListener('click',   () => openPeopleModal(unidad, 'missing'));
+    exemptEl.addEventListener('click', () => openPeopleModal(unidad, 'exempt')); // 🟣 nuevo
+}
+
 
   // ---------- Integra con tu render existente ----------
   // En tu buildStackCard(...) añade data-unidad en root (ya lo tienes).

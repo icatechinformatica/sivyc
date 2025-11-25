@@ -381,7 +381,7 @@ class InstructorController extends Controller
             {
                 $saveInstructor = new instructor();
                 $save_preinstructor = new pre_instructor();
-                $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+                $uid = pre_instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
                 if ($uid['id'] === null) {
                     # si es nulo entra una vez y se le asigna un valor
                     $id = 1;
@@ -416,7 +416,7 @@ class InstructorController extends Controller
             }
         } catch (\Throwable $e) {
         \Log::error('Error al intentar guardar el instructor: ' . $e->getMessage(), ['exception' => $e]);
-        return back()->withErrors('Ocurrió un error inesperado: ' . $e->getMessage())->withInput();
+        return back()->withErrors('Ocurrió un error inesperado, favor de intentarlo nuevamente.')->withInput();
         }
     }
 
@@ -2033,7 +2033,7 @@ class InstructorController extends Controller
 
         } catch (\Throwable $e) {
             \Log::error('Error al intentar guardar el instructor: ' . $e->getMessage(), ['exception' => $e]);
-            return back()->withErrors('Ocurrió un error inesperado: ' . $e->getMessage())->withInput();
+            return back()->withErrors('Ocurrió un error inesperado, favor de intentarlo nuevamente.')->withInput();
         }
     }
 
