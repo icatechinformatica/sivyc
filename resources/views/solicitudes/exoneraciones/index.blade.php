@@ -28,7 +28,7 @@
                 {{ form::date('fecha', $cursos[0]->fecha_memorandum ?? null, ['id' => 'fecha','class'=>'form-control gris']) }}
             </div>
             <div class="form-group col-md-1">
-                <a onclick="guardar_fecha('{{ $grupos[0]->munidad??null }}')" title="Guardar Fecha"><i class="fas fa-save fa-lg m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a>
+                <a onclick="guardar_fecha('{{ $cursos[0]->no_memorandum??null }}')" title="Guardar Fecha"><i class="fas fa-save fa-lg m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a>
             </div>       
             @endif
             <div class="form-group col-md-2">
@@ -176,16 +176,17 @@
                 }
             });
 
-            function guardar_fecha(memo_arc){
+            function guardar_fecha(memo_exo){
                 if (confirm("Está seguro de guardar cambios en la fecha") == true) {
                     var fecha_nuevo = $("#fecha").val();                                        
-                    var memo = $("#valor").val();
+                    var memo_nuevo = $("#valor").val();
                     $.ajax({
                                 url: "exoneraciones/guardar_fecha",
                                 method: 'POST',
                                 data: {                                    
-                                    fecha: fecha_nuevo,
-                                    memo: memo
+                                    memo: memo_exo,
+                                    fecha: fecha_nuevo,                                    
+                                    memo_nuevo,memo_nuevo
                                 },
                                 success: function(data) {
                                 //$('#result_table').html(data);

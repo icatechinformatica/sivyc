@@ -157,7 +157,7 @@ class exoneracionesController extends Controller
     public function guardar_fecha(Request $request){
         $message = "Operación fallida, por favor intente de nuevo.";
 
-        if ($request->fecha && $request->memo ) {            
+        if ($request->fecha && $request->memo && $request->memo_nuevo) {
             $result = DB::table('exoneraciones')
                 ->where(function($q) use ($request) {
                     $q->where('no_memorandum', $request->memo)
@@ -168,7 +168,8 @@ class exoneracionesController extends Controller
                         ->orWhereNull('status');
                 })
                 ->update([
-                    'fecha_memorandum' => $request->fecha,                    
+                    'fecha_memorandum' => $request->fecha,
+                    'no_memorandum' => $request->memo_nuevo,
                     'movimientos' => DB::raw("
                         COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
                             jsonb_build_object(
