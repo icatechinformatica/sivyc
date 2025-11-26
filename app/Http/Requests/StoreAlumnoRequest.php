@@ -38,7 +38,7 @@ class StoreAlumnoRequest extends FormRequest
             'correo' => [
                 'nullable',     // Permite que el campo venga vacío
                 'email',        // Valida formato de correo
-                Rule::unique('alumnos_pre', 'correo')->ignore($aspiranteId),
+                Rule::unique('alumnos_pre', 'correo')->ignore($aspiranteId, 'id'),
                 // unique: tabla alumnos_pre, columna correo, ignorando al registro actual
             ],
 
