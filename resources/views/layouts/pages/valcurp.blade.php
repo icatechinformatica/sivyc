@@ -229,7 +229,7 @@
             $fotografia = $alumno->fotografia;
             $confirmacion = $alumno->medio_confirmacion;
             if ($alumno->check_bolsa) {$check_bolsa = true;}
-            $aspiranteId = $alumno->id;
+            $aspiranteId = isset($alumno) ? $alumno->id : null;
         }
 
         if(isset($datos_alfa->switch_alfa)){
