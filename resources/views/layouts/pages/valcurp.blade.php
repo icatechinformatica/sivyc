@@ -229,6 +229,7 @@
             $fotografia = $alumno->fotografia;
             $confirmacion = $alumno->medio_confirmacion;
             if ($alumno->check_bolsa) {$check_bolsa = true;}
+            $aspiranteId = $alumno->id;
         }
 
         if(isset($datos_alfa->switch_alfa)){
@@ -411,8 +412,9 @@
                         </div>
 
                         <div class="form-group col-md-3">
-                            <label>Correo Electr&oacute;nico:</label>
-                            <input type="email" id="correo" name="correo" class="form-control" placeholder="usuario@gmail.com" type="text" value="{{$email}}">
+                            <label>Correo Electrónico:</label>
+                            <input type="email" id="correo" name="correo" class="form-control"
+                                placeholder="usuario@gmail.com" type="text" value="{{ $email }}" data-original-email="{{ $email }}">
                         </div>
                         <div class="form-group col-md-3">
                             <label>Facebook:</label>
@@ -1187,6 +1189,7 @@
                     @endif
                 </div>
             @endif
+            <input type="hidden" name="aspirante_id" value="{{ $aspiranteId }}">
         </form>
     </div>
     @section('script_content_js')
