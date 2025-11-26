@@ -1,4 +1,6 @@
 
+@extends('theme.sivyc.layout')
+@section('title', 'Solicitud de Inscripción | SIVyC Icatech')
 @section('content_script_css')
     <link rel="stylesheet" href="{{asset('css/global.css') }}" />
     <style>
@@ -89,12 +91,96 @@
         .checkbox {
             margin-top: 5px;
         }
+        .card {
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border: none;
+        }
+        .card-header {
+            background-color: #4e73df;
+            color: white;
+            border-radius: 10px 10px 0 0 !important;
+            padding: 15px 20px;
+        }
+        .custom-file {
+            position: relative;
+            display: inline-block;
+            width: 100%;
+            height: calc(2.25rem + 2px);
+            margin-bottom: 0;
+        }
+        .custom-file-input {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            height: calc(2.25rem + 2px);
+            margin: 0;
+            opacity: 0;
+        }
+        .custom-file-label {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            z-index: 1;
+            height: calc(2.25rem + 2px);
+            padding: 0.375rem 0.75rem;
+            font-weight: 400;
+            line-height: 1.5;
+            color: #495057;
+            background-color: #fff;
+            border: 1px solid #ced4da;
+            border-radius: 0.25rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .custom-file-label::after {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 3;
+            display: block;
+            height: calc(calc(2.25rem + 2px) - 1px * 2);
+            padding: 0.375rem 0.75rem;
+            line-height: 1.5;
+            color: #495057;
+            content: "Examinar";
+            background-color: #e9ecef;
+            border-left: inherit;
+            border-radius: 0 0.25rem 0.25rem 0;
+        }
+        .icon-size {
+            font-size: 1.8rem;
+        }
+        .file-info {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        .requirements-list {
+            background-color: #f0f8ff;
+            border-radius: 5px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .preview-container {
+            margin-top: 20px;
+            display: none;
+        }
+        .preview-content {
+            border: 1px dashed #ccc;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            background-color: #f9f9f9;
+        }
     </style>
 @endsection
-@extends('theme.sivyc.layout')
-@section('title', 'Solicitud de Inscripción | SIVyC Icatech')
 @section('content')
-
     <?php
         $clase_alfa = '';
         $nombre = $apaterno = $amaterno = $nacionalidad = $telefono_casa = $telefono_cel = $email = $face = $twitter = $instagram = $tiktok =
@@ -143,6 +229,7 @@
             $fotografia = $alumno->fotografia;
             $confirmacion = $alumno->medio_confirmacion;
             if ($alumno->check_bolsa) {$check_bolsa = true;}
+            $aspiranteId = $alumno->id;
         }
 
         if(isset($datos_alfa->switch_alfa)){
@@ -152,7 +239,7 @@
             }
         }else{ $clase_alfa = 'd-none'; }
     ?>
-     <div class="card-header">
+    <div class="card-header">
         Presincripción / Editar Aspirante
     </div>
     <div class="card card-body  p-5" style=" min-height:450px;">
@@ -325,8 +412,9 @@
                         </div>
 
                         <div class="form-group col-md-3">
-                            <label>Correo Electr&oacute;nico:</label>
-                            <input type="email" id="correo" name="correo" class="form-control" placeholder="usuario@gmail.com" type="text" value="{{$email}}">
+                            <label>Correo Electrónico:</label>
+                            <input type="email" id="correo" name="correo" class="form-control"
+                                placeholder="usuario@gmail.com" type="text" value="{{ $email }}" data-original-email="{{ $email }}">
                         </div>
                         <div class="form-group col-md-3">
                             <label>Facebook:</label>
@@ -1035,6 +1123,7 @@
                                         <i  class="far fa-file-pdf text-muted col-md-1 icon-size"  title='ARCHIVO NO DISPONIBLE.'></i>
                                     @endisset
                                 </div>
+                                <div id="pdfPreview" style="margin-top: 1rem;"></div>
                             </div>
                             <div class="col-md-2 p-0">
                                 <a href="https://www.ilovepdf.com/es/unir_pdf" class="btn btn-white text-primary" target="_blank" >
@@ -1100,10 +1189,16 @@
                     @endif
                 </div>
             @endif
+            <input type="hidden" name="aspirante_id" value="{{ $aspiranteId }}">
         </form>
     </div>
     @section('script_content_js')
         <script type="text/javascript">
+            // Cache en memoria para no repetir peticiones
+            let emailCheckCache = {
+                value: null, // último correo validado
+                isUnique: null // resultado booleano de la última validación
+            };
             $(document).ready(function(){
                 $("#medio_confirmacion" ).change(function(){
                     switch($("#medio_confirmacion" ).val()){
@@ -1185,6 +1280,77 @@
                     }
 
                 };
+
+                // Supongamos que tienes algo así en global o en tu script:
+                // const emailCheckCache = { value: "", isUnique: null };
+                // y optional: const originalEmail = "correo@que.ya.existe"; // en modo edición
+
+                $.validator.addMethod("emailUniqueCached", function (value, element) {
+                    const email = $.trim(value);
+
+                    // 1) Si el campo está vacío → NO validar unicidad
+                    if (email === "") {
+                        return true;
+                    }
+
+                    // 2) Si estamos en edición y el correo no cambió,
+                    //    lo dejamos pasar sin checar unicidad.
+                    //    Puedes usar data-original-email o una variable global.
+                    const originalEmail =
+                        $(element).data("original-email") || window.originalEmail || "";
+
+                    if (originalEmail && email === originalEmail) {
+                        // Mismo correo que ya tenía el registro: no se dispara la validación de unicidad
+                        return true;
+                    }
+
+                    // 3) Si el correo actual NO es el mismo que está cacheado,
+                    //    significa que todavía no tenemos información sobre este valor.
+                    //    No bloqueamos hasta que el AJAX actualice el cache.
+                    if (emailCheckCache.value !== email) {
+                        return true;
+                    }
+
+                    // 4) Si el cache aún no sabe si es único (null), tampoco bloqueamos.
+                    if (emailCheckCache.isUnique === null) {
+                        return true;
+                    }
+
+                    // 5) Decisión final: solo si el cache dice que NO es único se bloquea.
+                    return emailCheckCache.isUnique === true;
+
+                }, "Ya existe un aspirante con este correo.");
+
+
+
+                $.validator.addMethod("pdfOnly", function (value, element) {
+
+                    // Si no hay archivo, la validación pasa (a menos que el campo sea required)
+                    if (element.files.length === 0) return true;
+
+                    const file = element.files[0];
+                    const fileName = file.name.toLowerCase();
+                    const mime = file.type;
+
+                    const isPDFext = fileName.endsWith(".pdf");
+                    const isPDFmime =
+                        mime === "application/pdf" ||
+                        mime === ""; // algunos navegadores no mandan mime
+
+                    return isPDFext && isPDFmime;
+
+                }, "El archivo debe ser un PDF válido.");
+
+
+                // Solo valida tamaño si hay archivo
+                $.validator.addMethod("maxSize", function (value, element, param) {
+                    // 👈 AQUÍ EL CAMBIO IMPORTANTE
+                    if (!element.files || element.files.length === 0) return true;
+
+                    return element.files[0].size <= param;
+                }, "El archivo excede el tamaño permitido.");
+
+
                 $('#frm').validate({
                     rules: {
                         curp: {
@@ -1231,6 +1397,15 @@
                         },
                         motivos_eleccion_sistema_capacitacion: {
                             required: true
+                        },
+                        // 👇 sin remote, sólo nuestra regla con cache
+                        correo: {
+                            emailUniqueCached: true,
+                            email: true
+                        },
+                        customFile: {
+                            pdfOnly: true,
+                            maxSize: 5 * 1024 * 1024 // 5MB
                         }
                     },
                     messages: {
@@ -1275,6 +1450,14 @@
                         },
                         motivos_eleccion_sistema_capacitacion: {
                             required: 'Seleccione una opción'
+                        },
+                        correo: {
+                            emailUniqueCached: "Ya existe un aspirante con este correo.",
+                            email: "Ingresa un correo válido."
+                        },
+                        customFile: {
+                            pdfOnly: "Solo se permiten archivos PDF (.pdf).",
+                            maxSize: "El archivo debe pesar menos de 5MB."
                         }
                     }
                 });
@@ -1339,6 +1522,107 @@
                     }
                 });
 
+                $('#correo').on('blur', function() {
+
+                    const inputEl = this;
+                    const email = $.trim(inputEl.value);
+                    const validator = $('#frm').data('validator');
+
+                    // ---------------------------------------------
+                    // 1) Campo vacío → resetear y validar como OK
+                    // ---------------------------------------------
+                    if (!email) {
+                        emailCheckCache = {
+                            value: "",
+                            isUnique: null
+                        };
+                        if (validator) validator.element(inputEl);
+                        return;
+                    }
+
+                    // ---------------------------------------------
+                    // 2) Validar sintaxis básica de email
+                    // ---------------------------------------------
+                    const emailMethod = $.validator?.methods?.email;
+                    if (validator && typeof emailMethod === "function") {
+
+                        const isValidFormat = emailMethod.call(validator, email, inputEl);
+
+                        if (!isValidFormat) {
+                            // Mantener el cache pero marcando que no sabemos unicidad
+                            emailCheckCache = {
+                                value: email,
+                                isUnique: null
+                            };
+
+                            validator.showErrors({
+                                correo: validator.settings.messages?.correo?.email ||
+                                    'Ingrese un correo electrónico válido.'
+                            });
+
+                            return;
+                        }
+                    }
+
+                    // ---------------------------------------------
+                    // 3) Si ya lo validamos y tenemos resultado → reutilizar cache
+                    // ---------------------------------------------
+                    if (emailCheckCache.value === email &&
+                        emailCheckCache.isUnique !== null) {
+
+                        if (validator) validator.element(inputEl);
+                        return;
+                    }
+
+                    // ---------------------------------------------
+                    // 4) Empezar validación nueva → marcar cache como en proceso
+                    // ---------------------------------------------
+                    emailCheckCache = {
+                        value: email,
+                        isUnique: null
+                    };
+
+                    // ---------------------------------------------
+                    // 5) Hacer AJAX
+                    // ---------------------------------------------
+                    $.ajax({
+                        url: "{{ route('aspirantes.checkEmail') }}",
+                        type: "GET",
+                        dataType: "json",
+                        data: {
+                            correo: email,
+                            aspirante_id: "{{ $alumno->id ?? '' }}"
+                        }
+
+                    }).done(function(resp) {
+
+                        // Aquí ajusta según tu API
+                        // Si tu API devuelve: { exists: true }
+                        const exists = resp.exists === true;
+
+                        emailCheckCache = {
+                            value: email,
+                            isUnique: !exists   // true si NO existe (único)
+                        };
+
+                        if (validator) validator.element(inputEl);
+
+                    }).fail(function() {
+
+                        emailCheckCache = {
+                            value: email,
+                            isUnique: null
+                        };
+
+                        if (validator) {
+                            validator.showErrors({
+                                correo: 'No se pudo validar el correo en este momento.'
+                            });
+                        }
+
+                    });
+                });
+
             });
             function validarInput(input) {
                 if (!$('#cerss_ok').prop('checked')) {
@@ -1377,30 +1661,70 @@
 
                 return true;
             }
+
             function fileValidationpdf() {
                 var fileInput = document.getElementById('customFile');
-                var filePath = fileInput.value;
-                var fileSize = fileInput.files[0].size;
-                var allowedExtensions = /(.pdf)$/i;
-                if (!allowedExtensions.exec(filePath)) {
-                    alert('Por favor solo cargar archivos pdf');
-                    fileInput.value = '';
-                    return false;
-                } else {
-                    if (fileSize > 5000000) {
-                        alert('Por favor el archivo debe pesar menos de 5MB');
-                        fileInput.value = '';
-                        return false;
-                    }
-                    //Image preview
-                    if (fileInput.files && fileInput.files[0]) {
-                        var reader = new FileReader();
-                        reader.onload = function(e) {
-                            document.getElementById('imagePreview').innerHTML = '<img src="' + e.target.result + '"/>';
-                        };
-                        reader.readAsDataURL(fileInput.files[0]);
-                    }
+                var previewContainer = document.getElementById('pdfPreview');
+
+                // Limpia la vista previa anterior
+                previewContainer.innerHTML = '';
+
+                // 1) Verificar que se haya seleccionado un archivo
+                if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
+                alert('Por favor selecciona un archivo.');
+                return false;
                 }
+
+                var file = fileInput.files[0];
+                var fileName = file.name || '';
+                var fileSize = file.size || 0;
+                var maxSize = 5 * 1024 * 1024; // 5 MB en bytes
+                var allowedExtensions = /\.pdf$/i;
+
+                // 2) Validar extensión por nombre
+                if (!allowedExtensions.test(fileName)) {
+                alert('Por favor solo carga archivos PDF (.pdf).');
+                fileInput.value = '';
+                return false;
+                }
+
+                // 3) Validar tipo MIME cuando está disponible
+                // Algunos navegadores ponen file.type = "application/pdf" para PDFs
+                if (file.type && file.type !== 'application/pdf') {
+                alert('El archivo no parece ser un PDF válido.');
+                fileInput.value = '';
+                return false;
+                }
+
+                // 4) Validar tamaño máximo
+                if (fileSize > maxSize) {
+                alert('El archivo debe pesar menos de 5MB.');
+                fileInput.value = '';
+                return false;
+                }
+
+                // 5) Si todo está bien, mostrar vista previa del PDF
+                if (window.FileReader) {
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    // e.target.result es un DataURL (data:application/pdf;base64,...)
+                    var embedHtml =
+                    '<embed src="' +
+                    e.target.result +
+                    '" type="application/pdf" width="100%" height="500px" />';
+
+                    previewContainer.innerHTML = embedHtml;
+                };
+
+                reader.readAsDataURL(file);
+                } else {
+                // Navegadores muy viejos que no soportan FileReader
+                previewContainer.innerHTML =
+                    '<p>Tu navegador no soporta vista previa, pero el archivo es válido.</p>';
+                }
+
+                return true;
             }
 
 
@@ -1433,7 +1757,7 @@
                 document.getElementById('txt_etapaeb').value = secondPart;
             }
 
-/* SOLO SI SE AUTORIZA LA CARGA Y VISUALIZACIÓN DE FOTOGRAFÍA
+            /* SOLO SI SE AUTORIZA LA CARGA Y VISUALIZACIÓN DE FOTOGRAFÍA
             document.addEventListener('DOMContentLoaded', function () {
                 const imagePreview = document.getElementById('selected-image');
                 const cameraIcon = document.getElementById('camera-icon');
@@ -1447,12 +1771,12 @@
                     cameraIcon.style.display = 'block'; // Mostrar el ícono
                 }
             });
-*/
+            */
 
 
 
 
-/* EVALUANDO PARA SER SE LIMINADO
+            /* EVALUANDO PARA SER SE LIMINADO
             function fileValidation() {
                 var fileInput = document.getElementById('fotografia');
                 var filePath = fileInput.value;
