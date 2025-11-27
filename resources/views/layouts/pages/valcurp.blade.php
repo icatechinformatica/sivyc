@@ -444,7 +444,8 @@
                     <div class="d-inline-flex p-3 w-100 pl-5 mb-4" style="background-color: #f7d351;">
                         <b>
                             ¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo? &nbsp;&nbsp;
-                            <input class="check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true" @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset />
+                            <input class="check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true"
+                                @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset />
                             &nbsp; SI
                         </b>
                     </div>
@@ -1139,7 +1140,8 @@
                         <div class="form-group col-md-6">
                             <h5><b>
                             ¿Está empleado el Aspirante?  &nbsp;
-                            <input type="checkbox" id="trabajo" name="trabajo" value="true" @if ($empleado) { checked } @endif>
+                            <input type="checkbox" id="trabajo" name="trabajo" value="true"
+                                    @if ($empleado) { checked } @endif>
                             SI
                             </b></h5>
                         </div>
