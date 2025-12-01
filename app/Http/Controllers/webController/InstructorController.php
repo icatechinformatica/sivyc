@@ -3638,7 +3638,8 @@ class InstructorController extends Controller
             }
             if($item->memorandum_solicitud != $request->nomemo)
             {
-                if(is_null($request->nomemo)) { // mejora para evitar que memorandum de solicitud quede sin numero
+                if(is_null($request->nomemo) && !isset($request->borrador)) { // mejora para evitar que memorandum de solicitud quede sin numero
+                    // dd('//');
                     return back()->with('mensaje', 'Error: No se ha especificado el numero de memorandum');
                 }
 
