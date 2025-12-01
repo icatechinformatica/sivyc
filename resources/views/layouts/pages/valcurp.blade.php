@@ -1116,15 +1116,14 @@
                                         <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
                                         <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
                                     </div>
-                                    @isset($requisitos)
-                                        @if($requisitos->documento)
-                                            <a class="nav-link pt-0 col-md-1"  href="{{ $requisitos->documento }}" target="_blank">
-                                                <i class="far fa-file-pdf text-danger icon-size" title="DESCARGAR PDF DE REQUISITOS."></i>
-                                            </a>
-                                        @endif
+                                    @if(isset($requisitos) && isset($requisitos->documento) && $requisitos->documento)
+                                        <a class="nav-link pt-0 col-md-1" href="{{ $requisitos->documento }}" target="_blank">
+                                            <i class="far fa-file-pdf text-danger icon-size" title="DESCARGAR PDF DE REQUISITOS."></i>
+                                        </a>
                                     @else
-                                        <i  class="far fa-file-pdf text-muted col-md-1 icon-size"  title='ARCHIVO NO DISPONIBLE.'></i>
-                                    @endisset
+                                        <i class="far fa-file-pdf text-muted col-md-1 icon-size" title="ARCHIVO NO DISPONIBLE."></i>
+                                    @endif
+
                                 </div>
                                 <div id="pdfPreview" style="margin-top: 1rem;"></div>
                             </div>
