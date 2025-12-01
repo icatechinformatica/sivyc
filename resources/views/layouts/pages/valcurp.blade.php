@@ -230,6 +230,8 @@
             $confirmacion = $alumno->medio_confirmacion;
             if ($alumno->check_bolsa) {$check_bolsa = true;}
             $aspiranteId = $alumno->id;
+        } else  {
+            $aspiranteId = null;
         }
 
         if(isset($datos_alfa->switch_alfa)){
@@ -442,7 +444,8 @@
                     <div class="d-inline-flex p-3 w-100 pl-5 mb-4" style="background-color: #f7d351;">
                         <b>
                             ¿Usted autoriza dar su número de celular para alguna oportunidad en la Bolsa de Trabajo? &nbsp;&nbsp;
-                            <input class="check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true" @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset />
+                            <input class="check-input" id="chk_bolsa" name="chk_bolsa" type="checkbox" value="true"
+                                @isset($check_bolsa) @if ($check_bolsa) { checked } @endif @endisset />
                             &nbsp; SI
                         </b>
                     </div>
@@ -1113,15 +1116,14 @@
                                         <input type="file" class="custom-file-input" id="customFile" name="customFile" onchange="fileValidationpdf()">
                                         <label class="custom-file-label" for="customFile">Seleccionar Archivo</label>
                                     </div>
-                                    @isset($requisitos)
-                                        @if($requisitos->documento)
-                                            <a class="nav-link pt-0 col-md-1"  href="{{ $requisitos->documento }}" target="_blank">
-                                                <i class="far fa-file-pdf text-danger icon-size" title="DESCARGAR PDF DE REQUISITOS."></i>
-                                            </a>
-                                        @endif
+                                    @if(isset($requisitos) && isset($requisitos->documento) && $requisitos->documento)
+                                        <a class="nav-link pt-0 col-md-1" href="{{ $requisitos->documento }}" target="_blank">
+                                            <i class="far fa-file-pdf text-danger icon-size" title="DESCARGAR PDF DE REQUISITOS."></i>
+                                        </a>
                                     @else
-                                        <i  class="far fa-file-pdf text-muted col-md-1 icon-size"  title='ARCHIVO NO DISPONIBLE.'></i>
-                                    @endisset
+                                        <i class="far fa-file-pdf text-muted col-md-1 icon-size" title="ARCHIVO NO DISPONIBLE."></i>
+                                    @endif
+
                                 </div>
                                 <div id="pdfPreview" style="margin-top: 1rem;"></div>
                             </div>
@@ -1137,7 +1139,8 @@
                         <div class="form-group col-md-6">
                             <h5><b>
                             ¿Está empleado el Aspirante?  &nbsp;
-                            <input type="checkbox" id="trabajo" name="trabajo" value="true" @if ($empleado) { checked } @endif>
+                            <input type="checkbox" id="trabajo" name="trabajo" value="true"
+                                    @if ($empleado) { checked } @endif>
                             SI
                             </b></h5>
                         </div>

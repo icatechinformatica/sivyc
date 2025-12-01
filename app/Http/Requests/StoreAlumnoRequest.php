@@ -46,10 +46,6 @@ class StoreAlumnoRequest extends FormRequest
             'customFile' => ['nullable', 'file', 'mimes:pdf,jpg,jpeg,png', 'max:5120'],
             'fotografia' => ['nullable', 'image', 'mimes:jpg,jpeg,png', 'max:4096'],
 
-            // Ejemplo para algunos checkboxes
-            'chk_bolsa' => ['nullable', 'boolean'],
-            'trabajo'   => ['nullable', 'boolean'],
-
             // Agrega el resto de campos que uses en el método...
         ];
     }
@@ -114,11 +110,6 @@ class StoreAlumnoRequest extends FormRequest
             'fotografia.mimes' => 'Solo se permiten imágenes en formato JPG o PNG.',
             'fotografia.max'   => 'La fotografía no debe superar los 4 MB.',
 
-            // -----------------------------
-            // Checkboxes
-            // -----------------------------
-            'chk_bolsa.boolean' => 'El valor de bolsa de trabajo es inválido.',
-            'trabajo.boolean'   => 'El valor de trabajo es inválido.',
         ];
     }
 

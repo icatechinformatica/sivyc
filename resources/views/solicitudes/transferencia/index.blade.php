@@ -18,8 +18,7 @@
                     <p>@if(isset($message["ERROR"])) {{ $message["ERROR"] }} @else {{ $message["ALERT"] }} @endif </p>
                 </div>
             </div>
-        @endif
-
+        @endif       
         {{ Form::open(['method' => 'post', 'id'=>'frm', 'enctype' => 'multipart/form-data','accept-charset'=>'UTF-8']) }}
             @csrf
             <div class="row form-inline pl-4">
@@ -68,7 +67,7 @@
                             @php
                                 $consec = 1;
                             @endphp
-                            @foreach ($data as $item)
+                            @foreach ($data as $item)                           
                                 <tr>
                                     <td class="p-2">{{ $consec++ }}</td>
                                     <td class="p-2">{{$item->id}}-{{ $item->unidad_capacitacion }}</td>
@@ -170,19 +169,18 @@
                 @can('transferencia.layout')
                     @if (count($data) > 0 && in_array($request->status, ["PENDIENTE", "MARCADO", "GENERADO"]))
                         {{ Form::select('cuenta_retiro', $cuentas_retiro, null ,array('id'=>'cuenta_retiro','class' => 'form-control  mr-sm-3')) }}
+                        {{ Form::label('numero_layout', 'Núm. Layout Sugerido:', ['class' => 'mr-2']) }}
                         @if($request->status == "GENERADO")
-                            {{ Form::select('num_layout', $numeros_layouts, null ,array('id'=>'num_layout','class' => 'form-control  mr-sm-3')) }}
+                            {{ Form::select('num_layout', $numeros_layouts, $folio??null ,array('id'=>'num_layout','class' => 'form-control  mr-sm-3')) }}
                         @else
-                            {{ Form::text('num_layout',old('num_layout'), ['id'=>'num_layout', 'class' => 'form-control mr-sm-3', 'placeholder' => '#LAYOUT', 'title' => '#LAYOUT','size' => 25]) }}
+                            {{ Form::text('num_layout',$folio??null, ['id'=>'num_layout', 'class' => 'form-control mr-sm-3', 'placeholder' => '#LAYOUT', 'title' => '#ROME','size' => 25]) }}
                         @endif
 
                         @if($request->status == "GENERADO")
                                 {{ Form::select('movimiento', ['DESHACER'=>'DESHACER GENERADOS', 'PAGADO' =>'SUBIR PAGADOS'], '', ['id'=>'movimiento','class' => 'form-control  col-md-3 m-1', 'placeholder'=>'- MOVIMIENTOS -'] ) }}
-                                {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger']) }}
-                                {{ Form::button('GENERAR', ['id'=>'generar','class' => 'btn']) }}
-                        @else
-                                {{ Form::button('GENERAR', ['id'=>'generar','class' => 'btn']) }}
+                                {{ Form::button('ACEPTAR', ['id'=>'aceptar','class' => 'btn btn-danger']) }}                                    
                          @endif
+                         {{ Form::button('GENERAR', ['id'=>'generar','class' => 'btn']) }}
                     @endif
                 @endcan
            </div>
@@ -256,6 +254,7 @@
             });
 
          //MANTENER VALORES DURANTE LA PAGINACION
+         /*
          if ($('#num_layout').length){
             const miCajaDeTexto = document.getElementById('num_layout');
             const valorGuardado = localStorage.getItem('num_layout');
@@ -264,6 +263,7 @@
                 localStorage.setItem('num_layout', miCajaDeTexto.value);
             });
         }
+            */
         if($('#fecha_pago').length){
             const fecha_pago = document.getElementById('fecha_pago');
             const fechaGuardado = localStorage.getItem('fecha_pago');
@@ -289,12 +289,12 @@
                     }
                 })
                 .done(function( msg ) { alert(msg); });
-            }/*else{
+            }else{
                 if(status=="PAGADO") alert("POR FAVOR, INGRESE LA FECHA DE PAGO.");
                 else alert("Por favor, ingrese el NÚMERO DE LAYOUT, la opción se localiza en la parte inferior de la pantalla.");
                 if(obj.prop('checked')) obj.prop('checked', false);
                 else obj.prop('checked', true);
-            }*/
+            }
         }
 
         $(document).ready(function(){
@@ -315,13 +315,12 @@
 
 
             $("#generar" ).click(function(){
-                if(confirm("Esta seguro de generar layout?")==true){
-                    $("#status").prop("selectedIndex", 3);
+                if(confirm("Esta seguro de generar layout?")==true){                    
                     $('#frm').attr('target', '_blank');
                     $('#frm').attr('action', "{{route('solicitudes.transferencia.generar')}}"); $('#frm').submit();
-
-                    setTimeout(function() {
-                        $('#frm').attr('action', "{{route('solicitudes.transferencia.index')}}"); $('#frmfiltrar').submit();
+                
+                    setTimeout(function () {
+                        window.location = "{{ route('solicitudes.transferencia.index') }}?status=GENERADO&valor="+$("#valor").val();
                     }, 1000);
 
                 }
