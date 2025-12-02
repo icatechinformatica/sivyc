@@ -954,3 +954,12 @@ Route::get('/agregar/justificante', 'RH\RHController@agregar_justificante')->nam
 
 //agregar curso a un instructor sin prevalidacion
 Route::post('/instructor/asignar-cursos-especialidad', 'webController\InstructorController@asignarCursosEspecialidad')->name('asignar.cursos.especialidad');
+
+// Health check endpoint
+Route::get('/health', function () {
+    return response()->json([
+        'status' => 'ok',
+        'app'    => config('app.name'),
+        'time'   => now()->toDateTimeString(),
+    ], 200);
+});
