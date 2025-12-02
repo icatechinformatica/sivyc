@@ -120,11 +120,4 @@ Route::get('/crosschex/live/metrics', [CrossChexController::class, 'metrics']);
 Route::get('/crosschex/live/recent',  [CrossChexController::class, 'recent']);
 Route::get('/crosschex/live/punctuality', [CrossChexController::class, 'punctuality'])->name('crosschex.live.punctuality');
 
-// Health check endpoint
-Route::get('/health', function () {
-    return response()->json([
-        'status' => 'ok',
-        'app'    => config('app.name'),
-        'time'   => now()->toDateTimeString(),
-    ], 200);
-});
+
