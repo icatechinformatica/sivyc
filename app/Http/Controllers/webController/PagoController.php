@@ -1232,8 +1232,8 @@ class PagoController extends Controller
 
         } else {
             $archivos = DB::TABLE('contratos')
-                ->SELECT('arch_factura','arch_factura_xml','arch_contrato','doc_validado','archivo_ine','archivo_bancario','pdf_curso',
-                'instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
+                ->SELECT('arch_factura','arch_factura_xml','arch_contrato','arch_asistencia','arch_calificaciones','arch_evidencia','doc_validado','archivo_ine',
+                'archivo_bancario','pdf_curso','instructor_mespecialidad','espe','archivo_alta','tbl_cursos.id_instructor')
                 ->WHERE('contratos.id_contrato', $request->id_retorno_recepcion)
                 ->JOIN('pagos','pagos.id_contrato','contratos.id_contrato')
                 ->JOIN('folios','folios.id_folios','contratos.id_folios')
