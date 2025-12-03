@@ -6,7 +6,7 @@ use PhpParser\Node\Stmt\Foreach_;
 
 //       dataFormatoT($unidad, $status, $fecha_turnado=null, $mes = null ,$add=false, $memo=null) {
     //   unction dataFormatoT2do($unidad, $turnado, $fecha, $mesSearch, $status) {
-function dataFormatoT($unidad, $turnado=null, $fecha=null, $mesSearch=null, $status, $fecha_turnado=null, $mes = null ,$add=false, $memo=null) {
+function dataFormatoT($unidad, $status, $turnado=null, $fecha=null, $mesSearch=null, $fecha_turnado=null, $mes = null ,$add=false, $memo=null) {
 
     $var_cursos = DB::table('tbl_cursos as c')
         ->select(
