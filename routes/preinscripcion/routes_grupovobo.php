@@ -8,7 +8,7 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/preinscripcion/grupovb/update', 'Preinscripcion\grupovoboController@update')->name('preinscripcion.grupovobo.update')->middleware('can:preinscripcion.grupovobo');
     Route::post('/preinscripcion/grupovb/generar', 'Preinscripcion\grupovoboController@generar')->name('preinscripcion.grupovobo.generar');
     Route::get('/preinscripcion/grupovb/nuevo', 'Preinscripcion\grupovoboController@nuevo')->name('preinscripcion.grupovobo.nuevo');
-    Route::post('/preinscripcion/grupovb/nuevo', 'Preinscripcion\grupovoboController@nuevo')->name('preinscripcion.grupovobo.nuevo');
+    Route::post('/preinscripcion/grupovb/nuevo', 'Preinscripcion\grupovoboController@nuevo');
     Route::post('/preinscripcion/grupovb/vobo', 'Preinscripcion\grupovoboController@vobo')->name('preinscripcion.grupovobo.vobo')->middleware('can:preinscripcion.grupovobo');
     Route::post('/preinscripcion/grupovb/turnar', 'Preinscripcion\grupovoboController@turnar')->name('preinscripcion.grupovobo.turnar')->middleware('can:preinscripcion.grupovobo');
     Route::get('/preinscripcion/grupovb/eliminar', 'Preinscripcion\grupovoboController@delete')->name('preinscripcion.grupovobo.eliminar')->middleware('can:preinscripcion.grupovobo');
@@ -25,6 +25,6 @@ Route::middleware(['auth'])->group(function(){
     Route::post('/preinscripcion/grupovb/grupovb/apertura', 'Preinscripcion\grupovoboController@generarApertura')->name('preinscripcion.grupovobo.gape')->middleware('can:preinscripcion.grupovobo');
     /*VINCULACION->PREINSCRIPCION=> BUSCAR GRUPO RPN*/
     Route::get('/preinscripcion/showvb', 'Preinscripcion\buscarController@showvb')->name('preinscripcion.showvb');
-    Route::post('/preinscripcion/showvb', 'Preinscripcion\buscarController@showvb')->name('preinscripcion.showvb');
+    Route::post('/preinscripcion/showvb', 'Preinscripcion\buscarController@showvb');
 
 });

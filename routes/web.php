@@ -230,7 +230,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/alumnos/exoneracion/permiso/desactivar','webController\AlumnoController@quitarPermiso')->name('quitar.permiso.exo');
     Route::get('/alumnos/indice', 'webController\AlumnoController@index')->name('alumnos.index')->middleware('can:alumnos.index');
     Route::get('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
-    Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.valid');
+    Route::post('alumnos/valsid', 'webController\AlumnoController@showl');
     // Route::post('alumnos/valsid', 'webController\AlumnoController@showl')->name('alumnos.csid');
     Route::get('alumnos/sid', 'webController\AlumnoController@create')->name('alumnos.preinscripcion')->middleware('can:alumnos.inscripcion-paso1');
     Route::get('alumnos/municipio_nov', 'webController\AlumnoController@showlm');
@@ -358,7 +358,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/instructor/sendtodta', 'webController\InstructorController@send_to_dta')->name('ins-to-dta');
     Route::post('/instructor/cursoExtra', 'webController\InstructorController@curso_extra_upd')->name('mod-curso-extra');
     Route::get('/instructor/estado/', 'webController\InstructorController@iestado')->name('instructor.estado');
-    Route::post('/instructor/estado/', 'webController\InstructorController@iestado')->name('instructor.estado');
+    Route::post('/instructor/estado/', 'webController\InstructorController@iestado');
     Route::get('/instructor/deshacer-movimiento/{id}', 'webController\InstructorController@deshacer_movimiento')->name('instructor.deshacer-movimimiento');
 
 
@@ -408,26 +408,26 @@ Route::middleware(['auth'])->group(function () {
            ->name('financiero.index');
 
         /*TABLERO DE CONTROL RPN*/
-    Route::get('/tablero', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    // Route::get('/tablero', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
     Route::get('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
-    Route::post('/tablero/metas', 'TableroControlller\MetasController@index')->name('tablero.metas.index');
+    Route::post('/tablero/metas', 'TableroControlller\MetasController@index');
 
     Route::get('/tablero/unidades', 'TableroControlller\UnidadesController@index')->name('tablero.unidades.index');
-    Route::post('/tablero/unidades', 'TableroControlller\UnidadesController@index')->name('tablero.unidades.index');
+    Route::post('/tablero/unidades', 'TableroControlller\UnidadesController@index');
 
     Route::get('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
-    Route::post('/tablero/cursos', 'TableroControlller\CursosController@index')->name('tablero.cursos.index');
+    Route::post('/tablero/cursos', 'TableroControlller\CursosController@index');
 
 
      /* SUPERVISIONES ESCOLAR RPN*/
     Route::get('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
-    Route::post('/supervision/escolar', 'supervisionController\EscolarController@index')->name('supervision.escolar');
+    Route::post('/supervision/escolar', 'supervisionController\EscolarController@index');
     Route::post('/supervision/curso', 'supervisionController\EscolarController@curso')->name('supervision.curso');
-    Route::get('/supervision/curso/{id}', 'supervisionController\EscolarController@curso')->name('supervision.curso');
+    Route::get('/supervision/curso/{id}', 'supervisionController\EscolarController@curso');
 
     Route::get('/supervisiones/escolar/url/generar', 'supervisionController\UrlController@generarUrl')->name('supervision.escolar.url.generar');
     Route::get('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
-    Route::post('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso')->name('supervision.escolar.update');
+    Route::post('/supervisiones/escolar/enviar', 'supervisionController\EscolarController@updateCurso');
 
      /* SUPERVISIONES INSTRUCTORES RPN*/
     Route::get('/supervision/instructor/revision/{id}', 'supervisionController\InstructorController@revision')->name('supervision.instructor.revision');
@@ -441,7 +441,7 @@ Route::middleware(['auth'])->group(function () {
 
     /* SUPERVISION CONTROL DE CALIDAD RPN*/
     Route::get('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
-    Route::post('/supervision/calidad', 'supervisionController\CalidadController@index')->name('supervision.calidad');
+    Route::post('/supervision/calidad', 'supervisionController\CalidadController@index');
 
     /*ENCUESTA
     Route::get('/encuesta/generar/url', 'supervisionController\EncuestaController@generarUrl')->name('encuesta.generar.url');
@@ -449,7 +449,7 @@ Route::middleware(['auth'])->group(function () {
 
     /*SUPERVISION UNIDADES RPN*/
     Route::get('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
-    Route::post('/supervision/unidades', 'supervisionController\UnidadesController@index')->name('supervision.unidades');
+    Route::post('/supervision/unidades', 'supervisionController\UnidadesController@index');
     Route::get('/supervision/unidades/cursos/{id}', 'supervisionController\UnidadesController@cursos')->name('supervision-unidades-cursos');
 
     /*REPORTES SICE RPN*/
@@ -475,40 +475,42 @@ Route::middleware(['auth'])->group(function () {
     Route::post('reportes/rcdod11','reportesController\rcdod11Controller@index')->name('carter');
     Route::post('reportes/rcdod11/pdf','reportesController\rcdod11Controller@pdf')->name('carter.pdf');
 
-    Route::get('reportes/formato_t_reporte/index', function () {
-        return view('layouts.pages.reportes.formato_t_reporte');
-    })->name('reportes.formatoT');
+    // Route::get('reportes/formato_t_reporte/index', function () {
+    //     return view('layouts.pages.reportes.formato_t_reporte');
+    // })->name('reportes.formatoT');
+
+    Route::view('reportes/formato_t_reporte/index', 'layouts.pages.reportes.formato_t_reporte')->name('reportes.formatoT');
 
     //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
     //Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
-    Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
-    Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+    // Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+    // Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
     //Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc')->Middleware('can:academicos.arc');
     Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot');
-    Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
+    // Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
     Route::post('/reportes/memo/','ftcontroller@memodta')->name('memo_dta');
     /*Grupos RPN*/
     //Calificaciones
     Route::get('/grupos/calificaciones', 'Grupos\calificacionesController@index')->name('grupos.calificaciones')->middleware('can:grupos.calificaciones');
     Route::post('/grupos/calificaciones/buscar', 'Grupos\calificacionesController@search')->name('grupos.calificaciones.buscar')->middleware('can:grupos.calificaciones.buscar');
-    Route::get('/grupos/calificaciones/buscar', 'Grupos\calificacionesController@search')->name('grupos.calificaciones.buscar')->middleware('can:grupos.calificaciones.buscar');
+    Route::get('/grupos/calificaciones/buscar', 'Grupos\calificacionesController@search')->middleware('can:grupos.calificaciones.buscar');
     Route::post('/grupos/calificaciones/guardar', 'Grupos\calificacionesController@update')->name('grupos.calificaciones.guardar')->middleware('can:grupos.calificaciones.guardar');
-    Route::get('/grupos/calificaciones/guardar', 'Grupos\calificacionesController@update')->name('grupos.calificaciones.guardar')->middleware('can:grupos.calificaciones.guardar');
+    Route::get('/grupos/calificaciones/guardar', 'Grupos\calificacionesController@update')->middleware('can:grupos.calificaciones.guardar');
     //Asignacion de Folio
     Route::get('/grupos/asignarfolios', 'Grupos\asignarfoliosController@index')->name('grupos.asignarfolios')->middleware('can:grupos.asignarfolios');
-    Route::post('/grupos/asignarfolios', 'Grupos\asignarfoliosController@index')->name('grupos.asignarfolios')->middleware('can:grupos.asignarfolios');
+    Route::post('/grupos/asignarfolios', 'Grupos\asignarfoliosController@index')->middleware('can:grupos.asignarfolios');
     Route::post('/grupos/asignarfolios/guardar', 'Grupos\asignarfoliosController@store')->name('grupos.asignarfolios.guardar')->middleware('can:grupos.asignarfolios.guardar');
-    Route::get('/grupos/asignarfolios/guardar', 'Grupos\asignarfoliosController@store')->name('grupos.asignarfolios.guardar')->middleware('can:grupos.asignarfolios.guardar');
+    Route::get('/grupos/asignarfolios/guardar', 'Grupos\asignarfoliosController@store')->middleware('can:grupos.asignarfolios.guardar');
      //Cancelación de Folios
     Route::get('/grupos/cancelacionfolios', 'Grupos\cancelacionfoliosController@index')->name('grupos.cancelacionfolios')->middleware('can:grupos.cancelacionfolios');
-    Route::post('/grupos/cancelacionfolios', 'Grupos\cancelacionfoliosController@index')->name('grupos.cancelacionfolios')->middleware('can:grupos.cancelacionfolios');
+    Route::post('/grupos/cancelacionfolios', 'Grupos\cancelacionfoliosController@index')->middleware('can:grupos.cancelacionfolios');
     Route::post('/grupos/cancelacionfolios/guardar', 'Grupos\cancelacionfoliosController@store')->name('grupos.cancelacionfolios.guardar')->middleware('can:grupos.cancelacionfolios.guardar');
-    Route::get('/grupos/cancelacionfolios/guardar', 'Grupos\cancelacionfoliosController@store')->name('grupos.cancelacionfolios.guardar')->middleware('can:grupos.cancelacionfolios.guardar');
+    Route::get('/grupos/cancelacionfolios/guardar', 'Grupos\cancelacionfoliosController@store')->middleware('can:grupos.cancelacionfolios.guardar');
 
 
     /*Grupos Consultas*/
     Route::get('/grupos/consultas', 'Grupos\consultasController@index')->name('grupos.consultas')->middleware('can:grupos.consultas');
-    Route::post('/grupos/consultas', 'Grupos\consultasController@index')->name('grupos.consultas')->middleware('can:grupos.consultas');
+    Route::post('/grupos/consultas', 'Grupos\consultasController@index')->middleware('can:grupos.consultas');
     Route::post('/grupos/consultas/calificaciones', 'Grupos\consultasController@calificaciones')->name('grupos.consultas.calificaciones')->middleware('can:grupos.consultas');
     Route::post('/grupos/consultas/folios', 'Grupos\consultasController@folios')->name('grupos.consultas.folios')->middleware('can:grupos.consultas');
     Route::post('/grupos/consultas/cancelarfolios', 'Grupos\consultasController@cancelarfolios')->name('grupos.consultas.cancelarfolios')->middleware('can:grupos.consultas');
@@ -520,74 +522,74 @@ Route::middleware(['auth'])->group(function () {
     //Route::post('/solicitudes/aperturas/arc', 'Solicitudes\aperturasController@barc')->name('solicitudes.aperturas.barc');
 
     Route::get('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
-    Route::post('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->name('solicitudes.aperturas')->middleware('can:solicitudes.aperturas');
+    Route::post('/solicitudes/aperturas', 'Solicitudes\aperturasController@index')->middleware('can:solicitudes.aperturas');
     Route::post('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
-    Route::get('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->name('solicitudes.aperturas.retornar')->middleware('can:solicitudes.aperturas.retornar');
+    Route::get('/solicitudes/aperturas/retornar', 'Solicitudes\aperturasController@retornar')->middleware('can:solicitudes.aperturas.retornar');
     Route::post('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
-    Route::get('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->name('solicitudes.aperturas.asignar')->middleware('can:solicitudes.aperturas.asignar');
+    Route::get('/solicitudes/aperturas/asignar', 'Solicitudes\aperturasController@asignar')->middleware('can:solicitudes.aperturas.asignar');
     Route::get('/solicitudes/aperturas/busqueda', 'Solicitudes\aperturasController@search')->name('solicitudes.aperturas.search')->middleware('can:solicitudes.aperturas');
-    Route::post('/solicitudes/aperturas/busqueda', 'Solicitudes\aperturasController@search')->name('solicitudes.aperturas.search')->middleware('can:solicitudes.aperturas');
+    Route::post('/solicitudes/aperturas/busqueda', 'Solicitudes\aperturasController@search')->middleware('can:solicitudes.aperturas');
 
     Route::post('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
-    Route::get('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->name('solicitudes.aperturas.deshacer')->middleware('can:solicitudes.aperturas.deshacer');
+    Route::get('/solicitudes/aperturas/deshacer', 'Solicitudes\aperturasController@deshacer')->middleware('can:solicitudes.aperturas.deshacer');
     Route::post('/solicitudes/aperturas/cambiarmemo', 'Solicitudes\aperturasController@cambiarmemo')->name('solicitudes.aperturas.cambiarmemo')->middleware('can:solicitudes.aperturas.cambiarmemo');
-    Route::get('/solicitudes/aperturas/cambiarmemo', 'Solicitudes\aperturasController@cambiarmemo')->name('solicitudes.aperturas.cambiarmemo')->middleware('can:solicitudes.aperturas.cambiarmemo');
+    Route::get('/solicitudes/aperturas/cambiarmemo', 'Solicitudes\aperturasController@cambiarmemo')->middleware('can:solicitudes.aperturas.cambiarmemo');
     Route::post('/solicitudes/aperturas/autorizar', 'Solicitudes\aperturasController@autorizar')->name('solicitudes.aperturas.autorizar')->middleware('can:solicitudes.aperturas.autorizar');
-    Route::get('/solicitudes/aperturas/autorizar', 'Solicitudes\aperturasController@autorizar')->name('solicitudes.aperturas.autorizar')->middleware('can:solicitudes.aperturas.autorizar');
+    Route::get('/solicitudes/aperturas/autorizar', 'Solicitudes\aperturasController@autorizar')->middleware('can:solicitudes.aperturas.autorizar');
     Route::post('/solicitudes/generar/autoriza', 'Solicitudes\aperturasController@pdfAutoriza')->name('solicitudes.generar.autoriza');
-    Route::get('/solicitudes/generar/autoriza', 'Solicitudes\aperturasController@pdfAutoriza')->name('solicitudes.generar.autoriza');
+    Route::get('/solicitudes/generar/autoriza', 'Solicitudes\aperturasController@pdfAutoriza');
 
     //Folios
     Route::get('/solicitudes/folios', 'Solicitudes\foliosController@index')->name('solicitudes.folios')->middleware('can:solicitudes.folios');
-    Route::post('/solicitudes/folios', 'Solicitudes\foliosController@index')->name('solicitudes.folios')->middleware('can:solicitudes.folios');
+    Route::post('/solicitudes/folios', 'Solicitudes\foliosController@index')->middleware('can:solicitudes.folios');
     Route::post('/solicitudes/folios/guardar', 'Solicitudes\foliosController@store')->name('solicitudes.folios.guardar')->middleware('can:solicitudes.folios.guardar');
-    Route::get('/solicitudes/folios/guardar', 'Solicitudes\foliosController@store')->name('solicitudes.folios.guardar')->middleware('can:solicitudes.folios.guardar');
+    Route::get('/solicitudes/folios/guardar', 'Solicitudes\foliosController@store')->middleware('can:solicitudes.folios.guardar');
     Route::post('/solicitudes/folios/editar', 'Solicitudes\foliosController@edit')->name('solicitudes.folios.edit')->middleware('can:solicitudes.folios.edit');
-    Route::get('/solicitudes/folios/editar', 'Solicitudes\foliosController@edit')->name('solicitudes.folios.edit')->middleware('can:solicitudes.folios.edit');
+    Route::get('/solicitudes/folios/editar', 'Solicitudes\foliosController@edit')->middleware('can:solicitudes.folios.edit');
     Route::get('/storage/uploadFiles/DTA/solicitud_folios/{pdf}', 'Solicitudes\foliosController@pdf')->name('solicitudes.folios.pdf');
     //Cancelación y Eliminacion de Folios
     Route::get('/solicitudes/cancelacionfolios', 'Solicitudes\cancelacionfoliosController@index')->name('solicitudes.cancelacionfolios')->middleware('can:solicitudes.cancelacionfolios');
-    Route::post('/solicitudes/cancelacionfolios', 'Solicitudes\cancelacionfoliosController@index')->name('solicitudes.cancelacionfolios')->middleware('can:solicitudes.cancelacionfolios');
+    Route::post('/solicitudes/cancelacionfolios', 'Solicitudes\cancelacionfoliosController@index')->middleware('can:solicitudes.cancelacionfolios');
     Route::post('/solicitudes/cancelacionfolios/guardar', 'Solicitudes\cancelacionfoliosController@store')->name('solicitudes.cancelacionfolios.guardar')->middleware('can:solicitudes.cancelacionfolios.guardar');
-    Route::get('/solicitudes/cancelacionfolios/guardar', 'Solicitudes\cancelacionfoliosController@store')->name('solicitudes.cancelacionfolios.guardar')->middleware('can:solicitudes.cancelacionfolios.guardar');
+    Route::get('/solicitudes/cancelacionfolios/guardar', 'Solicitudes\cancelacionfoliosController@store')->middleware('can:solicitudes.cancelacionfolios.guardar');
 
      /*CONSULTAS*/
      /*FOLIOS ASIGNADOS*/
     Route::get('/consultas/folios', 'Consultas\foliosController@index')->name('consultas.folios')->middleware('can:consultas.folios');
-    Route::post('/consultas/folios', 'Consultas\foliosController@index')->name('consultas.folios')->middleware('can:consultas.folios');
+    Route::post('/consultas/folios', 'Consultas\foliosController@index')->middleware('can:consultas.folios');
     Route::post('/consultas/folios/xls', 'Consultas\foliosController@xls')->name('consultas.folios.xls');
      /*LOTES DE FOLIOS*/
     Route::get('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
-    Route::post('/consultas/lotes', 'Consultas\lotesController@index')->name('consultas.lotes')->middleware('can:consultas.lotes');
+    Route::post('/consultas/lotes', 'Consultas\lotesController@index')->middleware('can:consultas.lotes');
     Route::post('/consultas/lotes/xls', 'Consultas\lotesController@xls')->name('consultas.lotes.xls');
     /*CONSULTA INSTRUCTORES */
     Route::get('/consultas/instructores', 'Consultas\instructorconsuController@index')->name('consultas.instructor')->middleware('can:consultas.instructor');
-    Route::post('/consultas/instructores', 'Consultas\instructorconsuController@index')->name('consultas.instructor')->middleware('can:consultas.instructor');
+    Route::post('/consultas/instructores', 'Consultas\instructorconsuController@index')->middleware('can:consultas.instructor');
     Route::post('/consultas/instructores/xls', 'Consultas\instructorconsuController@xls')->name('consultas.instructor.xls')->middleware('can:consultas.instructor');
 
    /*CURSOS FINALIZADOS*/
     Route::get('/consultas/cursosfinalizados', 'Consultas\cursosfinalizadosController@index')->name('consultas.cursosfinalizados')->middleware('can:consultas.cursosfinalizados');
-    Route::post('/consultas/cursosfinalizados', 'Consultas\cursosfinalizadosController@index')->name('consultas.cursosfinalizados')->middleware('can:consultas.cursosfinalizados');
+    Route::post('/consultas/cursosfinalizados', 'Consultas\cursosfinalizadosController@index')->middleware('can:consultas.cursosfinalizados');
     Route::post('/consultas/cursosfinalizados/xls', 'Consultas\cursosfinalizadosController@xls')->name('consultas.cursosfinalizados.xls');
     /*CURSOS APERTURADOS*/
     Route::get('/consultas/cursosaperturados', 'Consultas\cursosaperturadosController@index')->name('consultas.cursosaperturados')->middleware('can:consultas.cursosaperturados');
-    Route::post('/consultas/cursosaperturados', 'Consultas\cursosaperturadosController@index')->name('consultas.cursosaperturados')->middleware('can:consultas.cursosaperturados');
+    Route::post('/consultas/cursosaperturados', 'Consultas\cursosaperturadosController@index')->middleware('can:consultas.cursosaperturados');
     Route::post('/consultas/cursosaperturados/xls', 'Consultas\cursosaperturadosController@xls')->name('consultas.cursosaperturados.xls');
 
     /*CURSOS EFISICO*/
     Route::get('/consultas/cursosefisico', 'Consultas\cursosefisicoController@index')->name('consultas.cursosefisico')->middleware('can:consultas.cursosefisico');
-    Route::post('/consultas/cursosefisico', 'Consultas\cursosefisicoController@index')->name('consultas.cursosefisico')->middleware('can:consultas.cursosefisico');
+    Route::post('/consultas/cursosefisico', 'Consultas\cursosefisicoController@index')->middleware('can:consultas.cursosefisico');
     Route::post('/consultas/cursosefisico/xls', 'Consultas\cursosefisicoController@xls')->name('consultas.cursosefisico.xls');
 
     /*CURSOS INSTRUCTORES DISPONIBLES*/
     Route::get('/consultas/instructoresdisponibles', 'Consultas\instructoresdisponiblesController@index')->name('consultas.instructores.disponibles')->middleware('can:consultas.instructores.disponibles');
-    Route::post('/consultas/instructoresdisponibles', 'Consultas\instructoresdisponiblesController@index')->name('consultas.instructores.disponibles')->middleware('can:consultas.instructores.disponibles');
+    Route::post('/consultas/instructoresdisponibles', 'Consultas\instructoresdisponiblesController@index')->middleware('can:consultas.instructores.disponibles');
 
     /*POA & AUTORIZADO*/
     Route::get('/consultas/poa/index', 'Consultas\poaController@index')->name('consultas.poa')->middleware('can:consultas.poa');
-    Route::post('/consultas/poa/index', 'Consultas\poaController@index')->name('consultas.poa')->middleware('can:consultas.poa');
+    Route::post('/consultas/poa/index', 'Consultas\poaController@index')->middleware('can:consultas.poa');
     Route::post('/consultas/poa/xls', 'Consultas\poaController@xls')->name('consultas.poa.xls')->middleware('can:consultas.poa');
-    Route::get('/consultas/poa/xls', 'Consultas\poaController@xls')->name('consultas.poa.xls')->middleware('can:consultas.poa');
+    Route::get('/consultas/poa/xls', 'Consultas\poaController@xls')->middleware('can:consultas.poa');
 
 
 
@@ -598,7 +600,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/preinscripcion/grupo/update', 'Preinscripcion\grupoController@update')->name('preinscripcion.grupo.update')->middleware('can:preinscripcion.grupo.update');
     Route::post('/preinscripcion/grupo/generar', 'Preinscripcion\grupoController@generar')->name('preinscripcion.grupo.generar');
     Route::get('/preinscripcion/grupo/nuevo', 'Preinscripcion\grupoController@nuevo')->name('preinscripcion.grupo.nuevo');
-    Route::post('/preinscripcion/grupo/nuevo', 'Preinscripcion\grupoController@nuevo')->name('preinscripcion.grupo.nuevo');
+    Route::post('/preinscripcion/grupo/nuevo', 'Preinscripcion\grupoController@nuevo');
     Route::post('/preinscripcion/grupo/turnar', 'Preinscripcion\grupoController@turnar')->name('preinscripcion.grupo.turnar')->middleware('can:preinscripcion.grupo.turnar');
     Route::get('/preinscripcion/grupo/eliminar', 'Preinscripcion\grupoController@delete')->name('preinscripcion.grupo.eliminar')->middleware('can:preinscripcion.grupo.eliminar');
     Route::post('/preinscripcion/grupo/comrobante','Preinscripcion\grupoController@subir_comprobante')->name('preinscripcion.grupo.comprobante');
@@ -618,54 +620,54 @@ Route::middleware(['auth'])->group(function () {
 
     /*VINCULACION->PREINSCRIPCION=> BUSCAR GRUPO RPN*/
     Route::get('/preinscripcion/buscar', 'Preinscripcion\buscarController@index')->name('preinscripcion.buscar');
-    Route::post('/preinscripcion/buscar', 'Preinscripcion\buscarController@index')->name('preinscripcion.buscar');
+    Route::post('/preinscripcion/buscar', 'Preinscripcion\buscarController@index');
     Route::get('/preinscripcion/show', 'Preinscripcion\buscarController@show')->name('preinscripcion.show');
-    Route::post('/preinscripcion/show', 'Preinscripcion\buscarController@show')->name('preinscripcion.show');
+    Route::post('/preinscripcion/show', 'Preinscripcion\buscarController@show');
     /*Solucitud Unidad Depto Académico*/
     /*Solicitud de Apertura ARC01 y ARC02 RPN*/
     Route::get('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
-    Route::post('/solicitud/apertura', 'Solicitud\aperturaController@index')->name('solicitud.apertura')->middleware('can:solicitud.apertura');
+    Route::post('/solicitud/apertura', 'Solicitud\aperturaController@index')->middleware('can:solicitud.apertura');
     Route::get('/solicitud/apertura/busqueda', 'Solicitud\aperturaController@search')->name('solicitud.apertura.search')->middleware('can:solicitud.apertura');
-    Route::post('/solicitud/apertura/busqueda', 'Solicitud\aperturaController@search')->name('solicitud.apertura.search')->middleware('can:solicitud.apertura');
+    Route::post('/solicitud/apertura/busqueda', 'Solicitud\aperturaController@search')->middleware('can:solicitud.apertura');
     //Route::get('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
     //Route::post('/solicitud/apertura/cgral', 'Solicitud\aperturaController@cgral')->name('solicitud.apertura.cgral');
     Route::get('/solicitud/apertura/mexon', 'Solicitud\aperturaController@mexoneracion')->name('solicitud.apertura.mexon');
-    Route::post('/solicitud/apertura/mexon', 'Solicitud\aperturaController@mexoneracion')->name('solicitud.apertura.mexon');
+    Route::post('/solicitud/apertura/mexon', 'Solicitud\aperturaController@mexoneracion');
     Route::post('/solicitud/apertura/guardar', 'Solicitud\aperturaController@store')->name('solicitud.apertura.guardar')->middleware('can:solicitud.apertura.guardar');
-    Route::get('/solicitud/apertura/guardar', 'Solicitud\aperturaController@store')->name('solicitud.apertura.guardar')->middleware('can:solicitud.apertura.guardar');
+    Route::get('/solicitud/apertura/guardar', 'Solicitud\aperturaController@store')->middleware('can:solicitud.apertura.guardar');
     Route::post('/solicitud/apertura/regresar', 'Solicitud\aperturaController@regresar')->name('solicitud.apertura.regresar')->middleware('can:solicitud.apertura.regresar');
-    Route::get('/solicitud/apertura/regresar', 'Solicitud\aperturaController@regresar')->name('solicitud.apertura.regresar')->middleware('can:solicitud.apertura.regresar');
+    Route::get('/solicitud/apertura/regresar', 'Solicitud\aperturaController@regresar')->middleware('can:solicitud.apertura.regresar');
 
     Route::get('/solicitud/rezago', 'Solicitud\rezagoController@index')->name('solicitud.rezago');
-    Route::post('/solicitud/rezago', 'Solicitud\rezagoController@index')->name('solicitud.rezago');
+    Route::post('/solicitud/rezago', 'Solicitud\rezagoController@index');
     Route::post('/solicitud/rezago/guardar', 'Solicitud\rezagoController@store')->name('solicitud.rezago.guardar');
-    Route::get('/solicitud/rezago/guardar', 'Solicitud\rezagoController@store')->name('solicitud.rezago.guardar');
+    Route::get('/solicitud/rezago/guardar', 'Solicitud\rezagoController@store');
 
     Route::post('/solicitud/apertura/aceptar', 'Solicitud\aperturaController@aperturar')->name('solicitud.apertura.aceptar')->middleware('can:solicitud.apertura.aceptar');
-    Route::get('/solicitud/apertura/aceptar', 'Solicitud\aperturaController@aperturar')->name('solicitud.apertura.aceptar')->middleware('can:solicitud.apertura.aceptar');
+    Route::get('/solicitud/apertura/aceptar', 'Solicitud\aperturaController@aperturar')->middleware('can:solicitud.apertura.aceptar');
 
     Route::post('/solicitud/apertura/turnar', 'Solicitud\turnarAperturaController@index')->name('solicitud.apertura.turnar')->middleware('can:solicitud.apertura.turnar');
-    Route::get('/solicitud/apertura/turnar', 'Solicitud\turnarAperturaController@index')->name('solicitud.apertura.turnar')->middleware('can:solicitud.apertura.turnar');
+    Route::get('/solicitud/apertura/turnar', 'Solicitud\turnarAperturaController@index')->middleware('can:solicitud.apertura.turnar');
     Route::post('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->name('solicitud.apertura.enviar')->middleware('can:solicitud.apertura.enviar');
-    Route::get('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->name('solicitud.apertura.enviar')->middleware('can:solicitud.apertura.enviar');
+    Route::get('/solicitud/apertura/enviar', 'Solicitud\turnarAperturaController@enviar')->middleware('can:solicitud.apertura.enviar');
     Route::post('/solicitud/apertura/preliminar', 'Solicitud\turnarAperturaController@preliminar')->name('solicitud.apertura.preliminar');
     Route::post('/solicitud/apertura/cmemo', 'Solicitud\turnarAperturaController@cambiar_memorandum')->name('solicitud.apertura.cmemo');
 
     Route::post('/solicitud/apertura/modificar', 'Solicitud\modificarAperturaController@index')->name('solicitud.apertura.modificar')->middleware('can:solicitud.apertura.modificar');
-    Route::get('/solicitud/apertura/modificar', 'Solicitud\modificarAperturaController@index')->name('solicitud.apertura.modificar')->middleware('can:solicitud.apertura.modificar');
+    Route::get('/solicitud/apertura/modificar', 'Solicitud\modificarAperturaController@index')->middleware('can:solicitud.apertura.modificar');
     Route::post('/solicitud/apertura/modguardar', 'Solicitud\modificarAperturaController@store')->name('solicitud.apertura.modguardar')->middleware('can:solicitud.apertura.modguardar');
-    Route::get('/solicitud/apertura/modguardar', 'Solicitud\modificarAperturaController@store')->name('solicitud.apertura.modguardar')->middleware('can:solicitud.apertura.modguardar');
+    Route::get('/solicitud/apertura/modguardar', 'Solicitud\modificarAperturaController@store')->middleware('can:solicitud.apertura.modguardar');
 
     Route::post('/solicitud/apertura/moddeshacer', 'Solicitud\modificarAperturaController@reverse')->name('solicitud.apertura.moddeshacer')->middleware('can:solicitud.apertura.moddeshacer');
-    Route::get('/solicitud/apertura/moddeshacer', 'Solicitud\modificarAperturaController@reverse')->name('solicitud.apertura.moddeshacer')->middleware('can:solicitud.apertura.moddeshacer');
+    Route::get('/solicitud/apertura/moddeshacer', 'Solicitud\modificarAperturaController@reverse')->middleware('can:solicitud.apertura.moddeshacer');
 
     Route::post('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01');
-    Route::get('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01')->name('solicitud.generar.arc01');
+    Route::get('/solicitud/generar/arc01', 'Solicitud\turnarAperturaController@pdfARC01');
     //visualizar instructores por ajax dentro del modulo arc01
     Route::post('/solicitudes/aperturas/getinstruc', 'Solicitudes\aperturasController@modal_instructores')->name('solicitud.intruc.modal')->middleware('can:solicitudes.aperturas');
 
     Route::post('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
-    Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02')->name('solicitud.generar.arc02');
+    Route::get('/solicitud/generar/arc02', 'Solicitud\turnarAperturaController@pdfARC02');
 
     Route::get('/calendario/show/{id}', 'Solicitud\aperturaController@showCalendar')->name('calendario.show');
     Route::post('/calendario/guardar','Solicitud\aperturaController@storeCalendar')->name('calendario.store');
@@ -679,8 +681,8 @@ Route::middleware(['auth'])->group(function () {
     /* Solicitudes exoneración y reducción de cuota AGC*/
     Route::get('/solicitud/exoneracion','Solicitud\exoneracionController@index')->name('solicitud.exoneracion')->middleware('can:solicitud.exoneracion');
     Route::get('/solicitud/exoneracion/busqueda','Solicitud\exoneracionController@search')->name('solicitud.exoneracion.search')->middleware('can:solicitud.exoneracion');
-    Route::post('/solicitud/exoneracion','Solicitud\exoneracionController@index')->name('solicitud.exoneracion')->middleware('can:solicitud.exoneracion');
-    Route::post('/solicitud/exoneracion/busqueda','Solicitud\exoneracionController@search')->name('solicitud.exoneracion.search')->middleware('can:solicitud.exoneracion');
+    Route::post('/solicitud/exoneracion','Solicitud\exoneracionController@index')->middleware('can:solicitud.exoneracion');
+    Route::post('/solicitud/exoneracion/busqueda','Solicitud\exoneracionController@search')->middleware('can:solicitud.exoneracion');
     Route::post('/solicitud/exoneracion/agregar','Solicitud\exoneracionController@store')->name('solicitud.exoneracion.agregar')->middleware('can:solicitud.exoneracion');
     Route::post('/solicitud/exoneracion/generar','Solicitud\exoneracionController@generar')->name('solicitud.exoneracion.generar')->middleware('can:solicitud.exoneracion');
     Route::get('/solicitud/exoneracion/eliminar','Solicitud\exoneracionController@delete')->name('solicitud.exoneracion.eliminar')->middleware('can:solicitud.exoneracion');
@@ -690,9 +692,9 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/solicitud/exoneracion/edicion','Solicitud\exoneracionController@edicion')->name('solicitud.exoneracion.edicion')->middleware('can:solicitud.exoneracion');
 
     Route::get('/solicitudes/exoneracion','Solicitudes\exoneracionesController@index')->name('solicitudes.exoneracion')->middleware('can:solicitudes.exoneracion');
-    Route::post('/solicitudes/exoneracion','Solicitudes\exoneracionesController@index')->name('solicitudes.exoneracion')->middleware('can:solicitudes.exoneracion');
+    Route::post('/solicitudes/exoneracion','Solicitudes\exoneracionesController@index')->middleware('can:solicitudes.exoneracion');
     Route::get('/solicitudes/exoneracion/busqueda','Solicitudes\exoneracionesController@search')->name('solicitudes.exoneracion.search')->middleware('can:solicitudes.exoneracion');
-    Route::post('/solicitudes/exoneracion/busqueda','Solicitudes\exoneracionesController@search')->name('solicitudes.exoneracion.search')->middleware('can:solicitudes.exoneracion');
+    Route::post('/solicitudes/exoneracion/busqueda','Solicitudes\exoneracionesController@search')->middleware('can:solicitudes.exoneracion');
     Route::post('/solicitudes/exoneracion/denegar','Solicitudes\exoneracionesController@denegar')->name('solicitudes.exoneracion.denegar')->middleware('can:solicitudes.exoneracion');
     Route::post('/solicitudes/exoneracion/aceptar','Solicitudes\exoneracionesController@aceptar')->name('solicitudes.exoneracion.aceptar')->middleware('can:solicitudes.exoneracion');
     Route::post('/solicitudes/exoneracion/generar','Solicitudes\exoneracionesController@generar')->name('solicitudes.exoneracion.borrador');
@@ -798,7 +800,7 @@ Route::post('/financieros/reporte/cursos/xls','reportesController\financierosRep
 //Route::get('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::post('/reportes/arc01','pdfcontroller@arc')->name('pdf.generar');
 Route::get('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
-Route::post('/reportes/vista_911','pdfcontroller@index')->name('reportes.vista_911');
+Route::post('/reportes/vista_911','pdfcontroller@index');
 Route::get('/reportes/vista_arc','pdfcontroller@index')->name('reportes.vista_arc');
 Route::get('/reportes/vista_ft','ftcontroller@index')->name('vista_formatot')->middleware('can:vista.formatot.unidades.indice');
 Route::post('/reportes/vista_ft','ftcontroller@cursos')->name('formatot.cursos');
@@ -851,7 +853,7 @@ Route::get('/EstadisticasXls/reporte', 'Validacion\ReportesPlaneacionFormatoT@es
 
 /**MODULO DE ESTADISTICAS */
 Route::get('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
-Route::post('/estadisticas/ecursos','Estadisticas\ecursosController@index')->name('estadisticas.ecursos')->middleware('can:estadisticas.ecursos');
+Route::post('/estadisticas/ecursos','Estadisticas\ecursosController@index')->middleware('can:estadisticas.ecursos');
 Route::post('/cestadisticas/ecursos/xls', 'Estadisticas\ecursosController@xls')->name('estadisticas.ecursos.xls');
 
 //firma electronica
@@ -863,7 +865,7 @@ Route::post('/cestadisticas/ecursos/xls', 'Estadisticas\ecursosController@xls')-
 
 //Notificaciones
 Route::get('send', 'webController\NotificationController@sendNotification');
-Route::post('/firma/cancelar', 'FirmaElectronica\FirmarController@cancelarDocumento')->name('firma.cancelar');
+// Route::post('/firma/cancelar', 'FirmaElectronica\FirmarController@cancelarDocumento')->name('firma.cancelar');
 
 // buscar alumnos
 Route::post('/autocomplete/curso', 'Consultas\foliosController@cursoAutocomplete')->name('autocomplete.curso');
@@ -874,7 +876,7 @@ Route::get('/financieros/tramites-recepcionados', 'webController\PagoController@
 Route::post('financieros/tramites-recepcionados/pdf', 'webController\PagoController@tramitesrecepcionados_pdf')->name('documentospago.pdf');
 
  //Consulta de cursos validados por unidad y accion movil con XLS 17112021
- Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval')->middleware('can:consultas.cursos.iniciados');
+//  Route::get('/consulta/cursos-validados', 'webController\CursoValidadoController@consulta')->name('consulta-cursosval')->middleware('can:consultas.cursos.iniciados');
  Route::get('/consulta/xls/cursos-validados','webController\CursoValidadoController@xls_cursosiniciados')->name('xls-cursosiniciados')->middleware('can:consultas.cursos.iniciados');
 
 //Consulta de Localidades en instructores
@@ -919,7 +921,7 @@ Route::post('/firma/sellar', 'efirma\FirmaController@sellar_documentos')->name('
 Route::post('/firma/generar', 'efirma\FirmaController@generarPDF')->name('firma.generarPdf');
 Route::post('/firma/cancelar', 'efirma\FirmaController@cancelarDocumento')->name('firma.cancelar');
 Route::post('/firma/token', 'efirma\FirmaController@generarToken')->name('firma.token');
-Route::post('/efirma/busqueda', 'efirma\FirmaController@getdocumentos')->name('supre.busqueda.curso');
+Route::post('/efirma/busqueda', 'efirma\FirmaController@getdocumentos')->name('efirma.busqueda.documentos');
 Route::post('/asistencia/rechazo', 'efirma\AsistenciaController@rechazo')->name('asistencia-rechazo');
 Route::post('/asistencia/validar', 'efirma\AsistenciaController@generar_xml')->name('asistencia-xml');
 Route::get('/lista/asistencia/{id}', 'efirma\AsistenciaController@asistencia_pdf')->name('asistencia-pdf');
