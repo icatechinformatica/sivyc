@@ -50,7 +50,8 @@
             <div class="info-row">
                 <div class="info-chip"><span class="dot dot-ok"></span>A tiempo</div>
                 <div class="info-chip"><span class="dot dot-late"></span>Retardo</div>
-                <div class="info-chip"><span class="dot dot-miss"></span>Faltan</div>
+                <div class="info-chip"><span class="dot dot-miss"></span>Falta</div>
+                <div class="info-chip"><span class="dot dot-exempt"></span>Exento</div>
             </div>
         </div>
 

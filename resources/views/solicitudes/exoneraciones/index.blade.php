@@ -24,18 +24,21 @@
                     {{ Form::text('valor', $valor, ['id'=>'valor', 'class' => 'form-control', 'placeholder' => 'No. Revisión / No. Memorándum', 'aria-label' => 'CLAVE DEL CURSO', 'required' => 'required', 'size' => 25]) }}
             </div>
             @if (count($cursos)>0)            
-                <div class="form-group col-md-2">
+            <div class="form-group col-md-2">
                 {{ form::date('fecha', $cursos[0]->fecha_memorandum ?? null, ['id' => 'fecha','class'=>'form-control gris']) }}
+            </div>
+            <div class="form-group col-md-1">
+                <a onclick="guardar_fecha('{{ $cursos[0]->no_memorandum??null }}')" title="Guardar Fecha"><i class="fas fa-save fa-lg m-2 " aria-hidden="true" style="color:rgb(165, 2, 2);"></i></a>
             </div>       
             @endif
             <div class="form-group col-md-2">
                     {{ Form::button('BUSCAR', ['id'=>'buscar','class' => 'btn']) }}
             </div>
             @if(count($cursos)>0)     
-                <div class="form-group col-md-4 text-right">
+                <div class="form-group col-md-3 text-right">
                     <div class="dropdown show">
                         <a class="btn btn-warning dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <i class="fa fa-print  text-white" title="Imprimir Memorándum"> PDF DESCARGAR SOPORTES</i>
+                            <i class="fa fa-print  text-white" title="Imprimir Memorándum"> PDF SOPORTES</i>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <a class="dropdown-item" href="{{$file}}" target="_blank">
@@ -173,19 +176,17 @@
                 }
             });
 
-            function guardar_fecha(memo_arc){
-                if (confirm("Está seguro de guardar cambios del ARC?") == true) {
-                    var fecha_nuevo = $("#fecha_memorandum").val();
-                    var memo_nuevo = $("#memo").val();
-                    var opt = $("#opt").val();
+            function guardar_fecha(memo_exo){
+                if (confirm("Está seguro de guardar cambios en la fecha") == true) {
+                    var fecha_nuevo = $("#fecha").val();                                        
+                    var memo_nuevo = $("#valor").val();
                     $.ajax({
-                                url: "aperturas/guardar_fecha",
+                                url: "exoneraciones/guardar_fecha",
                                 method: 'POST',
-                                data: {
-                                    memo: memo_nuevo,
-                                    fecha: fecha_nuevo,
-                                    memo_arc: memo_arc,
-                                    opt: opt
+                                data: {                                    
+                                    memo: memo_exo,
+                                    fecha: fecha_nuevo,                                    
+                                    memo_nuevo,memo_nuevo
                                 },
                                 success: function(data) {
                                 //$('#result_table').html(data);

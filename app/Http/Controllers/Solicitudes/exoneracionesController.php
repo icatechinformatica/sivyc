@@ -154,6 +154,42 @@ class exoneracionesController extends Controller
         return redirect()->route('solicitudes.exoneracion')->with(['message' => $message]);
     }
 
+    public function guardar_fecha(Request $request){
+        $message = "Operación fallida, por favor intente de nuevo.";
+
+        if ($request->fecha && $request->memo && $request->memo_nuevo) {
+            $result = DB::table('exoneraciones')
+                ->where(function($q) use ($request) {
+                    $q->where('no_memorandum', $request->memo)
+                    ->orWhere('nrevision', $request->memo);
+                })
+                ->where(function ($query) {
+                    $query->whereNotIn('status', ['CANCELADO','AUTORIZADO'])
+                        ->orWhereNull('status');
+                })
+                ->update([
+                    'fecha_memorandum' => $request->fecha,
+                    'no_memorandum' => $request->memo_nuevo,
+                    'movimientos' => DB::raw("
+                        COALESCE(movimientos, '[]'::jsonb) || jsonb_build_array(
+                            jsonb_build_object(
+                                'fecha', '".now()."',
+                                'usuario', '".addslashes(Auth::user()->name)."',
+                                'operacion', 'CAMBIO DE FECHA',
+                                'motivo solicitud', 'SOLICITADO POR LA UNIDAD DE CAPACITACIÓN.'
+                            )
+                        )
+                    ")
+                ]);
+
+            if ($result) $message = "Operación Exitosa!";
+        } else {
+            $message = "Por favor, ingrese una fecha válida.";
+        }
+
+        return $message;
+    }
+
     public function generar(Request $request){ //NO SE UTILIZA
         if (session('revision')) {
             if($request->fecha) $fecha = $request->fecha;
