@@ -256,13 +256,7 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.matricula, ar.no_control) as matricula'),
                 DB::raw("COALESCE(ti.alumno, concat(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre)) as alumno"),
                 DB::raw('COALESCE(substring(ti.curp,11,1), substring(ar.curp,11,1)) as sexo'),
-                DB::raw("(CONCAT(
-                            CASE
-                                WHEN SUBSTRING( COALESCE(ti.curp, ar.curp), 5, 2) > TO_CHAR(NOW(), 'YY') THEN CONCAT('19', SUBSTRING(COALESCE(ti.curp, ar.curp), 5, 2))
-                                ELSE CONCAT('20', SUBSTRING(COALESCE(ti.curp, ar.curp), 5, 2))
-                            END,'-', SUBSTRING(COALESCE(ti.curp, ar.curp), 7, 2), '-', SUBSTRING(COALESCE(ti.curp, ar.curp), 9, 2) )
-
-                    ) as fecha_nacimiento"),
+                DB::raw('COALESCE(ti.fecha_nacimiento, ap.fecha_nacimiento) as fecha_nacimiento'),                
                 DB::raw('COALESCE(EXTRACT(year from (age(ti.inicio,ap.fecha_nacimiento))) , EXTRACT(year from (age(ar.inicio,ap.fecha_nacimiento))) ) as edad'),
                 DB::raw('COALESCE(ti.escolaridad, ar.escolaridad) as escolaridad'),
                 DB::raw("COALESCE(
