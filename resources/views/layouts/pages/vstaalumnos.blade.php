@@ -60,7 +60,7 @@
                             <td class="text-center small" style="width: 20%">{{$itemData->name}}</td>
                             <td class="text-center">
                                 @if($itemData->documento)
-                                    <a class="nav-link pt-0"  href="{{$itemData->documento}}" target="_blank">
+                                    <a class="nav-link pt-0"  href="{{archivos_url($itemData->documento)}}" target="_blank">
                                           <i class="far fa-file-pdf fa-3x text-danger" title="DESCARGAR RECIBO DE PAGO OFICIALIZADO."></i>
                                     </a>
                                 @else

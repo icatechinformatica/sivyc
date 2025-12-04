@@ -59,7 +59,8 @@
         ],
         "files": [
             "app/Helpers/functionFormatoT.php",
-            "app/Helpers/notificationMovil.php"
+            "app/Helpers/notificationMovil.php",
+            "app/Helpers/ArchivosS3URL.php"
         ]
     },
     "autoload-dev": {

@@ -1777,13 +1777,22 @@ class AlumnoController extends Controller {
 
     protected function uploaded_file($file, $id, $name)
     {
-        $tamanio = $file->getSize(); #obtener el tamaño del archivo del cliente
-        $extensionFile = $file->getClientOriginalExtension(); // extension de la imagen
-        # nuevo nombre del archivo
-        $documentFile = trim($name."_".date('YmdHis')."_".$id.".".$extensionFile);
-        $file->storeAs('/uploadFiles/alumnos/'.$id, $documentFile); // guardamos el archivo en la carpeta storage
-        $documentUrl = Storage::url('/uploadFiles/alumnos/'.$id."/".$documentFile); // obtenemos la url donde se encuentra el archivo almacenado en el servidor.
-        return $documentUrl;
+        $tamanio = $file->getSize();
+        $extensionFile = $file->getClientOriginalExtension();
+
+        // nuevo nombre del archivo
+        $documentFile = trim($name . "_" . date('YmdHis') . "_" . $id . "." . $extensionFile);
+
+        // IMPORTANTE: sin slash inicial, para que la ruta sea relativa
+        $relativeDir = 'uploadFiles/alumnos/' . $id;
+        $relativePath = $relativeDir . '/' . $documentFile;
+
+        // guardamos el archivo en la carpeta storage/app/public/...
+        $file->storeAs($relativeDir, $documentFile);
+
+        // 🔹 Ahora regresamos SOLO la ruta relativa
+        //    (ej: "uploadFiles/alumnos/167415/requisitos_20251203135038_167415.pdf")
+        return $relativePath;
     }
 
     protected function modifyUpdateChief($id){
