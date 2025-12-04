@@ -942,7 +942,9 @@ class grupoController extends Controller
                                         'depen_telrepre' => $depen_telrepre,
                                         'nplantel' => $unidad->plantel,
                                         'programa' => $request->programa,
-                                        'plantel' => $request->plantel
+                                        'plantel' => $request->plantel,
+                                        'mpreapertura' => $mapertura,
+                                        'obs_preapertura' => $request->observaciones
                                     ]);
 
                                 if($tc_curso->cp == $cp AND $result_curso){
