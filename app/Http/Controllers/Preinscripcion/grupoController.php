@@ -29,6 +29,7 @@ use App\Utilities\MiAgenda;
 use function PHPSTORM_META\type;
 use App\Http\Controllers\Solicitudes\vbgruposController;
 use App\Services\ValidacionServicioVb;
+use App\Services\GrupoService;
 use Illuminate\Support\Facades\Gate;
 
 class grupoController extends Controller
@@ -72,7 +73,6 @@ class grupoController extends Controller
     }
 
     public function index(Request $request){
-
         //$digitov = Algoritmo35::digito_verificador('2B25000100004');
         /*
         $inst = (new vbgruposController());
@@ -618,12 +618,12 @@ class grupoController extends Controller
                     $tc_curso = DB::table('tbl_cursos')
                         ->where('unidad', $request->unidad)
                         ->where('folio_grupo', session('folio_grupo'))
-                        ->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')
+                        ->select('id','status_curso','created_at','id_instructor','cp','folio_grupo','folio_unico')
                         ->first();
 
                     if(!$tc_curso) {
                         $tc_curso = new \stdClass();
-                        $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = null;
+                        $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = $tc_curso->folio_unico = null;
                     }
 
                     if ($mapertura AND $tc_curso->status_curso!='EDICION' AND
@@ -942,7 +942,9 @@ class grupoController extends Controller
                                         'depen_telrepre' => $depen_telrepre,
                                         'nplantel' => $unidad->plantel,
                                         'programa' => $request->programa,
-                                        'plantel' => $request->plantel
+                                        'plantel' => $request->plantel,
+                                        'mpreapertura' => $mapertura,
+                                        'obs_preapertura' => $request->observaciones
                                     ]);
 
                                 if($tc_curso->cp == $cp AND $result_curso){
@@ -1200,6 +1202,12 @@ class grupoController extends Controller
                                                 'vb_dg' => true
                                             ]
                                         );
+                                        
+                                        //GENERA Y GUARDA EL FOLIO UNICO
+                                        if(!$tc_curso->folio_unico and $ID){
+                                            $GrupoService = (new GrupoService());
+                                            $GrupoService->folio_unico($ID);
+                                        }
 
                                     if($result_curso) $message = "Operación Exitosa!!";
                                 }
