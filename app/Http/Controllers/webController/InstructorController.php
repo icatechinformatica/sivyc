@@ -4820,6 +4820,13 @@ class InstructorController extends Controller
             }
         }
 
+        $userInstructor = DB::Connection('mysql')->Table('users')->Where('id_sivyc', $dataInstructor->id)->update(
+            [
+                'curp' => $dataInstructor->curp,
+                'email' => $dataInstructor->correo,
+            ]
+        );
+
         return $instructor;
     }
 
