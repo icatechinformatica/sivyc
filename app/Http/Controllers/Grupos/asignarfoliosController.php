@@ -87,6 +87,15 @@ class asignarfoliosController extends Controller
         $data = $this->validaCurso($clave, $matricula, $id_afolio, $efirma);
         list($curso, $acta, $alumnos_out, $message) = $data; //var_dump($acta);exit;
 
+        //Dividir numero con letras del folio_disponible
+        if($acta->mod=="GRAL"){
+            preg_match_all('/[a-zA-Z]+|\d+/', $acta->folio_disponible, $matches);
+            $partes = $matches[0];
+            if(count($partes)==2){
+                $prefijo = $partes[0] ?? 'A';
+            }
+        }
+
         if($acta AND !$message){
             $id_curso = $curso->id;
             $num_folio = $acta->num_inicio+$acta->contador; //echo $num_folio;exit;
@@ -117,7 +126,7 @@ class asignarfoliosController extends Controller
                         elseif($acta->mod=="CAE") $prefijo = "C";
                         elseif($acta->mod=="EFIRMA"){
                              $prefijo = substr($this->ubicacion, 0, 3);
-                        }else $prefijo = "A";
+                        }//else $prefijo = "A";
 
                         $folio = $prefijo.str_pad($num_folio, 6, "0", STR_PAD_LEFT);
 
