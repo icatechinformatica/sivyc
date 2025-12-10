@@ -297,13 +297,13 @@ class transferenciaController extends Controller
                 CONCAT('PTC',
                     LPAD(regexp_replace(tc.soportes_instructor->>'no_cuenta','[^a-zA-Z0-9]', '', 'g'), 18, '0'),
                     LPAD('$cuenta_retiro', 18, '0'),'MXP',
-                    LPAD(regexp_replace(sum(p.liquido)::TEXT, '[^\d.]',''), 16, '0'),
+                    '{{LIQUIDO}}',                    
                     RPAD(CONCAT_WS(' ',min(p.num_layout::text),string_agg(p.consec_layout::text, ' '  ORDER BY p.consec_layout ASC)) ,30,' '),'0                  000000000000.00')
             ELSE
                 CONCAT('PSC',
                     LPAD(regexp_replace(tc.soportes_instructor->>'interbancaria','[^a-zA-Z0-9]', '', 'g'), 18, '0'),
                     LPAD('$cuenta_retiro', 18, '0'),'MXP',
-                    LPAD(regexp_replace(sum(p.liquido)::TEXT, '[^\d.]',''), 16, '0'),
+                    '{{LIQUIDO}}',
                     RPAD(TRIM(regexp_replace(tc.nombre,'[^a-zA-Z0-9 ]', '', 'g')),30,' '),
                     '40',
                     LEFT(regexp_replace(tc.soportes_instructor->>'interbancaria','[^a-zA-Z0-9]', '', 'g'), '3'),
@@ -315,9 +315,16 @@ class transferenciaController extends Controller
         ->where('p.num_layout',$num_layout)
         ->where('p.status_transferencia','GENERADO')        
         ->groupby('tc.id_instructor','tc.nombre', DB::raw("tc.soportes_instructor->>'banco'"), DB::raw("tc.soportes_instructor->>'interbancaria'"), DB::raw("tc.soportes_instructor->>'no_cuenta'"), 'p.num_layout')->get();
-            
+        //LPAD(regexp_replace(sum(p.liquido)::TEXT, '[^\d.]',''), 16, '0'),    
+        //LPAD(regexp_replace(sum(p.liquido)::TEXT, '[^\d.]',''), 16, '0'),
+
         foreach ($instructores_pagos as $ipagos) {
-            list($total_liquido, $total_isr) = $this->calcula_isr($ipagos->total_bruto);
+            list($total_liquido, $total_isr) = $this->calcula_isr($ipagos->total_bruto);            
+            $liquido_formateado = str_pad(number_format((float)$total_liquido, 2, '.', ''), 16, '0', STR_PAD_LEFT);
+
+            $cadena = $ipagos->cadena_layout; 
+            $cadena_layout = str_replace('{{LIQUIDO}}', $liquido_formateado, $cadena);
+
             DB::table('pagos_mensuales')->updateOrInsert(
                 [
                     'id_instructor' => $ipagos->id_instructor,
@@ -331,12 +338,13 @@ class transferenciaController extends Controller
                     'banco' => $ipagos->banco,
                     'cuenta' => $ipagos->cuenta,
                     'clabe' => $ipagos->clabe,
-                    'cadena_layout' => $ipagos->cadena_layout,
+                    'cadena_layout' => $cadena_layout,
                     'updated_at' => now(),
                 ]
             );
         }
         $data = DB::table('pagos_mensuales')->where('num_layout',$num_layout)->pluck('cadena_layout');
+        
         $data = str_replace(['["','"]','","'],['','',"\n"],$data);
         $name_file = $num_layout."_".$banco."_".date('dMY_His').".txt";
         
@@ -360,6 +368,14 @@ class transferenciaController extends Controller
         
     }
     
+    public function layout_xsl(Request $request){
+        if($request->ejercicio OR $request->num_layout){
+            $fecha = date("dMy");       
+            $data = $this->data($request, 'excel');
+            $nombreLayout = "LAYOUT_PAGO"."_".$fecha.'.xlsx';            
+            return (new xlsTransferencia('xlsLayout', $data))->download($nombreLayout);
+        }
+    }
 
     public function pagado(Request $request)
     {
