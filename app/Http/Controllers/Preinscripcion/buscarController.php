@@ -65,7 +65,7 @@ class buscarController extends Controller
 
         $data = $data->whereNotNull('ar.folio_grupo')
             ->groupBy('ar.folio_grupo', 'ar.turnado', 'c.nombre_curso', 'ar.unidad','id_instructor')
-            ->orderBy(DB::raw('max(ar.created_at)'), 'DESC')
+            ->orderBy(DB::raw('min(ar.created_at)'), 'DESC')
             ->paginate(15);
         return view('preinscripcion.buscar.index',compact('data','activar','anios','parameters'));
 
