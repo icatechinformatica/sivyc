@@ -90,7 +90,7 @@ class dpaController extends Controller
                 ->selectRaw("TO_CHAR(MAX(tc.fecha_turnado)::TIMESTAMP, 'DD/MM/YYYY') as fecha")
                 ->selectRaw(DB::raw("to_char(MAX(tc.fecha_turnado), 'TMMONTH') AS mes"))                
                 //->selectRaw("TO_CHAR((memos->'TURNADO_PLANEACION'->'PLANEACION'->>'FECHA')::TIMESTAMP,'DD/MM/YYYY') as turnado_dta")
-                ->join('instructores as i','i.curp','tc.curp')                
+                ->join('instructores as i','i.id','tc.id_instructor')                
                 ->where('status_curso', 'AUTORIZADO')                                
                 ->whereBetween('tc.fecha_turnado', [$request->fecha1, $request->fecha2])
                 ->where('proceso_terminado',true)                
@@ -107,7 +107,7 @@ class dpaController extends Controller
                                 ELSE 0 
                             END)")
                 ->orderByRaw('tc.curp')
-                ->get(); 
+                ->get();
             return $data;                            
         }else $message["ERROR"] = "SE REQUIERE QUE SELECCIONE LA FECHA INICIAL Y FECHA FINAL PARA GENERAR EL REPORTE.";        
         if($message) return $message;
