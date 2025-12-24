@@ -1203,12 +1203,13 @@ class grupoController extends Controller
                                             ]
                                         );
                                         
-                                        //GENERA Y GUARDA EL FOLIO UNICO
+                                        //GENERA Y GUARDA EL FOLIO 
+                                        /*
                                         if(!$tc_curso->folio_unico and $ID){
                                             $GrupoService = (new GrupoService());
                                             $GrupoService->folio_unico($ID);
                                         }
-
+                                        */
                                     if($result_curso) $message = "Operación Exitosa!!";
                                 }
                             }
