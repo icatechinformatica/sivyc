@@ -54,7 +54,7 @@ return [
 
     'url' => env('APP_URL', 'https://sivyc.icatech.gob.mx'),
 
-    'asset_url' => env('ASSET_URL', null),
+    'asset_url' => env('APP_URL', null),
 
     'archivos_base_url' => env('ARCHIVOS_BASE_URL', env('APP_URL')),
 
