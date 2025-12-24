@@ -942,7 +942,9 @@ class grupoController extends Controller
                                         'depen_telrepre' => $depen_telrepre,
                                         'nplantel' => $unidad->plantel,
                                         'programa' => $request->programa,
-                                        'plantel' => $request->plantel
+                                        'plantel' => $request->plantel,
+                                        'mpreapertura' => $mapertura,
+                                        'obs_preapertura' => $request->observaciones
                                     ]);
 
                                 if($tc_curso->cp == $cp AND $result_curso){
@@ -1201,12 +1203,13 @@ class grupoController extends Controller
                                             ]
                                         );
                                         
-                                        //GENERA Y GUARDA EL FOLIO UNICO
+                                        //GENERA Y GUARDA EL FOLIO 
+                                        /*
                                         if(!$tc_curso->folio_unico and $ID){
                                             $GrupoService = (new GrupoService());
                                             $GrupoService->folio_unico($ID);
                                         }
-
+                                        */
                                     if($result_curso) $message = "Operación Exitosa!!";
                                 }
                             }

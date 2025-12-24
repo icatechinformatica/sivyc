@@ -180,67 +180,166 @@ class Reporterf001Repository implements Reporterf001Interface
         return $rf001Detalle::findOrFail($concentrado);
     }
 
+    // public function storeData(array $request)
+    // {
+    //     list($claveContrado, $numeroRecibo, $id, $idConcentrado, $numFolio) = explode("_", $request['elemento']);
+    //     $registro = Rf001Model::findOrFail($idConcentrado);
+    //     if (!$registro) {
+    //         return false;
+    //     }
+
+    //     if ($request['details'] === 'true') {
+    //         $qry = DB::table('tbl_recibos')
+    //             ->leftJoin('tbl_cursos', 'tbl_recibos.id_curso', '=', 'tbl_cursos.id')
+    //             ->leftJoin('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
+    //             ->select(
+    //                 'tbl_recibos.folio_recibo', 'tbl_recibos.unidad as unidad', 'tbl_recibos.importe',
+    //                 'tbl_recibos.status_folio', 'tbl_recibos.status_recibo', 'cat_conceptos.concepto',
+    //                 'tbl_recibos.depositos', 'tbl_recibos.importe', 'tbl_recibos.importe_letra',
+    //                 'tbl_cursos.curso', 'tbl_recibos.descripcion', 'tbl_recibos.num_recibo', 'tbl_recibos.file_pdf'
+    //             )
+    //             ->where('tbl_recibos.id', $id)
+    //             ->first();
+
+    //         if (!$qry) {
+    //             return false;
+    //         }
+
+    //         $datosExistentes = json_decode($registro->movimientos, true) ?: [];
+    //         $datosExistentes[] = [
+    //             'descripcion' => $qry->descripcion,
+    //             'folio' => $qry->folio_recibo,
+    //             'curso' => $qry->curso,
+    //             'concepto' => $qry->concepto,
+    //             'documento' => $qry->file_pdf,
+    //             'importe' => $qry->importe,
+    //             'importe_letra' => $qry->importe_letra,
+    //             'depositos' => $qry->depositos
+    //         ];
+
+    //         return Rf001Model::where('id', $idConcentrado)
+    //             ->update(['movimientos' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE)]);
+    //     }
+
+    //     // Eliminar movimiento
+    //     $arrayDatos = json_decode($registro->movimientos, true) ?: [];
+    //     $nuevoArray = [];
+    //     $folioEliminado = null;
+
+    //     foreach ($arrayDatos as $item) {
+    //         if ($item['folio'] == $numFolio) {
+    //             $folioEliminado = $item['folio'];
+    //             continue; // No lo agregues al nuevo array
+    //         }
+    //         $nuevoArray[] = $item;
+    //     }
+
+    //     if ($folioEliminado) {
+    //         Recibo::where('folio_recibo', $folioEliminado)
+    //             ->update(['estado_reportado' => null]);
+    //     }
+
+    //     return Rf001Model::where('id', $idConcentrado)
+    //         ->update(['movimientos' => json_encode($nuevoArray, JSON_UNESCAPED_UNICODE)]);
+    // }
+
     public function storeData(array $request)
     {
-        list($claveContrado, $numeroRecibo, $id, $idConcentrado, $numFolio) = explode("_", $request['elemento']);
-        $registro = Rf001Model::findOrFail($idConcentrado);
-        if (!$registro) {
-            return false;
-        }
+        return DB::transaction(function () use ($request) {
+            // 'elemento' viene como string: claveContrato_numRecibo_idRecibo_idConcentrado_folio
+            list($claveContrado, $numeroRecibo, $id, $idConcentrado, $numFolio) = explode("_", $request['elemento']);
 
-        if ($request['details'] === 'true') {
-            $qry = DB::table('tbl_recibos')
-                ->leftJoin('tbl_cursos', 'tbl_recibos.id_curso', '=', 'tbl_cursos.id')
-                ->leftJoin('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
-                ->select(
-                    'tbl_recibos.folio_recibo', 'tbl_recibos.unidad as unidad', 'tbl_recibos.importe',
-                    'tbl_recibos.status_folio', 'tbl_recibos.status_recibo', 'cat_conceptos.concepto',
-                    'tbl_recibos.depositos', 'tbl_recibos.importe', 'tbl_recibos.importe_letra',
-                    'tbl_cursos.curso', 'tbl_recibos.descripcion', 'tbl_recibos.num_recibo', 'tbl_recibos.file_pdf'
-                )
-                ->where('tbl_recibos.id', $id)
-                ->first();
+            // Bloqueamos el registro del concentrado mientras dura la transacción
+            $registro = Rf001Model::lockForUpdate()->findOrFail($idConcentrado);
 
-            if (!$qry) {
-                return false;
+            // AGREGAR movimiento
+            if ($request['details'] === 'true') {
+
+                // Puedes quedarte con DB::table si no tienes modelos relacionados
+                $qry = DB::table('tbl_recibos')
+                    ->leftJoin('tbl_cursos', 'tbl_recibos.id_curso', '=', 'tbl_cursos.id')
+                    ->leftJoin('cat_conceptos', 'cat_conceptos.id', '=', 'tbl_recibos.id_concepto')
+                    ->select(
+                        'tbl_recibos.folio_recibo',
+                        'tbl_recibos.unidad as unidad',
+                        'tbl_recibos.importe',
+                        'tbl_recibos.status_folio',
+                        'tbl_recibos.status_recibo',
+                        'cat_conceptos.concepto',
+                        'tbl_recibos.depositos',
+                        'tbl_recibos.importe',
+                        'tbl_recibos.importe_letra',
+                        'tbl_cursos.curso',
+                        'tbl_recibos.descripcion',
+                        'tbl_recibos.num_recibo',
+                        'tbl_recibos.file_pdf'
+                    )
+                    ->where('tbl_recibos.id', $id)
+                    ->first();
+
+                if (!$qry) {
+                    // Lanzamos una excepción para que la transacción haga rollback
+                    throw new \RuntimeException('No se encontró el recibo para agregar movimiento.');
+                }
+
+                // Decodificamos movimientos actuales
+                $datosExistentes = json_decode($registro->movimientos, true) ?: [];
+
+                // Agregamos el nuevo movimiento
+                $datosExistentes[] = [
+                    'descripcion'    => $qry->descripcion,
+                    'folio'          => $qry->folio_recibo,
+                    'curso'          => $qry->curso,
+                    'concepto'       => $qry->concepto,
+                    'documento'      => $qry->file_pdf,
+                    'importe'        => $qry->importe,
+                    'importe_letra'  => $qry->importe_letra,
+                    'depositos'      => $qry->depositos,
+                ];
+
+                // Actualizamos el concentrado
+                Rf001Model::where('id', $idConcentrado)->update([
+                    'movimientos' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE),
+                ]);
+
+                // Actualizamos el estado del recibo a "GENERADO" (o lo que uses)
+                Recibo::where('id', $id)->update([
+                    'estado_reportado' => 'GENERADO',
+                ]);
+
+                // Si todo llega aquí sin excepción, la transacción hace commit automáticamente
+                return true;
             }
 
-            $datosExistentes = json_decode($registro->movimientos, true) ?: [];
-            $datosExistentes[] = [
-                'descripcion' => $qry->descripcion,
-                'folio' => $qry->folio_recibo,
-                'curso' => $qry->curso,
-                'concepto' => $qry->concepto,
-                'documento' => $qry->file_pdf,
-                'importe' => $qry->importe,
-                'importe_letra' => $qry->importe_letra,
-                'depositos' => $qry->depositos
-            ];
+            // ELIMINAR movimiento
+            $arrayDatos     = json_decode($registro->movimientos, true) ?: [];
+            $nuevoArray     = [];
+            $folioEliminado = null;
 
-            return Rf001Model::where('id', $idConcentrado)
-                ->update(['movimientos' => json_encode($datosExistentes, JSON_UNESCAPED_UNICODE)]);
-        }
+            foreach ($arrayDatos as $item) {
+                if ($item['folio'] == $numFolio) {
+                    $folioEliminado = $item['folio'];
+                    continue; // Lo saltamos, es el que queremos eliminar
+                }
 
-        // Eliminar movimiento
-        $arrayDatos = json_decode($registro->movimientos, true) ?: [];
-        $nuevoArray = [];
-        $folioEliminado = null;
-
-        foreach ($arrayDatos as $item) {
-            if ($item['folio'] == $numFolio) {
-                $folioEliminado = $item['folio'];
-                continue; // No lo agregues al nuevo array
+                $nuevoArray[] = $item;
             }
-            $nuevoArray[] = $item;
-        }
 
-        if ($folioEliminado) {
-            Recibo::where('folio_recibo', $folioEliminado)
-                ->update(['estado_reportado' => null]);
-        }
+            // Si realmente eliminamos uno
+            if ($folioEliminado) {
+                // Actualizamos el recibo, limpiando el estado_reportado
+                Recibo::where('folio_recibo', $folioEliminado)->update([
+                    'estado_reportado' => null,
+                ]);
+            }
 
-        return Rf001Model::where('id', $idConcentrado)
-            ->update(['movimientos' => json_encode($nuevoArray, JSON_UNESCAPED_UNICODE)]);
+            // Actualizamos el JSON de movimientos en el concentrado
+            Rf001Model::where('id', $idConcentrado)->update([
+                'movimientos' => json_encode($nuevoArray, JSON_UNESCAPED_UNICODE),
+            ]);
+
+            return true;
+        });
     }
 
     public function updateFormatoRf001($request, $id)
