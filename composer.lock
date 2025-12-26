@@ -5366,6 +5366,18 @@
         },
         {
             "name": "sentry/sentry",
+<<<<<<< HEAD
+            "version": "4.19.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/getsentry/sentry-php.git",
+                "reference": "1c21d60bebe67c0122335bd3fe977990435af0a3"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/1c21d60bebe67c0122335bd3fe977990435af0a3",
+                "reference": "1c21d60bebe67c0122335bd3fe977990435af0a3",
+=======
             "version": "4.19.0",
             "source": {
                 "type": "git",
@@ -5376,6 +5388,7 @@
                 "type": "zip",
                 "url": "https://api.github.com/repos/getsentry/sentry-php/zipball/1d29a07c8fb68ae9ad9bb8c3fecfaad3cbc23053",
                 "reference": "1d29a07c8fb68ae9ad9bb8c3fecfaad3cbc23053",
+>>>>>>> e56b3ea76bd0f08d0440567899a6ae12488c8fed
                 "shasum": ""
             },
             "require": {
@@ -5438,7 +5451,11 @@
             ],
             "support": {
                 "issues": "https://github.com/getsentry/sentry-php/issues",
+<<<<<<< HEAD
+                "source": "https://github.com/getsentry/sentry-php/tree/4.19.1"
+=======
                 "source": "https://github.com/getsentry/sentry-php/tree/4.19.0"
+>>>>>>> e56b3ea76bd0f08d0440567899a6ae12488c8fed
             },
             "funding": [
                 {
@@ -5450,7 +5467,11 @@
                     "type": "custom"
                 }
             ],
+<<<<<<< HEAD
+            "time": "2025-12-02T15:57:41+00:00"
+=======
             "time": "2025-11-27T14:53:55+00:00"
+>>>>>>> e56b3ea76bd0f08d0440567899a6ae12488c8fed
         },
         {
             "name": "sentry/sentry-laravel",
