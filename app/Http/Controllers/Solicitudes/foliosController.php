@@ -43,7 +43,7 @@ class foliosController extends Controller
 
     public function edit(Request $request){
         $request->id;
-        $json = DB::table('tbl_banco_folios')->select('id','id_unidad','mod', 'num_inicio','num_fin','num_acta','facta','activo')->where('id',$request->id)->first();
+        $json = DB::table('tbl_banco_folios')->select('id','id_unidad','mod', 'num_inicio','num_fin','num_acta','facta','activo', 'finicial')->where('id',$request->id)->first();
         $json = json_decode(json_encode($json), true);
         return $json;
     }
@@ -55,16 +55,35 @@ class foliosController extends Controller
         $num_fin = $request->ffinal;
         $num_acta = $request->num_acta;
         $id_unidad = $request->id_unidad;
+        $prefijo = "";
 
         if($id_unidad OR $id){
 
-
             if(!$request->publicar) $request->publicar=false;
+            //Validamos si es GRAL
+            if ($request->mod=="GRAL") {
+                //separar los numeros con letras
+                preg_match_all('/[a-zA-Z]+|\d+/', $num_inicio, $matches_inicio);
+                $partes_num_inicio = $matches_inicio[0];
+
+                if(count($partes_num_inicio)==2){
+                    $prefijo = $partes_num_inicio[0] ?? 'A';
+                    $num_inicio = $partes_num_inicio[1] ?? 0;
+                }
+
+                preg_match_all('/[a-zA-Z]+|\d+/', $num_fin, $matches_fin);
+                $partes_num_fin = $matches_fin[0];
+                if(count($partes_num_fin)==2){
+                    $prefijo = $partes_num_fin[0] ?? 'A';
+                    $num_fin = $partes_num_fin[1] ?? 0;
+                }
+            }
+
             if($num_fin>=$num_inicio){
                 $folio_inicial = $folio_final = NULL;
                 if($request->mod=="EXT") $prefijo = "D";
                 elseif($request->mod=="CAE") $prefijo = "C";
-                else $prefijo = "A";
+                // else $prefijo = "A";
 
                 if($num_inicio)$folio_inicial = $prefijo.str_pad($num_inicio, 6, "0", STR_PAD_LEFT);
                 if($num_fin)$folio_final = $prefijo.str_pad($num_fin, 6, "0", STR_PAD_LEFT);
