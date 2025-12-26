@@ -106,7 +106,7 @@ class ImportarGruposController extends Controller
 
 
             $curso = DB::table('cursos')
-                ->select('cursos.id', 'cursos.nombre_curso', 'cursos.id_especialidad', 'cursos.horas', 'cursos.area as area_id')
+                ->select('cursos.id', 'cursos.nombre_curso', 'cursos.id_especialidad', 'cursos.horas', 'cursos.area as area_id', 'cursos.rango_criterio_pago_maximo')
                 ->leftJoin('area', 'cursos.area', '=', 'area.id')
                 ->addSelect('area.formacion_profesional as nombre_area')
                 ->whereRaw(
@@ -255,7 +255,7 @@ class ImportarGruposController extends Controller
         // Lookup Curso (con normalización de acentos y puntuación)
         $cursoNormalizado = $this->normalizarTexto($cursoNombre);
         $curso = DB::table('cursos')
-            ->select('cursos.*', 'area.formacion_profesional as nombre_area')
+            ->select('cursos.*', 'area.formacion_profesional as nombre_area', 'cursos.rango_criterio_pago_maximo')
             ->leftJoin('area', 'cursos.area', '=', 'area.id')
             ->whereRaw(
                 "regexp_replace(
@@ -296,10 +296,12 @@ class ImportarGruposController extends Controller
 
         // Generar ID
         $id = $this->generarId($unidadData->plantel);
-
+        // dd($id);
         // Generar folio_grupo
         $folioGrupo = $this->generarFolioGrupo($unidadData->cct);
 
+        // dd($curso->rango_criterio_pago_maximo);
+        // dd($instructor->criterio_pago);
         // Preparar soportes_instructor JSON
         $soportesInstructor = json_encode([
             'domicilio' => $instructor->domicilio,
@@ -345,7 +347,7 @@ class ImportarGruposController extends Controller
             'mujer' => 0,
             'tipo' => 'EXO',
             'cgeneral' => '0',
-            'cp' => $instructor->criterio_pago ?? 0,
+            'cp' => min($curso->rango_criterio_pago_maximo ?? 0, $instructor->criterio_pago ?? 0),
             'ze' => $unidadData->ze ?? '',
             'id_curso' => $curso->id,
             'id_instructor' => $instructor->id,
@@ -374,7 +376,7 @@ class ImportarGruposController extends Controller
     {
         $instructor = DB::table('instructores as i')
             ->leftJoin('instructor_perfil as ip', 'i.id', '=', 'ip.numero_control')
-            ->leftJoin('especialidad_instructores as ei', 'ip.id', '=', 'ei.perfilprof_id')
+            ->leftJoin('especialidad_instructores as ei', 'ei.id_instructor', '=', 'i.id')
             ->select(
                 'i.id',
                 'i.apellidoPaterno',
