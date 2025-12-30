@@ -69,6 +69,9 @@ class ImportarGruposController extends Controller
                 ->with('error', 'Faltan las siguientes columnas requeridas: ' . implode(', ', $missingHeaders));
         }
         
+        // Verificar si existe la columna opcional HORAS
+        $tieneColumnaHoras = in_array('HORAS', $headers);
+        
         // Crear mapa de índices de columnas para acceso flexible
         $columnMap = array_flip($headers);
 
@@ -89,6 +92,9 @@ class ImportarGruposController extends Controller
                 'hora_inicio' => trim($row[$columnMap['HORA INICIO']]),
                 'hora_fin' => trim($row[$columnMap['HORA FIN']]),
                 'curp' => trim($row[$columnMap['CURP']]),
+                'horas_curso' => $tieneColumnaHoras && !empty($row[$columnMap['HORAS']]) && is_numeric($row[$columnMap['HORAS']]) 
+                    ? (int)trim($row[$columnMap['HORAS']]) 
+                    : null,
                 'errors' => [],
                 'warnings' => []
             ];
@@ -117,9 +123,7 @@ class ImportarGruposController extends Controller
             // Lookup Curso (con normalización de acentos y puntuación)
             $cursoNormalizado = $this->normalizarTexto($rowData['curso']);
 
-
-
-            $curso = DB::table('cursos')
+            $cursoQuery = DB::table('cursos')
                 ->select('cursos.id', 'cursos.nombre_curso', 'cursos.id_especialidad', 'cursos.horas', 'cursos.area as area_id', 'cursos.rango_criterio_pago_maximo')
                 ->leftJoin('area', 'cursos.area', '=', 'area.id')
                 ->addSelect('area.formacion_profesional as nombre_area')
@@ -135,8 +139,14 @@ class ImportarGruposController extends Controller
                     [$cursoNormalizado]
                 )
                 ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
-                ->where('cursos.estado', true)
-                ->first();
+                ->where('cursos.estado', true);
+            
+            // Si existe la columna HORAS, agregar filtro adicional
+            if ($rowData['horas_curso'] !== null) {
+                $cursoQuery->where('cursos.horas', $rowData['horas_curso']);
+            }
+            
+            $curso = $cursoQuery->first();
 
             if (!$curso) {
                 $rowData['errors'][] = 'Curso no encontrado: ' . $rowData['curso'];
@@ -244,6 +254,9 @@ class ImportarGruposController extends Controller
 
     private function procesarFila($row, $numFila)
     {
+        // Detectar si existe columna HORAS (debe estar en posición 7 si existe)
+        $tieneColumnaHoras = isset($row[7]) && !empty($row[7]) && is_numeric($row[7]);
+        
         $unidad = trim($row[0]);
         $cursoNombre = trim($row[1]);
         $inicio = $this->parseDate($row[2]);
@@ -251,6 +264,7 @@ class ImportarGruposController extends Controller
         $horaInicio = trim($row[4]);
         $horaFin = trim($row[5]);
         $curp = trim($row[6]);
+        $horasCurso = $tieneColumnaHoras ? (int)trim($row[7]) : null;
 
         // Lookup Unidad
         // Normalizar caso específico: "Tuxtla Gutiérrez" -> "TUXTLA"
@@ -274,7 +288,7 @@ class ImportarGruposController extends Controller
 
         // Lookup Curso (con normalización de acentos y puntuación)
         $cursoNormalizado = $this->normalizarTexto($cursoNombre);
-        $curso = DB::table('cursos')
+        $cursoQuery = DB::table('cursos')
             ->select('cursos.*', 'area.formacion_profesional as nombre_area', 'cursos.rango_criterio_pago_maximo')
             ->leftJoin('area', 'cursos.area', '=', 'area.id')
             ->whereRaw(
@@ -289,8 +303,14 @@ class ImportarGruposController extends Controller
                 [$cursoNormalizado]
             )
             ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
-            ->where('cursos.estado', true)
-            ->first();
+            ->where('cursos.estado', true);
+        
+        // Si existe la columna HORAS, agregar filtro adicional
+        if ($horasCurso !== null) {
+            $cursoQuery->where('cursos.horas', $horasCurso);
+        }
+        
+        $curso = $cursoQuery->first();
         
         if (!$curso) {
             return ['success' => false, 'error' => 'Curso no encontrado'];
