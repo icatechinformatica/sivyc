@@ -838,7 +838,7 @@ Route::get('academico/catalogo/exportar/cursos/{xls}', 'webController\CursosCont
 Route::get('academico/catalogo/exportar/cursosall', 'webController\CursosController@exportar_cursos_all')->name('academico.exportar.cursosall');
 Route::get('academico/catalogo/exportar/instructores', 'webController\InstructorController@exportar_instructores')->name('academico.exportar.instructores');
 Route::get('academico/catalogo/exportar/instructores/activos', 'webController\InstructorController@exportar_instructores_activos')->name('academico.exportar.instructores.activos');
-Route::get('academico/catalogo/exportar/instructores_especialidades', 'webController\InstructorController@exportar_instructoresByEspecialidad')->name('academico.exportar.instructoresByespecialidad');
+// Route::get('academico/catalogo/exportar/instructores_especialidades', 'webController\InstructorController@exportar_instructoresByEspecialidad')->name('academico.exportar.instructoresByespecialidad');
 
 // grupos vulnerables
 Route::get('/GruposVulnerables/inicio', 'Validacion\ReportesPlaneacionFormatoT@index')->name('reportes.planeacion.grupos_vulnerables');

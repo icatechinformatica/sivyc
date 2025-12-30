@@ -54,15 +54,26 @@ class ImportarGruposController extends Controller
         $worksheet = $spreadsheet->getActiveSheet();
         $rows = $worksheet->toArray();
 
-        // Validar headers
-        $headers = array_map('trim', $rows[0]);
+        // Validar headers (convertir a mayúsculas para comparar)
+        $headers = array_map(function($h) {
+            return strtoupper(trim($h));
+        }, $rows[0]);
+
         $expectedHeaders = ['UNIDAD', 'CURSO', 'INICIO', 'FIN', 'HORA INICIO', 'HORA FIN', 'CURP'];
         
-        if ($headers !== $expectedHeaders) {
+        // Verificar que todas las columnas requeridas existan (permite columnas extra y cualquier orden)
+        $missingHeaders = array_diff($expectedHeaders, $headers);
+        if (!empty($missingHeaders)) {
             Storage::delete($tempPath);
             return redirect()->route('preinscripcion.importar_grupos.index')
-                ->with('error', 'Las columnas del Excel no coinciden. Se esperan: ' . implode(', ', $expectedHeaders));
+                ->with('error', 'Faltan las siguientes columnas requeridas: ' . implode(', ', $missingHeaders));
         }
+        
+        // Verificar si existe la columna opcional HORAS
+        $tieneColumnaHoras = in_array('HORAS', $headers);
+        
+        // Crear mapa de índices de columnas para acceso flexible
+        $columnMap = array_flip($headers);
 
         // Procesar datos
         $data = [];
@@ -74,20 +85,29 @@ class ImportarGruposController extends Controller
             $row = $rows[$i];
             $rowData = [
                 'fila' => $i + 1,
-                'unidad' => trim($row[0]),
-                'curso' => trim($row[1]),
-                'inicio' => $this->parseDate($row[2]),
-                'fin' => $this->parseDate($row[3]),
-                'hora_inicio' => trim($row[4]),
-                'hora_fin' => trim($row[5]),
-                'curp' => trim($row[6]),
+                'unidad' => trim($row[$columnMap['UNIDAD']]),
+                'curso' => trim($row[$columnMap['CURSO']]),
+                'inicio' => $this->parseDate($row[$columnMap['INICIO']]),
+                'fin' => $this->parseDate($row[$columnMap['FIN']]),
+                'hora_inicio' => trim($row[$columnMap['HORA INICIO']]),
+                'hora_fin' => trim($row[$columnMap['HORA FIN']]),
+                'curp' => trim($row[$columnMap['CURP']]),
+                'horas_curso' => $tieneColumnaHoras && !empty($row[$columnMap['HORAS']]) && is_numeric($row[$columnMap['HORAS']]) 
+                    ? (int)trim($row[$columnMap['HORAS']]) 
+                    : null,
                 'errors' => [],
                 'warnings' => []
             ];
 
             // Lookup Unidad
+            // Normalizar caso específico: "Tuxtla Gutiérrez" -> "TUXTLA"
+            $unidadBusqueda = $rowData['unidad'];
+            if (stripos($unidadBusqueda, 'Tuxtla') !== false) {
+                $unidadBusqueda = 'TUXTLA';
+            }
+            
             $unidad = DB::table('tbl_unidades')
-                ->whereRaw("translate(lower(unidad), 'áéíóúüñ', 'aeiouun') = translate(lower(?), 'áéíóúüñ', 'aeiouun')", [$rowData['unidad']])
+                ->whereRaw("translate(lower(unidad), 'áéíóúüñ', 'aeiouun') = translate(lower(?), 'áéíóúüñ', 'aeiouun')", [$unidadBusqueda])
                 ->first();
 
             if (!$unidad) {
@@ -103,9 +123,7 @@ class ImportarGruposController extends Controller
             // Lookup Curso (con normalización de acentos y puntuación)
             $cursoNormalizado = $this->normalizarTexto($rowData['curso']);
 
-
-
-            $curso = DB::table('cursos')
+            $cursoQuery = DB::table('cursos')
                 ->select('cursos.id', 'cursos.nombre_curso', 'cursos.id_especialidad', 'cursos.horas', 'cursos.area as area_id', 'cursos.rango_criterio_pago_maximo')
                 ->leftJoin('area', 'cursos.area', '=', 'area.id')
                 ->addSelect('area.formacion_profesional as nombre_area')
@@ -121,8 +139,14 @@ class ImportarGruposController extends Controller
                     [$cursoNormalizado]
                 )
                 ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
-                ->where('cursos.estado', true)
-                ->first();
+                ->where('cursos.estado', true);
+            
+            // Si existe la columna HORAS, agregar filtro adicional
+            if ($rowData['horas_curso'] !== null) {
+                $cursoQuery->where('cursos.horas', $rowData['horas_curso']);
+            }
+            
+            $curso = $cursoQuery->first();
 
             if (!$curso) {
                 $rowData['errors'][] = 'Curso no encontrado: ' . $rowData['curso'];
@@ -230,6 +254,9 @@ class ImportarGruposController extends Controller
 
     private function procesarFila($row, $numFila)
     {
+        // Detectar si existe columna HORAS (debe estar en posición 7 si existe)
+        $tieneColumnaHoras = isset($row[7]) && !empty($row[7]) && is_numeric($row[7]);
+        
         $unidad = trim($row[0]);
         $cursoNombre = trim($row[1]);
         $inicio = $this->parseDate($row[2]);
@@ -237,10 +264,17 @@ class ImportarGruposController extends Controller
         $horaInicio = trim($row[4]);
         $horaFin = trim($row[5]);
         $curp = trim($row[6]);
+        $horasCurso = $tieneColumnaHoras ? (int)trim($row[7]) : null;
 
         // Lookup Unidad
+        // Normalizar caso específico: "Tuxtla Gutiérrez" -> "TUXTLA"
+        $unidadBusqueda = $unidad;
+        if (stripos($unidadBusqueda, 'Tuxtla') !== false) {
+            $unidadBusqueda = 'TUXTLA';
+        }
+        
         $unidadData = DB::table('tbl_unidades')
-            ->whereRaw("translate(lower(unidad), 'áéíóúüñ', 'aeiouun') = translate(lower(?), 'áéíóúüñ', 'aeiouun')", [$unidad])
+            ->whereRaw("translate(lower(unidad), 'áéíóúüñ', 'aeiouun') = translate(lower(?), 'áéíóúüñ', 'aeiouun')", [$unidadBusqueda])
             ->first();
         if (!$unidadData) {
             return ['success' => false, 'error' => 'Unidad no encontrada'];
@@ -254,7 +288,7 @@ class ImportarGruposController extends Controller
 
         // Lookup Curso (con normalización de acentos y puntuación)
         $cursoNormalizado = $this->normalizarTexto($cursoNombre);
-        $curso = DB::table('cursos')
+        $cursoQuery = DB::table('cursos')
             ->select('cursos.*', 'area.formacion_profesional as nombre_area', 'cursos.rango_criterio_pago_maximo')
             ->leftJoin('area', 'cursos.area', '=', 'area.id')
             ->whereRaw(
@@ -269,8 +303,14 @@ class ImportarGruposController extends Controller
                 [$cursoNormalizado]
             )
             ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
-            ->where('cursos.estado', true)
-            ->first();
+            ->where('cursos.estado', true);
+        
+        // Si existe la columna HORAS, agregar filtro adicional
+        if ($horasCurso !== null) {
+            $cursoQuery->where('cursos.horas', $horasCurso);
+        }
+        
+        $curso = $cursoQuery->first();
         
         if (!$curso) {
             return ['success' => false, 'error' => 'Curso no encontrado'];
