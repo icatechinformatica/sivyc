@@ -54,7 +54,6 @@ class ImportarGruposController extends Controller
         $worksheet = $spreadsheet->getActiveSheet();
         $rows = $worksheet->toArray();
 
-        // Validar headers
         // Validar headers (convertir a mayúsculas para comparar)
         $headers = array_map(function($h) {
             return strtoupper(trim($h));
@@ -62,11 +61,16 @@ class ImportarGruposController extends Controller
 
         $expectedHeaders = ['UNIDAD', 'CURSO', 'INICIO', 'FIN', 'HORA INICIO', 'HORA FIN', 'CURP'];
         
-        if ($headers !== $expectedHeaders) {
+        // Verificar que todas las columnas requeridas existan (permite columnas extra y cualquier orden)
+        $missingHeaders = array_diff($expectedHeaders, $headers);
+        if (!empty($missingHeaders)) {
             Storage::delete($tempPath);
             return redirect()->route('preinscripcion.importar_grupos.index')
-                ->with('error', 'Las columnas del Excel no coinciden. Se esperan: ' . implode(', ', $expectedHeaders));
+                ->with('error', 'Faltan las siguientes columnas requeridas: ' . implode(', ', $missingHeaders));
         }
+        
+        // Crear mapa de índices de columnas para acceso flexible
+        $columnMap = array_flip($headers);
 
         // Procesar datos
         $data = [];
@@ -78,13 +82,13 @@ class ImportarGruposController extends Controller
             $row = $rows[$i];
             $rowData = [
                 'fila' => $i + 1,
-                'unidad' => trim($row[0]),
-                'curso' => trim($row[1]),
-                'inicio' => $this->parseDate($row[2]),
-                'fin' => $this->parseDate($row[3]),
-                'hora_inicio' => trim($row[4]),
-                'hora_fin' => trim($row[5]),
-                'curp' => trim($row[6]),
+                'unidad' => trim($row[$columnMap['UNIDAD']]),
+                'curso' => trim($row[$columnMap['CURSO']]),
+                'inicio' => $this->parseDate($row[$columnMap['INICIO']]),
+                'fin' => $this->parseDate($row[$columnMap['FIN']]),
+                'hora_inicio' => trim($row[$columnMap['HORA INICIO']]),
+                'hora_fin' => trim($row[$columnMap['HORA FIN']]),
+                'curp' => trim($row[$columnMap['CURP']]),
                 'errors' => [],
                 'warnings' => []
             ];
