@@ -55,7 +55,11 @@ class ImportarGruposController extends Controller
         $rows = $worksheet->toArray();
 
         // Validar headers
-        $headers = array_map('trim', $rows[0]);
+        // Validar headers (convertir a mayúsculas para comparar)
+        $headers = array_map(function($h) {
+            return strtoupper(trim($h));
+        }, $rows[0]);
+
         $expectedHeaders = ['UNIDAD', 'CURSO', 'INICIO', 'FIN', 'HORA INICIO', 'HORA FIN', 'CURP'];
         
         if ($headers !== $expectedHeaders) {
@@ -86,8 +90,14 @@ class ImportarGruposController extends Controller
             ];
 
             // Lookup Unidad
+            // Normalizar caso específico: "Tuxtla Gutiérrez" -> "TUXTLA"
+            $unidadBusqueda = $rowData['unidad'];
+            if (stripos($unidadBusqueda, 'Tuxtla') !== false) {
+                $unidadBusqueda = 'TUXTLA';
+            }
+            
             $unidad = DB::table('tbl_unidades')
-                ->whereRaw("translate(lower(unidad), 'áéíóúüñ', 'aeiouun') = translate(lower(?), 'áéíóúüñ', 'aeiouun')", [$rowData['unidad']])
+                ->whereRaw("translate(lower(unidad), 'áéíóúüñ', 'aeiouun') = translate(lower(?), 'áéíóúüñ', 'aeiouun')", [$unidadBusqueda])
                 ->first();
 
             if (!$unidad) {
@@ -239,8 +249,14 @@ class ImportarGruposController extends Controller
         $curp = trim($row[6]);
 
         // Lookup Unidad
+        // Normalizar caso específico: "Tuxtla Gutiérrez" -> "TUXTLA"
+        $unidadBusqueda = $unidad;
+        if (stripos($unidadBusqueda, 'Tuxtla') !== false) {
+            $unidadBusqueda = 'TUXTLA';
+        }
+        
         $unidadData = DB::table('tbl_unidades')
-            ->whereRaw("translate(lower(unidad), 'áéíóúüñ', 'aeiouun') = translate(lower(?), 'áéíóúüñ', 'aeiouun')", [$unidad])
+            ->whereRaw("translate(lower(unidad), 'áéíóúüñ', 'aeiouun') = translate(lower(?), 'áéíóúüñ', 'aeiouun')", [$unidadBusqueda])
             ->first();
         if (!$unidadData) {
             return ['success' => false, 'error' => 'Unidad no encontrada'];
