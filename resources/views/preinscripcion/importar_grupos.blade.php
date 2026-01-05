@@ -38,6 +38,7 @@
                     <li><strong>HORA INICIO</strong>: Hora de inicio (ejemplo: "11:00 a.m.")</li>
                     <li><strong>HORA FIN</strong>: Hora de fin (ejemplo: "04:00 p.m.")</li>
                     <li><strong>CURP</strong>: CURP del instructor</li>
+                    <li><strong>HORAS</strong>: Cantidad de horas del curso</li>
                 </ol>
                 
                 <div class="alert alert-info mt-3">

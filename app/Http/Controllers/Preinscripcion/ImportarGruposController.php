@@ -478,14 +478,24 @@ class ImportarGruposController extends Controller
         $year = substr(date('Y'), -2);
 
         // Consecutivo desde alumnos_registro
-        $maxConsecutivo = DB::table('alumnos_registro')
+        $maxConsecutivoAlumnos = DB::table('alumnos_registro')
             ->where('ejercicio', date('Y'))
             ->where('cct', $cct)
             ->where('eliminado', false)
             ->selectRaw("COALESCE(MAX(CAST(substring(folio_grupo from '.{4}$') AS int)), 0) as max_consec")
             ->value('max_consec');
 
-        $consecutivo = ($maxConsecutivo ?? 0) + 1;
+        // Consecutivo desde tbl_cursos (para considerar los ya insertados en esta importación)
+        $maxConsecutivoCursos = DB::table('tbl_cursos')
+            ->where('cct', $cct)
+            ->whereNotNull('folio_grupo')
+            ->where('folio_grupo', '!=', '')
+            ->selectRaw("COALESCE(MAX(CAST(substring(folio_grupo from '.{4}$') AS int)), 0) as max_consec")
+            ->value('max_consec');
+
+        // Tomar el máximo de ambas tablas
+        $maxConsecutivo = max($maxConsecutivoAlumnos ?? 0, $maxConsecutivoCursos ?? 0);
+        $consecutivo = $maxConsecutivo + 1;
 
         return $cctProcesado . '-' . $year . str_pad($consecutivo, 4, '0', STR_PAD_LEFT);
     }
