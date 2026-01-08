@@ -6,6 +6,7 @@ use App\Http\Controllers\efirma\EValsupreController;
 use App\Http\Controllers\efirma\ESupreController;
 use \setasign\Fpdi\PdfParser\StreamReader;
 use Illuminate\Support\Facades\Storage;
+use App\Services\HerramientasService;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -36,6 +37,11 @@ use PDF;
 
 class supreController extends Controller
 {
+    public function __construct(HerramientasService $herramientas)
+    {
+        $this->herramientas = $herramientas;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -907,7 +913,7 @@ class supreController extends Controller
                 $total=[];
                 /*Aquí si hace falta habrá que incluir la clase municipios con include*/
                 $claveCurso = $request->valor;//$request->valor;
-                
+
                 // OPTIMIZACIÓN: Usar cache y Eloquent correctamente
                 $Cursos = tbl_curso::select('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
                         'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
@@ -1025,7 +1031,7 @@ class supreController extends Controller
     protected function gettipocurso(Request $request)
     {
         $claveCurso = $request->valor;
-        
+
         // OPTIMIZACIÓN: Usar Eloquent correctamente
         $Cursos = tbl_curso::select('tbl_cursos.tipo_curso')
                                 ->where('clave', '=', $claveCurso)
@@ -1381,12 +1387,16 @@ class supreController extends Controller
                 }
             }
         }
+
+        //Seccion para el layout correcto sacando el año
+            $layout_año = $this->herramientas->getPdfLayoutByDate($data_supre->fecha);
+
         // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid'));
         // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
         // return $pdf2->stream("prueba.pdf");
 
-        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante'))->setPaper('letter', 'portrait')->output();
-        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante'))
+        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante','layout_año'))->setPaper('letter', 'portrait')->output();
+        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante','layout_año'))
             ->setPaper('a4', 'landscape')  // Configurar tamaño y orientación
             ->output();
 
@@ -1543,7 +1553,10 @@ class supreController extends Controller
             }
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('leyenda','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64','direccion'));
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($data2->fecha);
+
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('leyenda','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64','direccion','layout_año'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
     }
