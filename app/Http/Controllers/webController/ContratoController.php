@@ -30,9 +30,16 @@ use Illuminate\Pagination\Paginator;
 use DateTime;
 use App\Http\Controllers\efirma\EContratoController;
 use App\Http\Controllers\efirma\EPagoController;
+use App\Services\HerramientasService;
 
 class ContratoController extends Controller
 {
+
+    public function __construct(HerramientasService $herramientas)
+    {
+        $this->herramientas = $herramientas;
+    }
+
     public function index(Request $request)
     {
         $array_ejercicio =[];
@@ -1347,7 +1354,10 @@ class ContratoController extends Controller
         $direccion = explode("*", $direccion);
         $sello = DB::Table('tbl_instituto')->Value('sello_ramo11');
 
-        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','qrCodeBase64','objeto','puesto','leyenda','direccion','sello'));
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($data->solicitud_fecha);
+
+        $pdf = PDF::loadView('layouts.pdfpages.procesodepago', compact('funcionarios','body_html','qrCodeBase64','objeto','puesto','leyenda','direccion','sello','layout_año'));
         $pdf->setPaper('Letter','portrait');
         return $pdf->stream('solicitud de pago.pdf');
 
