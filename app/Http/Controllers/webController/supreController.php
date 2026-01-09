@@ -6,6 +6,7 @@ use App\Http\Controllers\efirma\EValsupreController;
 use App\Http\Controllers\efirma\ESupreController;
 use \setasign\Fpdi\PdfParser\StreamReader;
 use Illuminate\Support\Facades\Storage;
+use App\Services\HerramientasService;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -36,6 +37,11 @@ use PDF;
 
 class supreController extends Controller
 {
+    public function __construct(HerramientasService $herramientas)
+    {
+        $this->herramientas = $herramientas;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -907,7 +913,7 @@ class supreController extends Controller
                 $total=[];
                 /*Aquí si hace falta habrá que incluir la clase municipios con include*/
                 $claveCurso = $request->valor;//$request->valor;
-                
+
                 // OPTIMIZACIÓN: Usar cache y Eloquent correctamente
                 $Cursos = tbl_curso::select('tbl_cursos.ze','tbl_cursos.cp','tbl_cursos.dura',
                         'tbl_cursos.modinstructor', 'tbl_cursos.tipo_curso',
@@ -1025,7 +1031,7 @@ class supreController extends Controller
     protected function gettipocurso(Request $request)
     {
         $claveCurso = $request->valor;
-        
+
         // OPTIMIZACIÓN: Usar Eloquent correctamente
         $Cursos = tbl_curso::select('tbl_cursos.tipo_curso')
                                 ->where('clave', '=', $claveCurso)
@@ -1381,12 +1387,16 @@ class supreController extends Controller
                 }
             }
         }
+
+        //Seccion para el layout correcto sacando el año
+            $layout_año = $this->herramientas->getPdfLayoutByDate($data_supre->fecha);
+
         // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid'));
         // $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid'))->setPaper('a4', 'landscape');
         // return $pdf2->stream("prueba.pdf");
 
-        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante'))->setPaper('letter', 'portrait')->output();
-        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante'))
+        $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','bodyCcp','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante','layout_año'))->setPaper('letter', 'portrait')->output();
+        $pdf2 = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('funcionarios','leyenda','direccion','bodyTabla','firma_electronica','uuid','objeto','puestos','qrCodeBase64', 'firmante','layout_año'))
             ->setPaper('a4', 'landscape')  // Configurar tamaño y orientación
             ->output();
 
@@ -1543,7 +1553,10 @@ class supreController extends Controller
             }
         }
 
-        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('leyenda','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64','direccion'));
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($data2->fecha);
+
+        $pdf = PDF::loadView('layouts.pdfpages.valsupre', compact('leyenda','funcionarios','body_html','ccp_html','uuid','objeto','puestos','qrCodeBase64','direccion','layout_año'));
         $pdf->setPaper('A4', 'Landscape');
         return $pdf->stream('medium.pdf');
     }
@@ -1674,7 +1687,7 @@ class supreController extends Controller
         if ($filtrotipo == "general")
         {
             $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion', 'observacion_validacion', 'folios.folio_validacion as suf',
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
@@ -1690,7 +1703,7 @@ class supreController extends Controller
         else if ($filtrotipo == 'curso')
         {
             $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion', 'observacion_validacion', 'folios.folio_validacion as suf',
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
@@ -1707,7 +1720,7 @@ class supreController extends Controller
         else if ($filtrotipo == 'unidad')
         {
             $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion', 'observacion_validacion', 'folios.folio_validacion as suf',
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
@@ -1724,7 +1737,7 @@ class supreController extends Controller
         else if ($filtrotipo == 'instructor')
         {
             $data = supre::SELECT('tabla_supre.no_memo','tabla_supre.fecha','tabla_supre.unidad_capacitacion',
-                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion','folios.folio_validacion as suf',
+                           'tabla_supre.folio_validacion','tabla_supre.fecha_validacion', 'observacion_validacion', 'folios.folio_validacion as suf',
                            'folios.importe_hora','folios.iva','folios.importe_total','folios.comentario',
                            'instructores.nombre','instructores.apellidoPaterno','instructores.apellidoMaterno',
                            'tbl_cursos.curso','tbl_cursos.clave','tbl_cursos.ze','tbl_cursos.dura','tbl_cursos.hombre',
@@ -2041,7 +2054,9 @@ class supreController extends Controller
                     'tabla_supre.folio_validacion AS memo_validacion',
                     'tabla_supre.fecha_validacion AS fecha_registro',
                     'folios.comentario AS observaciones',
-                    \DB::raw("hombre + mujer AS total_estudiantes"))
+                    \DB::raw("hombre + mujer AS total_estudiantes"),
+                    'tabla_supre.observacion_validacion AS observacion_validacion'
+                    )
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('folios.status', '!=', 'Cancelado')
@@ -2088,7 +2103,9 @@ class supreController extends Controller
 
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
-                    'folios.comentario')
+                    'folios.comentario',
+                    'tabla_supre.observacion_validacion AS observacion_validacion'
+                    )
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('tbl_cursos.id', '=', $idcurso)
@@ -2131,7 +2148,8 @@ class supreController extends Controller
 
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
-                    'folios.comentario')
+                    'folios.comentario',
+                    'tabla_supre.observacion_validacion AS observacion_validacion')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('tabla_supre.unidad_capacitacion', '=', $unidad)
@@ -2176,7 +2194,8 @@ class supreController extends Controller
 
                     'tabla_supre.folio_validacion',
                     'tabla_supre.fecha_validacion',
-                    'folios.comentario')
+                    'folios.comentario',
+                    'tabla_supre.observacion_validacion AS observacion_validacion')
                            ->whereDate('tabla_supre.fecha', '>=', $fecha1)
                            ->whereDate('tabla_supre.fecha', '<=', $fecha2)
                            ->WHERE('instructores.id', '=', $idInstructor)
@@ -2192,7 +2211,7 @@ class supreController extends Controller
             'INSTRUCTOR', 'UNIDAD/A.M DE CAP.','DEPENDENCIA', 'CURSO/CERTIFICACION', 'CURSO', 'CUPO', 'CLAVE DEL GRUPO',
             'Z.E.','HSM','MUNICIPIO','LOCALIDAD', 'IMPORTE POR HORA', 'IVA 16%', 'PARTIDA/CONCEPTO', 'IMPORTE TOTAL FEDERAL',
             'IMPORTE TOTAL ESTATAL', 'RETENCIÓN ISR', 'RETENCIÓN IVA', 'MEMO PRESUPUESTA',
-            'FECHA REGISTRO', 'OBSERVACIONES','BENEFICIARIOS'
+            'FECHA REGISTRO', 'OBSERVACIONES','BENEFICIARIOS', 'OBSERVACIONES VALIDACION'
         ];
 
         $nombreLayout = "formato de control".$fecha1 . ' - '. $fecha2 . " creado el " . carbon::now() . ".xlsx";

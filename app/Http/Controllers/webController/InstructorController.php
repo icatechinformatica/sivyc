@@ -381,7 +381,7 @@ class InstructorController extends Controller
             {
                 $saveInstructor = new instructor();
                 $save_preinstructor = new pre_instructor();
-                $uid = instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
+                $uid = pre_instructor::select('id')->WHERE('id', '!=', '0')->orderby('id','desc')->first();
                 if ($uid['id'] === null) {
                     # si es nulo entra una vez y se le asigna un valor
                     $id = 1;
@@ -416,7 +416,7 @@ class InstructorController extends Controller
             }
         } catch (\Throwable $e) {
         \Log::error('Error al intentar guardar el instructor: ' . $e->getMessage(), ['exception' => $e]);
-        return back()->withErrors('Ocurrió un error inesperado: ' . $e->getMessage())->withInput();
+        return back()->withErrors('Ocurrió un error inesperado, favor de intentarlo nuevamente.')->withInput();
         }
     }
 
@@ -2033,7 +2033,7 @@ class InstructorController extends Controller
 
         } catch (\Throwable $e) {
             \Log::error('Error al intentar guardar el instructor: ' . $e->getMessage(), ['exception' => $e]);
-            return back()->withErrors('Ocurrió un error inesperado: ' . $e->getMessage())->withInput();
+            return back()->withErrors('Ocurrió un error inesperado, favor de intentarlo nuevamente.')->withInput();
         }
     }
 
@@ -3389,7 +3389,7 @@ class InstructorController extends Controller
         }
     }
 
-    public function exportar_instructoresByEspecialidad()
+    public function _exportar_instructoresByEspecialidad()
     {
         $data = Especialidad::SELECT('especialidades.id','especialidades.nombre','especialidades.clave',
                 DB::raw('Array( SELECT CONCAT(instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno", '."' '".' ,
@@ -3638,7 +3638,8 @@ class InstructorController extends Controller
             }
             if($item->memorandum_solicitud != $request->nomemo)
             {
-                if(is_null($request->nomemo)) { // mejora para evitar que memorandum de solicitud quede sin numero
+                if(is_null($request->nomemo) && !isset($request->borrador)) { // mejora para evitar que memorandum de solicitud quede sin numero
+                    // dd('//');
                     return back()->with('mensaje', 'Error: No se ha especificado el numero de memorandum');
                 }
 
@@ -4818,6 +4819,13 @@ class InstructorController extends Controller
                 $upd_curso->save();
             }
         }
+
+        $userInstructor = DB::Connection('mysql')->Table('users')->Where('id_sivyc', $saveInstructor->id)->update(
+            [
+                'curp' => $saveInstructor->curp,
+                'email' => $saveInstructor->correo,
+            ]
+        );
 
         return $instructor;
     }

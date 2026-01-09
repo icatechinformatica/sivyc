@@ -87,6 +87,56 @@
         .checkbox {
             margin-top: 5px;
         }
+
+        /* ---- estilos del modal de fecha curriculum ---- */
+        #curriculumDateModal .modal-dialog { max-width: 420px; }
+        #curriculumDateModal .modal-content {
+            background: linear-gradient(180deg,#222,#111);
+            color: #fff;
+            border-radius: 8px;
+            border: none;
+            overflow: hidden;
+        }
+        #curriculumDateModal .modal-header {
+            border-bottom: none;
+            background: linear-gradient(90deg, rgba(0,0,0,0.35), rgba(0,0,0,0.15));
+        }
+        #curriculumDateModal .modal-title {
+            color: #fff;
+            font-weight: 700;
+        }
+        #curriculumDateModal .modal-body { padding: 1.2rem 1.5rem; }
+        #curriculumDateModal .form-group { text-align: center; margin-bottom: 0.8rem; }
+        #curriculumDateModal label { color: #ddd; font-weight:600; }
+        #curriculum_fecha {
+            max-width: 300px;
+            margin: 0.35rem auto 0;
+            display: block;
+            border-radius: 6px;
+            background: #fff;
+            color: #000;
+            padding: .45rem .6rem;
+            box-shadow: 0 6px 18px rgba(0,0,0,.35);
+            border: 1px solid rgba(0,0,0,.12);
+        }
+        #curriculumDateModal .modal-footer .btn {
+            min-width: 120px;
+            border-radius: 6px;
+            font-weight: 600;
+        }
+
+        #curriculumDateModal .btn-danger:hover {
+            background-color: #dc3545;
+            border-color: #dc3545;
+            filter: brightness(90%);
+        }
+
+        #curriculumDateModal .btn-primary:hover {
+            background-color: #0069d9;
+            border-color: #0062cc;
+            filter: brightness(90%);
+        }
+        /* ---- fin estilos modal ---- */
     </style>
     <form action="{{ route('saveins') }}" method="post" id="registerperf_prof" enctype="multipart/form-data">
         @csrf
@@ -1340,7 +1390,10 @@
                 <div class="form-group col-md-2">
                 </div>
                 <div class="form-group col-md-3"><br>
-                    <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-curriculumicatech-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de curriculum</small></small></a>
+                    <button type="button" class="btn mr-sm-4 mt-3" data-toggle="modal" data-target="#curriculumDateModal" data-id='["{{ $id }}","{{$datainstructor->fecha_curriculum_entrevista}}"]'>
+                        <small><small>Generar PDF de curriculum</small></small>
+                    </button>
+                    {{-- <a class="btn mr-sm-4 mt-3" href="{{ route('instructor-curriculumicatech-pdf', ['idins' => $id]) }}" target="_blank"><small><small>Generar PDF de curriculum</small></small></a> --}}
                 </div>
                 <div class="form-group col-md-3"><br>
                     {{-- <label for="inputarch_ine">Archivo Identificación</label> --}}
@@ -2225,6 +2278,32 @@
         </div>
     </div>
     <!-- END -->
+
+    <div class="modal fade" id="curriculumDateModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="curriculumDateForm" method="GET" target="_blank" action="{{ route('instructor-curriculumicatech-pdf') }}">
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Generar PDF de Curriculum</b></h5>
+                        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="curriculum_fecha">Selecciona la fecha</label>
+                            <input type="date" id="curriculum_fecha" name="fecha" required>
+                            <input type="hidden" id="curriculum_idins" name="idins" value="{{ $id }}">
+                        </div>
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Confirmar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @stop
 @section('script_content_js')
     <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>
@@ -3119,6 +3198,22 @@
             var id = button.data('id');
             // console.log(id);
             document.getElementById('idInstructorentrevistaupd').value = id;
+        });
+
+        $('#curriculumDateModal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);
+            var array = button.data('id') || '{{ $id }}';
+            var id = array['0'];
+            var curriculum_fecha = array['1'];
+            var status = '{{ $datainstructor->status ?? '' }}';
+            $('#curriculum_idins').val(id);
+
+            $('#curriculum_fecha').val(curriculum_fecha);
+            if (status != 'EN CAPTURA') {
+                $('#curriculum_fecha').attr('readonly', true);
+            } else {
+                $('#curriculum_fecha').removeAttr('readonly');
+            }
         });
 
         $('#updcurriculumModal').on('show.bs.modal', function(event){

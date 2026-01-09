@@ -31,17 +31,17 @@ class transferenciaController extends Controller
         //session_start();
     }
 
-    public function index(Request $request){
+    public function index(Request $request){// $this->calcula_isr(32000);
+        $folio = null;
         $data =  $cuentas_retiro = $numeros_layouts = $message = [];
         $unidades = DB::table('tbl_unidades')->where('cct', 'LIKE', '%07EI%')->orderby('unidad')->pluck('unidad','unidad');
         $anios = MyUtility::ejercicios();
-        if(!$request->ejercicio) $request->ejercicio = date('Y');
-
+        if(!$request->ejercicio) $request->ejercicio = date('Y');        
+        
         if(session('ejercicio'))$request->ejercicio = session('ejercicio');
-        if(session('unidad'))$request->unidad = session('unidad');
-        if(session('status'))$request->status = session('status');
-        if(session('valor'))$request->valor = session('valor');
-
+        if(session('unidad') AND !$request->unidad)$request->unidad = session('unidad');
+        if(session('status') AND !$request->status)$request->status = session('status');
+        if(session('valor') AND !$request->valor)$request->valor = session('valor');
 
         if($request->unidad OR $request->status OR $request->valor){
             $cuentasretiro = DB::table('tbl_instituto')->select("cuentas_bancarias->pago_instructor as cuentas")->get();
@@ -52,14 +52,23 @@ class transferenciaController extends Controller
                 $cuentas_retiro['{"'.$k.'":"'.$v.'"}'] = "$k: $v";
             }
             $data = $this->data($request);
+             if(count($data)>0){
+               if($data->last()->unicos == 0){
+                 $request->status = $data[0]->status;
+                 $folio = $data[0]->num_layout;
+               }
+             }
+            
         }
+        
         if(session('message')) $message = session('message');
 
         if($request->status=="GENERADO"){
             $numeros_layouts = DB::table('pagos')->where('status_transferencia','GENERADO')->pluck('num_layout','num_layout');
         }
             //dd($numeros_layouts);
-        return view('solicitudes.transferencia.index',compact('message','data','unidades', 'cuentas_retiro', 'request', 'anios', 'numeros_layouts'));
+        $folio = $folio ?: $this->folio_layout();
+        return view('solicitudes.transferencia.index',compact('message','data','unidades', 'cuentas_retiro', 'request', 'anios', 'numeros_layouts','folio'));
     }
 
     public function excel(Request $request){
@@ -126,22 +135,66 @@ class transferenciaController extends Controller
                     ")
                 )->orderby('numero_contrato','DESC');
             }else{
-                $data = $data->select('p.id','c.unidad_capacitacion','c.numero_contrato','p.no_memo','tc.nombre as instructor','tc.rfc','c.folio_fiscal',
-                    'tc.soportes_instructor->banco as banco','tc.soportes_instructor->no_cuenta as cuenta','tc.soportes_instructor->interbancaria as clabe',
-                    'c.arch_factura as factura','p.liquido as importe_neto','p.solicitud_fecha','p.fecha as fecha_pago','p.arch_pago','p.no_pago',
-                    DB::raw("CASE
-                        WHEN  p.status_transferencia is NULL  THEN 'PENDIENTE'
-                        WHEN  p.status_transferencia  = 'PAGADO'  THEN 'PAGADO'
-                        WHEN  f.status = 'Finalizado' THEN 'PAGADO'
-                        ELSE p.status_transferencia END as status
-                    "),
-                    'p.num_layout','tc.curso','tc.clave',
-                    DB::raw("CASE
-                        WHEN  docfirma.status='VALIDADO' THEN CONCAT('/contrato/',c.id_contrato::text)
-                        ELSE c.arch_contrato END as contrato
-                    ")
+                $sub = DB::table('pagos as p2')
+                    ->selectRaw("
+                        p2.id,
+                        p2.status_transferencia,
+                        CASE
+                            WHEN ROW_NUMBER() OVER (
+                                PARTITION BY p2.status_transferencia
+                                ORDER BY p2.id
+                            ) = 1
+                                THEN 1
+                            ELSE 0
+                        END AS es_unico
+                    ");
+
+                // 2) Tu query principal + joinSub + selects
+                $data = $data
+                    ->joinSub($sub, 'x', function ($join) {
+                        $join->on('x.id', '=', 'p.id');
+                    })
+                    ->select(
+                        'p.id',
+                        'c.unidad_capacitacion',
+                        'c.numero_contrato',
+                        'p.no_memo',
+                        'tc.nombre as instructor',
+                        'tc.rfc',
+                        'c.folio_fiscal',
+                        DB::raw("tc.soportes_instructor->>'banco' as banco"),
+                        DB::raw("tc.soportes_instructor->>'no_cuenta' as cuenta"),
+                        DB::raw("tc.soportes_instructor->>'interbancaria' as clabe"),
+                        'c.arch_factura as factura',
+                        'p.liquido as importe_neto',
+                        'p.solicitud_fecha',
+                        'p.fecha as fecha_pago',
+                        'p.arch_pago',
+                        'p.no_pago',
+                        DB::raw("
+                            CASE
+                                WHEN p.status_transferencia IS NULL THEN 'PENDIENTE'
+                                WHEN p.status_transferencia = 'PAGADO' THEN 'PAGADO'
+                                WHEN f.status = 'Finalizado' THEN 'PAGADO'
+                                ELSE p.status_transferencia
+                            END as status
+                        "),
+                        'p.num_layout',
+                        'tc.curso',
+                        'tc.clave',
+                        DB::raw("
+                            CASE
+                                WHEN docfirma.status = 'VALIDADO'
+                                    THEN CONCAT('/contrato/', c.id_contrato::text)
+                                ELSE c.arch_contrato
+                            END as contrato
+                        "),
+                        // columna de conteo acumulado de estados distintos:
+                        DB::raw("
+                            SUM(x.es_unico) OVER (ORDER BY p.id) AS unicos
+                        ")
                     )
-                ->paginate(15);
+                    ->paginate(15);
                 $data->appends(['ejercicio' => $request->ejercicio,'unidad' => $request->unidad, 'status_transferencia' => $request->status,'valor'=>$request->valor]);
             }
             //dd($data);
@@ -185,6 +238,18 @@ class transferenciaController extends Controller
         }
         return redirect('/solicitudes/transferencia/index')->with('message',$message);
     }
+    public function folio_layout(){
+        $num_default = date('dmy');        
+        $max = DB::table('pagos as p')
+            ->where('num_layout', 'like', $num_default.'%')
+            ->value(DB::raw("
+                CASE 
+                    WHEN max(num_layout) IS NULL THEN NULL
+                    ELSE CONCAT('$num_default', LPAD((CAST(SUBSTRING(max(num_layout), LENGTH(max(num_layout)) - 3, 4) AS INTEGER) + 1)::text,4,'0'))
+                END
+            "));
+        return $max ?? ($num_default . '0001');        
+    }
 
     public function generar(Request $request)
     {
@@ -192,105 +257,124 @@ class transferenciaController extends Controller
         $banco = key($cuenta);
         $cuenta_retiro = $cuenta[$banco];
         $num_layout = $request->num_layout;
-        /*MOTIVO
-                    RPAD(
-                        translate(
-                            CONCAT_WS(
-                                ' ',
-                                SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 1), 1, 5),
-                                SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 2), 1, 3),
-                                'FAC',
-                                RIGHT(regexp_replace(c.folio_fiscal, '\s', '', 'g') ,5),
-                                LEFT(regexp_replace(c.unidad_capacitacion, '\s', '', 'g'),9)
-
-                        ),'áéíóúÁÉÍÓÚÑ', 'aeiouAEIOUN') ,30,' '),
-
-
-         */
-
-        $dataBBVA = DB::table('pagos as p')
-            ->select(DB::raw("CONCAT('PTC',
+        ///ACTUALIZA ESTATUS Y ASIGAN NUMERO DE LAYOUT EN LA TABLA pagos
+        DB::statement("
+                WITH base AS (
+                    SELECT COALESCE(MAX(consec_layout), 0) AS base_consec
+                    FROM pagos
+                    WHERE num_layout = '$num_layout'
+                ),
+                marcados AS (
+                    SELECT 
+                        p.id,
+                        ROW_NUMBER() OVER (ORDER BY p.id) AS rn,
+                        b.base_consec
+                    FROM pagos p
+                    CROSS JOIN base b
+                    WHERE p.status_transferencia = 'MARCADO'
+                    AND p.num_layout = '$num_layout'
+                )
+                UPDATE pagos p
+                SET 
+                    status_transferencia = 'GENERADO',
+                    fecha_transferencia  = '".date('Y-m-d')."',
+                    consec_layout        = marcados.base_consec + marcados.rn
+                FROM marcados
+                WHERE p.id = marcados.id
+            ");
+        
+        //CREA O ACTUALIZA REGISTROS EN LA TABLA pagos_mensuales
+        $instructores_pagos = DB::table('pagos as p')
+        ->select('tc.id_instructor','p.num_layout')
+        ->selectRaw('sum(p.liquido) as total_bruto')
+        ->selectRaw('json_agg(tc.id) as ids_cursos')
+        ->selectRaw("tc.soportes_instructor->>'banco'  as banco")
+        ->selectRaw("tc.soportes_instructor->>'no_cuenta'  as cuenta")
+        ->selectRaw("tc.soportes_instructor->>'interbancaria'  as clabe")
+        ->selectRaw("
+            CASE 
+            WHEN tc.soportes_instructor->>'banco' ILIKE '%BBVA%' THEN
+                CONCAT('PTC',
                     LPAD(regexp_replace(tc.soportes_instructor->>'no_cuenta','[^a-zA-Z0-9]', '', 'g'), 18, '0'),
                     LPAD('$cuenta_retiro', 18, '0'),'MXP',
-                    LPAD(regexp_replace(p.liquido::TEXT, '[^\d.]',''), 16, '0'),
-                    RPAD(
-                        translate(
-                            CONCAT_WS(
-                                ' ',
-                                SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 1), 1, 3),
-                                SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 2), 1, 3),
-                                'FAC',
-                                RIGHT(regexp_replace(c.folio_fiscal, '\s', '', 'g') ,5),
-                                LEFT(regexp_replace(c.unidad_capacitacion, '\s', '', 'g'),3),
-                                tc.id
-                        ),'áéíóúÁÉÍÓÚÑ', 'aeiouAEIOUN') ,30,' '),
-                    '0                  000000000000.00'
-                    ) as reg"
-                )
-            )
-            ->join('contratos as c','c.id_contrato','p.id_contrato')
-            ->join('folios as f','f.id_folios','c.id_folios')
-            ->join('tbl_cursos as tc','tc.id','f.id_cursos')
-            ->where("tc.soportes_instructor->banco",'ilike','%BBVA%')
-            ->where('p.num_layout',$num_layout)
-            ->whereIn('p.status_transferencia',['MARCADO','GENERADO']);//->pluck('reg');
-
-        $dataINTER = DB::table('pagos as p')
-            ->select( DB::raw("CONCAT('PSC',
+                    '{{LIQUIDO}}',                    
+                    RPAD(CONCAT_WS(' ',min(p.num_layout::text),string_agg(p.consec_layout::text, ' '  ORDER BY p.consec_layout ASC)) ,30,' '),'0                  000000000000.00')
+            ELSE
+                CONCAT('PSC',
                     LPAD(regexp_replace(tc.soportes_instructor->>'interbancaria','[^a-zA-Z0-9]', '', 'g'), 18, '0'),
                     LPAD('$cuenta_retiro', 18, '0'),'MXP',
-                    LPAD(regexp_replace(p.liquido::TEXT, '[^\d.]',''), 16, '0'),
+                    '{{LIQUIDO}}',
                     RPAD(TRIM(regexp_replace(tc.nombre,'[^a-zA-Z0-9 ]', '', 'g')),30,' '),
                     '40',
                     LEFT(regexp_replace(tc.soportes_instructor->>'interbancaria','[^a-zA-Z0-9]', '', 'g'), '3'),
-                    RPAD(
-                    translate(
-                        CONCAT_WS(
-                            ' ',
-                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 1), 1, 3),
-                            SUBSTRING(SPLIT_PART(regexp_replace(curso, '\m(de|la|los|el|para|en|con|a|y|del|las)\M\\s+', '', 'gi'), ' ', 2), 1, 3),
-                            'FAC',
-                            RIGHT(regexp_replace(c.folio_fiscal, '\s', '', 'g') ,5),
-                            LEFT(regexp_replace(c.unidad_capacitacion, '\s', '', 'g'),3),
-                            tc.id
-                    ),
-                    'áéíóúÁÉÍÓÚÑ', 'aeiouAEIOUN') ,30,' '),
-                    LPAD(ROW_NUMBER() OVER (ORDER BY p.id_contrato)::TEXT, 7, '0'), 'H',
-                    '0                  000000000000.00'
-                    ) as reg"
-                )
+                   RPAD(CONCAT_WS(' ',min(p.num_layout::text),string_agg(p.consec_layout::text, ' '  ORDER BY p.consec_layout ASC)) ,30,' '),'0                  000000000000.00')
+                END 
+            as cadena_layout"
             )
-            ->join('contratos as c','c.id_contrato','p.id_contrato')
-            ->join('folios as f','f.id_folios','c.id_folios')
-            ->join('tbl_cursos as tc','tc.id','f.id_cursos')
-            ->where("tc.soportes_instructor->banco",'not ilike','%BBVA%')
-            ->where('p.num_layout',$num_layout)
-            ->whereIn('p.status_transferencia',['MARCADO', 'GENERADO']);//->pluck('reg');
+        ->join('tbl_cursos as tc','tc.id','p.id_curso')
+        ->where('p.num_layout',$num_layout)
+        ->where('p.status_transferencia','GENERADO')        
+        ->groupby('tc.id_instructor','tc.nombre', DB::raw("tc.soportes_instructor->>'banco'"), DB::raw("tc.soportes_instructor->>'interbancaria'"), DB::raw("tc.soportes_instructor->>'no_cuenta'"), 'p.num_layout')->get();
+        //LPAD(regexp_replace(sum(p.liquido)::TEXT, '[^\d.]',''), 16, '0'),    
+        //LPAD(regexp_replace(sum(p.liquido)::TEXT, '[^\d.]',''), 16, '0'),
 
+        foreach ($instructores_pagos as $ipagos) {
+            list($total_liquido, $total_isr) = $this->calcula_isr($ipagos->total_bruto);            
+            $liquido_formateado = str_pad(number_format((float)$total_liquido, 2, '.', ''), 16, '0', STR_PAD_LEFT);
 
-        $data = $dataBBVA->union($dataINTER)->pluck('reg');
-       //$data = $dataBBVA->union($dataINTER)->get();
-          //dd($data);
-        if($data){
-            $result = DB::table('pagos as p')
-            ->join('contratos as c','c.id_contrato','p.id_contrato')
-            ->join('folios as f','f.id_folios','c.id_folios')
-            ->join('tbl_cursos as tc','tc.id','f.id_cursos');           /*
-            if($banco=="BBVA")
-                $result->where("tc.soportes_instructor->banco",'ilike','%BBVA%');
-            else
-                $result->where("tc.soportes_instructor->banco",'not ilike','%BBVA%');
-            */
-            $result->where('p.status_transferencia','MARCADO')
-            ->where('p.num_layout',$num_layout)
-            ->update(['status_transferencia' => 'GENERADO', 'fecha_transferencia'=>date('Y-m-d')]);
-            //dd($result);
+            $cadena = $ipagos->cadena_layout; 
+            $cadena_layout = str_replace('{{LIQUIDO}}', $liquido_formateado, $cadena);
+
+            DB::table('pagos_mensuales')->updateOrInsert(
+                [
+                    'id_instructor' => $ipagos->id_instructor,
+                    'num_layout' => $ipagos->num_layout
+                ],
+                [
+                    'ids_cursos' => $ipagos->ids_cursos,
+                    'importe_bruto' => $ipagos->total_bruto,
+                    'total_liquido' => $total_liquido,
+                    'total_isr' => $total_isr,
+                    'banco' => $ipagos->banco,
+                    'cuenta' => $ipagos->cuenta,
+                    'clabe' => $ipagos->clabe,
+                    'cadena_layout' => $cadena_layout,
+                    'updated_at' => now(),
+                ]
+            );
         }
+        $data = DB::table('pagos_mensuales')->where('num_layout',$num_layout)->pluck('cadena_layout');
+        
         $data = str_replace(['["','"]','","'],['','',"\n"],$data);
         $name_file = $num_layout."_".$banco."_".date('dMY_His').".txt";
+        
         return response($data)
             ->header('Content-Disposition', 'attachment; filename='.$name_file)
             ->header('Content-Type', 'text/plain');
+    }
+
+    private function calcula_isr($importe){
+
+        $BG = $importe;
+        $tarifa = DB::table('tarifas_isr')->where('limite_inferior','<=',$BG)->where('limite_superior','>=',$BG)->first();
+        $LI = $tarifa->limite_inferior;
+        $RESTA = $BG-$LI; 
+        $PORC_LI = $tarifa->porcentaje;
+        $IMPUESTO = $RESTA*$PORC_LI/100;
+        $CF = $tarifa->cuota_fija;
+        $ISR = $IMPUESTO+$CF;
+        $LIQUIDO = $BG-$ISR;        
+        return [$LIQUIDO, $ISR];
+        
+    }
+    
+    public function layout_xsl(Request $request){
+        if($request->ejercicio OR $request->num_layout){
+            $fecha = date("dMy");       
+            $data = $this->data($request, 'excel');
+            $nombreLayout = "LAYOUT_PAGO"."_".$fecha.'.xlsx';            
+            return (new xlsTransferencia('xlsLayout', $data))->download($nombreLayout);
+        }
     }
 
     public function pagado(Request $request)

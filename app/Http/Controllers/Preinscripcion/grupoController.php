@@ -29,6 +29,7 @@ use App\Utilities\MiAgenda;
 use function PHPSTORM_META\type;
 use App\Http\Controllers\Solicitudes\vbgruposController;
 use App\Services\ValidacionServicioVb;
+use App\Services\GrupoService;
 use Illuminate\Support\Facades\Gate;
 
 class grupoController extends Controller
@@ -72,7 +73,6 @@ class grupoController extends Controller
     }
 
     public function index(Request $request){
-
         //$digitov = Algoritmo35::digito_verificador('2B25000100004');
         /*
         $inst = (new vbgruposController());
@@ -502,11 +502,10 @@ class grupoController extends Controller
     }
 
     public function save(Request $request) 
-    {
+    { 
         $matricula = $message = NULL;
         if(!$request->folio_grupo){            
-            $folio_grupo = $this->genera_folio();
-            session(['folio_grupo' => $folio_grupo]); ///TEMPORAL SE ESTA ELIMINANDO
+            $folio_grupo = $this->genera_folio();            
         }else $folio_grupo = $request->folio_grupo;
 
         
@@ -518,18 +517,17 @@ class grupoController extends Controller
         if(preg_match($patron,$request->busqueda)){ // ES FOLIO DE GRUPO
             if (Gate::allows('alumnos-masivo')) {
                 $curps = DB::table('alumnos_registro')->where('folio_grupo',$request->busqueda)->pluck('curp');
-            } else return redirect()->route('preinscripcion.grupo')->with(['message' => 'Operación no permitida!']);            
+            } else return redirect()->route('preinscripcion.grupo')->with(['message' => 'Operación no permitida!']);
         }else $curps []= $request->busqueda;
 
-        foreach($curps as $curp){
-            $resultado = $this->validaAlumno($request, $curp);
+        foreach($curps as $curp){ 
+            $resultado = $this->validaAlumno($request, $curp); //dd($resultado);
             if (isset($resultado['message'])){
-                $message .= $resultado['message'];
+                $message .= $resultado['message'];                 
                 continue;
-            }
+            }           
             $alumno = $resultado['alumno'];
-            $a_reg  = $resultado['a_reg'];
-            
+            $a_reg  = $resultado['a_reg'];            
             if($alumno and $folio_grupo) {
                 //EXTRAER MATRICULA Y GUARDAR
                 $matricula_sice = DB::table('registro_alumnos_sice')->where('eliminado', false)->where('curp', $curp)->value('no_control');
@@ -593,13 +591,13 @@ class grupoController extends Controller
                     ]
                 );
                 if ($result){
+                     session(['folio_grupo' => $folio_grupo]); ///TEMPORAL SE ESTA ELIMINANDO
                     $message = "Operación Exitosa!!";
                     if($alumno->curso_extra==true) DB::table('alumnos_pre')->where('id',$alumno->id_pre)->where('curso_extra',true)->update(['curso_extra'=>false]);
-                }                   
+                }elseif($message)return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
 
             } //else $message = "Operación no permitida!";
-        }
-        
+        }        
         return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
     }
 
@@ -620,12 +618,12 @@ class grupoController extends Controller
                     $tc_curso = DB::table('tbl_cursos')
                         ->where('unidad', $request->unidad)
                         ->where('folio_grupo', session('folio_grupo'))
-                        ->select('id','status_curso','created_at','id_instructor','cp','folio_grupo')
+                        ->select('id','status_curso','created_at','id_instructor','cp','folio_grupo','folio_unico')
                         ->first();
 
                     if(!$tc_curso) {
                         $tc_curso = new \stdClass();
-                        $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = null;
+                        $tc_curso->id = $tc_curso->status_curso = $tc_curso->created_at = $tc_curso->id_instructor = $tc_curso->cp = $tc_curso->folio_unico = null;
                     }
 
                     if ($mapertura AND $tc_curso->status_curso!='EDICION' AND
@@ -819,69 +817,17 @@ class grupoController extends Controller
                                         $abrins = ($diferencia > 0) ? 'EP' : 'PI';
                                     }
 
-                                    $alumno_updates[] = [
-                                        'id' => $key,
-                                        'costo' => $pago,
-                                        'tinscripcion' => $tinscripcion,
-                                        'abrinscri' => $abrins
-                                    ];
-
-                                    if (($tc_curso->status_curso == 'EDICION') AND session('folio_grupo')) {
-                                        $inscripcion_updates[] = [
-                                            'alumno_id' => $key,
-                                            'costo' => $pago,
-                                            'tinscripcion' => $tinscripcion,
-                                            'abrinscri' => $abrins
-                                        ];
-                                    }
-                                }
-
-                                // Realizar updates individuales (manteniendo la lógica original)
-                                foreach ($alumno_updates as $update) {
-                                    Alumno::where('id', $update['id'])->update([
-                                        'costo' => $update['costo'],
-                                        'tinscripcion' => $update['tinscripcion'],
-                                        'abrinscri' => $update['abrinscri']
-                                    ]);
-                                }
-
-                                // Updates para inscripción si es necesario 390cd5ce2d454baaa8667990a38d56b9
-
-                                if (!empty($inscripcion_updates)) {
-                                    // Construir las cláusulas CASE WHEN para cada campo
-                                    $costoCase = [];
-                                    $tinscripcionCase = [];
-                                    $abrinscriCase = [];
-                                    $alumnoIds = [];
-
-                                    foreach ($inscripcion_updates as $update) {
-                                        $alumnoId = $update['alumno_id'];
-                                        $costo = $update['costo'];
-                                        $tinscripcion = $update['tinscripcion'];
-                                        $abrinscri = $update['abrinscri'];
-
-                                        $costoCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN {$costo}";
-                                        $tinscripcionCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN '{$tinscripcion}'";
-                                        $abrinscriCase[] = "WHEN alumnos_registro.id = {$alumnoId} THEN '{$abrinscri}'";
-                                        $alumnoIds[] = $alumnoId;
-                                    }
-
-                                    // Construir las expresiones CASE completas
-                                    $costoExpression = "CASE " . implode(' ', $costoCase) . " ELSE tbl_inscripcion.costo END";
-                                    $tinscripcionExpression = "CASE " . implode(' ', $tinscripcionCase) . " ELSE tbl_inscripcion.tinscripcion END";
-                                    $abrinscriExpression = "CASE " . implode(' ', $abrinscriCase) . " ELSE tbl_inscripcion.abrinscri END";
-
-                                    // Ejecutar un solo UPDATE masivo
+                                    Alumno::where('id', $key)->update(['costo' => $pago, 'tinscripcion' => $tinscripcion, 'abrinscri' => $abrins]);
                                     DB::table('tbl_inscripcion')
-                                        ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
-                                        ->where('tbl_inscripcion.folio_grupo', session('folio_grupo'))
-                                        ->whereIn('alumnos_registro.id', $alumnoIds)
-                                        ->update([
-                                            'tbl_inscripcion.costo' => DB::raw($costoExpression),
-                                            'tbl_inscripcion.tinscripcion' => DB::raw($tinscripcionExpression),
-                                            'tbl_inscripcion.abrinscri' => DB::raw($abrinscriExpression)
+                                            ->join('alumnos_registro', 'tbl_inscripcion.matricula', '=', 'alumnos_registro.no_control')
+                                            ->where('tbl_inscripcion.folio_grupo', session('folio_grupo'))
+                                            ->where('alumnos_registro.id', $key)
+                                            ->update([
+                                                'tbl_inscripcion.costo' => $pago,
+                                                'tbl_inscripcion.tinscripcion' => $tinscripcion,
+                                                'tbl_inscripcion.abrinscri' => $abrins
                                         ]);
-                                }
+                                }                                
                             }
 
                             $sx = DB::table('alumnos_registro')
@@ -996,7 +942,9 @@ class grupoController extends Controller
                                         'depen_telrepre' => $depen_telrepre,
                                         'nplantel' => $unidad->plantel,
                                         'programa' => $request->programa,
-                                        'plantel' => $request->plantel
+                                        'plantel' => $request->plantel,
+                                        'mpreapertura' => $mapertura,
+                                        'obs_preapertura' => $request->observaciones
                                     ]);
 
                                 if($tc_curso->cp == $cp AND $result_curso){
@@ -1254,7 +1202,14 @@ class grupoController extends Controller
                                                 'vb_dg' => true
                                             ]
                                         );
-
+                                        
+                                        //GENERA Y GUARDA EL FOLIO 
+                                        /*
+                                        if(!$tc_curso->folio_unico and $ID){
+                                            $GrupoService = (new GrupoService());
+                                            $GrupoService->folio_unico($ID);
+                                        }
+                                        */
                                     if($result_curso) $message = "Operación Exitosa!!";
                                 }
                             }

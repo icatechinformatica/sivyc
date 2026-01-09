@@ -110,6 +110,7 @@ class dvController extends Controller
                 $sql .= "datos_$anio AS (
                     SELECT
                         c2.no_convenio,
+                        tc2.unidad AS unidad,
                         COUNT(DISTINCT tc2.id) AS total_cursos_$anio,
                         SUM(CASE WHEN ti2.calificacion != 'NP' AND ti2.status = 'INSCRITO' AND ti2.sexo = 'M' THEN 1 ELSE 0 END) AS total_mujeres_$anio,
                         SUM(CASE WHEN ti2.calificacion != 'NP' AND ti2.status = 'INSCRITO' AND ti2.sexo = 'H' THEN 1 ELSE 0 END) AS total_hombres_$anio,
@@ -120,17 +121,18 @@ class dvController extends Controller
                     WHERE EXTRACT(YEAR FROM ((tc2.memos->'CERRADO_PLANEACION'->>'FECHA')::DATE)) = $anio
                     AND tc2.status_curso = 'AUTORIZADO'
                     AND tc2.proceso_terminado = true
-                    GROUP BY c2.no_convenio
+                    GROUP BY c2.no_convenio, tc2.unidad
                 ), ";
             }
             // WHERE EXTRACT(YEAR FROM tc2.inicio::DATE) = $anio
 
             // Construir los CTEs para cada mes
             foreach ($meses as $mes) {
-                $mes_alias = str_replace('-', '_', $mes); // Reemplazar guiones con guiones bajos
+                $mes_alias = str_replace('-', '_', $mes);
                 $sql .= "datos_$mes_alias AS (
                     SELECT
                         c3.no_convenio,
+                        tc3.unidad AS unidad,
                         COUNT(DISTINCT tc3.id) AS total_cursos_$mes_alias,
                         STRING_AGG(DISTINCT tc3.curso, '/ ') AS cursos_$mes_alias,
                         SUM(CASE WHEN ti3.calificacion != 'NP' AND ti3.status = 'INSCRITO' AND ti3.sexo = 'M' THEN 1 ELSE 0 END) AS total_mujeres_$mes_alias,
@@ -142,9 +144,10 @@ class dvController extends Controller
                     WHERE TO_CHAR((tc3.memos->'CERRADO_PLANEACION'->>'FECHA')::DATE, 'YYYY-MM') = '$mes'
                     AND tc3.status_curso = 'AUTORIZADO'
                     AND tc3.proceso_terminado = true
-                    GROUP BY c3.no_convenio
+                    GROUP BY c3.no_convenio, tc3.unidad
                 ), ";
             }
+
             // WHERE TO_CHAR(tc3.inicio::DATE, 'YYYY-MM') = '$mes'
 
             // Eliminar la última coma y espacio
@@ -193,14 +196,18 @@ class dvController extends Controller
             // Agregar los JOINs dinámicos para cada año
             foreach ($anios as $anio) {
                 $sql .= "
-            LEFT JOIN datos_$anio AS d$anio ON c.no_convenio = d$anio.no_convenio ";
+            LEFT JOIN datos_$anio AS d$anio
+                ON c.no_convenio = d$anio.no_convenio
+            AND tc.unidad = d$anio.unidad ";
             }
 
             // Agregar los JOINs dinámicos para cada mes
             foreach ($meses as $mes) {
                 $mes_alias = str_replace('-', '_', $mes);
                 $sql .= "
-            LEFT JOIN datos_$mes_alias AS d$mes_alias ON c.no_convenio = d$mes_alias.no_convenio ";
+            LEFT JOIN datos_$mes_alias AS d$mes_alias
+                ON c.no_convenio = d$mes_alias.no_convenio
+            AND tc.unidad = d$mes_alias.unidad ";
             }
 
             $sql .= "
