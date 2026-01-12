@@ -483,7 +483,7 @@ class Reporterf001Repository implements Reporterf001Interface
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
             ->first();
 
-
+        $fechaSello = $dataRf->periodo_fin;
         $organismoPublico = DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
         // checa si el documento está vacio
@@ -544,9 +544,13 @@ class Reporterf001Repository implements Reporterf001Interface
                     array_push($puestos,'ENCARGADO');
                 }
             }
+        } else
+        {
+            // si no está sellado tendré que obtener un valor por defecto
+
         }
 
-        return [$bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64];
+        return [$bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64, $fechaSello];
     }
 
     public function getDate($date)
