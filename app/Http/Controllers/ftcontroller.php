@@ -19,8 +19,14 @@ use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
 use App\Models\Instituto;
 use App\Models\tbl_curso;
 use Hamcrest\Core\HasToString;
+use App\Services\HerramientasService;
 
 class ftcontroller extends Controller {
+
+    public function __construct(HerramientasService $herramientas)
+    {
+        $this->herramientas = $herramientas;
+    }
 
     public function index(Request $request) {
         // obtener el año actual --        
@@ -443,7 +449,10 @@ class ftcontroller extends Controller {
                     $funcionarios = $this->funcionarios($unidad);
                     $direccion = explode("*",$funcionarios['dunidad']['direccion']);
 
-                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'leyenda','funcionarios','direccion'));
+                    //Seccion para el layout correcto sacando el año
+                    $layout_año = $this->herramientas->getPdfLayoutByDate($fecha_nueva);
+
+                    $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'leyenda','funcionarios','direccion','layout_año'));
                     return $pdf->stream('Memo_unidad_para_DTA.pdf');
                     /**
                      * GENERAMOS UNA REDIRECCIÓN HACIA EL INDEX
