@@ -3,6 +3,7 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Carbon\Carbon;
 
 
 class HerramientasService
@@ -16,5 +17,15 @@ class HerramientasService
         }
 
         return $plantilla;
+    }
+
+     /**
+     * Determina el layout correcto para PDFs según el año
+     */
+    public function getPdfLayoutByDate($fecha)
+    {
+        $anio = Carbon::parse($fecha)->year;
+
+        return $anio;
     }
 }

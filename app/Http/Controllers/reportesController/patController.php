@@ -18,7 +18,7 @@ class patController extends Controller
     function __construct() {
         $this->meses = ["enero"=>"ENERO","febrero"=>"FEBRERO","marzo"=>"MARZO","abril"=>"ABRIL",
             "mayo"=>"MAYO","junio"=>"JUNIO","julio"=>"JULIO","agosto"=>"AGOSTO","septiembre"=>"SEPTIEMBRE",
-            "octubre"=>"OCTUBRE","nomviembre"=>"NOVIEMBRE","diciembre"=>"DICIEMBRE"];
+            "octubre"=>"OCTUBRE","noviembre"=>"NOVIEMBRE","diciembre"=>"DICIEMBRE"];
         $this->abrev_org = ['1'=>'DIRECCIONES_UC','2'=>'DELEG_ADTVAS', '3'=>'DEPTOS_ACADEMICOS','4'=>'DEPTOS_VINCULACION'];
         $this->organismos = ['1'=>'DIRECCIONES DE UNIDADES DE CAPACITACIÓN','2'=>'DELEGACIONES ADMINISTRATIVAS', '3'=>'DEPARTAMENTOS ACADEMICOS','4'=>'DEPARTAMENTOS DE VINCULACIÓN'];
 

@@ -3389,7 +3389,7 @@ class InstructorController extends Controller
         }
     }
 
-    public function exportar_instructoresByEspecialidad()
+    public function _exportar_instructoresByEspecialidad()
     {
         $data = Especialidad::SELECT('especialidades.id','especialidades.nombre','especialidades.clave',
                 DB::raw('Array( SELECT CONCAT(instructores."apellidoPaterno",'."' '".',instructores."apellidoMaterno", '."' '".' ,
