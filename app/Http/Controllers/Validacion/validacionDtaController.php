@@ -15,8 +15,14 @@ use function GuzzleHttp\json_decode;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
+use App\Services\HerramientasService;
 
 class validacionDtaController extends Controller {
+
+    public function __construct(HerramientasService $herramientas)
+    {
+        $this->herramientas = $herramientas;
+    }
 
     public function index(Request $request) {
         $unidad = $request->get('busqueda_unidad');
@@ -448,7 +454,11 @@ class validacionDtaController extends Controller {
                                 $direccion = explode("*",$funcionarios['dacademico']['direccion']);
                                 // $direccion = DB::table('tbl_unidades')->WHERE('unidad',$unidadSeleccionada)->VALUE('direccion');
                                 // $direccion = explode("*", $direccion);
-                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','fecha_envio','funcionarios','direccion'));
+
+                                //Seccion para el layout correcto sacando el año
+                                $layout_año = $this->herramientas->getPdfLayoutByDate($fecha_nueva);
+
+                                $pdf = PDF::loadView('reportes.memounidad', compact('reg_cursos', 'reg_unidad', 'nume_memo', 'total', 'fecha_nueva', 'elabora', 'total_turnado_dta', 'comentarios_enviados', 'total_turnado_planeacion', 'sum_total', 'totalReportados', 'mesReportado2', 'diaArray', 'leyenda','correo_institucional','fecha_envio','funcionarios','direccion','layout_año'));
                                 return $pdf->stream('Memo_Unidad.pdf');
                             } else {
                                 return back()->withInput()->withErrors(['NO PUEDE REALIZAR ESTA OPERACIÓN, DEBIDO A QUE NO SE HAN SELECCIONADO CURSOS!']);
@@ -814,7 +824,11 @@ class validacionDtaController extends Controller {
             $direccion = explode("*",$funcionarios['dacademico']['direccion']);
             // $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
             // $direccion = explode("*", $direccion);
-            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos', 'leyenda','funcionarios','direccion'));
+
+            //Seccion para el layout correcto sacando el año
+            $layout_año = $this->herramientas->getPdfLayoutByDate($fechaFormato);
+
+            $pdf = PDF::loadView('layouts.pdfpages.formatot_entrega_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'directorio', 'jefeDepto', 'directorPlaneacion', 'mesUnity', 'totalCursos', 'leyenda','funcionarios','direccion','layout_año'));
             // return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
             return $pdf->stream('Memorandum_entrega_formato_t_a_planeacion.pdf');
         } else {
@@ -1835,7 +1849,11 @@ class validacionDtaController extends Controller {
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
         // $direccion = DB::table('tbl_unidades')->WHERE('unidad','TUXTLA')->VALUE('direccion');
         // $direccion = explode("*", $direccion);
-        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','funcionarios','direccion'));
+
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($fecha_ahora);
+
+        $pdf = PDF::loadView('reportes.resumen_unidad_formatot', compact('leyenda','numero_memo','D','M','Y','MT','unidad','info_cursos','count_cursos','historial_meses','funcionarios','direccion','layout_año'));
         return $pdf->Stream('Memo_unidad_para_DTA.pdf');
     }
 

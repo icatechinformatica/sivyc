@@ -1,4 +1,4 @@
-@extends('theme.formatos.vlayout2025')
+@extends('theme.formatos.vlayout'.$layout_año)
 @section('title', 'Formato T | SIVyC Icatech')
 @section('content_script_css')
     <style>
@@ -12,7 +12,7 @@
         .tablag tr td { font-size: 8px; padding: 0px;}
         .contenedor {
         position:RELATIVE;
-        top:120px;
+        top:80px;
         width:100%;
         margin:auto;
         /* Propiedad que ha sido agreda*/

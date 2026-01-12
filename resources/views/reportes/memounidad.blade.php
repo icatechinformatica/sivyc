@@ -1,4 +1,4 @@
-@extends('theme.formatos.vlayout2025')
+@extends('theme.formatos.vlayout'.$layout_año)
 @section('title', 'Formato T | SIVyC Icatech')
 @section('content_script_css')
     <style>
