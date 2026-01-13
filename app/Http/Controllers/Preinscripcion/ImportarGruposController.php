@@ -404,6 +404,18 @@ class ImportarGruposController extends Controller
             $instructor->nombre_completo = trim($instructor->apellidoPaterno . ' ' . 
                                                  $instructor->apellidoMaterno . ' ' . 
                                                  $instructor->nombre);
+
+            // Si el criterio de pago es null, intentar obtenerlo desde data_especialidad JSON
+            if ($instructor->criterio_pago === null) {
+                $criterioPagoFromJson = DB::table('instructor as i')
+                    ->selectRaw("i.data_especialidad->0->>'criterio_pago_id' as criterio_pago_id")
+                    ->where('i.curp', $curp)
+                    ->value('criterio_pago_id');
+
+                if ($criterioPagoFromJson !== null) {
+                    $instructor->criterio_pago = $criterioPagoFromJson;
+                }
+            }
         }
 
         return $instructor;
