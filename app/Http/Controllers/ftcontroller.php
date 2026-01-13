@@ -450,7 +450,7 @@ class ftcontroller extends Controller {
                     $direccion = explode("*",$funcionarios['dunidad']['direccion']);
 
                     //Seccion para el layout correcto sacando el año
-                    $layout_año = $this->herramientas->getPdfLayoutByDate($fecha_nueva);
+                    $layout_año = $this->herramientas->getPdfLayoutByDate($fecha_ahora);
 
                     $pdf = PDF::loadView('reportes.memodta',compact('reg_cursos','reg_unidad','numero_memo','total','fecha_nueva', 'leyenda','funcionarios','direccion','layout_año'));
                     return $pdf->stream('Memo_unidad_para_DTA.pdf');
