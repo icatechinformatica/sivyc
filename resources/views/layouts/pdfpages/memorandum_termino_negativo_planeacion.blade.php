@@ -1,4 +1,4 @@
-@extends('theme.formatos.vlayout'.$layout_año)
+@extends('theme.formatos.vlayout2025')
 @section('title', 'MEMORANDUM FORMATO ENTREGA NEGATIVA | SIVyC Icatech')
 @section('content_script_css')
     <style type="text/css">
