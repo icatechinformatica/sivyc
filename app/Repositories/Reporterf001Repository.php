@@ -483,7 +483,7 @@ class Reporterf001Repository implements Reporterf001Interface
             ->WhereNotIn('status',['CANCELADO','CANCELADO ICTI'])
             ->first();
 
-
+        $fechaSello = $dataRf->periodo_fin;
         $organismoPublico = DB::table('organismos_publicos')->select('nombre_titular', 'cargo_fun')->where('id', '=', $organismo)->first();
 
         // checa si el documento está vacio
@@ -544,9 +544,13 @@ class Reporterf001Repository implements Reporterf001Interface
                     array_push($puestos,'ENCARGADO');
                 }
             }
+        } else
+        {
+            // si no está sellado tendré que obtener un valor por defecto
+
         }
 
-        return [$bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64];
+        return [$bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64, $fechaSello];
     }
 
     public function getDate($date)
@@ -573,7 +577,17 @@ class Reporterf001Repository implements Reporterf001Interface
 
     public function getFirmadoFormat($request)
     {
-        return (new Rf001Model())->whereIn('estado', ['REVISION', 'PARASELLAR', 'ENSELLADO', 'SELLADO'])->whereYear('periodo_fin', Carbon::now()->year)->orderBy('updated_at', 'desc')->paginate(10 ?? 5);
+
+        return (new Rf001Model())
+            ->whereIn('estado', ['REVISION', 'PARASELLAR', 'ENSELLADO', 'SELLADO'])
+            ->whereBetween('periodo_fin', [
+                Carbon::create(2025, 1, 1)->startOfDay(),
+                Carbon::create(2026, 12, 31)->endOfDay(),
+            ])
+            ->orderBy('updated_at', 'desc')
+            ->paginate(10);
+
+        // return (new Rf001Model())->whereIn('estado', ['REVISION', 'PARASELLAR', 'ENSELLADO', 'SELLADO'])->whereYear('periodo_fin', Carbon::now()->year)->orderBy('updated_at', 'desc')->paginate(10 ?? 5);
     }
 
     public function reenviarSolicitud($request)

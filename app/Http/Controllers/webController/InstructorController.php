@@ -39,9 +39,14 @@ use PDF;
 use App\User;
 use Illuminate\Support\Facades\Hash;
 use App\Services\WhatsAppService;
+use App\Services\HerramientasService;
 
 class InstructorController extends Controller
 {
+    public function __construct(HerramientasService $herramientas)
+    {
+        $this->herramientas = $herramientas;
+    }
 
     private function honorarios($total)
     {
@@ -3499,7 +3504,10 @@ class InstructorController extends Controller
         $funcionarios = $this->funcionarios('TUXTLA');
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','leyenda','D','M','Y','userunidad','funcionarios','direccion'));
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($fecha_solicitud);
+
+        $pdf = PDF::loadView('layouts.pdfpages.entrevistainstructor',compact('data','leyenda','D','M','Y','userunidad','funcionarios','direccion','layout_año'));
         $pdf->setPaper('letter');
         return  $pdf->stream('entrevista_instructor.pdf');
     }
@@ -3541,7 +3549,10 @@ class InstructorController extends Controller
         }
         // fin
 
-        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('leyenda','data', 'perfiles','D','M','Y','funcionarios','direccion'));
+        //Seccion para el layout correcto sacando el año
+            $layout_año = $this->herramientas->getPdfLayoutByDate($date);
+
+        $pdf = PDF::loadView('layouts.pdfpages.curriculumicatechinstructor',compact('leyenda','data', 'perfiles','D','M','Y','funcionarios','direccion','layout_año'));
         $pdf->setPaper('letter');
         return  $pdf->stream('curriculum_icatech_instructor.pdf');
     }
@@ -3700,7 +3711,11 @@ class InstructorController extends Controller
         $nomemosol = $request->nomemo;
         $fecha_letra = $this->obtenerFechaEnLetra($D);
         $direccion = explode("*",$funcionarios['dunidad']['direccion']);
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('leyenda','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios','direccion'));
+
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($date);
+
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudinstructor',compact('leyenda','data','cursos','porcentaje','instructor','data_unidad','solicito','D','M','Y','cursosnoav','nomemosol','tipo_doc','fecha_letra','daesp','funcionarios','direccion','layout_año'));
         $pdf->setPaper('letter');
         return  $pdf->stream('solicitud_instructor.pdf');
     }
@@ -3818,7 +3833,11 @@ class InstructorController extends Controller
         $M = $this->monthToString(date('m',$date));//A
         $Y = date("Y",$date);
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
-        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('leyenda','instructor','especialidades','unidad','D','M','Y','funcionarios','direccion'));
+
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($date);
+
+        $pdf = PDF::loadView('layouts.pdfpages.validacioninstructor',compact('leyenda','instructor','especialidades','unidad','D','M','Y','funcionarios','direccion','layout_año'));
         $pdf->setPaper('letter', 'Landscape');
         return  $pdf->stream('validacion_instructor.pdf');
     }
@@ -3873,7 +3892,10 @@ class InstructorController extends Controller
         // dd($especialidades);
         $direccion = explode("*",$funcionarios['dunidad']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','funcionarios','direccion'));
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($date);
+
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','funcionarios','direccion','layout_año'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor.pdf');
     }
@@ -3926,7 +3948,10 @@ class InstructorController extends Controller
         // dd($data_unidad);
         $direccion = explode("*",$funcionarios['dacademico']['direccion']);
 
-        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios','direccion'));
+        //Seccion para el layout correcto sacando el año
+        $layout_año = $this->herramientas->getPdfLayoutByDate($date);
+
+        $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios','direccion','layout_año'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
     }

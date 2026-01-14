@@ -1,4 +1,4 @@
-@extends('theme.formatos.vlayout2025')
+@extends('theme.formatos.vlayout'.$layout_año)
 @section('title', 'SOLICITUD DE PAGO DE INSTRUCTOR | SIVyC Icatech')
 @section('content_script_css')
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

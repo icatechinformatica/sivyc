@@ -24,15 +24,18 @@ use App\Models\Tokens_icti;
 use App\Models\Reportes\Rf001Model;
 use setasign\Fpdi\Fpdi;
 use App\Http\Requests\Rf001StoreRequest;
+use App\Services\HerramientasService;
 
 class Rf001Controller extends Controller
 {
     private $path_files;
     private Reporterf001Interface $rfoo1Repository;
     protected $path_files_cancelled;
-    public function __construct(Reporterf001Interface $rfoo1Repository)
+    protected HerramientasService $herramientas;
+    public function __construct(Reporterf001Interface $rfoo1Repository, HerramientasService $herramientas)
     {
         $this->rfoo1Repository = $rfoo1Repository;
+        $this->herramientas = $herramientas;
         $this->path_files = env("APP_URL").'/storage/';
         $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
     }
@@ -444,7 +447,9 @@ class Rf001Controller extends Controller
         $direccion = $dataunidades->direccion;
         // aplicando distructuración
         $distintivo = DB::table('tbl_instituto')->value('distintivo'); #texto de encabezado del pdf
-        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $dataunidades->id, $organismo);
+        list($bodyMemo, $bodyRf001, $uuid, $objeto, $puestos, $qrCodeBase64, $fechaSello) = $this->rfoo1Repository->generarDocumentoPdf($idReporte, $dataunidades->id, $organismo);
+        //obtenemos el año para la selección del layout
+        $layoutAnio = $this->herramientas->getPdfLayoutByDate($fechaSello);
 
         $data = [
             'bodyMemo' => $bodyMemo,
@@ -456,6 +461,7 @@ class Rf001Controller extends Controller
             'qrCodeBase64' => $qrCodeBase64,
             'unidad' => $unidad,
             'bodyRf001' => $bodyRf001,
+            'layoutAnio' => $layoutAnio,
         ];
 
         // generar el PDF

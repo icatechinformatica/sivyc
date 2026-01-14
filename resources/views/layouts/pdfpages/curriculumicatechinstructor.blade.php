@@ -1,5 +1,5 @@
 
-@extends('theme.formatos.vlayout2025')
+@extends('theme.formatos.vlayout'.$layout_año)
 @section('title', 'CURRICULUM ICATECH| SIVyC Icatech')
 @section('content_script_css')
         <link rel="stylesheet" type="text/css" href="{{ public_path('vendor/bootstrap/3.4.1/bootstrap.min.css') }}">
