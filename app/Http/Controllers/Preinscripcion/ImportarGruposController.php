@@ -181,7 +181,7 @@ class ImportarGruposController extends Controller
 
             // Generar preview de folios (sin guardar aún)
             if (isset($unidad)) {
-                $rowData['folio_grupo_preview'] = $this->generarFolioPreview($unidad->cct);
+                $rowData['folio_grupo_preview'] = $this->generarFolioPreview($unidad->cct, $rowData['inicio']);
                 $rowData['id_preview'] = $this->generarIdPreview($unidad->plantel);
             }
 
@@ -341,7 +341,7 @@ class ImportarGruposController extends Controller
         $id = $this->generarId($unidadData->plantel);
         // dd($id);
         // Generar folio_grupo
-        $folioGrupo = $this->generarFolioGrupo($unidadData->cct);
+        $folioGrupo = $this->generarFolioGrupo($unidadData->cct, $inicio);
 
         // dd($curso->rango_criterio_pago_maximo);
         // dd($instructor->criterio_pago);
@@ -496,18 +496,19 @@ class ImportarGruposController extends Controller
         return $prefix . str_pad($consecutivo, 4, '0', STR_PAD_LEFT);
     }
 
-    private function generarFolioGrupo($cct)
+    private function generarFolioGrupo($cct, $fechaInicio)
     {
         // Procesar CCT
         $cctProcesado = substr($cct, -5);
         $cctProcesado = ltrim($cctProcesado, '0');
 
-        // Año
-        $year = substr(date('Y'), -2);
+        // Año del inicio del curso
+        $yearInicio = date('Y', strtotime($fechaInicio));
+        $year = substr($yearInicio, -2);
 
         // Consecutivo desde alumnos_registro
         $maxConsecutivoAlumnos = DB::table('alumnos_registro')
-            ->where('ejercicio', date('Y'))
+            ->where('ejercicio', $yearInicio)
             ->where('cct', $cct)
             ->where('eliminado', false)
             ->selectRaw("COALESCE(MAX(CAST(substring(folio_grupo from '.{4}$') AS int)), 0) as max_consec")
@@ -528,10 +529,11 @@ class ImportarGruposController extends Controller
         return $cctProcesado . '-' . $year . str_pad($consecutivo, 4, '0', STR_PAD_LEFT);
     }
 
-    private function generarFolioPreview($cct)
+    private function generarFolioPreview($cct, $fechaInicio)
     {
         $cctProcesado = ltrim(substr($cct, -5), '0');
-        $year = substr(date('Y'), -2);
+        $yearInicio = date('Y', strtotime($fechaInicio));
+        $year = substr($yearInicio, -2);
         return $cctProcesado . '-' . $year . 'XXXX';
     }
 
