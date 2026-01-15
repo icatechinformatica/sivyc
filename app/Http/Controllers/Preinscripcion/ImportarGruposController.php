@@ -162,7 +162,7 @@ class ImportarGruposController extends Controller
             }
 
             // Lookup Instructor por CURP
-            $instructor = $this->buscarInstructor($rowData['curp']);
+            $instructor = $this->buscarInstructor($rowData['curp'], $rowData['curso_data']->id_especialidad ?? null);
             if (!$instructor) {
                 $rowData['errors'][] = 'Instructor no encontrado con CURP: ' . $rowData['curp'];
                 $hasErrors = true;
@@ -281,10 +281,7 @@ class ImportarGruposController extends Controller
         }
 
         // Lookup Instructor
-        $instructor = $this->buscarInstructor($curp);
-        if (!$instructor) {
-            return ['success' => false, 'error' => 'Instructor no encontrado'];
-        }
+
 
         // Lookup Curso (con normalización de acentos y puntuación)
         $cursoNormalizado = $this->normalizarTexto($cursoNombre);
@@ -314,6 +311,12 @@ class ImportarGruposController extends Controller
         
         if (!$curso) {
             return ['success' => false, 'error' => 'Curso no encontrado'];
+        }
+
+        // Lookup Instructor
+        $instructor = $this->buscarInstructor($curp, $curso->id_especialidad);
+        if (!$instructor) {
+            return ['success' => false, 'error' => 'Instructor no encontrado'];
         }
 
         // Calcular Horas y Formato
@@ -412,11 +415,16 @@ class ImportarGruposController extends Controller
         return ['success' => true];
     }
 
-    private function buscarInstructor($curp)
+    private function buscarInstructor($curp, $idEspecialidad = null)
     {
         $instructor = DB::table('instructores as i')
             ->leftJoin('instructor_perfil as ip', 'i.id', '=', 'ip.numero_control')
-            ->leftJoin('especialidad_instructores as ei', 'ei.id_instructor', '=', 'i.id')
+            ->leftJoin('especialidad_instructores as ei', function($join) use ($idEspecialidad) {
+                $join->on('ei.id_instructor', '=', 'i.id');
+                if ($idEspecialidad) {
+                    $join->where('ei.id_especialidad', '=', $idEspecialidad);
+                }
+            })
             ->select(
                 'i.id',
                 'i.apellidoPaterno',
@@ -445,15 +453,23 @@ class ImportarGruposController extends Controller
                                                  $instructor->apellidoMaterno . ' ' . 
                                                  $instructor->nombre);
 
-            // Si el criterio de pago es null, intentar obtenerlo desde data_especialidad JSON
-            if ($instructor->criterio_pago === null) {
-                $criterioPagoFromJson = DB::table('instructor as i')
-                    ->selectRaw("i.data_especialidad->0->>'criterio_pago_id' as criterio_pago_id")
-                    ->where('i.curp', $curp)
-                    ->value('criterio_pago_id');
+            // Si el criterio de pago es null y tenemos especialidad, intentar obtenerlo desde data_especialidad JSON
+            if ($instructor->criterio_pago === null && $idEspecialidad) {
+                // Buscamos una coincidencia exacta de la especialidad en el array JSON
+                $query = "
+                    SELECT elem->>'criterio_pago_id' as criterio_pago_id
+                    FROM instructor i, 
+                         jsonb_array_elements(i.data_especialidad::jsonb) elem 
+                    WHERE i.curp = ? 
+                      AND (elem->>'especialidad_id')::numeric = ?
+                    LIMIT 1
+                ";
 
-                if ($criterioPagoFromJson !== null) {
-                    $instructor->criterio_pago = $criterioPagoFromJson;
+                // Se consulta la tabla 'instructor' para el dato JSON
+                $result = DB::selectOne($query, [$curp, $idEspecialidad]);
+
+                if ($result) {
+                    $instructor->criterio_pago = $result->criterio_pago_id;
                 }
             }
         }
