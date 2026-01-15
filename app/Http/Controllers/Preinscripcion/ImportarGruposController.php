@@ -422,7 +422,7 @@ class ImportarGruposController extends Controller
             ->leftJoin('especialidad_instructores as ei', function($join) use ($idEspecialidad) {
                 $join->on('ei.id_instructor', '=', 'i.id');
                 if ($idEspecialidad) {
-                    $join->where('ei.id_especialidad', '=', $idEspecialidad);
+                    $join->where('ei.especialidad_id', '=', $idEspecialidad);
                 }
             })
             ->select(
