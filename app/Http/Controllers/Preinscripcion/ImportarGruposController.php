@@ -182,7 +182,7 @@ class ImportarGruposController extends Controller
             // Generar preview de folios (sin guardar aún)
             if (isset($unidad)) {
                 $rowData['folio_grupo_preview'] = $this->generarFolioPreview($unidad->cct, $rowData['inicio']);
-                $rowData['id_preview'] = $this->generarIdPreview($unidad->plantel);
+                $rowData['id_preview'] = $this->generarIdPreview($unidad->plantel, $rowData['inicio']);
             }
 
             $data[] = $rowData;
@@ -338,7 +338,7 @@ class ImportarGruposController extends Controller
             ->first();
 
         // Generar ID
-        $id = $this->generarId($unidadData->plantel);
+        $id = $this->generarId($unidadData->plantel, $inicio);
         // dd($id);
         // Generar folio_grupo
         $folioGrupo = $this->generarFolioGrupo($unidadData->cct, $inicio);
@@ -477,9 +477,11 @@ class ImportarGruposController extends Controller
         return $instructor;
     }
 
-    private function generarId($plantel)
+    private function generarId($plantel, $fechaInicio)
     {
-        $year = substr(date('Y'), -2);
+        // Año del inicio del curso
+        $yearInicio = date('Y', strtotime($fechaInicio));
+        $year = substr($yearInicio, -2);
         $plantelPadded = str_pad($plantel, 3, '0', STR_PAD_LEFT);
         $prefix = $year . $plantelPadded;
 
@@ -537,9 +539,11 @@ class ImportarGruposController extends Controller
         return $cctProcesado . '-' . $year . 'XXXX';
     }
 
-    private function generarIdPreview($plantel)
+    private function generarIdPreview($plantel, $fechaInicio)
     {
-        $year = substr(date('Y'), -2);
+        // Año del inicio del curso
+        $yearInicio = date('Y', strtotime($fechaInicio));
+        $year = substr($yearInicio, -2);
         $plantelPadded = str_pad($plantel, 3, '0', STR_PAD_LEFT);
         return $year . $plantelPadded . 'XXXX';
     }
