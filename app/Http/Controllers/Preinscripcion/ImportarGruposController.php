@@ -402,6 +402,7 @@ class ImportarGruposController extends Controller
             'folio_grupo' => $folioGrupo,
             'folio_unico' => null,
             'status' => 'NO REPORTADO',
+            'status_curso' => 'PRUEBA',
             'turnado' => 'UNIDAD',
             'realizo' => strtoupper($this->realizo),
             'instructor_tipo_identificacion' => $instructor->tipo_identificacion,
