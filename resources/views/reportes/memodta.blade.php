@@ -12,7 +12,7 @@
         .tablag tr td { font-size: 8px; padding: 0px;}
         .contenedor {
         position:RELATIVE;
-        top:120px;
+        top:80px;
         width:100%;
         margin:auto;
         /* Propiedad que ha sido agreda*/

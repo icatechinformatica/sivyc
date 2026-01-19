@@ -15,8 +15,14 @@ use App\Models\tbl_unidades;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
 use App\Exports\FormatoTReport; // agregamos la exportación de FormatoTReport
+use App\Services\HerramientasService;
 
 class PlaneacionController extends Controller {
+
+    public function __construct(HerramientasService $herramientas)
+    {
+        $this->herramientas = $herramientas;
+    }
 
     public function index(Request $request) {
         // unidad a buscar
@@ -319,7 +325,11 @@ class PlaneacionController extends Controller {
                     // $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
                     $funcionarios = $this->funcionarios('TUXTLA');
                     $direccion = explode("*",$funcionarios['dacademico']['direccion']);
-                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_satisfactorio_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'mesReport', 'leyenda', 'anio','funcionarios','direccion'));
+
+                    //Seccion para el layout correcto sacando el año
+                    $layout_año = $this->herramientas->getPdfLayoutByDate($fechaFormato);
+
+                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_satisfactorio_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'mesReport', 'leyenda', 'anio','funcionarios','direccion','layout_año'));
                     return $pdf->stream('Memorandum_respuesta_satisfactorio_planeacion.pdf');
                     break;
                 case 'memorandumNegativo':
@@ -371,7 +381,11 @@ class PlaneacionController extends Controller {
                     // $directorPlaneacion = DB::table('directorio')->select('nombre', 'apellidoPaterno', 'apellidoMaterno', 'puesto')->where('id', 14)->first();
                     $funcionarios = $this->funcionarios('TUXTLA');
                     $direccion = explode("*",$funcionarios['dacademico']['direccion']);
-                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_negativo_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'mesReport', 'leyenda', 'anio','funcionarios','direccion'));
+
+                    //Seccion para el layout correcto sacando el año
+                    $layout_año = $this->herramientas->getPdfLayoutByDate($fechaFormato);
+
+                    $pdf = PDF::loadView('layouts.pdfpages.memorandum_termino_negativo_planeacion', compact('fecha_ahora_espaniol', 'num_memo_planeacion', 'mesReport', 'leyenda', 'anio','funcionarios','direccion','layout_año'));
                     return $pdf->stream('Memorandum_termino_negativo_planeacion.pdf');
                     break;
                 default:
