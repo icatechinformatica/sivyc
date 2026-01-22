@@ -72,6 +72,9 @@ class ImportarGruposController extends Controller
         // Verificar si existe la columna opcional HORAS
         $tieneColumnaHoras = in_array('HORAS', $headers);
         
+        // Verificar si existe la columna opcional GRUPO
+        $tieneColumnaGrupo = in_array('GRUPO', $headers);
+        
         // Crear mapa de índices de columnas para acceso flexible
         $columnMap = array_flip($headers);
 
@@ -95,6 +98,9 @@ class ImportarGruposController extends Controller
                 'horas_curso' => $tieneColumnaHoras && !empty($row[$columnMap['HORAS']]) && is_numeric($row[$columnMap['HORAS']]) 
                     ? (int)trim($row[$columnMap['HORAS']]) 
                     : null,
+                'grupo' => $tieneColumnaGrupo && !empty($row[$columnMap['GRUPO']]) 
+                    ? trim($row[$columnMap['GRUPO']]) 
+                    : 'PENDIENTE',
                 'errors' => [],
                 'warnings' => []
             ];
@@ -181,7 +187,10 @@ class ImportarGruposController extends Controller
 
             // Generar preview de folios (sin guardar aún)
             if (isset($unidad)) {
-                $rowData['folio_grupo_preview'] = $this->generarFolioPreview($unidad->cct, $rowData['inicio']);
+                // Si hay columna GRUPO, usar ese valor; si no, generar preview
+                $rowData['folio_grupo_preview'] = $tieneColumnaGrupo 
+                    ? $rowData['grupo'] 
+                    : $this->generarFolioPreview($unidad->cct, $rowData['inicio']);
                 $rowData['id_preview'] = $this->generarIdPreview($unidad->plantel, $rowData['inicio']);
             }
 
@@ -254,9 +263,6 @@ class ImportarGruposController extends Controller
 
     private function procesarFila($row, $numFila)
     {
-        // Detectar si existe columna HORAS (debe estar en posición 7 si existe)
-        $tieneColumnaHoras = isset($row[7]) && !empty($row[7]) && is_numeric($row[7]);
-        
         $unidad = trim($row[0]);
         $cursoNombre = trim($row[1]);
         $inicio = $this->parseDate($row[2]);
@@ -264,7 +270,9 @@ class ImportarGruposController extends Controller
         $horaInicio = trim($row[4]);
         $horaFin = trim($row[5]);
         $curp = trim($row[6]);
-        $horasCurso = $tieneColumnaHoras ? (int)trim($row[7]) : null;
+        
+        // GRUPO está en posición 7
+        $grupo = isset($row[7]) && !empty(trim($row[7])) ? trim($row[7]) : 'PENDIENTE';
 
         // Lookup Unidad
         // Normalizar caso específico: "Tuxtla Gutiérrez" -> "TUXTLA"
@@ -302,11 +310,6 @@ class ImportarGruposController extends Controller
             // ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
             ->where('cursos.estado', true);
         
-        // Si existe la columna HORAS, agregar filtro adicional
-        if ($horasCurso !== null) {
-            $cursoQuery->where('cursos.horas', $horasCurso);
-        }
-        
         $curso = $cursoQuery->first();
         
         if (!$curso) {
@@ -340,8 +343,8 @@ class ImportarGruposController extends Controller
         // Generar ID
         $id = $this->generarId($unidadData->plantel, $inicio);
         // dd($id);
-        // Generar folio_grupo
-        $folioGrupo = $this->generarFolioGrupo($unidadData->cct, $inicio);
+        // Usar el valor de la columna GRUPO si existe, si no generar folio_grupo
+        $folioGrupo = $grupo;
 
         // dd($curso->rango_criterio_pago_maximo);
         // dd($instructor->criterio_pago);
