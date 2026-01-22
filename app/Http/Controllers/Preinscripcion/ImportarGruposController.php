@@ -138,7 +138,7 @@ class ImportarGruposController extends Controller
                     ) = ?",
                     [$cursoNormalizado]
                 )
-                ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
+                // ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
                 ->where('cursos.estado', true);
             
             // Si existe la columna HORAS, agregar filtro adicional
@@ -299,7 +299,7 @@ class ImportarGruposController extends Controller
                 ) = ?",
                 [$cursoNormalizado]
             )
-            ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
+            // ->whereIn('cursos.modalidad', ['CAE Y EXT', 'EXT'])
             ->where('cursos.estado', true);
         
         // Si existe la columna HORAS, agregar filtro adicional
