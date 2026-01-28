@@ -1331,8 +1331,9 @@ class supreController extends Controller
 
         if(is_null($documento)) {
             $firma_electronica = false;
-            $supreController = new ESupreController();
+            $supreController = app(\App\Http\Controllers\efirma\ESupreController::class);
             $body_html = $supreController->create_body($id);
+            
             $bodySupre = $body_html['supre'];
             $bodyCcp = $body_html['ccp'];
             $bodyTabla = $body_html['tabla'];
@@ -1388,7 +1389,7 @@ class supreController extends Controller
             }
         }
 
-        //Seccion para el layout correcto sacando el año
+        //Seccion para el layout correcto sacando el año;
             $layout_año = $this->herramientas->getPdfLayoutByDate($data_supre->fecha);
 
         // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid'));
