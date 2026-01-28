@@ -18,9 +18,7 @@ use PDF;
 
 class BuzonFoliosController extends Controller
 {
-    function __construct() {
-
-    }
+    function __construct() {}
 
     public function index(Request $request)
     {
@@ -42,11 +40,11 @@ class BuzonFoliosController extends Controller
         ##Obtenemos curp, email del firmante para validar si le pertenece firmar el documento
         $curpUser = DB::Table('users')
             ->Select('tbl_funcionarios.curp')
-            ->Join('tbl_funcionarios','tbl_funcionarios.curp','users.curp')
+            ->Join('tbl_funcionarios', 'tbl_funcionarios.curp', 'users.curp')
             ->Where('users.id', $user->id)
             ->First();
 
-        if($curpUser != null){
+        if ($curpUser != null) {
             $curpf = $curpUser->curp;
         }
 
@@ -65,74 +63,74 @@ class BuzonFoliosController extends Controller
 
 
         ##Realizamos la busqueda en la base de datos de efolios_alumnos
-        if(!is_null($ejercicio_e) && !is_null($filtro_e) && !is_null($clave_e)){
+        if (!is_null($ejercicio_e) && !is_null($filtro_e) && !is_null($clave_e)) {
             try {
                 $data = DB::table('efolios_alumnos as ef')
-                    ->select('ef.id','ef.matricula','ef.efolio','ef.fecha_creacion','ef.status_doc','tf.nombre','tf.motivo','tf.movimiento','ef.obj_documento', 'ef.cadena_original','ef.id_curso')
+                    ->select('ef.id', 'ef.matricula', 'ef.efolio', 'ef.fecha_creacion', 'ef.status_doc', 'tf.nombre', 'tf.motivo', 'tf.movimiento', 'ef.obj_documento', 'ef.cadena_original', 'ef.id_curso')
                     ->join('tbl_cursos as tc', 'tc.id', '=', 'ef.id_curso')
                     ->join('tbl_folios as tf', 'tf.folio', '=', 'ef.efolio')
-                    ->whereYear('ef.fecha_creacion', $ejercicio_e);
+                    ->whereYear('tc.inicio', $ejercicio_e);
 
-                if($matricula) {
+                if ($matricula) {
                     $data = $data->where('ef.matricula', $matricula);
                 }
 
                 if ($filtro_e == 'EnFirma') {
-                    $data = $data->where(function($query) {
+                    $data = $data->where(function ($query) {
                         $query->where('ef.status_doc', 'EnFirma')
                             ->orWhere('ef.status_doc', 'EnFirmaUno');
                     });
-                } else if($filtro_e == 'firmado') {
+                } else if ($filtro_e == 'firmado') {
                     $data = $data->where('ef.status_doc', 'firmado');
-                } else if($filtro_e == 'sellado') {
+                } else if ($filtro_e == 'sellado') {
                     $data = $data->where('ef.status_doc', 'sellado');
-                } else if($filtro_e == 'cancelado') {
-                    $data = $data->where(function($query) {
+                } else if ($filtro_e == 'cancelado') {
+                    $data = $data->where(function ($query) {
                         $query->where('ef.status_doc', 'cancelado')
                             ->orWhere('ef.status_doc', 'cancelado_icti');
                     });
                 }
 
-                $data = $data->whereRaw("CONCAT(tc.clave, ' ', tc.folio_grupo) LIKE ?", ['%'.$clave_e.'%'])
-                            ->orderBy('ef.id', 'asc')
-                            ->get();
+                $data = $data->whereRaw("CONCAT(tc.clave, ' ', tc.folio_grupo) LIKE ?", ['%' . $clave_e . '%'])
+                    ->orderBy('ef.id', 'asc')
+                    ->get();
 
-                if($data == null || count($data) == 0){
-                    return redirect()->route('grupo.efirma.index')->with(['message' => 'No se encontraron registros de la Clave: '. $clave_e, 'clave_e' => $clave_e, 'matricula' => $matricula, 'filtro_e' => $filtro_e, 'ejercicio_e' => $ejercicio_e]);
+                if ($data == null || count($data) == 0) {
+                    session()->now('message', 'No se encontraron registros de la Clave: ' . $clave_e);
                 }
             } catch (\Throwable $th) {
-                return back()->with('message', '¡ERROR AL REALIZAR LA BUSQUEDA DE REGISTROS! '.$th->getMessage());
+                return back()->with('message', '¡ERROR AL REALIZAR LA BUSQUEDA DE REGISTROS! ' . $th->getMessage());
             }
 
             ##Obtenemos los id
-            if($data) $ids = $data->pluck('id')->toArray();
-            if($data) $cad_original = $data->pluck('cadena_original', 'id')->toArray();
+            if ($data) $ids = $data->pluck('id')->toArray();
+            if ($data) $cad_original = $data->pluck('cadena_original', 'id')->toArray();
 
             ##Obtenemos token para enviarlos a la vista
             $token = $this->generarToken();
 
             ##Validamos los firmantes del documento
-            if(count($data) > 0) {
+            if (count($data) > 0) {
                 $obj = json_decode($data[0]->obj_documento, true);
                 $cursoId = $data[0]->id_curso;
 
-                if(isset($obj['firmantes']['firmante'][0])) {
+                if (isset($obj['firmantes']['firmante'][0])) {
                     $firmantes = $obj['firmantes']['firmante'][0];
                     foreach ($firmantes as $value) {
-                        if(isset($value['_attributes']['curp_firmante'])) {
+                        if (isset($value['_attributes']['curp_firmante'])) {
                             $curp = $value['_attributes']['curp_firmante'];
-                            if($curpf == $curp){
+                            if ($curpf == $curp) {
                                 $existcurp = true;
                                 $countFirma = DB::table('efolios_alumnos')
                                     ->selectRaw('COUNT(*) AS count_firma_firmante')
                                     ->whereRaw("jsonb_path_exists(obj_documento, '$.firmantes.firmante[*] ? (@._attributes.curp_firmante == \"$curp\") ._attributes.firma_firmante')")
                                     ->where('id_curso', $cursoId)
-                                    ->where(function($query) {
+                                    ->where(function ($query) {
                                         $query->where('status_doc', 'EnFirma')
                                             ->orWhere('status_doc', 'EnFirmaUno');
                                     })
                                     ->value('count_firma_firmante');
-                                if($countFirma == count($data)){
+                                if ($countFirma == count($data)) {
                                     $existfirma = true;
                                 }
                             }
@@ -143,9 +141,21 @@ class BuzonFoliosController extends Controller
         }
 
         return view('grupos.efirmafolios.efirmabuzon_folios', compact(
-            'ubicacion','estados','ejercicio_e','filtro_e','clave_e',
-            'data','ids','matricula','token', 'cad_original', 'array_firm',
-            'curpf','existcurp','slug', 'existfirma'
+            'ubicacion',
+            'estados',
+            'ejercicio_e',
+            'filtro_e',
+            'clave_e',
+            'data',
+            'ids',
+            'matricula',
+            'token',
+            'cad_original',
+            'array_firm',
+            'curpf',
+            'existcurp',
+            'slug',
+            'existfirma'
         ));
     }
 
@@ -162,46 +172,53 @@ class BuzonFoliosController extends Controller
             "descripcion" => $descripcion,
             "fecha_cancelado" => Carbon::now()->toDateTimeString()
         ];
-        if($estado_doc == 'sellado') $cancelacion = 'cancelado_icti';
+        if ($estado_doc == 'sellado') $cancelacion = 'cancelado_icti';
 
-        if($estado_doc == 'EnFirma' || $estado_doc == 'firmado' || $estado_doc == 'sellado'){
-            if(count($ids) > 0){
+        if ($estado_doc == 'EnFirma' || $estado_doc == 'firmado' || $estado_doc == 'sellado') {
+            if (count($ids) > 0) {
                 try {
                     foreach ($ids as $key => $id) {
-                        EfoliosAlumnos::where('id', $id)->update(['status_doc' => $cancelacion,'h_cancelado' => $objeto_cancelacion]);
+                        EfoliosAlumnos::where('id', $id)->update(['status_doc' => $cancelacion, 'h_cancelado' => $objeto_cancelacion]);
                     }
-                    return response()->json(['status' => 200,'mensaje' => '¡Documentos cancelados correctamente!']);
+                    return response()->json(['status' => 200, 'mensaje' => '¡Documentos cancelados correctamente!']);
                 } catch (\Throwable $th) {
-                    return response()->json(['status' => 500,'mensaje' => 'Error al actualizar los campos '.$th->getMessage()]);
+                    return response()->json(['status' => 500, 'mensaje' => 'Error al actualizar los campos ' . $th->getMessage()]);
                 }
-            }else{
+            } else {
                 return response()->json([
                     'status' => 200,
                     'mensaje' => 'No existen registros para cancelar',
                 ]);
             }
-        }else{
-            return response()->json(['status' => 400,'mensaje' => '¡Parametro no valido, intente de nuevo!']);
+        } else {
+            return response()->json(['status' => 400, 'mensaje' => '¡Parametro no valido, intente de nuevo!']);
         }
-
     }
 
     ##Generar documento PDF
     public function generar_pdf($id)
     {
-        if(!is_null($id)){
+        if (!is_null($id)) {
             // $ids = explode(',', $id);
             ##Haremos una consulta desde el objeto_json para mostrarlos en la constancia
             $firmantes = [];
             $uuid = $cadena_sello = $fecha_sello = $no_oficio = "";
 
 
-            $consulta = EfoliosAlumnos::select('datos_alumno', 'fecha_creacion', 'obj_documento', 'status_doc', 'uuid_sellado',
-            'fecha_sellado', 'cadena_sello', 'no_oficio')->where('id', $id)->first();
+            $consulta = EfoliosAlumnos::select(
+                'datos_alumno',
+                'fecha_creacion',
+                'obj_documento',
+                'status_doc',
+                'uuid_sellado',
+                'fecha_sellado',
+                'cadena_sello',
+                'no_oficio'
+            )->where('id', $id)->first();
 
 
             #Obtenemos datos de los firmantes
-            if(!is_null($consulta->datos_alumno) || !is_null($consulta->uuid_sellado)){
+            if (!is_null($consulta->datos_alumno) || !is_null($consulta->uuid_sellado)) {
                 $data = $consulta->datos_alumno;
                 // dd($data['cont_tematico'][0]['hora']);
                 $uuid = $cadena_sello = $fecha_sello = $no_oficio = $qrCodeBase64 = null;
@@ -219,9 +236,9 @@ class BuzonFoliosController extends Controller
                         $firma = $value['_attributes']['firma_firmante'];
                         $fechafirm = $value['_attributes']['fecha_firmado_firmante'];
                         $seriefirm = $value['_attributes']['no_serie_firmante'];
-                        if($key == 0) $puesto = $data['puesto_acad'];
+                        if ($key == 0) $puesto = $data['puesto_acad'];
                         else $puesto = $data['puesto_direc'];
-                        $firmantes[] = ['nombre' => $nombre,'firma' => $firma,'fecha_firma' => $fechafirm,'serie' => $seriefirm, 'puesto' => $puesto];
+                        $firmantes[] = ['nombre' => $nombre, 'firma' => $firma, 'fecha_firma' => $fechafirm, 'serie' => $seriefirm, 'puesto' => $puesto];
                     }
 
 
@@ -233,7 +250,6 @@ class BuzonFoliosController extends Controller
                     $qrCodeData = ob_get_contents();
                     ob_end_clean();
                     $qrCodeBase64 = base64_encode($qrCodeData);
-
                 }
 
                 // dd($data['cont_tematico']);
@@ -246,9 +262,12 @@ class BuzonFoliosController extends Controller
                     if ($horas == '00' && $minutos != '00') {
                         $tipo = 'MINUTOS';
                     } elseif ($horas != '00' && $minutos == '00') {
-                        if($horas == '01'){$tipo = 'HORA';}
-                        else{$tipo = 'HORAS';}
-                    }else{
+                        if ($horas == '01') {
+                            $tipo = 'HORA';
+                        } else {
+                            $tipo = 'HORAS';
+                        }
+                    } else {
                         $tipo = 'HORAS';
                     }
                     $result = ['nombre_modulo' => $value['nombre_modulo'], 'hora' => $value['hora'], 'tipo' => $tipo];
@@ -262,17 +281,17 @@ class BuzonFoliosController extends Controller
                 if ($fecha_solo_fecha <= '2024-12-31') {
                     $url_uno_membretado = 'img/econstancias_alumnos/fondo_constancia1.png';
                     $url_dos_membretado = 'img/econstancias_alumnos/fondo_constancia2.png';
-                }else{
+                } else {
                     $url_uno_membretado = 'img/econstancias_alumnos/fondo_constancia_2025_frente.png';
                     $url_dos_membretado = 'img/econstancias_alumnos/fondo_constancia_2025_reverso.png';
                 }
 
-                $pdf = PDF::loadView('grupos.efirmafolios.pdfconstancia_efolios',compact('data', 'uuid', 'cadena_sello', 'fecha_sello', 'no_oficio', 'qrCodeBase64', 'firmantes', 'cont_tematico', 'url_uno_membretado', 'url_dos_membretado'));
-                return $pdf->stream('Constancia_'.$data['curp'].'.pdf');
-            }else{
+                $pdf = PDF::loadView('grupos.efirmafolios.pdfconstancia_efolios', compact('data', 'uuid', 'cadena_sello', 'fecha_sello', 'no_oficio', 'qrCodeBase64', 'firmantes', 'cont_tematico', 'url_uno_membretado', 'url_dos_membretado'));
+                return $pdf->stream('Constancia_' . $data['curp'] . '.pdf');
+            } else {
                 return "Error al realizar la consulta a la base de datos";
             }
-        }else{
+        } else {
             return "El identificador del documento no es valido";
         }
     }
@@ -289,8 +308,8 @@ class BuzonFoliosController extends Controller
         $matricula = $request->input('matricula_f');
 
         $arrayRespuesta = [];
-        if($respuesta) $arrayRespuesta = json_decode($respuesta, true);
-        if(count($arrayRespuesta) > 0 && $curp != ""){
+        if ($respuesta) $arrayRespuesta = json_decode($respuesta, true);
+        if (count($arrayRespuesta) > 0 && $curp != "") {
 
             foreach ($arrayRespuesta as $indice => $res) {
                 ##Consultamos el registro
@@ -332,94 +351,96 @@ class BuzonFoliosController extends Controller
 
 
                     EfoliosAlumnos::where('id', $res['idCadena'])
-                    ->update(['obj_documento' => json_encode($obj_documento),'documento_xml' => $result]);
+                        ->update(['obj_documento' => json_encode($obj_documento), 'documento_xml' => $result]);
 
                     //Conteo de firmas
                     $countFirmas = DB::table('efolios_alumnos')->where('id', $res['idCadena'])
-                    ->selectRaw("jsonb_array_length(
+                        ->selectRaw("jsonb_array_length(
                         jsonb_path_query_array(obj_documento, '$.firmantes.firmante[*]._attributes.firma_firmante')
                     ) as firma_firmante_count")->value('firma_firmante_count');
 
-                    if($countFirmas == 1){$status_doc = 'EnFirmaUno';}
-                    else if($countFirmas == 2){$status_doc = 'firmado';}
+                    if ($countFirmas == 1) {
+                        $status_doc = 'EnFirmaUno';
+                    } else if ($countFirmas == 2) {
+                        $status_doc = 'firmado';
+                    }
 
                     EfoliosAlumnos::where('id', $res['idCadena'])
-                    ->update(['status_doc' => $status_doc]);
-
-
-
+                        ->update(['status_doc' => $status_doc]);
                 } catch (\Throwable $th) {
-                    return redirect('grupos/efirma/buzon')->with(['message'=> 'Error: '.$th->getMessage(), 'clave_e' => $clave, 'matricula' => $matricula]);
+                    return redirect('grupos/efirma/buzon')->with(['message' => 'Error: ' . $th->getMessage(), 'clave_e' => $clave, 'matricula' => $matricula]);
                 }
-
             }
             return redirect('grupos/efirma/buzon')->with([
                 'message' => 'Documento(s) firmado(s): ' . "\n" . 'Exitoso(s): ' . $correctos . "\n" . 'Detalles: ' . $errores . ' ' . $msnError,
-                'clave_e' => $clave, 'matricula' => $matricula
+                'clave_e' => $clave,
+                'matricula' => $matricula
             ]);
-
-        }else{
-            return redirect('grupos/efirma/buzon')->with(['message'=>'No hay respuesta para procesar: '."\n". $msnError, 'clave_e' => $clave, 'matricula' => $matricula]);
+        } else {
+            return redirect('grupos/efirma/buzon')->with(['message' => 'No hay respuesta para procesar: ' . "\n" . $msnError, 'clave_e' => $clave, 'matricula' => $matricula]);
         }
-
     }
 
-    public function sellar_documento(Request $request){
+    public function sellar_documento(Request $request)
+    {
         $clave = $request->input('clave_s');
         $matricula = $request->input('matricula_s');
         $correctos = 0;
-        if($request->ids_sellar){
+        if ($request->ids_sellar) {
             $arrayIds = json_decode($request->ids_sellar, true);
-            if(count($arrayIds) == []){exit("No existen registros para realizar el proceso de sellado");}
-                foreach ($arrayIds as $key => $valId) {
-                    try {
-                        $documento = EfoliosAlumnos::select('documento_xml')->where('id', $valId)->first();
-                        // $documento = EfoliosAlumnos::where('id', $valId)->value('documento_xml');
-                        $xmlBase64 = base64_encode($documento->documento_xml);
+            if (count($arrayIds) == []) {
+                exit("No existen registros para realizar el proceso de sellado");
+            }
+            foreach ($arrayIds as $key => $valId) {
+                try {
+                    $documento = EfoliosAlumnos::select('documento_xml')->where('id', $valId)->first();
+                    // $documento = EfoliosAlumnos::where('id', $valId)->value('documento_xml');
+                    $xmlBase64 = base64_encode($documento->documento_xml);
 
-                        $getToken = Tokens_icti::latest()->first();
+                    $getToken = Tokens_icti::latest()->first();
 
-                        $response = $this->sellarFile($xmlBase64, $getToken->token);
-                        if ($response->json() == null) {
-                            $request = new Request();
-                            $token = $this->generarToken($request);
-                            $response = $this->sellarFile($xmlBase64, $token);
-                        }
-                        if ($response->json()['status'] == 1) { //exitoso
-                            $decode = base64_decode($response->json()['xml']);
-                            EfoliosAlumnos::where('id', $valId)
-                                ->update([
-                                    'status_doc' => 'sellado',
-                                    'uuid_sellado' => $response->json()['uuid'],
-                                    'fecha_sellado' => $response->json()['fecha_Sellado'],
-                                    'documento_xml' => $decode,
-                                    'cadena_sello' => $response->json()['cadenaSello']
-                                ]);
-                        } else {
-                            // $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
-                            // return redirect()->route('grupo.efirma.index')->with(['message' => $respuesta_icti]);
-                            $respuesta_icti = json_encode(['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']]);
-                            return redirect('grupos/efirma/buzon')->with(['message'=>$respuesta_icti, 'clave_e' => $clave, 'matricula' => $matricula]);
-                        }
-                    } catch (\Throwable $th) {
-                        // return redirect()->route('grupo.efirma.index')->with(['message' => $th->getMessage()]);
-                        return redirect('grupos/efirma/buzon')->with(['message'=> $th->getMessage(), 'clave_e' => $clave, 'matricula' => $matricula]);
+                    $response = $this->sellarFile($xmlBase64, $getToken->token);
+                    if ($response->json() == null) {
+                        $request = new Request();
+                        $token = $this->generarToken($request);
+                        $response = $this->sellarFile($xmlBase64, $token);
                     }
-                    $correctos ++;
+                    if ($response->json()['status'] == 1) { //exitoso
+                        $decode = base64_decode($response->json()['xml']);
+                        EfoliosAlumnos::where('id', $valId)
+                            ->update([
+                                'status_doc' => 'sellado',
+                                'uuid_sellado' => $response->json()['uuid'],
+                                'fecha_sellado' => $response->json()['fecha_Sellado'],
+                                'documento_xml' => $decode,
+                                'cadena_sello' => $response->json()['cadenaSello']
+                            ]);
+                    } else {
+                        // $respuesta_icti = ['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']];
+                        // return redirect()->route('grupo.efirma.index')->with(['message' => $respuesta_icti]);
+                        $respuesta_icti = json_encode(['uuid' => $response->json()['uuid'], 'descripcion' => $response->json()['descripcionError']]);
+                        return redirect('grupos/efirma/buzon')->with(['message' => $respuesta_icti, 'clave_e' => $clave, 'matricula' => $matricula]);
+                    }
+                } catch (\Throwable $th) {
+                    // return redirect()->route('grupo.efirma.index')->with(['message' => $th->getMessage()]);
+                    return redirect('grupos/efirma/buzon')->with(['message' => $th->getMessage(), 'clave_e' => $clave, 'matricula' => $matricula]);
                 }
-                $mensaje = $correctos.' Documento(s) sellado(s) exitosamente. ';
-                return redirect('grupos/efirma/buzon')->with(['message'=> $mensaje, 'clave_e' => $clave, 'matricula' => $matricula]);
-        }else{
+                $correctos++;
+            }
+            $mensaje = $correctos . ' Documento(s) sellado(s) exitosamente. ';
+            return redirect('grupos/efirma/buzon')->with(['message' => $mensaje, 'clave_e' => $clave, 'matricula' => $matricula]);
+        } else {
             // return redirect()->route('grupo.efirma.index')->with(['message' => 'No existen datos para procesar el sellado de documentos.']);
-            return redirect('grupos/efirma/buzon')->with(['message'=> 'No existen datos para procesar el sellado de documentos.', 'clave_e' => $clave, 'matricula' => $matricula]);
+            return redirect('grupos/efirma/buzon')->with(['message' => 'No existen datos para procesar el sellado de documentos.', 'clave_e' => $clave, 'matricula' => $matricula]);
         }
     }
 
-    public function sellarFile($xml, $token) {
+    public function sellarFile($xml, $token)
+    {
         //Sellado de producción
         $response1 = Http::withHeaders([
             'Accept' => 'application/json',
-            'Authorization' => 'Bearer '.$token
+            'Authorization' => 'Bearer ' . $token
         ])->post('https://api.firma.chiapas.gob.mx/FEA/v2/NotariaXML/sellarXML', [
             'xml_Firmado' => $xml
         ]);
@@ -435,7 +456,8 @@ class BuzonFoliosController extends Controller
     }
 
 
-    public function generarToken() {
+    public function generarToken()
+    {
 
         try {
             ##Producción
@@ -460,7 +482,5 @@ class BuzonFoliosController extends Controller
         } catch (\Throwable $th) {
             return $th->getMessage();
         }
-
     }
-
 }
