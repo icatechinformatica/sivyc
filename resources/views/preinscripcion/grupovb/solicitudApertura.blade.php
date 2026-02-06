@@ -1,4 +1,4 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayout'.$layout_año)
 @section('title', 'Solicitud de Apertura | SIVyC Icatech')
 @section('content_script_css')
     <style>

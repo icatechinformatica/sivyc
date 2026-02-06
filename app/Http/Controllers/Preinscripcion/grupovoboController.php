@@ -25,6 +25,7 @@ use App\Models\ModelExpe\ExpeUnico;
 //use App\Models\Inscripcion;
 use App\Models\tbl_inscripcion;
 use App\Utilities\MyCrypt;
+use App\Services\HerramientasService;
 
 use function PHPSTORM_META\type;
 
@@ -32,7 +33,7 @@ class grupovoboController extends Controller
 {
     use catUnidades;
     use catApertura;
-    function __construct()
+    function __construct(HerramientasService $herramientas)
     {
         session_start();
         $this->ejercicio = date("y");
@@ -42,6 +43,7 @@ class grupovoboController extends Controller
         $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
         $this->key = "XdFeW2";
         $this->middleware('auth');
+        $this->herramientas = $herramientas;
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
             $this->realizo = Auth::user()->name;
@@ -52,6 +54,7 @@ class grupovoboController extends Controller
 
             return $next($request);
         });
+
     }
 
     public function index(Request $request){
@@ -951,7 +954,9 @@ class grupovoboController extends Controller
                 $folio_grupo = session('folio_grupo');
                 $reg_unidad = DB::table('tbl_unidades')->where('id', $this->id_unidad)->first();
                 $direccion = $reg_unidad->direccion;
-                $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion'));
+                //Seccion para el layout correcto sacando el año;
+                $layout_año = $this->herramientas->getPdfLayoutByDate($alumnos[0]->inicio);
+                $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion','layout_año'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('LISTA.pdf');
             }else {
@@ -1049,7 +1054,11 @@ class grupovoboController extends Controller
                         $reg_unidad->pvinculacion = mb_strtoupper($cargo, 'UTF-8');
                     }
                     $direccion = $reg_unidad->direccion;
-                    $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion'));
+
+                    //Seccion para el layout correcto sacando el año;
+                    $layout_año = $this->herramientas->getPdfLayoutByDate($cursos[0]->fecha_turnado);
+
+                    $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion','layout_año'));
                     $pdf->setpaper('letter', 'landscape');
                     return $pdf->stream('SOLICITUD.pdf');
                 } else {
@@ -1342,9 +1351,11 @@ class grupovoboController extends Controller
         ->where('folio_grupo','=',"$folio_grupo")->get();
 
         $direccion = $data2->direccion;
+        //Seccion para el layout correcto sacando el año;
+        $layout_año = $this->herramientas->getPdfLayoutByDate($data1->inicio);
 
 
-        $pdf = PDF::loadView('reportes.acta_acuerdo_registro_grupo',compact('data1', 'data2','data3', 'direccion'));
+        $pdf = PDF::loadView('reportes.acta_acuerdo_registro_grupo',compact('data1', 'data2','data3', 'direccion', 'layout_año'));
         // $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Acta_Acuerdo');
     }

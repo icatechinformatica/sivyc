@@ -1,4 +1,4 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayout'.$layout_año)
 @section('title', 'Lista de Alumnos | SIVyC Icatech')
 @section('content_script_css')
 <style>
@@ -12,6 +12,7 @@
     .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
     .tb thead{background: #EAECEE;}
     header{ top: 20px; font-size: 11px; font-weight: bold; line-height: 1;}
+    body { padding-top: 300px; }
 
 </style>
 @endsection
