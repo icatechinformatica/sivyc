@@ -22,6 +22,7 @@
         ul.inline-list { list-style: none; padding: 0; margin-top:150px;}
         ul.inline-list li { margin-right: 10px;}
         .obs {padding: 0; margin: 0; }
+        body { padding-top: 16%; }
 
 
 

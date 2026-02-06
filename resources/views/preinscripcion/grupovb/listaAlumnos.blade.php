@@ -12,7 +12,7 @@
     .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
     .tb thead{background: #EAECEE;}
     header{ top: 20px; font-size: 11px; font-weight: bold; line-height: 1;}
-    body { padding-top: 300px; }
+    body { padding-top: 16%; }
 
 </style>
 @endsection
