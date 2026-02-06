@@ -17,6 +17,7 @@ use App\User;
 use PDF;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Cache; // Agregar esta línea
+use App\Services\HerramientasService;
 
 class turnarAperturaController extends Controller
 {
@@ -30,13 +31,14 @@ class turnarAperturaController extends Controller
     protected $path_pdf;
     protected $path_files;
 
-    public function __construct() {
+    public function __construct(HerramientasService $herramientas) {
         // Remover session_start() - Laravel maneja las sesiones automáticamente
         session_start();
         $this->ejercicio = date("y");
         $this->middleware('auth');
         $this->path_pdf = "/UNIDAD/arc01/";
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
+        $this->herramientas = $herramientas;
 
         // Optimización del middleware para evitar N+1 queries
         $this->middleware(function ($request, $next) {
@@ -533,7 +535,7 @@ class turnarAperturaController extends Controller
                 DB::raw("
                     (
                     CASE
-                        WHEN tc.nota ILIKE '%INSTRUCTOR%' THEN tc.nota                            
+                        WHEN tc.nota ILIKE '%INSTRUCTOR%' THEN tc.nota
                     ELSE
                         CASE
                             WHEN (tc.vb_dg = true OR tc.clave!='0') AND tc.modinstructor = 'ASIMILADOS A SALARIOS' THEN 'INSTRUCTOR POR HONORARIOS ' || tc.modinstructor || ', '
@@ -566,7 +568,7 @@ class turnarAperturaController extends Controller
                 if(preg_match('/unidad\b/',$this->data['slug'])){
                     //$asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->whereNull('fecha_arc01')->update(['fecha_arc01'=>$request->fecha]);
                     $asigna_fecha = DB::table('tbl_cursos')->where('munidad',$memo_apertura)->where('clave','0')->update(['fecha_arc01'=>$request->fecha]);
-                    
+
                 }
                 if( $reg_cursos[0]->fecha_arc01) $fecha_memo = $reg_cursos[0]->fecha_arc01;
 
@@ -582,8 +584,11 @@ class turnarAperturaController extends Controller
                 $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first();
                 $direccion = $reg_unidad->direccion;
 
+                //Seccion para el layout correcto sacando el año;
+                $layout_año = $this->herramientas->getPdfLayoutByDate($reg_cursos[0]->fecha_arc01);
+
                 if($reg_cursos[0]->status_solicitud=="VALIDADO") $marca = false;
-                $pdf = PDF::loadView('solicitud.apertura.pdfARC01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
+                $pdf = PDF::loadView('solicitud.apertura.pdfARC01',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion','layout_año'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC01.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
@@ -653,6 +658,9 @@ class turnarAperturaController extends Controller
                 $unidad = $reg_cursos[0]->unidad;
                 $reg_unidad = DB::table('tbl_unidades')->where('unidad', $unidad)->first();
                 $direccion = $reg_unidad->direccion;
+
+                //Seccion para el layout correcto sacando el año;
+                $layout_año = $this->herramientas->getPdfLayoutByDate($reg_cursos[0]->fecha_arc02);
 
                 if($reg_cursos[0]->status_solicitud_arc02=="VALIDADO") $marca = false;
                 $pdf = PDF::loadView('solicitud.apertura.pdfARC02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
