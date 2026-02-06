@@ -25,6 +25,7 @@ use App\Models\tbl_inscripcion;
 use App\Utilities\Algoritmo35;
 use App\Utilities\MyUtility;
 use App\Utilities\MiAgenda;
+use App\Services\HerramientasService;
 
 use function PHPSTORM_META\type;
 use App\Http\Controllers\Solicitudes\vbgruposController;
@@ -49,7 +50,7 @@ class grupoController extends Controller
     public $data;
     public $admin;
     public $activar;
-    function __construct()
+    function __construct(HerramientasService $herramientas)
     {
         session_start();
         $this->ejercicio = date("y");
@@ -60,6 +61,7 @@ class grupoController extends Controller
         $this->key = "XdFeW2";
         $this->activar = false;
         $this->middleware('auth');
+        $this->herramientas = $herramientas;
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
             $this->realizo = Auth::user()->name;
@@ -438,14 +440,14 @@ class grupoController extends Controller
         return $json;
     }
 
-     private function validaCurso(Request $request){        
+     private function validaCurso(Request $request){
         $message = null;
         $folio_grupo = $request->folio_grupo;
         $horas = round((strtotime($request->hfin) - strtotime($request->hini)) / 3600, 2);
         if ($request->inicio > $request->termino) $message = 'La fecha de inicio no puede ser mayor que la fecha de termino.';
-        if ((((explode('-',$request->inicio))[0]) != date('Y')) OR ((explode('-',$request->termino))[0]) != date('Y')) 
+        if ((((explode('-',$request->inicio))[0]) != date('Y')) OR ((explode('-',$request->termino))[0]) != date('Y'))
             $message = 'La fecha de inicio o de termino no coincide con el año actual';
-        if($request->tcurso == "CERTIFICACION" and $horas != 10) $message = "La CERTIFICACIÓN debe cubrir 10 horas.";            
+        if($request->tcurso == "CERTIFICACION" and $horas != 10) $message = "La CERTIFICACIÓN debe cubrir 10 horas.";
         if (DB::table('exoneraciones')->where('folio_grupo', $folio_grupo)->where('status','!=', 'CAPTURA')->where('status','!=','CANCELADO')->exists())
             $message = "Solicitud de Exoneración o Reducción de couta en Proceso..";
         if(DB::table('alumnos_registro')->where('folio_grupo',$folio_grupo)->where('turnado','<>','VINCULACION')->exists())
@@ -458,11 +460,11 @@ class grupoController extends Controller
         }
     }
 
-    private function validaAlumno(Request $request,$curp){ 
-        $message = null;       
+    private function validaAlumno(Request $request,$curp){
+        $message = null;
         $a_reg = DB::table('alumnos_registro')->where('folio_grupo', $request->folio_grupo)->where('eliminado',false)->first();
         if($a_reg) $date = $a_reg->inicio;
-        else $date = $request->inicio;        
+        else $date = $request->inicio;
 
         $alumno = DB::table('alumnos_pre')
                     ->select('id as id_pre', 'matricula', DB::raw("cast(EXTRACT(year from(age('$date', fecha_nacimiento))) as integer) as edad"),'ultimo_grado_estudios as escolaridad',
@@ -498,21 +500,21 @@ class grupoController extends Controller
             'alumno' => $alumno,
             'a_reg' => $a_reg
         ];
-        
+
     }
 
-    public function save(Request $request) 
-    { 
+    public function save(Request $request)
+    {
         $matricula = $message = NULL;
-        if(!$request->folio_grupo){            
-            $folio_grupo = $this->genera_folio();            
+        if(!$request->folio_grupo){
+            $folio_grupo = $this->genera_folio();
         }else $folio_grupo = $request->folio_grupo;
 
-        
+
         $resultadoCurso = $this->validaCurso($request);
         if(is_array($resultadoCurso)) return $resultado['redirect'];
-        
-        
+
+
         $patron = '/^[0-9A-Z]{2}-[0-9]{6}$/';
         if(preg_match($patron,$request->busqueda)){ // ES FOLIO DE GRUPO
             if (Gate::allows('alumnos-masivo')) {
@@ -520,14 +522,14 @@ class grupoController extends Controller
             } else return redirect()->route('preinscripcion.grupo')->with(['message' => 'Operación no permitida!']);
         }else $curps []= $request->busqueda;
 
-        foreach($curps as $curp){ 
+        foreach($curps as $curp){
             $resultado = $this->validaAlumno($request, $curp); //dd($resultado);
             if (isset($resultado['message'])){
-                $message .= $resultado['message'];                 
+                $message .= $resultado['message'];
                 continue;
-            }           
+            }
             $alumno = $resultado['alumno'];
-            $a_reg  = $resultado['a_reg'];            
+            $a_reg  = $resultado['a_reg'];
             if($alumno and $folio_grupo) {
                 //EXTRAER MATRICULA Y GUARDAR
                 $matricula_sice = DB::table('registro_alumnos_sice')->where('eliminado', false)->where('curp', $curp)->value('no_control');
@@ -535,8 +537,8 @@ class grupoController extends Controller
                     $matricula = $matricula_sice;
                     DB::table('registro_alumnos_sice')->where('curp', $curp)->update(['eliminado' => true]);
                 } elseif (isset($alumno->matricula)) $matricula  =  $alumno->matricula;
-                //FIN MATRICULA    
-                
+                //FIN MATRICULA
+
                 $id_especialidad = $a_reg->id_especialidad ?? DB::table('cursos')->where('estado', true)->where('id', $request->id_curso)->value('id_especialidad');
                 $id_unidad = $a_reg->id_unidad ?? DB::table('tbl_unidades')->select('id', 'plantel')->where('unidad', $request->unidad)->value('id');
                 $unidad = $a_reg->unidad ?? $request->unidad;
@@ -574,7 +576,7 @@ class grupoController extends Controller
                 $realizo = $a_reg->realizo ?? $this->realizo;
                 $iduser_created = $a_reg->iduser_created ?? $this->id_user;
                 $cerrs = $id_cerss ? true : null;
-                
+
                 $result = DB::table('alumnos_registro')->UpdateOrInsert(
                     ['id_pre' => $alumno->id_pre, 'folio_grupo' => $folio_grupo],
                     [
@@ -597,7 +599,7 @@ class grupoController extends Controller
                 }elseif($message)return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
 
             } //else $message = "Operación no permitida!";
-        }        
+        }
         return redirect()->route('preinscripcion.grupo')->with(['message' => $message]);
     }
 
@@ -760,7 +762,7 @@ class grupoController extends Controller
                                         WHERE (elem->>'fecha_val')::date < '$request->inicio'
                                         ORDER BY (elem->>'fecha_val')::date DESC
                                         LIMIT 1
-                                    ) AS mespecialidad")                              
+                                    ) AS mespecialidad")
                                 )
                             ->WHERE('estado', true)
                             ->WHERE('instructores.status', '=', 'VALIDADO')
@@ -827,7 +829,7 @@ class grupoController extends Controller
                                                 'tbl_inscripcion.tinscripcion' => $tinscripcion,
                                                 'tbl_inscripcion.abrinscri' => $abrins
                                         ]);
-                                }                                
+                                }
                             }
 
                             $sx = DB::table('alumnos_registro')
@@ -1202,8 +1204,8 @@ class grupoController extends Controller
                                                 'vb_dg' => true
                                             ]
                                         );
-                                        
-                                        //GENERA Y GUARDA EL FOLIO 
+
+                                        //GENERA Y GUARDA EL FOLIO
                                         /*
                                         if(!$tc_curso->folio_unico and $ID){
                                             $GrupoService = (new GrupoService());
@@ -1497,7 +1499,9 @@ class grupoController extends Controller
                 $folio_grupo = session('folio_grupo');
                 $reg_unidad = DB::table('tbl_unidades')->where('id', $this->id_unidad)->first();
                 $direccion = $reg_unidad->direccion;
-                $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion'));
+                //Seccion para el layout correcto sacando el año;
+                $layout_año = $this->herramientas->getPdfLayoutByDate($alumnos[0]->inicio);
+                $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion','layout_año'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('LISTA.pdf');
             }else {
@@ -1666,7 +1670,10 @@ class grupoController extends Controller
                     }
                     $direccion = $reg_unidad->direccion;
                     //dd($data);
-                    $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion'));
+                    //Seccion para el layout correcto sacando el año;
+                    $layout_año = $this->herramientas->getPdfLayoutByDate($cursos[0]->fecha_turnado);
+
+                    $pdf = PDF::loadView('preinscripcion.solicitudApertura', compact('distintivo', 'data', 'reg_unidad', 'date', 'memo','direccion','layout_año'));
                     $pdf->setpaper('letter', 'landscape');
                     return $pdf->stream('SOLICITUD.pdf');
                 } else {
@@ -1776,21 +1783,21 @@ class grupoController extends Controller
             $agenda->id_municipio = $id_municipio;
             $agenda->clave_localidad = $clave_localidad;
             $agenda->iduser_created = Auth::user()->id;
-            $agenda->save();            
-            
-             
-            ///VALIDA INSTRUCTOR  
+            $agenda->save();
+
+
+            ///VALIDA INSTRUCTOR
             $message = null;
             $response = $this->instructor_disponible($id_curso);
-            $respon = $response->getData(true);            
+            $respon = $response->getData(true);
             if($respon['status'] == 500){
                 if ($agenda->id_curso == $id_curso) $agenda->delete();
                 return $respon['mensaje'];
-            }            
+            }
 
-            ///ACTUALIZA TOTAL DIAS            
+            ///ACTUALIZA TOTAL DIAS
             $this->actualiza_dias($id_curso);
-           
+
         } catch (QueryException $ex) {
             //dd($ex);
             return 'duplicado';
@@ -1899,8 +1906,11 @@ class grupoController extends Controller
 
         $direccion = $data2->direccion;
 
+        //Seccion para el layout correcto sacando el año;
+        $layout_año = $this->herramientas->getPdfLayoutByDate($data1->inicio);
 
-        $pdf = PDF::loadView('reportes.acta_acuerdo_registro_grupo',compact('data1', 'data2','data3', 'direccion'));
+
+        $pdf = PDF::loadView('reportes.acta_acuerdo_registro_grupo',compact('data1', 'data2','data3', 'direccion','layout_año'));
         // $pdf->setPaper('A4', 'portrait');
         return $pdf->stream('Acta_Acuerdo');
     }
@@ -2394,7 +2404,7 @@ class grupoController extends Controller
 
  ##Función para la validacion de instructores
  public function instructor_disponible($folio_grupo){
-    try {            
+    try {
             $agenda = DB::Table('agenda')->Where('id_curso', $folio_grupo)->get();
             $grupo = DB::table('alumnos_registro')->select('id_curso','inicio', 'alumnos_registro.id_especialidad', 'termino', 'folio_grupo', 'id_instructor', 'cursos.curso_alfa')
             ->JOIN('cursos', 'cursos.id', '=' ,'alumnos_registro.id_curso')

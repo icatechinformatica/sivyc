@@ -1,5 +1,5 @@
 {{-- Realizado por Jose Luis Morenoa Arcos --}}
-@extends('theme.formatos.vlayout2025')
+@extends('theme.formatos.vlayout'.$layout_año)
 @section('title', 'Acta de acuerdo | SIVyC Icatech')
 
 @section('content_script_css')
@@ -8,7 +8,7 @@
         img.izquierdabot {
                 float: inline-end;
                 width: 100%;
-                height: 100%;
+                height: 0%;
             }
         img.derechabot {position:fixed;right: 50px;width: 350px;height: 60px;}
         img.derecha {float: right;width: 50%;height: 60px;}
@@ -30,6 +30,11 @@
         .estilo_p{
                 line-height: 1.5;
             }
+
+        body{
+            padding-top: 25%;
+            padding-bottom: 12%;
+        }
     </style>
 @endsection
 

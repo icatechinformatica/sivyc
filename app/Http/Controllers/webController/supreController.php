@@ -1333,7 +1333,7 @@ class supreController extends Controller
             $firma_electronica = false;
             $supreController = app(\App\Http\Controllers\efirma\ESupreController::class);
             $body_html = $supreController->create_body($id);
-            
+
             $bodySupre = $body_html['supre'];
             $bodyCcp = $body_html['ccp'];
             $bodyTabla = $body_html['tabla'];
