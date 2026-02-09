@@ -7,14 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\HerramientasService;
 use PDF;
 
 class exoneracionesController extends Controller
 {
-    function __construct()
+    function __construct(HerramientasService $herramientas)
     {
         session_start();
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
+        $this->herramientas = $herramientas;
     }
 
     public function index(Request $request){
@@ -197,7 +199,7 @@ class exoneracionesController extends Controller
 
             //$result = DB::table('exoneraciones')->where('nrevision', session('revision'))->where('status','CAPTURA')
             //->update(['fecha_memorandum' => $fecha]);
-        
+
             $mexoneracion = $date = $alumnos = null;
             $marca = true;  $data = [];
             $distintivo= DB::table('tbl_instituto')->pluck('distintivo')->first();
@@ -240,10 +242,10 @@ class exoneracionesController extends Controller
                                                 WHERE id_curso = tc.folio_grupo
                                             )::text AS agenda
                                             ")
-                            )                               
+                            )
                             ->join('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
                             ->join('agenda','agenda.id_curso','=','e.folio_grupo')
-                            
+
                             ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                             ->leftJoin('cursos as c','ar.id_curso','=','c.id')
                             ->where('e.nrevision',session('revision'))
@@ -292,8 +294,10 @@ class exoneracionesController extends Controller
             $mes = $meses[date('m',strtotime($fecha_act))];
             $fecha_doc = date('d',strtotime($fecha_act)).' de '.$mes.' del '.date('Y',strtotime($fecha_act));
             $fecha = '09-12-2024';
+            //Seccion para el layout correcto sacando el año;
+            $layout_año = $this->herramientas->getPdfLayoutByDate($date);
 
-            $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha_doc','reg_unidad','depen','marca','data','direccion','director','fecha'));
+            $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha_doc','reg_unidad','depen','marca','data','direccion','director','fecha','layout_año'));
             $pdf->setpaper('letter','landscape');
             return $pdf->stream('EXONERACION.pdf');
         } else {
