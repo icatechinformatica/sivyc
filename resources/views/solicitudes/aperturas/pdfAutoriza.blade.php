@@ -1,11 +1,11 @@
-@extends('theme.formatos.hlayout')
+@extends('theme.formatos.hlayout'.$layout_año)
 @if($opt=="ARC-02")
     @section('title', 'AUTORIZACIÓN ARC-02 | SIVyC Icatech')
 @else
     @section('title', 'AUTORIZACIÓN ARC-01 | SIVyC Icatech')
 @endif
 @section('content_script_css')
-    <style> 
+    <style>
         .content {font-family: sans-serif; font-size: 9px; margin-top:90px;}
         .tablas{border-collapse: collapse; width: 100%; margin-top:15px; }
         .tablas tr th {padding:1px;margin:0px;}
@@ -13,20 +13,21 @@
 
         .tablaf { page-break-inside: avoid; border-collapse: collapse; width: 100%; white-space: nowrap; height: auto; margin-top:15px;}
         .tablaf tr td { font-size: 8px; text-align: center; padding: 0px 0px;}
-        
+
         .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; padding: 2px 2px 2px 0; border-collapse: collapse; }
         .tablad tr td{padding: 1px 5px 0 5px; font-size: 7.5px;}
 
-        #titulo{ position: fixed; top: 80px; width:100%; text-align: center; }
-        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}        
+        #titulo{ position: fixed; top: 130px; width:100%; text-align: center; }
+        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
         #titulo span{position: fixed; top: 120px; width:93%; display: block; text-align: right; font-weight: bold;}
-        #para { font-size: 8px; font-weight:bold; position: fixed; top: 140px;}        
-        
+        #para { font-size: 8px; font-weight:bold; position: fixed; top: 190px;}
+
         .agenda-list {list-style: none; padding: 0; margin: 0;}
         ul.inline-list { list-style: none; padding: 0; margin-top:150px;}
         ul.inline-list li { margin-right: 10px;}
         .obs {padding: 0; margin: 0; }
-        
+        body { padding-top: 12%; }
+
     </style>
 @endsection
 @section('content')
@@ -61,7 +62,7 @@
         $fecha = date('d',strtotime($fecha)).' de '.$mes.' del '.date('Y',strtotime($fecha));
     @endphp
     <div id="titulo">
-        <h3>AUTORIZACIÓN DE {{$opt}}</h3>
+        <h3 style="margin-left: -80px;">AUTORIZACIÓN DE {{$opt}}</h3>
         <br/>
         <table width="100%" style="margin-left: -65px;">
             <tr>
@@ -100,7 +101,7 @@
                  <th>ZON<br>A<br>ECO<br>NOM<br>ICA</th>
                  <th>TIPO DE <BR/> CUOT<br/>A</th>
                  <th width='12%'>OBSERVACIONES</th>
-             </tr>             
+             </tr>
          </thead>
          <tbody>
              @foreach($reg_cursos as $a)
@@ -117,7 +118,7 @@
                  <th>{{ $a->curso }}</th>
                  <th>{{ $a->clave }}</th>
                  <th>{{ $a->mod }}</th>
-                 <td>{{ $a->tcapacitacion}}</td> 
+                 <td>{{ $a->tcapacitacion}}</td>
                  <th>{{ $a->dura }}</th>
                  <td>{!! $a->agenda !!}</td>
                  <th>{{ $a->mujer + $a->hombre }}</th>
