@@ -1499,8 +1499,8 @@ class grupoController extends Controller
                 $folio_grupo = session('folio_grupo');
                 $reg_unidad = DB::table('tbl_unidades')->where('id', $this->id_unidad)->first();
                 $direccion = $reg_unidad->direccion;
-                //Seccion para el layout correcto sacando el año;
-                $layout_año = $this->herramientas->getPdfLayoutByDate($alumnos[0]->inicio);
+                //Seccion para el layout correcto sacando el año; hay error de parse porque viene "14/02/2026"
+                $layout_año = $this->herramientas->getPdfLayoutByDate(Carbon::createFromFormat('d/m/Y', $alumnos[0]->inicio));
                 $pdf = PDF::loadView('preinscripcion.listaAlumnos',compact('alumnos','distintivo','folio_grupo','direccion','layout_año'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('LISTA.pdf');
