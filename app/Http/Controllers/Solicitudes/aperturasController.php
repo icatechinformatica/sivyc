@@ -18,12 +18,14 @@ use App\Models\tbl_curso;
 use App\User;
 use PDF;
 use App\Services\ValidacionServicioVb;
+use App\Services\HerramientasService;
 
 class aperturasController extends Controller
 {
     use catUnidades;
-    function __construct() {
+    function __construct(HerramientasService $herramientas) {
         session_start();
+        $this->herramientas = $herramientas;
         $this->ejercicio = date("y");
         $this->middleware('auth');
         $this->path_pdf = "DTA/autorizado_arc01/";
@@ -539,8 +541,8 @@ class aperturasController extends Controller
 
                         DB::raw("
                         (
-                         CASE 
-                         WHEN  tc.arc='01'  AND tc.nota ILIKE '%INSTRUCTOR%' THEN tc.nota                         
+                         CASE
+                         WHEN  tc.arc='01'  AND tc.nota ILIKE '%INSTRUCTOR%' THEN tc.nota
                          WHEN tc.arc='01' THEN(
 
                             CASE
@@ -598,7 +600,11 @@ class aperturasController extends Controller
                 // $direccion = $direccion."Teléfono (961)6121621 Email: dtecnicaacademica@gmail.com";
                 $realizo = $this->realizo;
                 $puesto = $this->puesto;
-                $pdf = PDF::loadView('solicitudes.aperturas.pdfAutoriza',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','opt','distintivo','realizo','puesto','marca','direccion'));
+
+                //Seccion para el layout correcto sacando el año;
+                $layout_año = $this->herramientas->getPdfLayoutByDate($reg_cursos[0]->fecha_apertura);
+
+                $pdf = PDF::loadView('solicitudes.aperturas.pdfAutoriza',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','opt','distintivo','realizo','puesto','marca','direccion','layout_año'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('AutorizacionARC.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;

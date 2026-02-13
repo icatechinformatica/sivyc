@@ -1,4 +1,4 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayout'.$layout_año)
 @section('title', 'Solicitud de Apertura | SIVyC Icatech')
 @section('content_script_css')
     <style>
@@ -15,6 +15,7 @@
         #titulo table{position: fixed; top: 93px;}
         #para {position: relative; top: 0px; height:auto; width:60%; font-size: 8px; font-weight:bold; margin-top:20px;}
         header{ line-height: 1; font-size: 12px; top: 20px; font-weight: bold; left: 40px;}
+        body { padding-top: 16%; }
     </style>
 @endsection
 @section('header')

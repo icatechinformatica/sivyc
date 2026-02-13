@@ -1,10 +1,10 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayout'.$layout_año)
 @section('title', 'Lista de Alumnos | SIVyC Icatech')
 @section('content_script_css')
 <style>
     .container { font-size: 9px;}
     /* @page { margin-bottom: 120px; } */
-    #titulo {position: fixed; top: 45px; left: 0px; width: 100%; text-align: center;}
+    #titulo {position: fixed; top: 85px; left: 0px; width: 100%; text-align: center;}
     #titulo h2{padding:0px; margin:10px 0px 5px 0px; font-size: 14px;}
     #titulo h3{padding:0px; margin:0px; font-size: 12px;}
 
@@ -12,6 +12,7 @@
     .tb tr, .tb td, .tb th{ border: black 1px solid; padding: 1px;}
     .tb thead{background: #EAECEE;}
     header{ top: 20px; font-size: 11px; font-weight: bold; line-height: 1;}
+    body { padding-top: 16%; }
 
 </style>
 @endsection

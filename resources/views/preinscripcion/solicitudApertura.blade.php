@@ -1,9 +1,9 @@
-@extends('theme.formatos.hlayout')
+@extends('theme.formatos.hlayout'.$layout_año)
 @section('title', 'Solicitud de Apertura | SIVyC Icatech')
 @section('content_script_css')
-    <style>        
-        .content {font-family: sans-serif; font-size: 9px; margin-top:40px;}   
-            
+    <style>
+        .content {font-family: sans-serif; font-size: 9px; margin-top:40px;}
+
         #titulo { top: 0px; width: 100%; text-align: center; margin-top: -30;}
         #titulo h2{padding:0px; margin:0px 0px 2px 50px; font-size: 13px; font-weight:normal;}
         #titulo h3{padding:0px; margin:0px 0px 2px 50px; ; font-size: 12px; font-weight:normal;}
@@ -12,16 +12,17 @@
 
         .tb {width: 100%; border-collapse: collapse; text-align: center; }
         .tb th{border: 1px solid black; padding: 1px; font-weight: normal; font-size: 5px;}
-        .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}        
-      
+        .tb td{border: 1px solid black; padding: 1px; font-size: 7px; height: auto;}
+
         .tablaf { border-collapse: collapse; width: 100%; font-size: 8px; text-align: center; margin-top:0px;}
         .tablaf tr, .tablaf td {padding: 0px}
         p {margin:5px; padding:0px;font-size: 10px}
-        
+
         .agenda-list {list-style: none; padding: 0; margin: 0;}
         ul.inline-list { list-style: none; padding: 0; margin-top:150px;}
         ul.inline-list li { margin-right: 10px;}
         .obs {padding: 0; margin: 0; }
+        body { padding-top: 16%; }
 
 
 
@@ -65,7 +66,7 @@
                     <th>MOD</th>
                     <th>TIPO DE CAPACI<BR/>TACIÓN</th>
                     <th>DURA</th>
-                    <th>FECHAS/HORARIOS<br/>(HORAS)</th>                    
+                    <th>FECHAS/HORARIOS<br/>(HORAS)</th>
                     <th>COSTO POR PART</th>
                     <th>TOTAL INGRESO</th>
                     <th>NO. PART</th>
@@ -105,7 +106,7 @@
                             @if($item['vb_dg']==true or $item['clave']!='0')
                                 {{$item['instructor']}}
                             @endif
-                        
+
                         </td>
                         <td>{{$item['vincu']}}</td>
                         <td width='auto'>{{$item['efisico']}}</td>

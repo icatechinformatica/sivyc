@@ -1,4 +1,4 @@
-@extends('theme.formatos.hlayout')
+@extends('theme.formatos.hlayout'.$layout_año)
 @section('title', 'Solicitud ARC-01 | SIVyC Icatech')
 @section('content_script_css')
     <style>
@@ -13,15 +13,16 @@
         .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; border-collapse: collapse; }
         .tablad tr td{padding: 1px 10px 0 10px;}
 
-        #titulo{ position: fixed; top: 80px; width:100%; text-align: center; }
-        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}        
-        #titulo span{position: fixed; top: 120px; width:93%; display: block; text-align: right; font-weight: bold;}
-        #para { font-size: 8px; font-weight:bold; position: fixed; top: 140px;}        
-        
+        #titulo{ position: fixed; left:0%; top: 160px; width:100%; text-align: center; }
+        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
+        #titulo span{position: fixed; top: 210px; width:93%; display: block; text-align: right; font-weight: bold;}
+        #para { font-size: 8px; font-weight:bold; position: fixed; top: 200px;}
+
         .agenda-list {list-style: none; padding: 0; margin: 0;}
         ul.inline-list { list-style: none; padding: 0; margin-top:150px;}
         ul.inline-list li { margin-right: 10px;}
         .obs {padding: 0; margin: 0; }
+        body { padding-top: 12%; }
     </style>
 @php $arc = true; @endphp
 @endsection
@@ -35,7 +36,7 @@
     <div id="titulo">
         <h4>{{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}</h4>
         <h4>DEPARTAMENTO ACADÉMICO</h4>
-        <h4>ARC-01</h4>        
+        <h4>ARC-01</h4>
         <span>
             {{ $nombre_unidad }} {{ $reg_cursos[0]->unidad }}<br/>
             MEMORÁNDUM NO. {{ $memo_apertura }} <br/>
@@ -72,7 +73,7 @@
             </tr>
             <tr>
                 <th >FEM</th>
-                <th >MAS</th>                
+                <th >MAS</th>
             </tr>
         </thead>
         <tbody>
@@ -85,7 +86,7 @@
                 <td>{{ $a->espe }}</td>
                 <td><div style="width: 60px">{{ $a->folio_grupo }} /<br/> {{ $a->curso }}</div></td>
                 <td>{{ $a->mod }}</td>
-                <td>{{ $a->tcapacitacion}}</td>                
+                <td>{{ $a->tcapacitacion}}</td>
                 <td>{{ $a->dura }}</td>
                 <td> <div style="width: 90px">{!! $a->agenda !!}</div></td>
                 {{--<td>{{ $a->dia }}</td>--}}

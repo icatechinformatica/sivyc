@@ -200,15 +200,13 @@ class ContratoController extends Controller
         $director = $testigo1 = $testigo2 = $testigo3 = null;
         $folio = new folio();
         $perfil = new InstructorPerfil();
-        $fechaActual = Carbon::now();
-        $fechaActual = $fechaActual->format('d-m-Y');
 
         // dd($contrato);
         $data = $folio::SELECT('folios.id_folios', 'folios.folio_validacion', 'folios.importe_total',
                             'folios.iva', 'tbl_cursos.unidad','tbl_cursos.clave','tbl_cursos.inicio','tbl_cursos.termino', 'tbl_cursos.instructor_mespecialidad','tbl_cursos.fecha_apertura',
                             'tbl_cursos.curso','tbl_cursos.clave_especialidad','tbl_cursos.espe','tbl_cursos.soportes_instructor','instructores.nombre AS insnom',
                             'instructores.apellidoPaterno','instructores.apellidoMaterno','instructores.id','instructores.archivo_alta','instructores.banco',
-                            'instructores.no_cuenta','instructores.interbancaria','instructores.archivo_bancario')
+                            'instructores.no_cuenta','instructores.interbancaria','instructores.archivo_bancario',)
                         ->WHERE('id_folios', '=', $id)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
                         ->LEFTJOIN('instructores', 'instructores.id', '=', 'tbl_cursos.id_instructor')
@@ -260,48 +258,12 @@ class ContratoController extends Controller
             $pago = $data->importe_total;
         }
 
+        $fechaActual = date('d-m-Y', strtotime($data->inicio));
         $año_referencia = '01-01-' . CARBON::now()->format('Y');
         $uni = $uni_contrato = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('unidad', '=', $data->unidad)->FIRST();
 
-        $xpld = explode('-', $data->folio_validacion);
-        $counter = strlen($xpld[3]);
-        if($counter == 4)
-        {
-            $consecutivo = $xpld[3];
-        }
-        if($counter == 3)
-        {
-            $consecutivo = '0' . $xpld[3];
-        }
-        // dd($consecutivo);
-        if ($consecutivo == NULL)
-        {
-            $consecutivo = '0001';
-        }
-        else
-        {
-            switch (strlen($consecutivo))
-            {
-                case 1:
-                    $consecutivo = '000' . $consecutivo;
-                break;
-                case 2:
-                    $consecutivo = '00' . $consecutivo;
-                break;
-                case 3:
-                    $consecutivo = '0' . $consecutivo;
-                break;
-            }
-        }
-        // dd($consecutivo);
-        if($uni_contrato->ubicacion == 'SAN CRISTOBAL')
-        {
-            $uni_contrato = 'SC'.'/DA/'.DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $uni_contrato->ubicacion)->VALUE('clave_contrato') . '/' . $consecutivo . '/'. CARBON::now()->format('Y');
-        }
-        else
-        {
-            $uni_contrato = substr($uni_contrato->ubicacion, 0, 2).'/DA/'.DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $uni_contrato->ubicacion)->VALUE('clave_contrato') . '/' . $consecutivo . '/'. CARBON::now()->format('Y');
-        }
+        // Generar numero de contrato
+        $uni_contrato = $this->numero_contrato($uni_contrato->ubicacion,$data->folio_validacion,$data->inicio);
 
         $date = strtotime($data->termino);
         $dacarbon = strtotime(Carbon::now());
@@ -578,11 +540,10 @@ class ContratoController extends Controller
         $perfil = new InstructorPerfil();
         $generarEfirmaContrato = $generarEfirmaPago = TRUE;
         $fechaA = Carbon::now();
-        $fechaActual = $fechaA->format('d-m-Y');
         $fechaA = $fechaA->format('Y-m-d');
 
         $datacon = contratos::WHERE('id_contrato', '=', $id)->FIRST();
-        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','tbl_cursos.termino','instructores.nombre AS insnom','instructores.apellidoPaterno',
+        $data = $folio::SELECT('folios.id_folios','folios.importe_total','folios.iva','tbl_cursos.inicio','tbl_cursos.clave','tbl_cursos.espe','tbl_cursos.id_instructor','tbl_cursos.nombre','tbl_cursos.termino','instructores.nombre AS insnom','instructores.apellidoPaterno',
                                'instructores.apellidoMaterno','instructores.archivo_alta','instructores.id','tbl_cursos.instructor_mespecialidad', 'tbl_cursos.curso','tbl_cursos.fecha_apertura')
                         ->WHERE('id_folios', '=', $datacon->id_folios)
                         ->LEFTJOIN('tbl_cursos','tbl_cursos.id', '=', 'folios.id_cursos')
@@ -624,8 +585,13 @@ class ContratoController extends Controller
             $memoval = $data->archivo_alta;
         }
 
+        $fechaActual = date('d-m-Y', strtotime($data->inicio));
         $unidadsel = tbl_unidades::SELECT('unidad')->WHERE('unidad', '=', $datacon->unidad_capacitacion)->FIRST();
         $unidadlist = tbl_unidades::SELECT('unidad')->WHERE('unidad', '!=', $datacon->unidad_capacitacion)->GET();
+
+        // numero de contrato
+        $datacon->numero_contrato = $this->numero_contrato($unidadsel->unidad, folio::WHERE('id_folios', '=', $datacon->id_folios)->VALUE('folio_validacion'), $data->inicio);
+        // dd($numero_contrato);
 
         $nombrecompleto = $data->insnom . ' ' . $data->apellidoPaterno . ' ' . $data->apellidoMaterno;
 
@@ -697,6 +663,50 @@ class ContratoController extends Controller
         // FINAL del check
 
         return view('layouts.pages.modcontrato', compact('data','nombrecompleto','perfil_prof','perfil_sel','datacon','unidadsel','unidadlist','memoval','datap','regimen','datac','pago','fechaActual','generarEfirmaContrato','generarEfirmaPago','funcionarios')); //se quito testigo2
+    }
+
+    public function numero_contrato($unidad, $folio, $fecha){
+        $xpld = explode('-', $folio);
+        $counter = strlen($xpld[3]);
+        if($counter == 4)
+        {
+            $consecutivo = $xpld[3];
+        }
+        if($counter == 3)
+        {
+            $consecutivo = '0' . $xpld[3];
+        }
+        // dd($consecutivo);
+        if ($consecutivo == NULL)
+        {
+            $consecutivo = '0001';
+        }
+        else
+        {
+            switch (strlen($consecutivo))
+            {
+                case 1:
+                    $consecutivo = '000' . $consecutivo;
+                break;
+                case 2:
+                    $consecutivo = '00' . $consecutivo;
+                break;
+                case 3:
+                    $consecutivo = '0' . $consecutivo;
+                break;
+            }
+        }
+
+        if($unidad == 'SAN CRISTOBAL')
+            {
+                $uni_contrato = 'SC'.'/DA/'.DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $unidad)->VALUE('clave_contrato') . '/' . $consecutivo . '/'. date('Y', strtotime($fecha));
+            }
+            else
+            {
+                $uni_contrato = substr($unidad, 0, 2).'/DA/'.DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $unidad)->VALUE('clave_contrato') . '/' . $consecutivo . '/'. date('Y', strtotime($fecha));
+            }
+
+        return $uni_contrato;
     }
 
     public function save_mod(Request $request){
