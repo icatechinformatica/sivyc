@@ -271,8 +271,8 @@ class ImportarGruposController extends Controller
         $horaFin = trim($row[5]);
         $curp = trim($row[6]);
         
-        // GRUPO está en posición 7
-        $grupo = isset($row[7]) && !empty(trim($row[7])) ? trim($row[7]) : 'PENDIENTE';
+        // GRUPO (ya no se usa del excel, se genera automatico)
+        // $grupo = isset($row[7]) && !empty(trim($row[7])) ? trim($row[7]) : 'PENDIENTE';
 
         // Lookup Unidad
         // Normalizar caso específico: "Tuxtla Gutiérrez" -> "TUXTLA"
@@ -343,8 +343,8 @@ class ImportarGruposController extends Controller
         // Generar ID
         $id = $this->generarId($unidadData->plantel, $inicio);
         // dd($id);
-        // Usar el valor de la columna GRUPO si existe, si no generar folio_grupo
-        $folioGrupo = $grupo;
+        // Generar Folio Grupo Automáticamente
+        $folioGrupo = $this->generarFolioGrupo($unidadData->cct, $inicio);
 
         // dd($curso->rango_criterio_pago_maximo);
         // dd($instructor->criterio_pago);
@@ -512,6 +512,8 @@ class ImportarGruposController extends Controller
         $yearInicio = date('Y', strtotime($fechaInicio));
         $year = substr($yearInicio, -2);
 
+        $prefix = $cctProcesado . '-' . $year;
+
         // Consecutivo desde alumnos_registro
         $maxConsecutivoAlumnos = DB::table('alumnos_registro')
             ->where('ejercicio', $yearInicio)
@@ -525,6 +527,7 @@ class ImportarGruposController extends Controller
             ->where('cct', $cct)
             ->whereNotNull('folio_grupo')
             ->where('folio_grupo', '!=', '')
+            ->where('folio_grupo', 'like', $prefix . '%')
             ->selectRaw("COALESCE(MAX(CAST(substring(folio_grupo from '.{4}$') AS int)), 0) as max_consec")
             ->value('max_consec');
 
@@ -532,7 +535,7 @@ class ImportarGruposController extends Controller
         $maxConsecutivo = max($maxConsecutivoAlumnos ?? 0, $maxConsecutivoCursos ?? 0);
         $consecutivo = $maxConsecutivo + 1;
 
-        return $cctProcesado . '-' . $year . str_pad($consecutivo, 4, '0', STR_PAD_LEFT);
+        return $prefix . str_pad($consecutivo, 4, '0', STR_PAD_LEFT);
     }
 
     private function generarFolioPreview($cct, $fechaInicio)
