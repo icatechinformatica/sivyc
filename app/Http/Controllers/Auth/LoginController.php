@@ -45,7 +45,7 @@ class LoginController extends Controller
         $this->middleware('guest')->except('logout');
     }
 
-     /**
+    /**
      * Método que se ejecuta después de una autenticación exitosa
      *
      * @param  \Illuminate\Http\Request  $request
@@ -63,6 +63,23 @@ class LoginController extends Controller
         // Comportamiento normal para otros usuarios
         return redirect()->intended($this->redirectPath());
     }
+
+    /**
+     * Obtiene las credenciales necesarias para la autenticación.
+     * Incluye la validación del campo 'activo' = 1
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return array
+     */
+    protected function credentials(Request $request)
+    {
+        return [
+            'email' => $request->email,
+            'password' => $request->password,
+            'activo' => 1  // Solo permite login si el usuario está activo
+        ];
+    }
+
     protected function sendFailedLoginResponse(Request $request)
     {
         $user = User::where('email', $request->email)->first();
@@ -84,10 +101,18 @@ class LoginController extends Controller
             ]);
         }
 
+        // Verificar si el usuario está inactivo
+        if (!$user->activo) {
+            throw ValidationException::withMessages([
+                'email' => ['Tu cuenta está inactiva. Por favor contacta al administrador.'],
+            ]);
+        }
+
         throw ValidationException::withMessages([
             'email' => ['La contraseña proporcionada es incorrecta.'],
         ]);
     }
+
 
     public function resetPasswordModal(Request $request)
     {
@@ -129,18 +154,18 @@ class LoginController extends Controller
         return back()->with('success', 'Tu contraseña ha sido restablecida. Se ha enviado un mensaje de WhatsApp con tu nueva contraseña.');
     }
 
-     private function whatsapp_restablecer_usuario_msg($instructor, WhatsAppService $whatsapp)
+    private function whatsapp_restablecer_usuario_msg($instructor, WhatsAppService $whatsapp)
     {
         $plantilla = DB::Table('tbl_wsp_plantillas')->Where('nombre', 'restablecer_pwd_sivyc')->First();
 
         // Reemplazar variables en plantilla
         $mensaje = str_replace(
-            ['{{nombre}}', '{{correo}}', '{{pwd}}','\n'],
-            [$instructor['nombre'], $instructor['correo'], $instructor['pwd'],"\n"],
+            ['{{nombre}}', '{{correo}}', '{{pwd}}', '\n'],
+            [$instructor['nombre'], $instructor['correo'], $instructor['pwd'], "\n"],
             $plantilla->plantilla
         );
 
-         $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
+        $callback = $whatsapp->cola($instructor['telefono'], $mensaje, $plantilla->prueba);
 
         return $callback;
     }
