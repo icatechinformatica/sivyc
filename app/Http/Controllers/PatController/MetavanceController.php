@@ -45,10 +45,10 @@ class MetavanceController extends Controller
         #Año de ejercicio
         $sel_eje = $request->sel_ejercicio;
         $ejercicio = [];
-        for ($i=2023; $i <= intval(2025); $i++) {array_push($ejercicio, $i);} //hasta el año actual en lo que se carga el 2026
+        for ($i=2023; $i <= intval(date('Y')); $i++) {array_push($ejercicio, $i);}
         if ($sel_eje == null && !session()->has('eje_pat_registros')) {
-            // session(['eje_pat_registros' => date('Y')]); //se comenta para forzar al 2025
-            session(['eje_pat_registros' => 2025]);
+            session(['eje_pat_registros' => date('Y')]);
+            // session(['eje_pat_registros' => 2025]);
         } elseif ($sel_eje != null) {
             session(['eje_pat_registros' => $sel_eje]);
         }
