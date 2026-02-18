@@ -239,6 +239,7 @@
                                     <th scope="col">MES REPORTADO</th>
                                     <th scope="col">UNIDAD DE CAPACITACION</th>
                                     <th scope="col">PLANTEL</th>
+                                    <th scope="col">CAMPO DE FORMACIÓN</th> 
                                     <th scope="col">ESPECIALIDAD</th>
                                     <th scope="col">CURSO</th>
                                     <th scope="col">CLAVE</th>
@@ -270,6 +271,8 @@
                                     <th scope="col">MEMO VALIDA CURSO</th>
                                     <th scope="col">ESPACIO FISICO</th>
                                     <th scope="col">INSTRUCTOR</th>
+                                    <th scope="col">CURP</th>
+                                    <th scope="col">RFC</th>
                                     <th scope="col">ESCOLARIDAD INSTRUCTOR</th>
                                     <th scope="col">DOCUMENTO ADQ</th>
                                     <th scope="col">SEXO</th>
@@ -386,6 +389,7 @@
                                         <td>{{ $mesInformar }}</td>
                                         <td>{{ $datas->unidad }}</td>
                                         <td>{{ $datas->plantel }}</td>
+                                        <td>{{ $datas->area }}</td>
                                         <td>{{ $datas->espe }}</td>
                                         <td>
                                             <div style="width:200px; word-wrap: break-word">{{ $datas->curso }}</div>
@@ -433,6 +437,14 @@
                                         </td>
                                         <td>
                                             <div style="width:200px; word-wrap: break-word">{{ $datas->nombre }}</div>
+                                        </td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->curp }}
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div style="width:200px; word-wrap: break-word">{{ $datas->rfc }}
+                                            </div>
                                         </td>
                                         <td>{{ $datas->grado_profesional }}</td>
                                         <td>{{ $datas->estatus }}</td>
