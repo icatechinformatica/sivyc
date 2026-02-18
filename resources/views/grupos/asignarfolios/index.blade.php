@@ -82,10 +82,14 @@
         Asignación de Folios
     </div>
     <div class="card card-body" style=" min-height:450px;">
-        @if($message)
-            <div class="row ">
-                <div class="col-md-12 alert alert-success">
-                    <p>{{ $message }}</p>
+        @if(!empty($messages))
+            <div class="row">
+                <div class="col-md-12">
+                    @foreach($messages as $msg)
+                        <div class="alert alert-success">
+                            <p>{{ $msg }}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         @endif

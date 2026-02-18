@@ -34,8 +34,9 @@ class asignarfoliosController extends Controller
     }
 
     public function index(Request $request){
-        $curso = $alumnos = $message = $acta = $matricula = $efirma = $clave =  null;
+        $curso = $alumnos  = $acta = $matricula = $efirma = $clave =  null;
         $btn_genxml = false;
+        $messages = [];
 
         if(session('clave')) $clave = session('clave');
         else $clave = $request->clave;
@@ -72,11 +73,19 @@ class asignarfoliosController extends Controller
             }
         }
 
+        if ($efirma) {
+            // Verificar e insertar lotes de folios para eFirma si no existen
+            $insertFolios = $this->insertLotefolios();
+            if($insertFolios) $messages[] = $insertFolios;
+        }
+
         if($clave){
             $data = $this->validaCurso($clave, $matricula, NULL, $efirma);
             list($curso, $acta, $alumnos, $message) = $data;
+            if($message) $messages[] = $message; // Agregar mensaje al array
         }
-        return view('grupos.asignarfolios.index', compact('curso','alumnos','message','acta', 'matricula','efirma','clave', 'btn_genxml'));
+
+        return view('grupos.asignarfolios.index', compact('curso','alumnos','messages','acta', 'matricula','efirma','clave', 'btn_genxml'));
     }
 
     public function store(Request $request) {
@@ -128,7 +137,13 @@ class asignarfoliosController extends Controller
                              $prefijo = substr($this->ubicacion, 0, 3);
                         }//else $prefijo = "A";
 
-                        $folio = $prefijo.str_pad($num_folio, 6, "0", STR_PAD_LEFT);
+                        if ($acta->mod=="EFIRMA" && Carbon::parse($acta->facta)->gte('2026-01-01')) {
+                            $anio = substr($acta->finicial, 3, 2); //extraer el año del folio ejemplo 26 de TUX2600001
+                            $prefijo_completo = $prefijo . $anio;
+                            $folio = $prefijo_completo . str_pad($num_folio, 5, "0", STR_PAD_LEFT);
+                        }else {
+                            $folio = $prefijo.str_pad($num_folio, 6, "0", STR_PAD_LEFT);
+                        }
 
                         $id_folio = DB::table('tbl_folios')->insertGetId(
                             ['unidad' => $curso->unidad, 'id_curso'=>$curso->id,'matricula'=>$a->matricula, 'nombre'=>$a->alumno,
@@ -218,6 +233,81 @@ class asignarfoliosController extends Controller
         }
         return $data = [$curso, $acta, $alumnos, $message];
 
+    }
+
+    public function insertLotefolios()
+    {
+        try {
+            $anio_actual = Carbon::now()->year;
+            $anio_anterior = $anio_actual - 1;
+            $fecha_actual = Carbon::now()->toDateString();
+            $anio_dos_digitos = substr($anio_actual, -2); // "26"
+
+            // Verificar si ya existen registros para el año actual
+            $cantidad = DB::table('tbl_banco_folios')
+                    ->whereYear('facta', $anio_actual)
+                    ->where('mod', 'EFIRMA')
+                    ->count();
+
+            if ($cantidad == 0) {
+
+                // Desactivar registros del año anterior
+                DB::table('tbl_banco_folios')
+                    ->whereYear('facta', $anio_anterior)
+                    ->where('mod', 'EFIRMA')
+                    ->update(['activo' => false]);
+
+                // Array con las unidades y sus códigos
+                $unidades = [
+                    ['nombre' => 'TUXTLA', 'codigo' => 'TUX', 'id_unidad' => 1],
+                    ['nombre' => 'TAPACHULA', 'codigo' => 'TAP', 'id_unidad' => 2],
+                    ['nombre' => 'COMITAN', 'codigo' => 'COM', 'id_unidad' => 3],
+                    ['nombre' => 'REFORMA', 'codigo' => 'REF', 'id_unidad' => 4],
+                    ['nombre' => 'TONALA', 'codigo' => 'TON', 'id_unidad' => 5],
+                    ['nombre' => 'VILLAFLORES', 'codigo' => 'VIL', 'id_unidad' => 6],
+                    ['nombre' => 'JIQUIPILAS', 'codigo' => 'JIQ', 'id_unidad' => 7],
+                    ['nombre' => 'CATAZAJA', 'codigo' => 'CAT', 'id_unidad' => 8],
+                    ['nombre' => 'YAJALON', 'codigo' => 'YAJ', 'id_unidad' => 9],
+                    ['nombre' => 'SAN CRISTOBAL', 'codigo' => 'SAN', 'id_unidad' => 10],
+                    ['nombre' => 'OCOSINGO', 'codigo' => 'OCO', 'id_unidad' => 20],
+                ];
+
+                $registros = [];
+
+                foreach ($unidades as $unidad) {
+                    $registros[] = [
+                        'unidad' => $unidad['nombre'],
+                        'finicial' => $unidad['codigo'] . $anio_dos_digitos . '00001',
+                        'ffinal' => $unidad['codigo'] . $anio_dos_digitos . '99999',
+                        'total' => 99999,
+                        'mod' => 'EFIRMA',
+                        'facta' => $fecha_actual,
+                        'idfolios' => null,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                        'realizo' => 'JOSE LUIS MORENO ARCOS',
+                        'num_inicio' => 1,
+                        'num_fin' => 999999,
+                        'id_unidad' => $unidad['id_unidad'],
+                        'contador' => 0,
+                        'num_acta' => $unidad['codigo'] . '-' . $anio_dos_digitos,
+                        'file_acta' => null,
+                        'iduser_created' => 224,
+                        'iduser_updated' => null,
+                        'activo' => true
+                    ];
+                }
+                // Insertar todos los registros
+                DB::table('tbl_banco_folios')->insert($registros);
+                return "Actas disponibles  el año {$anio_actual}";
+            }
+
+        } catch (\Throwable $th) {
+            return "Error al insertar registros: " . $th->getMessage();
+        }
+
+
+        //return "Ya existen registros para el año {$anio_actual}";
     }
 
     /** By Jose Luis Moreno Arcos Firma efolios*/
