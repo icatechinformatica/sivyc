@@ -465,7 +465,7 @@ class supreController extends Controller
             }
         }
 
-        $supreController = new ESupreController();
+        $supreController = app(\App\Http\Controllers\efirma\ESupreController::class);
         $result = $supreController->generar_xml($request->ids);
 
         if(isset($result['error'])) {
@@ -669,8 +669,8 @@ class supreController extends Controller
             }
         }
 
-        $valsupreController = new EValsupreController();
-        $result = $valsupreController->generar_xml($request->ids);
+        $valsupreController = app(\App\Http\Controllers\efirma\EValsupreController::class);
+        $result = $valsupreController->generar_xml($request->ids);  
 
         if(isset($result['error'])) {
             return redirect()->route('valsupre-mod', ['id' => base64_encode($request->ids)])
