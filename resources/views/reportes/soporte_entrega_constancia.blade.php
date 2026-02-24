@@ -1,5 +1,5 @@
 {{-- Realizado por Jose Luis Morenoa Arcos --}}
-@extends('theme.formatos.vlayout2025')
+@extends('theme.formatos.vlayout'.$layout_año)
 @section('title', 'Soporte de Entrega | SIVyC Icatech')
 
 @section('content_script_css')

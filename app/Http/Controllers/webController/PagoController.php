@@ -55,8 +55,8 @@ class PagoController extends Controller
             ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
             ->Join('contratos','contratos.id_contrato','pagos.id_contrato')
             ->Where('status_transferencia','PAGADO')
-            ->whereDate('tbl_cursos.inicio', '>=', '2024-01-01')
-            ->whereDate('pagos.fecha_transferencia', '>=', '2024-11-29')->whereDate('fecha_transferencia', '<=', '2024-12-31')
+            ->whereDate('tbl_cursos.inicio', '>=', '2025-01-01')
+            ->whereDate('pagos.fecha_transferencia', '>=', '2025-06-01')->whereDate('fecha_transferencia', '<=', '2025-06-30')
             // ->Where('pagos.id_curso', '242260259')
             // ->First();
             ->Get();
@@ -65,145 +65,146 @@ class PagoController extends Controller
         foreach($archivosFull as $pointer => $archivos)
         {
 
-            if($pointer > 107) {
-            // 239, 244
-            // if($pointer == 4) {echo 'a';}
-            $memoval = especialidad_instructor::WHERE('id_instructor',$archivos->id_instructor) // obtiene la validacion del instructor
-                ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
-            if(isset($memoval)) {
-                foreach($memoval as $me) {
-                    if(isset($me['memo_val']) && $me['memo_val'] == $archivos->instructor_mespecialidad) {
-                        $validacion_ins = $me['arch_val'];
-                        break;
-                    }
-                }
-            }
+            // if($pointer > 107) {
+            //     // 239, 244
+            //     // if($pointer == 4) {echo 'a';}
+            //     $memoval = especialidad_instructor::WHERE('id_instructor',$archivos->id_instructor) // obtiene la validacion del instructor
+            //         ->whereJsonContains('hvalidacion', [['memo_val' => $archivos->instructor_mespecialidad]])->value('hvalidacion');
+            //     if(isset($memoval)) {
+            //         foreach($memoval as $me) {
+            //             if(isset($me['memo_val']) && $me['memo_val'] == $archivos->instructor_mespecialidad) {
+            //                 $validacion_ins = $me['arch_val'];
+            //                 break;
+            //             }
+            //         }
+            //     }
 
-        // }
+                // }
 
-            // $asistenciaController = new AsistenciaController();
-            // $asistencia_pdf = $asistenciaController->asistencia_pdf($archivos->id,true);
-            // $reporteController = new ReporteFotController();
-            // $reporte_pdf = $reporteController->repofotoPdf($archivos->id,true);
+                // $asistenciaController = new AsistenciaController();
+                // $asistencia_pdf = $asistenciaController->asistencia_pdf($archivos->id,true);
+                // $reporteController = new ReporteFotController();
+                // $reporte_pdf = $reporteController->repofotoPdf($archivos->id,true);
 
-            // if(is_null($asistencia_pdf)) {
-            //     $asistencia_pdf = $archivos->arch_asistencia;
-            // }
-            // if(is_null($reporte_pdf)) {
-            //     $reporte_pdf = $archivos->arch_evidencia;
-            // }
-            $check_contrato_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','Contrato')->Where('status','VALIDADO')->value('id');
-            if(is_null($check_contrato_efirma)) {
-                $contrato_pdf = $archivos->arch_contrato;
-            } else {
-                $contratoController = new ContratoController();
-                $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato);
-            }
-
-            $check_valsupre_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','valsupre')->Where('status','VALIDADO')->value('id');
-            if(is_null($check_valsupre_efirma)) {
-                $valsupre_pdf = $archivos->doc_validado;
-            } else {
-                $valsupreController = new supreController();
-                $valsupre_pdf = $valsupreController->valsupre_pdf(base64_encode($archivos->id_supre));
-            }
-
-            $check_solpa_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','Solicitud Pago')->Where('status','VALIDADO')->value('id');
-            if(is_null($check_solpa_efirma)) {
-                $solpa_pdf = $archivos->arch_solicitud_pago;
-            } else {
-                $pagoController = new ContratoController();
-                $solpa_pdf = $pagoController->solicitudpago_pdf($archivos->id_folios);
-            }
-
-            if(!str_contains($archivos->arch_pago, 'sivyc.')){
-                $arch_pago = 'https://sivyc.icatech.gob.mx'.$archivos->arch_pago;
-            } else {
-                $arch_pago = $archivos->arch_pago;
-            }
-
-                $pdf = new FPDI();
-
-                $fileUrls = [
-                    $arch_pago,
-                    $solpa_pdf,
-                    $archivos->archivo_bancario,
-                    // $validacion_ins,
-                    $archivos->pdf_curso,
-                    $valsupre_pdf,
-                    // $asistencia_pdf,
-                    // $reporte_pdf,
-                    $contrato_pdf,
-                    $archivos->archivo_ine
-                ];
-
-                $localFiles = [];
-
-                // Descargar los archivos PDF y guardarlos en archivos temporales
-                foreach ($fileUrls as $key => $url) {
-                    // Crear un archivo temporal
-                    $tempFile = tempnam(sys_get_temp_dir(), 'pdf');
-
-                    // Obtener el contenido del archivo
-                    if (filter_var($url, FILTER_VALIDATE_URL)) {
-                        $contents = file_get_contents($url);
-                    } else {
-                        $contents = $url;
-                    }
-
-                    // Guardar el contenido en el archivo temporal
-                    file_put_contents($tempFile, $contents);
-
-                    $pdfFile = str_replace('.tmp', 'new.tmp', $tempFile);
-                    $localFiles[] = $pdfFile;
-                    // rename($tempFile, $pdfFile);
-                    // echo $pdfFile;
-                    // Comando de Ghostscript para convertir a PDF 1.4
-                    $command = "gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o \"{$pdfFile}\" \"{$tempFile}\"";
-                    // dd($command);
-                                // gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o "C:\Users\Tec academica\AppData\Local\Temp\pdfCF1F.pdf" "C:\Users\Tec academica\AppData\Local\Temp\pdfCF1F.pdf"
-                                // gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o "C:\Games\complete.pdf" "C:\Games\testing.pdf"
-
-
-                    // Usar exec para ejecutar el comando
-                    exec($command, $output, $return_var); // Captura stderr
-
-                    if ($return_var === 0) {
-                        // Conversión exitosa
-                        // echo "PDF convertido a versión 1.4 y guardado en: {$pdfFile}\n";
-                    } else {
-                        // Ocurrió un error
-                        echo "Error al convertir el PDF: {$pdfFile}\n";
-                        echo implode("\n", $output); // Muestra los mensajes de error
-                    }
+                // if(is_null($asistencia_pdf)) {
+                //     $asistencia_pdf = $archivos->arch_asistencia;
+                // }
+                // if(is_null($reporte_pdf)) {
+                //     $reporte_pdf = $archivos->arch_evidencia;
+                // }
+                $check_contrato_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','Contrato')->Where('status','VALIDADO')->value('id');
+                if(is_null($check_contrato_efirma)) {
+                    $contrato_pdf = $archivos->arch_contrato;
+                } else {
+                    $contratoController = new ContratoController();
+                    $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato);
                 }
 
-                // Añadir cada página de los PDFs al nuevo documento
-                foreach ($localFiles as $file) {
-                    // try {
-                        // printf($file . '//');
-                        $pageCount = $pdf->setSourceFile($file);
-                        for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
-                            $templateId = $pdf->importPage($pageNo);
-                            $size = $pdf->getTemplateSize($templateId);
-                            $orientation = ($size['width'] > $size['height']) ? 'L' : 'P';
-                            $pdf->addPage($orientation, [$size['width'], $size['height']]);
-                            $pdf->useTemplate($templateId);
+                $check_valsupre_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','valsupre')->Where('status','VALIDADO')->value('id');
+                if(is_null($check_valsupre_efirma)) {dd($archivosFull);
+                    $valsupre_pdf = $archivos->doc_validado;
+                } else {
+                    $valsupreController = app(\App\Http\Controllers\webController\supreController::class);
+                    $valsupre_pdf = $valsupreController->valsupre_pdf(base64_encode($archivos->id_supre));
+                }
+
+                $check_solpa_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','Solicitud Pago')->Where('status','VALIDADO')->value('id');
+                if(is_null($check_solpa_efirma)) {
+                    $solpa_pdf = $archivos->arch_solicitud_pago;
+                } else {
+                    $pagoController = app(\App\Http\Controllers\webController\ContratoController::class);
+                    $solpa_pdf = $pagoController->solicitudpago_pdf($archivos->id_folios);
+                }
+
+                if(!str_contains($archivos->arch_pago, 'sivyc.')){
+                    $arch_pago = 'https://sivyc.icatech.gob.mx'.$archivos->arch_pago;
+                } else {
+                    $arch_pago = $archivos->arch_pago;
+                }
+
+                    $pdf = new FPDI();
+
+                    $fileUrls = [
+                        $arch_pago,
+                        $solpa_pdf,
+                        $archivos->archivo_bancario,
+                        // $validacion_ins,
+                        $archivos->pdf_curso,
+                        $valsupre_pdf,
+                        // $asistencia_pdf,
+                        // $reporte_pdf,
+                        $contrato_pdf,
+                        $archivos->archivo_ine
+                    ];
+
+                    $localFiles = [];
+
+                    // Descargar los archivos PDF y guardarlos en archivos temporales
+                    foreach ($fileUrls as $key => $url) {
+                        // Crear un archivo temporal
+                        $tempFile = tempnam(sys_get_temp_dir(), 'pdf');
+
+                        // Obtener el contenido del archivo
+                        if (filter_var($url, FILTER_VALIDATE_URL)) {
+                            $contents = file_get_contents($url);
+                        } else {
+                            $contents = $url;
                         }
-                    // } catch (\Exception $e) {
-                    //     echo "Error al procesar el archivo: {$file}. " . $e->getMessage();
-                    // }
-                }
 
-                // Guarda el PDF combinado
-                $fileName = 'app/public/temporal/'.$archivos->clave.'.pdf';
-                $outputPath = storage_path($fileName);
-                $pdf->Output($outputPath, 'F');
+                        // Guardar el contenido en el archivo temporal
+                        file_put_contents($tempFile, $contents);
 
-                foreach ($localFiles as $file) {
-                    unlink($file);
-                }
-            }
+                        $pdfFile = str_replace('.tmp', 'new.tmp', $tempFile);
+                        $localFiles[] = $pdfFile;
+                        // rename($tempFile, $pdfFile);
+                        // echo $pdfFile;
+                        // Comando de Ghostscript para convertir a PDF 1.4
+                        $command = "gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o \"{$pdfFile}\" \"{$tempFile}\"";
+                        // dd($command);
+                                    // gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o "C:\Users\Tec academica\AppData\Local\Temp\pdfCF1F.pdf" "C:\Users\Tec academica\AppData\Local\Temp\pdfCF1F.pdf"
+                                    // gswin64c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -o "C:\Games\complete.pdf" "C:\Games\testing.pdf"
+
+
+                        // Usar exec para ejecutar el comando
+                        exec($command, $output, $return_var); // Captura stderr
+
+                        if ($return_var === 0) {
+                            // Conversión exitosa
+                            // echo "PDF convertido a versión 1.4 y guardado en: {$pdfFile}\n";
+                        } else {
+                            // Ocurrió un error
+                            echo "Error al convertir el PDF: {$pdfFile}\n";
+                            echo implode("\n", $output); // Muestra los mensajes de error
+                        }
+                    }
+
+                    // Añadir cada página de los PDFs al nuevo documento
+                    foreach ($localFiles as $file) {
+                        // try {
+                            // printf($file . '//');
+                            $pageCount = $pdf->setSourceFile($file);
+                            for ($pageNo = 1; $pageNo <= $pageCount; $pageNo++) {
+                                $templateId = $pdf->importPage($pageNo);
+                                $size = $pdf->getTemplateSize($templateId);
+                                $orientation = ($size['width'] > $size['height']) ? 'L' : 'P';
+                                $pdf->addPage($orientation, [$size['width'], $size['height']]);
+                                $pdf->useTemplate($templateId);
+                            }
+                        // } catch (\Exception $e) {
+                        //     echo "Error al procesar el archivo: {$file}. " . $e->getMessage();
+                        // }
+                    }
+
+                    // Guarda el PDF combinado
+
+                    $fileName = 'app/public/temporal/'.$archivos->clave.'.pdf';
+                    $outputPath = storage_path($fileName);
+                    $pdf->Output($outputPath, 'F');
+
+                    foreach ($localFiles as $file) {
+                        unlink($file);
+                    }dd($fileName);
+            // } dd($fileName);
         }
             $time_elapsed_secs = microtime(true) - $start;
             printf($time_elapsed_secs);

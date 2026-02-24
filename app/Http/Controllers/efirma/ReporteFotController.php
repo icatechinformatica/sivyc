@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use App\Services\HerramientasService;
 use App\Models\DocumentosFirmar;
 use App\Models\tbl_curso;
 use PHPQRCode\QRcode;
@@ -15,9 +16,10 @@ use PDF;
 
 class ReporteFotController extends Controller
 {
-    function __construct() {
+    function __construct(HerramientasService $herramientas) {
         $this->mes = ["01" => "ENERO", "02" => "FEBRERO", "03" => "MARZO", "04" => "ABRIL", "05" => "MAYO", "06" => "JUNIO", "07" => "JULIO", "08" => "AGOSTO", "09" => "SEPTIEMBRE", "10" => "OCTUBRE", "11" => "NOVIEMBRE", "12" => "DICIEMBRE"];
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
+        $this->herramientas = $herramientas;
     }
 
     #Rechazar documento pdf
@@ -182,8 +184,12 @@ class ReporteFotController extends Controller
         //     $EFolio = $documento->num_oficio;
         // }
 
+        //Seccion para el layout correcto sacando el año;
+        $layout_año = $this->herramientas->getPdfLayoutByDate(Carbon::createFromFormat('Y-m-d',$cursopdf->evidencia_fotografica["fecha_envio"]));
+
+
         $pdf = PDF::loadView('layouts.FirmaElectronica.reporteFotografico', compact('body', 'objeto','dataFirmante','direccion',
-        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos','firmantes'));
+        'uuid','cadena_sello','fecha_sello','qrCodeBase64', 'base64Images', 'array_fotos','firmantes','layout_año'));
         $pdf->setPaper('Letter', 'portrait');
         $file = "REPORTE_FOTOGRAFICO_$id_curso.PDF";
         return $pdf->stream($file);
@@ -270,13 +276,13 @@ class ReporteFotController extends Controller
                 $body['footer'] = $body['footer']. '</div>
         </footer>';
 
-        $body['body'] = '<div style="margin-top: -22%; margin-bottom: 4%;">
-            <h6 style="text-align: center;">'; if (isset($leyenda)) {
-                foreach($leyenda as $keys => $part){ if($keys != 0) { $body['body'] = $body['body'].'<br>'; } $body['body'] = $body['body'].$part; }
-            }
-                $body['body'] = $body['body']. '</h6>
-        </div>
-        <div style="text-align:center;">
+        // $body['body'] = '<div style="margin-top: -22%; margin-bottom: 4%;">
+        //     <h6 style="text-align: center;">'; if (isset($leyenda)) {
+        //         foreach($leyenda as $keys => $part){ if($keys != 0) { $body['body'] = $body['body'].'<br>'; } $body['body'] = $body['body'].$part; }
+        //     }
+        //         $body['body'] = $body['body']. '</h6>
+        // </div>
+        $body['body'] = '<div style="text-align:center;">
             <span style="text-align: center;">REPORTE FOTOGRÁFICO DE INSTRUCTOR EXTERNO</span>
         </div>
         <div style="text-align: right;">
