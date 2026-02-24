@@ -23,6 +23,7 @@ use Illuminate\Database\QueryException;
 use PDF;
 use App\Models\ModelExpe\ExpeUnico;
 use App\Models\Alumnopre;
+use App\Services\HerramientasService;
 
 class aperturaController extends Controller
 {
@@ -61,7 +62,7 @@ class aperturaController extends Controller
     protected $tcuota;
     protected $data;
 
-    function __construct() {
+    function __construct(HerramientasService $herramientas) {
         session_start();
         $this->ejercicio = date("y");
         $this->middleware('auth');
@@ -70,6 +71,7 @@ class aperturaController extends Controller
         $this->path_uploadFiles = env("APP_URL").'/storage/uploadFiles';
         $this->path_files = env("APP_URL").'/storage/';
         $this->path_files_cancelled = env("APP_URL").'/grupos/recibo/descargar?folio_recibo=';
+        $this->herramientas = $herramientas;
 
         $this->middleware(function ($request, $next) {
             $this->id_user = Auth::user()->id;
@@ -79,6 +81,7 @@ class aperturaController extends Controller
             $this->data = $this->unidades_user('unidad');
             session(['unidades' =>  $this->data['unidades']]);
             return $next($request);
+
         });
     }
 
@@ -256,7 +259,7 @@ class aperturaController extends Controller
                 DB::raw('COALESCE(ti.matricula, ar.no_control) as matricula'),
                 DB::raw("COALESCE(ti.alumno, concat(ar.apellido_paterno,' ', ar.apellido_materno,' ',ar.nombre)) as alumno"),
                 DB::raw('COALESCE(substring(ti.curp,11,1), substring(ar.curp,11,1)) as sexo'),
-                DB::raw('COALESCE(ti.fecha_nacimiento, ap.fecha_nacimiento) as fecha_nacimiento'),                
+                DB::raw('COALESCE(ti.fecha_nacimiento, ap.fecha_nacimiento) as fecha_nacimiento'),
                 DB::raw('COALESCE(EXTRACT(year from (age(ti.inicio,ap.fecha_nacimiento))) , EXTRACT(year from (age(ar.inicio,ap.fecha_nacimiento))) ) as edad'),
                 DB::raw('COALESCE(ti.escolaridad, ar.escolaridad) as escolaridad'),
                 DB::raw("COALESCE(
@@ -1067,7 +1070,9 @@ class aperturaController extends Controller
 
         $fecha_comp = $dia.' de '.$meses[$mes-1].' del '.$anio;
 
-        $pdf = PDF::loadView('reportes.soporte_entrega_constancia',compact('distintivo', 'direccion', 'data', 'unidad', 'organismo', 'numficio',
+        //Seccion para el layout correcto sacando el año;
+        $layout_año = $this->herramientas->getPdfLayoutByDate(Carbon::now());
+        $pdf = PDF::loadView('reportes.soporte_entrega_constancia',compact('distintivo', 'direccion', 'data', 'unidad', 'organismo', 'numficio', 'layout_año',
         'partes_titu', 'municipio', 'fecha_comp', 'tabla_contenido', 'rango_mes', 'total_cursos', 'total_folios', 'dta_certificacion','rango_folios','letra_folios'));
         return $pdf->stream('Soporte de Entrega');
     }

@@ -1,4 +1,4 @@
-@extends('theme.formatos.vlayout2025')
+@extends('theme.formatos.vlayout'.$layout_año)
 @section('title', 'REPORTE FOTOGRAFICO | SIVyC Icatech')
 @section('content_script_css')
     <style>
@@ -122,6 +122,17 @@
             font-size: 12px;
         }
 
+        header p {
+            font-size: 12px;
+            margin: 0;
+            font-style: bold;
+        }
+
+        .content {
+            margin-top: 5%;
+        }
+
+
         /* .direccion {
             top: 1.3cm;
             text-align: left;
@@ -198,7 +209,7 @@
      @if (count($base64Images) > 0)
         <div class="" style="text-align: center;">
             @foreach($base64Images as $key => $base64)
-                <div @if ($objeto == null && $key == (count($base64Images)-1)) @else @if($key != 0) style= "page-break-after: always; text-align: center; margin-top: 15%;" @else  style= "page-break-after: always; text-align: center;" @endif @endif>
+                <div @if ($objeto == null && $key == (count($base64Images)-1)) style= "page-break-after: always; text-align: center; margin-top: 15%;" @else @if($key != 0) style= "page-break-after: always; text-align: center; margin-top: 15%;" @else  style= "page-break-after: always; text-align: center;" @endif @endif>
                     <img style="width: auto; height: auto; max-width: 95%; max-height:95%;" src="data:image/jpeg;base64,{{$base64}}" alt="Foto">
                     <small style="text-align: right; display:block; max-width: 95%; margin-top:1px;">{{basename($array_fotos[$key])}}</small>
                 </div>
