@@ -663,7 +663,7 @@ class turnarAperturaController extends Controller
                 $layout_año = $this->herramientas->getPdfLayoutByDate($reg_cursos[0]->fecha_arc02);
 
                 if($reg_cursos[0]->status_solicitud_arc02=="VALIDADO") $marca = false;
-                $pdf = PDF::loadView('solicitud.apertura.pdfARC02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion'));
+                $pdf = PDF::loadView('solicitud.apertura.pdfARC02',compact('reg_cursos','reg_unidad','fecha_memo','memo_apertura','distintivo','marca','direccion','layout_año'));
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('ARC02.pdf');
             }else return "MEMORANDUM NO VALIDO PARA LA UNIDAD";exit;
