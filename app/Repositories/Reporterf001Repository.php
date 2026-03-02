@@ -41,8 +41,8 @@ class Reporterf001Repository implements Reporterf001Interface
                     ->orWhere('tbl_recibos.estado_reportado', 'GENERADO');
             })
             ->where(function($query) {
-                $query->where('tbl_cursos.status_curso', 'AUTORIZADO')
-                    ->orWhere('tbl_cursos.status_curso', 'CANCELADO');
+                $query->whereIn('tbl_cursos.status_curso', ['AUTORIZADO', 'CANCELADO'])
+                    ->orWhereNull('tbl_cursos.id');
             })
             ->with('concepto:id,concepto')
             ->select(
