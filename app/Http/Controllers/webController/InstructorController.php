@@ -428,7 +428,8 @@ class InstructorController extends Controller
     public function crear_instructor_p2($id)
     {
         $newarr = array();
-        $municipios_nacimiento = $localidades_nacimiento = NULL;
+        $municipios_nacimiento = $localidades_nacimiento = [];
+        $municipios = $localidades = [];
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
@@ -438,8 +439,12 @@ class InstructorController extends Controller
         $validado = $this->make_collection($datainstructor->data_especialidad);
         $idest = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad)->FIRST();
         $idestnac = DB::TABLE('estados')->WHERE('nombre','=',$datainstructor->entidad_nacimiento)->FIRST();
-        $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
-                        ->ORDERBY('muni','ASC')->GET();
+        
+        if (isset($idest->id)) {
+            $municipios = DB::TABLE('tbl_municipios')->SELECT('id','muni')->WHERE('id_estado', '=', $idest->id)
+                            ->ORDERBY('muni','ASC')->GET();
+        }
+
         $bancos = Banco::all();
         $lista_regimen = DB::Table('cat_conceptos')->Where('tipo', 'REGIMEN')->Where('activo', TRUE)->GET();
         $paises = pais::all();
