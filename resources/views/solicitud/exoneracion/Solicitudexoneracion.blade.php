@@ -1,4 +1,4 @@
-@extends('theme.formatos.hlayout2025')
+@extends('theme.formatos.hlayout'.$layout_año)
 @section('title', 'Solicitud de Exoneración | SIVyC Icatech')
 @section('content_script_css')
     <style>
@@ -23,6 +23,7 @@
         }
         .container{font-family: sans-serif; font-size: 12px;}
         header{ line-height: 1; font-size: 12px; top: 40px; font-weight: bold; left: 40px;}
+        body { padding-top: 15%; }
     </style>
 @endsection
 @section('content')
@@ -211,7 +212,7 @@
                         <th>TIPO DE CAPACITACIÓN</th>
                         <th colspan="6">A DISTANCIA</th>
                         @endif
-                    </tr>                   
+                    </tr>
                     <tr>
                         <th colspan="7">LISTA DE ALUMNOS</th>
                     </tr>

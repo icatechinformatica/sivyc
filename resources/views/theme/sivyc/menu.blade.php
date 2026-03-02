@@ -15,7 +15,7 @@
     $permisos['menu_consulta'] = $usuario->canAny(['consultas.folios', 'consultas.lotes', 'consultas.cursosaperturados', 'planeacion.estadisticas',
                     'planeacion.grupos.vulnerables', 'planeacion.ingresos.propios', 'consultas.cursosefisico',
                     'consultas.instructor', 'consultas.instructores.disponibles', 'consultas.poa', 'show.cursos.validados',
-                    'consulta.bolsa.trabajo'.'consultas.cursos.exo','consultas.contratosfirmados']);
+                    'consulta.bolsa.trabajo','consultas.cursos.exo','consultas.contratosfirmados']);
     $permiso['menu_estadistica'] =  $usuario->canAny(['estadisticas.ecursos', 'tablero.metas.index']);
 @endphp
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark pink2 darken-4">

@@ -1,7 +1,7 @@
-@extends('theme.formatos.hlayout')
+@extends('theme.formatos.hlayout'.$layout_año)
 @section('title', 'Solicitud ARC-02 | SIVyC Icatech')
 @section('content_script_css')
-    <style>         
+    <style>
         .content {font-family: sans-serif; font-size: 9px; margin-top:30px;}
 
         .tablas{border-collapse: collapse; width: 100%; margin-top:70px; }
@@ -13,15 +13,16 @@
         .tablad { page-break-inside: avoid; font-size: 8px;border: gray 1px solid; text-align: left; border-collapse: collapse; }
         .tablad tr td{padding: 1px 10px 0 10px;}
 
-        #titulo{ position: fixed; top: 80px; width:100%; text-align: center; }
-        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}        
-        #titulo span{position: fixed; top: 120px; width:93%; display: block; text-align: right; font-weight: bold;}
-        #para { font-size: 8px; font-weight:bold; position: fixed; top: 140px;}        
-        
+        #titulo{ position: fixed; left:0%; top: 160px; width:100%; text-align: center; }
+        #titulo h4{padding:0px; margin:0px 0px 2px 0px; font-size: 11px; font-weight:bold;}
+        #titulo span{position: fixed; top: 210px; width:93%; display: block; text-align: right; font-weight: bold;}
+        #para { font-size: 8px; font-weight:bold; position: fixed; top: 200px;}
+
         .agenda-list {list-style: none; padding: 0; margin: 0;}
         ul.inline-list { list-style: none; padding: 0; margin-top:150px;}
         ul.inline-list li { margin-right: 10px;}
         .obs {padding: 0; margin: 0; }
+        body { padding-top: 12%; }
     </style>
 @endsection
 @section('content')
@@ -60,7 +61,7 @@
                     <th>NOMBRE</th>
                     <th>MOD</th>
                     <th>TIPO DE<br>CAPACI<BR/>TACIÓN</th>
-                    <th>HORAS</th>                    
+                    <th>HORAS</th>
                     <th>CLAVE</th>
                     <th>NUM. DE <br> MEMORANDUM DE <br> AUT. DE CLAVE</th>
                     <th>INSTRUCTOR<br/>EXTERNO</th>
@@ -69,7 +70,7 @@
                     <th>MOTIVO</th>
                     <th>SOLICITA</th>
                     <th>OBSERVACIONES</th>
-                </tr>                               
+                </tr>
                 @foreach($reg_cursos as $a)
                     <tr>
                         <td>@php if($a->tipo_curso=='CURSO'){echo'CURSO';}if($a->tipo_curso=='CERTIFICACION'){echo'CERTIFICACION';} @endphp</td>
