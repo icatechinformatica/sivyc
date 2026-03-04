@@ -48,15 +48,17 @@ class PagoController extends Controller
         $start = microtime(true);
         $archivosFull = DB::Table('tbl_cursos')->Select('tbl_cursos.id','tbl_cursos.clave','id_instructor','instructor_mespecialidad',
             'contratos.id_contrato','arch_solicitud_pago', DB::raw("soportes_instructor->>'archivo_bancario' as archivo_bancario"),
-            'tbl_cursos.pdf_curso','tabla_supre.doc_validado','pagos.arch_asistencia','pagos.arch_evidencia','contratos.arch_contrato',
+            'tbl_cursos.pdf_curso','tabla_supre.doc_validado','tabla_supre.doc_supre','pagos.arch_asistencia','pagos.arch_evidencia','contratos.arch_contrato',
             'pagos.arch_pago', 'folios.id_supre','folios.id_folios',DB::raw("soportes_instructor->>'archivo_ine' as archivo_ine"))
-            ->Join('pagos','pagos.id_curso','tbl_cursos.id')
+            ->LeftJoin('pagos','pagos.id_curso','tbl_cursos.id')
             ->Join('folios','folios.id_cursos','tbl_cursos.id')
             ->Join('tabla_supre','tabla_supre.id','folios.id_supre')
-            ->Join('contratos','contratos.id_contrato','pagos.id_contrato')
+            ->LeftJoin('contratos','contratos.id_contrato','pagos.id_contrato')
             ->Where('status_transferencia','PAGADO')
             ->whereDate('tbl_cursos.inicio', '>=', '2025-01-01')
-            ->whereDate('pagos.fecha_transferencia', '>=', '2025-06-01')->whereDate('fecha_transferencia', '<=', '2025-06-30')
+            // ->whereDate('tabla_supre.fecha', '>=', '2025-06-01')->whereDate('tabla_supre.fecha', '<=', '2025-06-30')
+            ->whereDate('pagos.fecha_transferencia', '>=', '2025-11-01')->whereDate('fecha_transferencia', '<=', '2025-11-30')
+
             // ->Where('pagos.id_curso', '242260259')
             // ->First();
             ->Get();
@@ -65,7 +67,8 @@ class PagoController extends Controller
         foreach($archivosFull as $pointer => $archivos)
         {
 
-            // if($pointer > 107) {
+            // if($pointer > 148) {
+
             //     // 239, 244
             //     // if($pointer == 4) {echo 'a';}
             //     $memoval = especialidad_instructor::WHERE('id_instructor',$archivos->id_instructor) // obtiene la validacion del instructor
@@ -96,12 +99,20 @@ class PagoController extends Controller
                 if(is_null($check_contrato_efirma)) {
                     $contrato_pdf = $archivos->arch_contrato;
                 } else {
-                    $contratoController = new ContratoController();
+                    $contratoController = app(\App\Http\Controllers\webController\ContratoController::class);
                     $contrato_pdf = $contratoController->contrato_pdf($archivos->id_contrato);
                 }
 
+                $check_supre_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','supre')->Where('status','VALIDADO')->value('id');
+                if(is_null($check_supre_efirma)) {
+                    $supre_pdf = $archivos->doc_supre;
+                } else {
+                    $supreController = app(\App\Http\Controllers\webController\supreController::class);
+                    $supre_pdf = $supreController->supre_pdf(base64_encode($archivos->id_supre));
+                }
+
                 $check_valsupre_efirma = DB::Table('documentos_firmar')->Where('numero_o_clave',$archivos->clave)->Where('tipo_archivo','valsupre')->Where('status','VALIDADO')->value('id');
-                if(is_null($check_valsupre_efirma)) {dd($archivosFull);
+                if(is_null($check_valsupre_efirma)) {
                     $valsupre_pdf = $archivos->doc_validado;
                 } else {
                     $valsupreController = app(\App\Http\Controllers\webController\supreController::class);
@@ -128,13 +139,14 @@ class PagoController extends Controller
                         $arch_pago,
                         $solpa_pdf,
                         $archivos->archivo_bancario,
-                        // $validacion_ins,
+                        $validacion_ins,
                         $archivos->pdf_curso,
+                        // $supre_pdf,
                         $valsupre_pdf,
-                        // $asistencia_pdf,
-                        // $reporte_pdf,
+                        // $asistencia_pdf, desactivados
+                        // $reporte_pdf, desactivados
                         $contrato_pdf,
-                        $archivos->archivo_ine
+                        // $archivos->archivo_ine
                     ];
 
                     $localFiles = [];
@@ -203,8 +215,8 @@ class PagoController extends Controller
 
                     foreach ($localFiles as $file) {
                         unlink($file);
-                    }dd($fileName);
-            // } dd($fileName);
+                    }
+            // }
         }
             $time_elapsed_secs = microtime(true) - $start;
             printf($time_elapsed_secs);

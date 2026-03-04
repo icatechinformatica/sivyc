@@ -670,7 +670,7 @@ class supreController extends Controller
         }
 
         $valsupreController = app(\App\Http\Controllers\efirma\EValsupreController::class);
-        $result = $valsupreController->generar_xml($request->ids);  
+        $result = $valsupreController->generar_xml($request->ids);
 
         if(isset($result['error'])) {
             return redirect()->route('valsupre-mod', ['id' => base64_encode($request->ids)])
@@ -1426,7 +1426,8 @@ class supreController extends Controller
         unlink($file1);
         unlink($file2);
 
-        return $pdf->Output('medium.pdf', 'I');
+        // return $pdf->Output('medium.pdf', 'I'); desahibilitar para retornar a la funcion expediente_pagos_merge
+        return $pdf->Output("Medium.pdf", "S"); //habilitar solo para descargas masivas en conjuntro con otros documentos en expediente_pagos_merge
     }
 
     protected function planeacion_reporte_canceladospdf(Request $request){
