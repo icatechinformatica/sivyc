@@ -67,9 +67,9 @@
                                 $rextemporaneo = $g->rextemporaneo_arc02;
                             break;
                         }
-                        $mov = json_decode($g->movimientos, true); 
+                        $mov = json_decode($g->movimientos, true);
                         if (!empty($mov[0]['VoBo'][0]['motivo'])) $motivo =  $mov[0]['VoBo'][0]['motivo'];
-                        
+
                     @endphp
 
                     <tr @if($rojo)class='text-danger' @endif >
