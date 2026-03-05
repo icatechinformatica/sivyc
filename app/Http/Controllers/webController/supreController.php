@@ -1426,8 +1426,8 @@ class supreController extends Controller
         unlink($file1);
         unlink($file2);
 
-        // return $pdf->Output('medium.pdf', 'I'); desahibilitar para retornar a la funcion expediente_pagos_merge
-        return $pdf->Output("Medium.pdf", "S"); //habilitar solo para descargas masivas en conjuntro con otros documentos en expediente_pagos_merge
+        return $pdf->Output('medium.pdf', 'I'); //desahibilitar para retornar a la funcion expediente_pagos_merge
+        // return $pdf->Output("Medium.pdf", "S"); //habilitar solo para descargas masivas en conjuntro con otros documentos en expediente_pagos_merge
     }
 
     protected function planeacion_reporte_canceladospdf(Request $request){
