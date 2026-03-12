@@ -357,11 +357,12 @@
                             @if($usuario->can('reportes.dv'))
                                 <a class="dropdown-item" href="{{ route('reportes.dv') }}">DV - Operación con Convenios</a>
                             @endif
-                            @if($usuario->can('RH.tarjetatiempo'))
+                            {{-- @if($usuario->can('RH.tarjetatiempo'))
                                 <a class="dropdown-item" href="{{ route('rh.reporte.quincenal') }}">RH - Tarjeta de Tiempo</a>
-                            @endif
-                            @if($usuario->can('RH.tarjetatiempo'))
                                 <a class="dropdown-item" href="{{ route('rh.index') }}">RH - Registro de Checado</a>
+                            @endif --}}
+                            @if($usuario->can('RH.reportes.asistencia'))
+                                <a class="dropdown-item" href="{{ route('reporte.asistencia') }}">RH - Reporte de Asistencia</a>
                             @endif
                         </div>
                     </li>
