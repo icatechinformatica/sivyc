@@ -13,7 +13,7 @@ class funcionario extends Model
         'id','clave_cat','categoria_estatal','clave_puesto','puesto_estatal','nombre_adscripcion','clave_empleado','fecha_ingreso','fecha_baja',
         'nombre_trabajador','rfc_usuario','curp_usuario','num_comisionados','fecha_comision','comision_direccion_o_unidad','comision:depto',
         'comision_accion_movil','titular','direccion','telefono','correo','estatus','titulo','incapacidad','correo_institucional','id_user_created',
-        'id_user_updated'
+        'id_user_updated','id_unidad'
     ];
 
     protected $hidden = ['created_at', 'updated_at'];
@@ -51,5 +51,10 @@ class funcionario extends Model
         if (!empty($tipo_status)) {
             return $query->WHERE('tabla_supre.status', '=', $tipo_status);
         }
+    }
+
+    public function unidad()
+    {
+        return $this->belongsTo(Unidad::class, 'id_unidad', 'id');
     }
 }

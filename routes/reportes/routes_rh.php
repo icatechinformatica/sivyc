@@ -3,7 +3,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Sse\SseController;
 use App\Http\Controllers\Api\CrossChexController;
 
-Route::middleware(['auth'])->group(function(){
+Route::middleware(['auth', 'can:RH.reportes.asistencia'])->group(function(){
     // Seccion modulo RH
     Route::get('/recursos-humanos/index', 'reportesController\RHController@index')->name('rh.index')->middleware('can:RH.tarjetatiempo');;
     Route::get('/recursos-humanos/catalogo/index', 'reportesController\RHController@catalogo_index')->name('rh.catalogo-index');
@@ -16,4 +16,7 @@ Route::middleware(['auth'])->group(function(){
     Route::get('/crosschex/live/stream', [SseController::class, 'stream'])->name('crosschex.live.stream');
     Route::get('/crosschex/live', [CrossChexController::class, 'index'])->name('crosschex.live');
     Route::get('/crosschex/live/punctuality/list', [CrossChexController::class, 'punctualityList'])->name('crosschex.live.punctuality.list');
+    Route::get('/reporte-asistencia', 'reportesController\ReporteAsistenciaController@filtros')->name('reporte.asistencia');
+    Route::get('/reporte-asistencia-excel', 'reportesController\ReporteAsistenciaController@export')->name('reporte.asistencia.excel');
+
 });
