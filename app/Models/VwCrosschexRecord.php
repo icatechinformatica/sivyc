@@ -42,7 +42,7 @@ class VwCrosschexRecord extends Model
     // workno = clave_empleado en tbl_funcionario
     public function funcionario()
     {
-        return $this->belongsTo(Funcionario::class, 'workno', 'clave_empleado');
+        return $this->belongsTo(funcionario::class, 'workno', 'clave_empleado');
     }
 
     // Accedemos a unidad a través del funcionario (id_unidad → tbl_unidades)
