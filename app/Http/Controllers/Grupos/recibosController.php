@@ -612,7 +612,7 @@ class recibosController extends Controller
             $fecha = date('d/m/Y', strtotime($data->fecha_expedicion));
             $file_name = "Recibo_".$data->folio_recibo.'.pdf';
             //Seccion para el layout correcto sacando el año;
-            $layout_año = $this->herramientas->getPdfLayoutByDate($fecha);
+            $layout_año = $this->herramientas->getPdfLayoutByDate(Carbon::createFromFormat('d/m/Y',$fecha));
 
             $pdf = PDF::loadView('grupos.recibos.pdfRecibo',compact('data','distintivo','direccion','fecha','layout_año'));
 
