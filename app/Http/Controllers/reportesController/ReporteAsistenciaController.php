@@ -21,7 +21,7 @@ class ReporteAsistenciaController extends Controller
     {
         $desde = $request->from;
         $hasta = $request->to;
-        $unidadFiltro = $request->unidad_filtro;
+        $unidadFiltro = $request->unidad_id;
         //para pruebas sin request
         // $desde = '2026-03-01';
         // $hasta = '2026-03-11';

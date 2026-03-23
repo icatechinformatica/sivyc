@@ -289,7 +289,7 @@
 
                 document.getElementById('previewText').innerHTML =
                     `Unidad: <b>${u}</b> <br> Rango: <b>${from || '—'}</b> al <b>${to || '—'}</b> ${warningHtml}`;
-                
+
                 // Deshabilitar el botón si las fechas son ilógicas
                 const btnSubmit = document.getElementById('btnSubmit');
                 if (btnSubmit) {
@@ -363,13 +363,13 @@
 
                     const btn = document.getElementById('btnSubmit');
                     const textSpan = document.getElementById('btnSubmitText');
-                    
+
                     if(btn && textSpan) {
                         const originalText = textSpan.innerText;
                         textSpan.innerText = 'Generando Excel...';
                         btn.style.opacity = '0.8';
                         btn.style.pointerEvents = 'none';
-                        
+
                         // Restauramos el botón después de 3 segundos
                         // (Ya que la descarga "target='_blank'" no recargará esta pestaña)
                         setTimeout(() => {
