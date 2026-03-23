@@ -1488,7 +1488,7 @@ class supreController extends Controller
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
 
         //validacion de unidad del usuario y el contrato. con esto evitamos que lo vea cualquier usuario fuera de la unidad correcta
-        if($user_data->ubicacion != $data2->unidad_capacitacion && !in_array($user_data->role_id, ['1','4','9','10'])) {
+        if($user_data->ubicacion != $data2->unidad_capacitacion && !in_array($user_data->role_id, ['1','4','9','10','60','2'])) {
             return redirect()->route('supre-inicio')->with('warning','Acceso denegado para visualizar esta Suficiencia Presupuestal.');
         }
         //fin
