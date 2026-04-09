@@ -427,7 +427,6 @@ class EValsupreController extends Controller
         $array_html['body'] = $body_html;
         $array_html['ccp'] = '<div style="font-size: 7px;">
                 <b>C.c.p. </b>'. $funcionarios['ccp1']. '.-'. $funcionarios['ccp1p']. '.-Para su conocimiento<br/>
-                <b>C.c.p. </b>'. $funcionarios['ccp2']. '.-'. $funcionarios['ccp2p']. '.-mismo fin<br/>
                 <b>C.c.p. </b>'. $funcionarios['ccp3']. '.-'. $funcionarios['ccp3p']. '.-mismo fin<br/>
                 <b>C.c.p. </b>'. $funcionarios['delegado']. '.-'. $funcionarios['delegadop']. '.-mismo fin<br>
                 <b>C.c.p. </b>Archivo
