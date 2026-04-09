@@ -428,7 +428,7 @@ class InstructorController extends Controller
     public function crear_instructor_p2($id)
     {
         $newarr = array();
-        $municipios_nacimiento = $localidades_nacimiento = NULL;
+        $municipios_nacimiento = $localidades_nacimiento = $localidades = NULL;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
