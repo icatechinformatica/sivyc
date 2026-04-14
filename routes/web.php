@@ -211,6 +211,7 @@ Route::post('/instructores/solicitud/pdf', 'webController\InstructorController@s
 Route::post('/instructores/solicitud/baja/pdf', 'webController\InstructorController@solicitud_baja_instructor_pdf')->name('instructor-baja-solicitud-pdf');
 Route::post('/instructores/validacion/baja/pdf', 'webController\InstructorController@validacion_baja_instructor_pdf')->name('instructor-baja-validacion-pdf');
 Route::post('/instructores/validacion/pdf', 'webController\InstructorController@validacion_instructor_pdf')->name('instructor-validacion-pdf');
+Route::post('/instructores/validacion/archivos/reemplazar', 'webController\InstructorController@reemplazar_archivos_firmados')->name('instructor-reemplazar-archivos');
 Route::post('/instructores/solicitud/envio', 'webController\InstructorController@solicitud_firmada_todta')->name('instructor-solicitud-firmada-todta');
 
 /**
