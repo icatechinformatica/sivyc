@@ -49,33 +49,36 @@ class EValsupreController extends Controller
             return $error;
         }
 
-        $numFirmantes = '1';
+        $numFirmantes = '2';
         $arrayFirmantes = [];
 
-        $dataFirmante = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
+        $dataFirmantes = DB::Table('tbl_organismos AS org')->Select('org.id','fun.nombre','fun.curp','fun.cargo','fun.correo','org.nombre AS org_nombre','fun.incapacidad')
                             ->Join('tbl_funcionarios AS fun','fun.id_org','org.id')
-                            ->Where('org.id',9)
+                            ->WhereIn('org.id', [6,9])
                             ->Where('fun.activo', 'true')
                             ->Where('fun.titular', true)
-                            ->First();
+                            ->OrderBy('org.id','ASC')
+                            ->Get();
 
-        // Info de director firmante
-        if(isset($dataFirmante->incapacidad)) {
-            $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
-            if($incapacidadFirmante != FALSE) {
-                $dataFirmante = $incapacidadFirmante;
+        foreach($dataFirmantes as $dataFirmante) {
+            // Info de director firmante
+            if(isset($dataFirmante->incapacidad)) {
+                $incapacidadFirmante = $this->incapacidad(json_decode($dataFirmante->incapacidad), $dataFirmante->nombre);
+                if($incapacidadFirmante != FALSE) {
+                    $dataFirmante = $incapacidadFirmante;
+                }
             }
-        }
-        $temp = ['_attributes' =>
-            [
-                'curp_firmante' => $dataFirmante->curp,
-                'nombre_firmante' => $dataFirmante->nombre,
-                'email_firmante' => $dataFirmante->correo,
-                'tipo_firmante' => 'FM'
-            ]
-        ];
+            $temp = ['_attributes' =>
+                [
+                    'curp_firmante' => $dataFirmante->curp,
+                    'nombre_firmante' => $dataFirmante->nombre,
+                    'email_firmante' => $dataFirmante->correo,
+                    'tipo_firmante' => 'FM'
+                ]
+            ];
 
-        array_push($arrayFirmantes, $temp);
+            array_push($arrayFirmantes, $temp);
+        }
 
         //Creacion de array para pasarlo a XML
         $ArrayXml = [
@@ -424,7 +427,6 @@ class EValsupreController extends Controller
         $array_html['body'] = $body_html;
         $array_html['ccp'] = '<div style="font-size: 7px;">
                 <b>C.c.p. </b>'. $funcionarios['ccp1']. '.-'. $funcionarios['ccp1p']. '.-Para su conocimiento<br/>
-                <b>C.c.p. </b>'. $funcionarios['ccp2']. '.-'. $funcionarios['ccp2p']. '.-mismo fin<br/>
                 <b>C.c.p. </b>'. $funcionarios['ccp3']. '.-'. $funcionarios['ccp3p']. '.-mismo fin<br/>
                 <b>C.c.p. </b>'. $funcionarios['delegado']. '.-'. $funcionarios['delegadop']. '.-mismo fin<br>
                 <b>C.c.p. </b>Archivo
