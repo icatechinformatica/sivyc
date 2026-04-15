@@ -2913,6 +2913,15 @@
                             <label for="solicitud_fecha_impresion">Fecha de Impresión</label>
                             <input type="date" id="solicitud_fecha_impresion" class="form-control" name="fecha_impresion" required>
                         </div>
+                        <div class="form-group mt-3">
+                            <label for="solicitud_daesp">Unidad que elabora el documento (Opcional)</label>
+                            <select id="solicitud_daesp" name="daesp_override" class="form-control">
+                                <option value="">-- Detectada del instructor por default --</option>
+                                @foreach($unidades_ubicacion as $u)
+                                    <option value="{{ $u }}">{{ $u }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <input type="hidden" name="idins" value="{{ $id }}">
                         <input type="hidden" name="no_save" value="true">
                     </div>
@@ -2949,6 +2958,15 @@
                         <div class="form-group mt-3">
                             <label for="validacion_fecha_impresion">Fecha de Impresión</label>
                             <input type="date" id="validacion_fecha_impresion" class="form-control" name="fecha_impresion" required>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="validacion_daesp">Unidad que elabora el documento (Opcional)</label>
+                            <select id="validacion_daesp" name="daesp_override" class="form-control">
+                                <option value="">-- Detectada del instructor por default --</option>
+                                @foreach($unidades_ubicacion as $u)
+                                    <option value="{{ $u }}">{{ $u }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <input type="hidden" name="idinsgendocval" value="{{ $id }}">
                         <input type="hidden" name="no_save" value="true">

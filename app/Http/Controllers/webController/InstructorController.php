@@ -1985,8 +1985,10 @@ class InstructorController extends Controller
         }
         $memo_val_list = array_unique($memo_val_list);
 
+        $unidades_ubicacion = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->DISTINCT()->WHERE('ubicacion', '!=', '')->WHERE('ubicacion', '!=', '0')->GET()->PLUCK('ubicacion');
+
         //fin
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen','paises', 'memo_val_list'));
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen','paises', 'memo_val_list', 'unidades_ubicacion'));
     }
 
     public function save_ins(Request $request)
@@ -3602,6 +3604,10 @@ class InstructorController extends Controller
                 ->WHERE('ubicacion','LIKE',$instructor->nrevision[0]. $instructor->nrevision[1] .'%')
                 ->GROUPBY('ubicacion')
                 ->VALUE('ubicacion');
+
+        if(isset($request->daesp_override) && !empty($request->daesp_override)) {
+            $daesp = $request->daesp_override;
+        }
         $especialidades = $this->make_collection($instructor->data_especialidad);
         foreach($especialidades as $moist)
         {
@@ -3725,7 +3731,6 @@ class InstructorController extends Controller
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
-        $funcionarios = $this->funcionarios($daesp);
 
         if($honorario_actual != $instructor->tipo_honorario && $especialidad_cambios == FALSE && isset($request->borrador)) {
             $date = strtotime(carbon::now());
@@ -3734,6 +3739,8 @@ class InstructorController extends Controller
         if(isset($request->no_save) && isset($request->fecha_impresion) && $request->fecha_impresion) {
             $date = strtotime($request->fecha_impresion);
         }
+
+        $funcionarios = $this->funcionarios($daesp, date('Y-m-d', $date));
 
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -3828,10 +3835,14 @@ class InstructorController extends Controller
         $ubicacion = DB::TABLE('tbl_unidades')
                         ->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
                         ->value('ubicacion');
+
+        if(isset($request->daesp_override) && !empty($request->daesp_override)) {
+            $ubicacion = $request->daesp_override;
+        }
         $unidad = DB::TABLE('tbl_unidades')
                         ->WHERE('unidad', '=', $ubicacion)
                         ->FIRST();
-        $funcionarios = $this->funcionarios($ubicacion);
+        
         if($instructor->numero_control == 'Pendiente')
         {
             $uni = substr($unidad->cct, -3, 2) * 1 . substr($unidad->cct, -1);
@@ -3873,6 +3884,8 @@ class InstructorController extends Controller
         if(isset($request->no_save) && isset($request->fecha_impresion) && $request->fecha_impresion) {
             $date = strtotime($request->fecha_impresion);
         }
+
+        $funcionarios = $this->funcionarios($ubicacion, date('Y-m-d', $date));
 
         $D = date('d', $date);
         $MO = date('m',$date);
@@ -5071,30 +5084,40 @@ class InstructorController extends Controller
         return $respond;
     }
 
-    public function funcionarios($unidad) {
-        $query = clone $dacademico = clone $dacademico_unidad = clone $gestionacademica = clone $dunidad = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
+    public function funcionarios($unidad, $fecha = null) {
+        $get_funcionario = function($query) use ($fecha) {
+            if ($fecha) {
+                // Si enviaron fecha, ordenamos del mas reciente y filtramos los previos
+                $historial = (clone $query)->whereNotNull('f.fecha_nombramiento')
+                                           ->where('f.fecha_nombramiento', '<=', $fecha)
+                                           ->orderBy('f.fecha_nombramiento', 'DESC')
+                                           ->first();
+                if ($historial) return $historial;
+            }
+            // Fallback si no hay fecha o si la busqueda no regresó nada, agarramos al activo
+            return (clone $query)->where('f.activo', 'true')->first();
+        };
+
+        $base = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('f.activo', 'true')
             ->Where('f.titular', true);
 
-        $dacademico = $dacademico->Where('o.id',16)->First();
-        $gestionacademica = $gestionacademica->Where('o.id',17)->First();
+        $dacademico = $get_funcionario((clone $base)->Where('o.id', 16));
+        $gestionacademica = $get_funcionario((clone $base)->Where('o.id', 17));
 
-        $dacademico_unidad = $dacademico_unidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+        $dacademico_unidad = $get_funcionario((clone $base)->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('o.nombre','LIKE','DEPARTAMENTO ACADEMICO%')
-            ->Where('u.unidad', $unidad)
-            ->First();
+            ->Where('u.unidad', $unidad));
 
-        $dunidad = $dunidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+        $dunidad = $get_funcionario((clone $base)->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('o.id_parent',1)
-            ->Where('u.unidad', $unidad)
-            ->First();
+            ->Where('u.unidad', $unidad));
 
         $funcionarios = [
-            'dacademico' => ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo_institucional],
-            'gestionacademica' => ['titulo'=>$gestionacademica->titulo,'nombre'=>$gestionacademica->nombre,'puesto'=>$gestionacademica->cargo,'direccion'=>$gestionacademica->direccion,'telefono'=>$gestionacademica->telefono,'correo'=>$gestionacademica->correo_institucional],
-            'dacademico_unidad' => ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo_institucional],
-            'dunidad' => ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo_institucional],
+            'dacademico' => $dacademico ? ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo_institucional] : ['titulo'=>'','nombre'=>'','puesto'=>'','direccion'=>'','telefono'=>'','correo'=>''],
+            'gestionacademica' => $gestionacademica ? ['titulo'=>$gestionacademica->titulo,'nombre'=>$gestionacademica->nombre,'puesto'=>$gestionacademica->cargo,'direccion'=>$gestionacademica->direccion,'telefono'=>$gestionacademica->telefono,'correo'=>$gestionacademica->correo_institucional] : ['titulo'=>'','nombre'=>'','puesto'=>'','direccion'=>'','telefono'=>'','correo'=>''],
+            'dacademico_unidad' => $dacademico_unidad ? ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo_institucional] : ['titulo'=>'','nombre'=>'','puesto'=>'','direccion'=>'','telefono'=>'','correo'=>''],
+            'dunidad' => $dunidad ? ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo_institucional] : ['titulo'=>'','nombre'=>'','puesto'=>'','direccion'=>'','telefono'=>'','correo'=>''],
             'elabora' => ['nombre'=>strtoupper(Auth::user()->name),'puesto'=>strtoupper(Auth::user()->puesto)]
         ];
 
