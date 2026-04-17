@@ -1671,6 +1671,30 @@
                     </div>
                 </div>
             @endif
+            @can('instructor.validacion.reemplazo')
+                <hr style="border-color:dimgray">
+                <div>
+                    <label><h2>Generación de solicitud y validación de instructor</h2></label>
+                </div>
+                <div class="form-row">
+                    <div class="form-group col-md-4"><br>
+                        <button type="button" class="btn mr-sm-4 mt-3 btn-info text-white" style="color: white!important" data-toggle="modal" data-target="#solicitudPdfModal" data-id='{{$id}}'>
+                            <small><small>Generar Solicitud de Instructor</small></small>
+                        </button>
+                    </div>
+                    <div class="form-group col-md-4"><br>
+                        <button type="button" class="btn mr-sm-4 mt-3 btn-info text-white" style="color: white!important" data-toggle="modal" data-target="#validacionPdfModal" data-id='{{$id}}'>
+                            <small><small>Generar Validación de Instructor</small></small>
+                        </button>
+                    </div>
+                    <div class="form-group col-md-4"><br>
+                        <button type="button" class="btn mr-sm-4 mt-3 btn-warning text-white" style="color: white!important" data-toggle="modal" data-target="#reemplazoFirmadosModal" data-id='{{$id}}'>
+                            <small><small>Reemplazar Archivos Firmados</small></small>
+                        </button>
+                    </div>
+                </div>
+            @endcan
+            <hr style="border-color:dimgray">
             <br>
             <div class="row">
                 <div class="col-lg-12 margin-tb">
@@ -1678,20 +1702,20 @@
                         <a class="btn mr-sm-4 mt-3" href="{{URL::previous()}}">REGRESAR</a>
                     </div>
                     @if($roluser->role_id == 61)
-                    <input type="hidden" name="id" id="id" value="{{$id}}">
-                    @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
-                        <div class="pull-right">
-                            <div class="form-row">
-                                <div class="form-group col-md-12">
-                                    @can('instructor.editar_fase2')
-                                        {{-- <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">ENVIAR A DTA</button> --}}
-                                        <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">GUARDAR CAMBIOS</button>
-                                    @endcan
+                        <input type="hidden" name="id" id="id" value="{{$id}}">
+                        @if($datainstructor->status == 'VALIDADO' || $datainstructor->status == 'EN CAPTURA' || $datainstructor->status == 'RETORNO')
+                            <div class="pull-right">
+                                <div class="form-row">
+                                    <div class="form-group col-md-12">
+                                        @can('instructor.editar_fase2')
+                                            {{-- <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">ENVIAR A DTA</button> --}}
+                                            <button type="submit" class="btn mr-sm-4 mt-3 btn-danger">GUARDAR CAMBIOS</button>
+                                        @endcan
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    @endif
-                    <input type="hidden" name="id" id="id" value="{{$id}}">
+                        @endif
+                        <input type="hidden" name="id" id="id" value="{{$id}}">
                     </form>
                     <form action="{{ route('movimiento-retorno') }}" enctype="multipart/form-data" method="post">
                         @csrf
@@ -2864,6 +2888,151 @@
             </div>
         </div>
     </div>
+
+    <!-- Modal Solicitud de Instructor -->
+    <div class="modal fade" id="solicitudPdfModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="solicitudPdfForm" method="POST" target="_blank" action="{{ route('instructor-solicitud-pdf') }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Generar Solicitud de Instructor</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-left">
+                        <div class="alert alert-info border-info">
+                            <strong>Tip:</strong> Ingresa el número de memorándum y la fecha de impresión para el PDF. Estos datos no sobrescribirán el registro real en la base de datos.
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="solicitud_nomemo">Numero de Memorandum</label>
+                            <input type="text" id="solicitud_nomemo" name="nomemo" class="form-control" required placeholder="Ej. ICATECH/XYZ/001/2026">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="solicitud_fecha_impresion">Fecha de Impresión</label>
+                            <input type="date" id="solicitud_fecha_impresion" class="form-control" name="fecha_impresion" required>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="solicitud_daesp">Unidad que elabora el documento (Opcional)</label>
+                            <select id="solicitud_daesp" name="daesp_override" class="form-control">
+                                <option value="">-- Detectada del instructor por default --</option>
+                                @foreach($unidades_ubicacion as $u)
+                                    <option value="{{ $u }}">{{ $u }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <input type="hidden" name="idins" value="{{ $id }}">
+                        <input type="hidden" name="no_save" value="true">
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Generar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- END -->
+    
+    <!-- Modal Validación de Instructor -->
+    <div class="modal fade" id="validacionPdfModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="validacionPdfForm" method="POST" target="_blank" action="{{ route('instructor-validacion-pdf') }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Generar Validación de Instructor</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-left">
+                        <div class="alert alert-info border-info">
+                            <strong>Tip:</strong> Ingresa el número de memorándum y la fecha de impresión para la Validación PDF. Estos datos no sobrescribirán el registro real.
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="validacion_memovali">Numero de Memorandum</label>
+                            <input type="text" id="validacion_memovali" name="memovali" class="form-control" required placeholder="Ej. ICATECH/XYZ/002/2026">
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="validacion_fecha_impresion">Fecha de Impresión</label>
+                            <input type="date" id="validacion_fecha_impresion" class="form-control" name="fecha_impresion" required>
+                        </div>
+                        <div class="form-group mt-3">
+                            <label for="validacion_daesp">Unidad que elabora el documento (Opcional)</label>
+                            <select id="validacion_daesp" name="daesp_override" class="form-control">
+                                <option value="">-- Detectada del instructor por default --</option>
+                                @foreach($unidades_ubicacion as $u)
+                                    <option value="{{ $u }}">{{ $u }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <input type="hidden" name="idinsgendocval" value="{{ $id }}">
+                        <input type="hidden" name="no_save" value="true">
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">Generar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- END -->
+
+    <!-- Modal Reemplazo de Archivos Firmados -->
+    <div class="modal fade" id="reemplazoFirmadosModal" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <form id="reemplazoFirmadosForm" method="POST" enctype="multipart/form-data" action="{{ route('instructor-reemplazar-archivos') }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title"><b>Reemplazar Archivos Firmados</b></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body text-left">
+                        @if(empty($memo_val_list) || count($memo_val_list) == 0)
+                            <div class="alert alert-warning">
+                                <strong>Aviso:</strong> Este instructor no tiene memorándums vigentes en su historial para sobreescribir sus firmas.
+                            </div>
+                        @else
+                            <div class="alert alert-info border-info">
+                                <strong>Tip:</strong> Sube únicamente los archivos que desees reemplazar. Selecciona a qué número de memorándum se reasociarán masivamente.
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="reemplazo_memo_val">Seleccionar Memorandum</label>
+                                <select id="reemplazo_memo_val" name="memo_val" class="form-control" required>
+                                    <option value="">-- Selecciona --</option>
+                                    @foreach($memo_val_list as $memo)
+                                        <option value="{{ $memo }}">{{ $memo }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="arch_sol">Archivo de Solicitud (PDF opcional)</label>
+                                <input type="file" id="arch_sol" name="arch_sol" accept=".pdf" class="form-control-file">
+                            </div>
+                            <div class="form-group mt-3">
+                                <label for="arch_val">Archivo de Validación (PDF opcional)</label>
+                                <input type="file" id="arch_val" name="arch_val" accept=".pdf" class="form-control-file">
+                            </div>
+                            <input type="hidden" name="id_instructor" value="{{ $id }}">
+                        @endif
+                    </div>
+                    <div class="modal-footer justify-content-center">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        @if(!empty($memo_val_list) && count($memo_val_list) > 0)
+                            <button type="submit" class="btn btn-primary">Subir y Reemplazar</button>
+                        @endif
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- END -->
 @stop
 @section('script_content_js')
     <script src="{{ asset("js/validate/orlandoValidate.js") }}"></script>

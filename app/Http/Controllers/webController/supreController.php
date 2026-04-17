@@ -130,7 +130,7 @@ class supreController extends Controller
             ->LeftJoin('documentos_firmar','documentos_firmar.numero_o_clave','=', 'tbl_cursos.clave')
             ->LeftJoin('pagos', 'pagos.id_curso', 'folios.id_cursos')
             ->OrderBy('tabla_supre.status','ASC')
-            ->OrderBy('tabla_supre.updated_at','DESC')
+            ->OrderBy('tabla_supre.updated_at','ASC')
             ->GroupBy('tabla_supre.id','folios.permiso_editar','clave','curso','depen')
             // ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion']);
             ->paginate(25, ['tabla_supre.*','folios.permiso_editar',\DB::raw('supre_sellado'),\DB::raw('valsupre_sellado'),'pagos.status_recepcion','curso','depen']);
@@ -465,7 +465,7 @@ class supreController extends Controller
             }
         }
 
-        $supreController = new ESupreController();
+        $supreController = app(\App\Http\Controllers\efirma\ESupreController::class);
         $result = $supreController->generar_xml($request->ids);
 
         if(isset($result['error'])) {
@@ -669,7 +669,7 @@ class supreController extends Controller
             }
         }
 
-        $valsupreController = new EValsupreController();
+        $valsupreController = app(\App\Http\Controllers\efirma\EValsupreController::class);
         $result = $valsupreController->generar_xml($request->ids);
 
         if(isset($result['error'])) {
@@ -1331,8 +1331,9 @@ class supreController extends Controller
 
         if(is_null($documento)) {
             $firma_electronica = false;
-            $supreController = new ESupreController();
+            $supreController = app(\App\Http\Controllers\efirma\ESupreController::class);
             $body_html = $supreController->create_body($id);
+
             $bodySupre = $body_html['supre'];
             $bodyCcp = $body_html['ccp'];
             $bodyTabla = $body_html['tabla'];
@@ -1388,7 +1389,7 @@ class supreController extends Controller
             }
         }
 
-        //Seccion para el layout correcto sacando el año
+        //Seccion para el layout correcto sacando el año;
             $layout_año = $this->herramientas->getPdfLayoutByDate($data_supre->fecha);
 
         // $pdf1 = PDF::loadView('layouts.pdfpages.presupuestaria',compact('data_supre','bodySupre','funcionarios','unidad','leyenda','direccion','firma_electronica','uuid'));
@@ -1425,7 +1426,8 @@ class supreController extends Controller
         unlink($file1);
         unlink($file2);
 
-        return $pdf->Output('medium.pdf', 'I');
+        return $pdf->Output('medium.pdf', 'I'); //desahibilitar para retornar a la funcion expediente_pagos_merge
+        // return $pdf->Output("Medium.pdf", "S"); //habilitar solo para descargas masivas en conjuntro con otros documentos en expediente_pagos_merge
     }
 
     protected function planeacion_reporte_canceladospdf(Request $request){
@@ -1486,7 +1488,7 @@ class supreController extends Controller
         $data2 = supre::WHERE('id', '=', $id)->FIRST();
 
         //validacion de unidad del usuario y el contrato. con esto evitamos que lo vea cualquier usuario fuera de la unidad correcta
-        if($user_data->ubicacion != $data2->unidad_capacitacion && !in_array($user_data->role_id, ['1','4','9','10'])) {
+        if($user_data->ubicacion != $data2->unidad_capacitacion && !in_array($user_data->role_id, ['1','4','9','10','60','2'])) {
             return redirect()->route('supre-inicio')->with('warning','Acceso denegado para visualizar esta Suficiencia Presupuestal.');
         }
         //fin

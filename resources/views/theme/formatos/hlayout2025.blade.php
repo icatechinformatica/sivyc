@@ -141,7 +141,7 @@
         {{-- <small>{{$leyenda}}</small> --}}
     @elseif(isset($distintivo))
         @if(!is_array($distintivo)) @php $distintivo = explode("*",$distintivo) @endphp @endif
-        <small>@foreach($distintivo as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small>
+        <small style="line-height: 1;">@foreach($distintivo as $keys => $part)@if($keys != 0)<br> @endif {{$part}} @endforeach</small>
         {{-- <small>{{$distintivo}}</small> --}}
     @endif
     </header>

@@ -428,7 +428,7 @@ class InstructorController extends Controller
     public function crear_instructor_p2($id)
     {
         $newarr = array();
-        $municipios_nacimiento = $localidades_nacimiento = NULL;
+        $municipios_nacimiento = $localidades_nacimiento = $localidades = NULL;
         $userunidad = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->WHERE('id', '=', Auth::user()->unidad)->FIRST();
         $lista_civil = estado_civil::WHERE('id', '!=', '0')->ORDERBY('nombre', 'ASC')->GET();
         $estados = DB::TABLE('estados')->SELECT('id','nombre')->ORDERBY('nombre','ASC')->GET();
@@ -1970,8 +1970,25 @@ class InstructorController extends Controller
         if(!is_array($datainstructor->exp_laboral)) {
             $datainstructor->exp_laboral = json_decode($datainstructor->exp_laboral);
         }
+
+        $memo_val_list = [];
+        $especialidades_bd = DB::TABLE('especialidad_instructores')->WHERE('id_instructor', $id)->GET();
+        foreach ($especialidades_bd as $esp) {
+            $hval_array = is_string($esp->hvalidacion) ? json_decode($esp->hvalidacion, true) : $esp->hvalidacion;
+            if (is_array($hval_array)) {
+                foreach ($hval_array as $hval) {
+                    if (isset($hval['memo_val']) && !empty($hval['memo_val'])) {
+                        $memo_val_list[] = $hval['memo_val'];
+                    }
+                }
+            }
+        }
+        $memo_val_list = array_unique($memo_val_list);
+
+        $unidades_ubicacion = DB::TABLE('tbl_unidades')->SELECT('ubicacion')->DISTINCT()->WHERE('ubicacion', '!=', '')->WHERE('ubicacion', '!=', '0')->GET()->PLUCK('ubicacion');
+
         //fin
-        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen','paises'));
+        return view('layouts.pages.verinstructor', compact('perfil','validado','id', 'datainstructor','lista_civil','estados','municipios','localidades','municipios_nacimiento','localidades_nacimiento','nrevisionlast','userunidad','nrevisiones','roluser','bancos','lista_regimen','paises', 'memo_val_list', 'unidades_ubicacion'));
     }
 
     public function save_ins(Request $request)
@@ -3577,12 +3594,20 @@ class InstructorController extends Controller
             $arrstat = array('REACTIVACION EN CAPTURA','BAJA EN CAPTURA','REVALIDACION EN CAPTURA','EN CAPTURA','PREVALIDACION','REVALIDACION EN PREVALIDACION','REACTIVACION EN PREVALIDACION','BAJA EN PREVALIDACION');
             // $especialidad_cambios = TRUE;
         }
+        
+        if(isset($request->no_save)) {
+            $arrstat[] = 'VALIDADO';
+        }
         set_time_limit(0);
 
         $daesp = DB::TABLE('tbl_unidades')
                 ->WHERE('ubicacion','LIKE',$instructor->nrevision[0]. $instructor->nrevision[1] .'%')
                 ->GROUPBY('ubicacion')
                 ->VALUE('ubicacion');
+
+        if(isset($request->daesp_override) && !empty($request->daesp_override)) {
+            $daesp = $request->daesp_override;
+        }
         $especialidades = $this->make_collection($instructor->data_especialidad);
         foreach($especialidades as $moist)
         {
@@ -3608,6 +3633,11 @@ class InstructorController extends Controller
             }
         }
         $data = $this->make_collection($arrtemp);
+        
+        if (count($data) == 0) {
+            return back()->with('mensaje', 'Error: El instructor no tiene especialidades válidas para generar este PDF.');
+        }
+        
         $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
 
 
@@ -3694,16 +3724,24 @@ class InstructorController extends Controller
         $instructor->data_especialidad = $especialidades;
         // if(!isset($request->borrador))
         // {
+        if(!isset($request->no_save)) {
             $instructor->save();
+        }
         // }
 
         $data_unidad = DB::TABLE('tbl_unidades')->WHERE('unidad', '=', $daesp)->FIRST();
         $solicito = DB::TABLE('users')->WHERE('id', '=', Auth::user()->id)->FIRST();
-        $funcionarios = $this->funcionarios($daesp);
 
         if($honorario_actual != $instructor->tipo_honorario && $especialidad_cambios == FALSE && isset($request->borrador)) {
             $date = strtotime(carbon::now());
         }
+
+        if(isset($request->no_save) && isset($request->fecha_impresion) && $request->fecha_impresion) {
+            $date = strtotime($request->fecha_impresion);
+        }
+
+        $funcionarios = $this->funcionarios($daesp, date('Y-m-d', $date));
+
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
@@ -3740,6 +3778,9 @@ class InstructorController extends Controller
         }
         $rplc = array('[',']','"');
         $arrstat = array('EN FIRMA','REVALIDACION EN FIRMA','REACTIVACION EN FIRMA','BAJA EN FIRMA');
+        if(isset($request->no_save)) {
+            $arrstat[] = 'VALIDADO';
+        }
         $especialidades = $arrtemp = array();
         set_time_limit(0);
         $user = auth::user()->id;
@@ -3784,16 +3825,24 @@ class InstructorController extends Controller
 
         $instructor->data_especialidad = $special;
 
+        if (count($especialidades) == 0) {
+            return back()->with('mensaje', 'Error: El instructor no tiene especialidades válidas o en firma para poder generar este PDF.');
+        }
+
         // $elaboro = DB::TABLE('users')->WHERE('id','=', $user)->FIRST();
         $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $especialidades = $this->make_collection($especialidades);
         $ubicacion = DB::TABLE('tbl_unidades')
                         ->WHERE('ubicacion', 'LIKE', $instructor->nrevision[0].$instructor->nrevision[1].'%')
                         ->value('ubicacion');
+
+        if(isset($request->daesp_override) && !empty($request->daesp_override)) {
+            $ubicacion = $request->daesp_override;
+        }
         $unidad = DB::TABLE('tbl_unidades')
                         ->WHERE('unidad', '=', $ubicacion)
                         ->FIRST();
-        $funcionarios = $this->funcionarios($ubicacion);
+        
         if($instructor->numero_control == 'Pendiente')
         {
             $uni = substr($unidad->cct, -3, 2) * 1 . substr($unidad->cct, -1);
@@ -3818,7 +3867,10 @@ class InstructorController extends Controller
             $numero_control = $part1 . $rfcpart;
         }
         $instructor->numero_control = $numero_control;
-        $instructor->save();
+        
+        if(!isset($request->no_save)) {
+            $instructor->save();
+        }
 
         if($especialidades[0]->status != 'BAJA EN FIRMA')
         {
@@ -3828,6 +3880,13 @@ class InstructorController extends Controller
         {
             $date = strtotime($especialidades[0]->fecha_baja);
         }
+
+        if(isset($request->no_save) && isset($request->fecha_impresion) && $request->fecha_impresion) {
+            $date = strtotime($request->fecha_impresion);
+        }
+
+        $funcionarios = $this->funcionarios($ubicacion, date('Y-m-d', $date));
+
         $D = date('d', $date);
         $MO = date('m',$date);
         $M = $this->monthToString(date('m',$date));//A
@@ -3954,6 +4013,82 @@ class InstructorController extends Controller
         $pdf = PDF::loadView('layouts.pdfpages.validacionbajainstructor',compact('leyenda','instructor','data_unidad','D','M','Y','especialidades','DS','MS','YS','funcionarios','direccion','layout_año'));
         $pdf->setPaper('letter');
         return  $pdf->stream('baja_instructor_validacion.pdf');
+    }
+
+    public function reemplazar_archivos_firmados(Request $request)
+    {
+        $id = $request->id_instructor;
+        $memo_val = $request->memo_val;
+        
+        $instructor = pre_instructor::find($id);
+        $especialidades = especialidad_instructor::where('id_instructor', $id)->get();
+        
+        $url_sol = null;
+        $url_val = null;
+
+        if ($request->hasFile('arch_sol')) {
+            $url_sol = $this->pdf_upload($request->file('arch_sol'), $id, 'solicitudespecialidad');
+        }
+        if ($request->hasFile('arch_val')) {
+            $url_val = $this->pdf_upload($request->file('arch_val'), $id, 'validacionespecialidad');
+        }
+
+        if (!$url_sol && !$url_val) {
+            return back()->with('mensaje', 'Error: Asegúrese de subir al menos un archivo (Solicitud o Validación).');
+        }
+
+        // Actualizar en DB modelo especialidad_instructores
+        foreach($especialidades as $cadwell) {
+            $hvalidacion = $cadwell->hvalidacion;
+            $hvalidacion_decode = is_string($hvalidacion) ? json_decode($hvalidacion, true) : $hvalidacion;
+            $modified = false;
+            
+            if (is_array($hvalidacion_decode)) {
+                foreach ($hvalidacion_decode as $i => $hval) {
+                    if (isset($hval['memo_val']) && $hval['memo_val'] === $memo_val) {
+                        if ($url_sol) $hvalidacion_decode[$i]['arch_sol'] = $url_sol;
+                        if ($url_val) $hvalidacion_decode[$i]['arch_val'] = $url_val;
+                        $modified = true;
+                    }
+                }
+            }
+            if ($modified) {
+                $cadwell->hvalidacion = $hvalidacion_decode;
+                $cadwell->save();
+            }
+        }
+
+        // Actualizar en pre_instructor.data_especialidad
+        $data_especialidad = $instructor->data_especialidad;
+        $data_esp_decode = is_string($data_especialidad) ? json_decode($data_especialidad, true) : $data_especialidad;
+        $modified_main = false;
+
+        if (is_array($data_esp_decode)) {
+            foreach ($data_esp_decode as $key => $cadwell) {
+                $hvalidacion = $cadwell['hvalidacion'] ?? null;
+                $modified_sub = false;
+                if (is_array($hvalidacion)) {
+                    foreach ($hvalidacion as $i => $hval) {
+                        if (isset($hval['memo_val']) && $hval['memo_val'] === $memo_val) {
+                            if ($url_sol) $hvalidacion[$i]['arch_sol'] = $url_sol;
+                            if ($url_val) $hvalidacion[$i]['arch_val'] = $url_val;
+                            $modified_sub = true;
+                            $modified_main = true;
+                        }
+                    }
+                }
+                if ($modified_sub) {
+                    $data_esp_decode[$key]['hvalidacion'] = $hvalidacion;
+                }
+            }
+        }
+        
+        if ($modified_main) {
+            $instructor->data_especialidad = $data_esp_decode;
+            $instructor->save();
+        }
+
+        return back()->with('success', 'Éxito: Archivos de firma masivos reemplazados correctamente bajo el memorándum seleccionado.');
     }
 
     public function deshacer_movimiento($id) {
@@ -4949,30 +5084,40 @@ class InstructorController extends Controller
         return $respond;
     }
 
-    public function funcionarios($unidad) {
-        $query = clone $dacademico = clone $dacademico_unidad = clone $gestionacademica = clone $dunidad = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
+    public function funcionarios($unidad, $fecha = null) {
+        $get_funcionario = function($query) use ($fecha) {
+            if ($fecha) {
+                // Si enviaron fecha, ordenamos del mas reciente y filtramos los previos
+                $historial = (clone $query)->whereNotNull('f.fecha_nombramiento')
+                                           ->where('f.fecha_nombramiento', '<=', $fecha)
+                                           ->orderBy('f.fecha_nombramiento', 'DESC')
+                                           ->first();
+                if ($historial) return $historial;
+            }
+            // Fallback si no hay fecha o si la busqueda no regresó nada, agarramos al activo
+            return (clone $query)->where('f.activo', 'true')->first();
+        };
+
+        $base = DB::Table('tbl_organismos AS o')->Select('f.titulo','f.nombre','f.cargo','f.direccion','f.telefono','f.correo_institucional')
             ->Join('tbl_funcionarios AS f', 'f.id_org', 'o.id')
-            ->Where('f.activo', 'true')
             ->Where('f.titular', true);
 
-        $dacademico = $dacademico->Where('o.id',16)->First();
-        $gestionacademica = $gestionacademica->Where('o.id',17)->First();
+        $dacademico = $get_funcionario((clone $base)->Where('o.id', 16));
+        $gestionacademica = $get_funcionario((clone $base)->Where('o.id', 17));
 
-        $dacademico_unidad = $dacademico_unidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+        $dacademico_unidad = $get_funcionario((clone $base)->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('o.nombre','LIKE','DEPARTAMENTO ACADEMICO%')
-            ->Where('u.unidad', $unidad)
-            ->First();
+            ->Where('u.unidad', $unidad));
 
-        $dunidad = $dunidad->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
+        $dunidad = $get_funcionario((clone $base)->Join('tbl_unidades AS u', 'u.id', 'o.id_unidad')
             ->Where('o.id_parent',1)
-            ->Where('u.unidad', $unidad)
-            ->First();
+            ->Where('u.unidad', $unidad));
 
         $funcionarios = [
-            'dacademico' => ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo_institucional],
-            'gestionacademica' => ['titulo'=>$gestionacademica->titulo,'nombre'=>$gestionacademica->nombre,'puesto'=>$gestionacademica->cargo,'direccion'=>$gestionacademica->direccion,'telefono'=>$gestionacademica->telefono,'correo'=>$gestionacademica->correo_institucional],
-            'dacademico_unidad' => ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo_institucional],
-            'dunidad' => ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo_institucional],
+            'dacademico' => $dacademico ? ['titulo'=>$dacademico->titulo,'nombre'=>$dacademico->nombre,'puesto'=>$dacademico->cargo,'direccion'=>$dacademico->direccion,'telefono'=>$dacademico->telefono,'correo'=>$dacademico->correo_institucional] : ['titulo'=>'','nombre'=>'','puesto'=>'','direccion'=>'','telefono'=>'','correo'=>''],
+            'gestionacademica' => $gestionacademica ? ['titulo'=>$gestionacademica->titulo,'nombre'=>$gestionacademica->nombre,'puesto'=>$gestionacademica->cargo,'direccion'=>$gestionacademica->direccion,'telefono'=>$gestionacademica->telefono,'correo'=>$gestionacademica->correo_institucional] : ['titulo'=>'','nombre'=>'','puesto'=>'','direccion'=>'','telefono'=>'','correo'=>''],
+            'dacademico_unidad' => $dacademico_unidad ? ['titulo'=>$dacademico_unidad->titulo,'nombre'=>$dacademico_unidad->nombre,'puesto'=>$dacademico_unidad->cargo,'direccion'=>$dacademico_unidad->direccion,'telefono'=>$dacademico_unidad->telefono,'correo'=>$dacademico_unidad->correo_institucional] : ['titulo'=>'','nombre'=>'','puesto'=>'','direccion'=>'','telefono'=>'','correo'=>''],
+            'dunidad' => $dunidad ? ['titulo'=>$dunidad->titulo,'nombre'=>$dunidad->nombre,'puesto'=>$dunidad->cargo,'direccion'=>$dunidad->direccion,'telefono'=>$dunidad->telefono,'correo'=>$dunidad->correo_institucional] : ['titulo'=>'','nombre'=>'','puesto'=>'','direccion'=>'','telefono'=>'','correo'=>''],
             'elabora' => ['nombre'=>strtoupper(Auth::user()->name),'puesto'=>strtoupper(Auth::user()->puesto)]
         ];
 

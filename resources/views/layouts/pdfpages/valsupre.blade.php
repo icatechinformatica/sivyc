@@ -82,12 +82,23 @@
             <img style="position: fixed; width: 13%; top: 57%; left: 77%" src="data:image/png;base64,{{ $qrCodeBase64 }}" alt="Código QR">
         </div>
     @else
-        <div align=center style="font-size: 8px;">
-            <small><small>C. {{$funcionarios['remitente']}}</small></small>
-            <br><small>________________________________________</small><br/>
-            <br><small><small>{{$funcionarios['remitentep']}}</small></small></b>
-        </div>
-        <br><br><br><br><br><br>
+        <table style="width: 85%; margin: 0 auto; font-size: 8px; border-collapse: collapse; padding-left: -3%;">
+            <tr>
+                <td style="width: 50%; text-align: center; vertical-align: top; padding-right: 25px;">
+                    <small><small>VALIDA
+                    <br>C. {{$funcionarios['remitente']}}</small></small>
+                    <br><small>________________________________________</small><br/>
+                    <br><small><small>{{$funcionarios['remitentep']}}</small></small>
+                </td>
+                <td style="width: 50%; text-align: center; vertical-align: top; padding-left: -5%;">
+                    <small><small>Vo. Bo.
+                    <br>C. {{$funcionarios['ccp2']}}</small></small>
+                    <br><small>________________________________________</small><br/>
+                    <br><small><small>{{$funcionarios['ccp2p']}}</small></small>
+                </td>
+            </tr>
+        </table>
+        <br><br><br><br>
     @endif
         {!!$ccp_html!!}
     </div>

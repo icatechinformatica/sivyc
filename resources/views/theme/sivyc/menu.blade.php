@@ -15,7 +15,7 @@
     $permisos['menu_consulta'] = $usuario->canAny(['consultas.folios', 'consultas.lotes', 'consultas.cursosaperturados', 'planeacion.estadisticas',
                     'planeacion.grupos.vulnerables', 'planeacion.ingresos.propios', 'consultas.cursosefisico',
                     'consultas.instructor', 'consultas.instructores.disponibles', 'consultas.poa', 'show.cursos.validados',
-                    'consulta.bolsa.trabajo'.'consultas.cursos.exo','consultas.contratosfirmados']);
+                    'consulta.bolsa.trabajo','consultas.cursos.exo','consultas.contratosfirmados']);
     $permiso['menu_estadistica'] =  $usuario->canAny(['estadisticas.ecursos', 'tablero.metas.index']);
 @endphp
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark pink2 darken-4">
@@ -357,11 +357,12 @@
                             @if($usuario->can('reportes.dv'))
                                 <a class="dropdown-item" href="{{ route('reportes.dv') }}">DV - Operación con Convenios</a>
                             @endif
-                            @if($usuario->can('RH.tarjetatiempo'))
+                            {{-- @if($usuario->can('RH.tarjetatiempo'))
                                 <a class="dropdown-item" href="{{ route('rh.reporte.quincenal') }}">RH - Tarjeta de Tiempo</a>
-                            @endif
-                            @if($usuario->can('RH.tarjetatiempo'))
                                 <a class="dropdown-item" href="{{ route('rh.index') }}">RH - Registro de Checado</a>
+                            @endif --}}
+                            @if($usuario->can('RH.reportes.asistencia'))
+                                <a class="dropdown-item" href="{{ route('reporte.asistencia') }}">RH - Reporte de Asistencia</a>
                             @endif
                         </div>
                     </li>

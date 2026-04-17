@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use Illuminate\Support\Facades\DB;
@@ -8,12 +9,14 @@ use Carbon\Carbon;
 class ValidacionServicioVb
 {
     // protected $instructores;
-    public function __construct() {
+    public function __construct()
+    {
         // $this->instructores = collect($instructores);
     }
 
     ##Funcion para verificar que el instructor no rebase las 8 horas diarias
-    public function InstNoRebase8Horas($instructores, $agenda) {
+    public function InstNoRebase8Horas($instructores, $agenda)
+    {
         $instructoresValidos = [];
 
         foreach ($instructores as $ins) {
@@ -39,7 +42,7 @@ class ValidacionServicioVb
                         ->whereDate('agenda.start', '<=', $fechaStr)
                         ->whereDate('agenda.end', '>=', $fechaStr)
                         ->where('agenda.id_curso', '<>', $value->id_curso)
-                        ->where(function ($query) use($value) {
+                        ->where(function ($query) use ($value) {
                             $query->where('tbl_cursos.status_curso', '<>', 'CANCELADO')
                                 ->orWhereNull('tbl_cursos.status_curso');
                         })
@@ -68,61 +71,101 @@ class ValidacionServicioVb
     }
 
     ##Funcion para verificar que el instructor no rebase las 40 horas a la semana
-    public function InstNoRebase40HorasSem($instructores, $folio_grupo){
+    public function InstNoRebase40HorasSem($instructores, $folio_grupo)
+    {
         $instructoresValidos = [];
-        $agenda = DB::table('agenda')->where('id_curso', $folio_grupo)->get()
-        ->map(function ($item) {
-            $item->id_instructor = null;
-            return $item;
-        });
+        // Obtener la agenda del nuevo curso con Carbon ya parseado
+        $nuevasActividades = DB::table('agenda')
+            ->where('id_curso', $folio_grupo)
+            ->get()
+            ->map(function ($item) {
+                $item->start = Carbon::parse($item->start);
+                $item->end   = Carbon::parse($item->end);
+                return $item;
+            });
+
         foreach ($instructores as $instructor) {
 
-            //agrupar minutos nuevos por semana
-            $minutosNuevosPorSemana = [];
-            foreach ($agenda as $item) {
-                if ($item->id_instructor != $instructor->id) {
-                    continue; // Solo evaluar actividades asignadas a este instructor
-                }
-                $periodo = CarbonPeriod::create($item->start, $item->end);
-                $horaInicio = Carbon::parse($item->start);
-                $horaTermino = Carbon::parse($item->end);
-                $minutosCurso = $horaTermino->diffInMinutes($horaInicio);
+            // 1. Obtener actividades actuales del instructor (no canceladas, excluyendo el curso actual)
+            $actividadesExistentes = DB::table('agenda')
+                ->join('tbl_cursos', 'agenda.id_curso', '=', 'tbl_cursos.folio_grupo')
+                ->where('agenda.id_instructor', $instructor->id)
+                ->where('agenda.id_curso', '<>', $folio_grupo)  // excluir el curso actual para no doble-contar
+                ->where(function ($q) {
+                    $q->where('tbl_cursos.status_curso', '<>', 'CANCELADO')
+                        ->orWhereNull('tbl_cursos.status_curso');
+                })
+                ->select('agenda.start', 'agenda.end')
+                ->get()
+                ->map(function ($item) {
+                    $item->start = Carbon::parse($item->start);
+                    $item->end   = Carbon::parse($item->end);
+                    return $item;
+                });
 
-                foreach ($periodo as $fecha) {
-                    $semana = Carbon::parse($fecha)->startOfWeek()->format('Y-m-d');
+            // 2. Combinar actividades existentes + nuevas (simulando asignación)
+            $todasActividades = $actividadesExistentes->concat($nuevasActividades);
 
-                    if (!isset($minutosNuevosPorSemana[$semana])) {
-                        $minutosNuevosPorSemana[$semana] = 0;
+            if ($todasActividades->isEmpty()) {
+                $instructoresValidos[] = $instructor;
+                continue;
+            }
+
+            // 3. Determinar rango global de fechas
+            $fechaMin = $todasActividades->min('start')->copy()->startOfDay();
+            $fechaMax = $todasActividades->max('end')->copy()->endOfDay();
+            // return "Fecha max: " . $fechaMax . " Fecha min: " . $fechaMin;
+
+            // 4. Recorrer día por día y acumular minutos por semana
+            //    NOTA: start/end en agenda codifican el rango de FECHAS + el HORARIO diario.
+            //    Ej: 2026-04-20 09:00 → 2026-04-24 13:00 significa "09:00–13:00 cada día del 20 al 24".
+            //    Por eso usamos solo la parte de hora (H:i:s) para calcular los minutos diarios.
+            $minutosPorSemana = [];
+            $periodoDias = CarbonPeriod::create($fechaMin->copy()->startOfDay(), $fechaMax->copy()->startOfDay(), '1 day');
+
+            foreach ($periodoDias as $dia) {
+                $fechaDiaStr = $dia->format('Y-m-d');
+                $minutosDia  = 0;
+
+                foreach ($todasActividades as $act) {
+                    // Verificar si la actividad cubre este día (comparación solo de fecha)
+                    $fechaInicioAct = $act->start->format('Y-m-d');
+                    $fechaFinAct    = $act->end->format('Y-m-d');
+
+                    if ($fechaInicioAct <= $fechaDiaStr && $fechaFinAct >= $fechaDiaStr) {
+                        // Aplicar solo la parte de hora del start/end al día actual
+                        $horaInicio = Carbon::parse($fechaDiaStr . ' ' . $act->start->format('H:i:s'));
+                        $horaFin    = Carbon::parse($fechaDiaStr . ' ' . $act->end->format('H:i:s'));
+
+                        if ($horaFin > $horaInicio) {
+                            $minutosDia += $horaInicio->diffInMinutes($horaFin);
+                        }
                     }
+                }
 
-                    $minutosNuevosPorSemana[$semana] += $minutosCurso;
+                if ($minutosDia > 0) {
+                    // Clave de semana: lunes de esa semana (lunes a domingo)
+                    $inicioSemana = $dia->copy()->startOfWeek()->format('Y-m-d');
+                    $minutosPorSemana[$inicioSemana] = ($minutosPorSemana[$inicioSemana] ?? 0) + $minutosDia;
                 }
             }
 
+            // 5. Obtener las semanas que toca el nuevo curso
+            $semanasCursoNuevo = [];
+            foreach ($nuevasActividades as $act) {
+                $periodo = CarbonPeriod::create($act->start->format('Y-m-d'), $act->end->format('Y-m-d'), '1 day');
+                foreach ($periodo as $dia) {
+                    $semana = $dia->copy()->startOfWeek()->format('Y-m-d');
+                    $semanasCursoNuevo[$semana] = true;
+                }
+            }
+
+
+            // 6. Validar SOLO las semanas del nuevo curso (no las históricas)
             $esValido = true;
-
-            // 2. Validar minutos semanales contra lo ya registrado en BD
-
-            foreach ($minutosNuevosPorSemana as $semanaInicioStr => $minutosNuevos) {
-                $semanaInicio = Carbon::parse($semanaInicioStr);
-                $semanaFin = $semanaInicio->copy()->endOfWeek();
-
-                $minutosExistentes = DB::table(DB::raw("
-                (
-                    SELECT
-                        generate_series(agenda.start, agenda.end, '1 day'::interval)::date as dia,
-                        (CAST(agenda.end AS time) - CAST(agenda.start AS time))::time as duracion
-                    FROM agenda
-                    LEFT JOIN tbl_cursos ON agenda.id_curso = tbl_cursos.folio_grupo
-                    WHERE agenda.id_instructor = {$instructor->id}
-                        AND (tbl_cursos.status_curso <> 'CANCELADO' OR tbl_cursos.status_curso IS NULL)
-                ) as t"))
-                ->whereBetween('dia', [$semanaInicio->format('Y-m-d'), $semanaFin->format('Y-m-d')])
-                ->value(DB::raw('SUM(EXTRACT(hour FROM duracion) * 60 + EXTRACT(minute FROM duracion))'));
-
-                $totalMinutos = ($minutosExistentes ?? 0) + $minutosNuevos;
-
-                if ($totalMinutos > 2400) {
+            foreach ($semanasCursoNuevo as $semana => $_) {
+                $minutosSemana = $minutosPorSemana[$semana] ?? 0;
+                if ($minutosSemana > 2400) {
                     $esValido = false;
                     break;
                 }
@@ -147,7 +190,7 @@ class ValidacionServicioVb
             $cursos = DB::table('tbl_cursos as tc')
                 ->where('tc.id_instructor', $instructor->id)
                 ->where(function ($query) {
-                        $query->where('tc.status_curso', '<>', 'CANCELADO')
+                    $query->where('tc.status_curso', '<>', 'CANCELADO')
                         ->orWhereNull('tc.status_curso');
                 })
                 // ->where(function ($query) use ($folio_grupo) {
@@ -164,7 +207,7 @@ class ValidacionServicioVb
             if (!empty($cursos)) {
                 $max_inicio = null;
                 for ($i = 0; $i < count($cursos) - 1; $i++) {
-                    $diff = Carbon::parse($cursos[$i+1]->inicio)->diffInDays($cursos[$i]->termino);
+                    $diff = Carbon::parse($cursos[$i + 1]->inicio)->diffInDays($cursos[$i]->termino);
                     if ($diff >= 30) {
                         $max_inicio = Carbon::parse($cursos[$i]->inicio);
                     }
@@ -182,7 +225,7 @@ class ValidacionServicioVb
                 $dias = $filtrados->reduce(function ($carry, $curso) {
                     return $carry + Carbon::parse($curso->termino)->diffInDays(Carbon::parse($curso->inicio)) + 1;
                 }, 0);
-            }else{
+            } else {
                 $dias = 0;
             }
 
@@ -196,118 +239,7 @@ class ValidacionServicioVb
 
 
 
-    ### Funcion para verificar si el instructor no tiene detalles al estar llevando otro curso en las mismos tiempos
-    // public function InstNoTraslapeFechaHoraConOtroCurso($instructores, $grupos)
-    // {
-    //     $newArray = [];
 
-    //     $idsInstructores = collect($instructores)->pluck('id')->all();
-
-    //     // Preconsulta todas las agendas relevantes
-    //     $agendaExistente = DB::table('agenda as a')
-    //         ->leftJoin('tbl_cursos as tc', 'a.id_curso', '=', 'tc.folio_grupo')
-    //         ->select(
-    //             'a.id_instructor',
-    //             'a.start as start',
-    //             'a.end as end'
-    //         )
-    //         ->whereIn('a.id_instructor', $idsInstructores)
-    //         // ->where('tc.status', '=', 'VALIDADO')
-    //         ->where(function ($query) {
-    //             $query->where('tc.status_curso', '=', 'VALIDADO')
-    //                 ->orWhere('tc.vb_dg', '=', true);
-    //         })
-    //         ->get()
-    //         ->groupBy('id_instructor');
-
-    //     foreach ($instructores as $instructor) {
-    //         $traslape = false;
-    //         $actividades = $agendaExistente->get($instructor->id, collect());
-
-    //         foreach ($grupos as $grupo) {
-    //             $grupoInicio = Carbon::parse($grupo->start);
-    //             $grupoFin = Carbon::parse($grupo->end);
-
-    //             foreach ($actividades as $actividad) {
-    //                 $actividadInicio = Carbon::parse($actividad->start);
-    //                 $actividadFin = Carbon::parse($actividad->end);
-
-    //                 // Validación de traslape: [start1 < end2] && [start2 < end1]
-    //                 if ($grupoInicio < $actividadFin && $actividadInicio < $grupoFin) {
-    //                     $traslape = true;
-    //                     break 2; // Salir de los dos ciclos
-    //                 }
-    //             }
-    //         }
-
-    //         if (!$traslape) {
-    //             $newArray[] = $instructor;
-    //         }
-    //     }
-
-    //     return $newArray;
-    // }
-
-    // public function InstNoTraslapeFechaHoraConOtroCurso($instructores, $grupos)
-    // {
-    //     $newArray = [];
-    //     $idsInstructores = collect($instructores)->pluck('id')->all();
-
-    //     // Preconsulta todas las agendas de instructores con cursos validados
-    //     $agendaExistente = DB::table('agenda as a')
-    //         ->leftJoin('tbl_cursos as tc', 'a.id_curso', '=', 'tc.folio_grupo')
-    //         ->select(
-    //             'a.id_instructor',
-    //             'a.start',
-    //             'a.end',
-    //             'a.id_curso'
-    //         )
-    //         ->whereIn('a.id_instructor', $idsInstructores)
-    //         ->where(function ($query) {
-    //             $query->where('tc.status_curso', '=', 'VALIDADO')
-    //                 ->orWhere('tc.vb_dg', '=', true);
-    //         })
-    //         ->get()
-    //         ->groupBy('id_instructor');
-
-    //     foreach ($instructores as $instructor) {
-    //         $traslape = false;
-
-    //         $actividades = $agendaExistente->get($instructor->id, collect());
-
-    //         // Filtrar solo los grupos que están asignados a este instructor
-    //         $gruposDelInstructor = collect($grupos)->filter(function ($grupo) use ($instructor) {
-    //             return $grupo->id_instructor == $instructor->id;
-    //         });
-
-    //         foreach ($gruposDelInstructor as $grupo) {
-    //             $grupoInicio = Carbon::parse($grupo->start);
-    //             $grupoFin = Carbon::parse($grupo->end);
-
-    //             foreach ($actividades as $actividad) {
-    //                 // Omitimos comparación contra el mismo curso (folio_grupo / id_curso)
-    //                 if ($grupo->id_curso == $actividad->id_curso) {
-    //                     continue;
-    //                 }
-
-    //                 $actividadInicio = Carbon::parse($actividad->start);
-    //                 $actividadFin = Carbon::parse($actividad->end);
-
-    //                 // Regla de traslape
-    //                 if ($grupoInicio < $actividadFin && $actividadInicio < $grupoFin) {
-    //                     $traslape = true;
-    //                     break 2; // Rompe ambos foreach
-    //                 }
-    //             }
-    //         }
-
-    //         if (!$traslape) {
-    //             $newArray[] = $instructor;
-    //         }
-    //     }
-
-    //     return $newArray;
-    // }
 
     public function InstNoTraslapeFechaHoraConOtroCurso($instructores, $grupos)
     {
@@ -326,7 +258,7 @@ class ValidacionServicioVb
             ->whereIn('a.id_instructor', $idsInstructores)
             ->where(function ($query) {
                 $query->where('tc.status_curso', '<>', 'CANCELADO')
-                ->orWhereNull('tc.status_curso');
+                    ->orWhereNull('tc.status_curso');
             })
             ->get()
             ->groupBy('id_instructor');
@@ -387,15 +319,16 @@ class ValidacionServicioVb
 
 
     ##Funcion para validar si el instructor ALFA
-    public function InstAlfaNoBecados($instructores){
+    public function InstAlfaNoBecados($instructores)
+    {
         $instructoresValidos = [];
         foreach ($instructores as $instructor) {
             # ciclo para recorrer los registros vamos a descartar a los que no son alfa
             $alfa = DB::table('instructores')
-            ->where('id', $instructor->id)
-            ->where('instructor_alfa', true)
-            // ->whereRaw("datos_alfa->'subproyectos'->>'chiapas puede' = ?", ['voluntario']) // Condición de "voluntario"
-            ->exists();
+                ->where('id', $instructor->id)
+                ->where('instructor_alfa', true)
+                // ->whereRaw("datos_alfa->'subproyectos'->>'chiapas puede' = ?", ['voluntario']) // Condición de "voluntario"
+                ->exists();
 
             if ($alfa) {
                 $instructoresValidos[] = $instructor;
@@ -405,18 +338,25 @@ class ValidacionServicioVb
     }
 
     ##Funcion de consulta general de instructores validados
-    public function consulta_general_instructores($curso, $ejercicio) {
-        $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c','c.id_instructor','i.id')
-            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra',false)
+    public function consulta_general_instructores($curso, $ejercicio)
+    {
+        $internos = DB::table('instructores as i')->select('i.id')->join('tbl_cursos as c', 'c.id_instructor', 'i.id')
+            ->where('i.tipo_instructor', 'INTERNO')->where('curso_extra', false)
             ->where(DB::raw("EXTRACT(YEAR FROM c.inicio)"), date('Y', strtotime($curso->inicio)))
             ->where(DB::raw("EXTRACT(MONTH FROM c.inicio)"), date('m', strtotime($curso->inicio)))
             ->havingRaw('count(*) >= 2')
             ->groupby('i.id');
 
-            $query = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
-            ->select(DB::raw('CONCAT("apellidoPaterno", '."' '".' ,"apellidoMaterno",'."' '".',instructores.nombre) as instructor'),'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', 'especialidad_instructores.fecha_validacion', // fecha de validacion ya no se ocupa ya que se obtiene de hvalidacion jsonb
-            DB::raw("(SELECT COUNT(tc.id) FROM tbl_cursos AS tc WHERE tc.id_instructor = instructores.id and tc.status_curso = 'AUTORIZADO' AND EXTRACT(YEAR FROM tc.created_at) = {$ejercicio}) AS total_cursos") ) //DB::raw('count(id_curso) as total')
-            ->rightJoin('instructores','t.id_instructor','=','instructores.id')
+        $query = DB::table(DB::raw('(select id_instructor, id_curso from agenda group by id_instructor, id_curso) as t'))
+            ->select(
+                DB::raw('CONCAT("apellidoPaterno", ' . "' '" . ' ,"apellidoMaterno",' . "' '" . ',instructores.nombre) as instructor'),
+                'instructores.id',
+                'instructores.telefono',
+                'tbl_unidades.unidad',
+                'especialidad_instructores.fecha_validacion', // fecha de validacion ya no se ocupa ya que se obtiene de hvalidacion jsonb
+                DB::raw("(SELECT COUNT(tc.id) FROM tbl_cursos AS tc WHERE tc.id_instructor = instructores.id and tc.status_curso = 'AUTORIZADO' AND EXTRACT(YEAR FROM tc.created_at) = {$ejercicio}) AS total_cursos")
+            ) //DB::raw('count(id_curso) as total')
+            ->rightJoin('instructores', 't.id_instructor', '=', 'instructores.id')
             ->JOIN('instructor_perfil', 'instructor_perfil.numero_control', '=', 'instructores.id')
             ->JOIN('tbl_unidades', 'tbl_unidades.cct', '=', 'instructores.clave_unidad')
             ->JOIN('especialidad_instructores', 'especialidad_instructores.perfilprof_id', '=', 'instructor_perfil.id')
@@ -426,9 +366,9 @@ class ValidacionServicioVb
             //Nueva linea para filtrar por cursos a impartir, no por especialidad
             ->whereJsonContains('especialidad_instructores.cursos_impartir', (string) $curso->id_curso)
 
-            ->WHERE('estado',true)
-            ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre','!=','')
-            ->WHERE('especialidad_instructores.especialidad_id',$curso->id_especialidad)
+            ->WHERE('estado', true)
+            ->WHERE('instructores.status', '=', 'VALIDADO')->where('instructores.nombre', '!=', '')
+            ->WHERE('especialidad_instructores.especialidad_id', $curso->id_especialidad)
             // ->WHERE('fecha_validacion','<',$curso->inicio)
             ->whereRaw("
                 (
@@ -437,22 +377,25 @@ class ValidacionServicioVb
                     WHERE (elem->>'fecha_val')::date < ?
                 ) IS NOT NULL
             ", [$curso->inicio])
-            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"),'>=',$curso->termino)
+            ->WHERE(DB::raw("(fecha_validacion + INTERVAL'1 year')::timestamp::date"), '>=', $curso->termino)
             ->whereNotIn('instructores.id', $internos);
 
-            if ($curso->curso_alfa == true) { $query->WHERE('instructores.instructor_alfa', '=', true); }
+        if ($curso->curso_alfa == true) {
+            $query->WHERE('instructores.instructor_alfa', '=', true);
+        }
 
-            $instructores = $query
-            ->groupBy('t.id_instructor','instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', 'especialidad_instructores.fecha_validacion')
+        $instructores = $query
+            ->groupBy('t.id_instructor', 'instructores.id', 'instructores.telefono', 'tbl_unidades.unidad', 'especialidad_instructores.fecha_validacion')
             ->orderBy('instructor')
             ->get();
 
-            return $instructores;
+        return $instructores;
     }
 
 
     ## Validacion de instructores pasando por varios filtros
-    public function data_validacion_instructores($data, $agenda, $ejercicio){
+    public function data_validacion_instructores($data, $agenda, $ejercicio)
+    {
         try {
 
             ## Consulta general de instructores
@@ -480,31 +423,28 @@ class ValidacionServicioVb
 
                     //Tercer criterio
                     $respuestaTraslape = $this->InstNoTraslapeFechaHoraConOtroCurso($respuesta40Horas, $agenda);
-                    if (count($respuestaTraslape) >0 ) {
+                    if (count($respuestaTraslape) > 0) {
 
                         //Cuarto Criterio
                         $respuesta150dias = $this->InstValida150Dias($respuestaTraslape, $data->folio_grupo);
-                        if (count($respuesta150dias) > 0 ) {
+                        if (count($respuesta150dias) > 0) {
 
-                            return [$respuesta150dias , '']; //Retornamos la respuesta
+                            return [$respuesta150dias, '']; //Retornamos la respuesta
 
-                        }else{
+                        } else {
                             return [[], 'No se encontraron Instructores, Rebasan los 150 dias'];
                         }
-                    }else{
+                    } else {
                         return [[], 'No se encontraron Instructores, Traslapa con otros cursos'];
                     }
-
-                }else{
+                } else {
                     return [[], 'No se encontraron Instructores, Rebasan las 40 Horas por Semana'];
                 }
-
-            }else{
+            } else {
                 return [[], 'No se encontraron Instructores, Rebasan las 8 Horas Diarias'];
             }
-
         } catch (\Throwable $th) {
-            return [[], 'Error: '.$th->getMessage()];
+            return [[], 'Error: ' . $th->getMessage()];
         }
     }
 
@@ -544,7 +484,8 @@ class ValidacionServicioVb
         return $query->get();
     }
 
-    public function filtros_instructor($data, $agenda, $ejercicio) {
+    public function filtros_instructor($data, $agenda, $ejercicio)
+    {
         try {
 
             ## Consulta general de instructores
@@ -564,35 +505,28 @@ class ValidacionServicioVb
 
                     //Tercer criterio
                     $respuestaTraslape = $this->InstNoTraslapeFechaHoraConOtroCurso($respuesta40Horas, $agenda);
-                    if (count($respuestaTraslape) >0 ) {
+                    if (count($respuestaTraslape) > 0) {
 
                         //Cuarto Criterio
                         $respuesta150dias = $this->InstValida150Dias($respuestaTraslape, $data->folio_grupo);
-                        if (count($respuesta150dias) > 0 ) {
+                        if (count($respuesta150dias) > 0) {
 
-                            return [$respuesta150dias , '']; //Retornamos la respuesta
+                            return [$respuesta150dias, '']; //Retornamos la respuesta
 
-                        }else{
+                        } else {
                             return [[], 'INSTRUCTOR NO VALIDO, REBASA LOS 150 DIAS'];
                         }
-                    }else{
+                    } else {
                         return [[], 'INSTRUCTOR NO VALIDO, TRASLAPA CON OTROS CURSOS ASIGNADOS'];
                     }
-
-                }else{
+                } else {
                     return [[], 'INSTRUCTOR NO VALIDO, REBASA LAS 40 HORAS POR SEMANA'];
                 }
-
-            }else{
+            } else {
                 return [[], 'INSTRUCTOR NO VALIDO, REBASA LAS 8 HORAS DIARIAS'];
             }
-
         } catch (\Throwable $th) {
-            return [[], 'Error: '.$th->getMessage()];
+            return [[], 'Error: ' . $th->getMessage()];
         }
     }
-
-
-
-
 }

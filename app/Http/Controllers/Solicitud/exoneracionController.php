@@ -7,14 +7,16 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use App\Services\HerramientasService;
 use PDF;
 
 class exoneracionController extends Controller
 {
-    function __construct()
+    function __construct(HerramientasService $herramientas)
     {
         session_start();
         $this->path_files = env("APP_URL").'/storage/uploadFiles';
+        $this->herramientas = $herramientas;
     }
 
     public function index(Request $request){// dd(session('valor'));
@@ -260,15 +262,15 @@ class exoneracionController extends Controller
         return redirect()->route('solicitud.exoneracion')->with(['message' => $message]);
     }
 
-    public function generar(Request $request){ 
-        if ($request->valor) {            
+    public function generar(Request $request){
+        if ($request->valor) {
                 $valor = $request->valor;
                 $fecha = $request->fecha ?: date('Y-m-d');
                 // VALIDA SI EL MEMO NO SE ENCUENTRA EN USO
                 $existe_memo = DB::table('exoneraciones')->where('no_memorandum',$request->memo)->where('status', 'AUTORIZADO')->exists();
-                
+
                 if($existe_memo) return "EL NÚMERO DE MEMORÁNDUM INGRESADO YA SE ENCUENTRA ASIGNADO. LE SUGERIMOS VERIFICAR E INGRESAR UN NÚMERO LIBRE.";
-                
+
                 // Actualiza los registros con status VALIDADO
                 $result_memo = DB::table('exoneraciones')
                     ->where(function ($query) use ($valor) {
@@ -289,7 +291,7 @@ class exoneracionController extends Controller
                 if($result_memo) $valor = $request->memo;
 
                 session(['memo' => $request->memo,'valor'=>$valor]);
-            
+
 
             $cursos = DB::table('exoneraciones')
             ->where(function($query) use ($valor) {
@@ -309,7 +311,7 @@ class exoneracionController extends Controller
                     $fin = (DB::table('exoneraciones')->where('ejercicio',$year)->where('cct',$value->cct)->value(DB::raw('max(ffin)')))+$alumnos;
                     $result2 = DB::table('exoneraciones')->where('id',$value->id)->update(['fini'=>$ini, 'ffin'=>$fin]);
                 }
-            } 
+            }
             if($cursos) {
                 $mexoneracion = $date = $alumnos = null;
                 $data = [];
@@ -353,10 +355,10 @@ class exoneracionController extends Controller
                                                 WHERE id_curso = tc.folio_grupo
                                             )::text AS agenda
                                             ")
-                            )                               
+                            )
                                 ->join('tbl_cursos as tc','e.folio_grupo','=','tc.folio_grupo')
                                 ->join('agenda','agenda.id_curso','=','e.folio_grupo')
-                            
+
                                 ->leftJoin('alumnos_registro as ar','tc.folio_grupo','=','ar.folio_grupo')
                                 ->leftJoin('cursos as c','ar.id_curso','=','c.id')
                                 ->where(function($query) use ($valor) {
@@ -373,7 +375,7 @@ class exoneracionController extends Controller
                                     'pdunidad','pacademico','pvinculacion','municipio','direccion')
                                     ->where('id',$cursos[0]->id_unidad_capacitacion)
                                     ->first(); //dd($reg_unidad);
-                                    
+
                 $depen = $cursos[0]->depen;
                 $date = $cursos[0]->fecha_memorandum;
                 if($cursos[0]->no_memorandum)$mexoneracion = $cursos[0]->no_memorandum;
@@ -412,8 +414,10 @@ class exoneracionController extends Controller
                 $mes = $meses[date('m',strtotime($date))];
                 $fecha_doc = date('d',strtotime($date)).' de '.$mes.' del '.date('Y',strtotime($date));
                 $fecha = '09-12-2024';
+                //Seccion para el layout correcto sacando el año;
+                $layout_año = $this->herramientas->getPdfLayoutByDate($date);
 
-                $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha_doc','reg_unidad','depen','marca','data','direccion','director','fecha'));
+                $pdf = PDF::loadView('solicitud.exoneracion.Solicitudexoneracion',compact('cursos','mexoneracion','distintivo','fecha_doc','reg_unidad','depen','marca','data','direccion','director','fecha','layout_año'))->setPaper('letter', 'landscape');
                 $pdf->setpaper('letter','landscape');
                 return $pdf->stream('EXONERACION.pdf');
            // } else {

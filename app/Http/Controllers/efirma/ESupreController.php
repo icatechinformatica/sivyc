@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\efirma;
 
 use App\Models\especialidad_instructor;
+use App\Services\HerramientasService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
@@ -19,6 +20,11 @@ use PDF;
 
 class ESupreController extends Controller
 {
+    public function __construct(HerramientasService $herramientas)
+    {
+        $this->herramientas = $herramientas;
+    }
+
     public function generar_xml($id_supre){
         // dd($id_supre);
         $info = DB::Table('folios')->Select('tbl_unidades.*','tbl_cursos.clave','tbl_cursos.nombre','tbl_cursos.curp','instructores.correo',
@@ -406,10 +412,12 @@ class ESupreController extends Controller
                 <br><br><small><small><b>Validó: '. $funcionarios['director']. '.- '. $funcionarios['directorp']. '</b></small></small>
                 <br><small><small><b>Elaboró: '. $funcionarios['delegado']. '.- '. $funcionarios['delegadop']. '</b></small></small>';
 
+
+            $layout_año = $this->herramientas->getPdfLayoutByDate($data_supre->fecha);
         //Generación de MD5 al anexo
         $uuid = null;
         $bodyTabla = $body_html['tabla'];
-        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('bodyTabla','distintivo','direccion','uuid','funcionarios'));
+        $pdf = PDF::loadView('layouts.pdfpages.solicitudsuficiencia', compact('bodyTabla','distintivo','direccion','uuid','funcionarios','layout_año'));
         $pdf->setPaper('A4', 'Landscape');
         $pdfContent = $pdf->output();
         $body_html['anexoMD5'] = md5($pdfContent);
