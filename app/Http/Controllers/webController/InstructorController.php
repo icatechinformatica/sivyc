@@ -3581,6 +3581,15 @@ class InstructorController extends Controller
         $honorario_actual = instructor::Where('id', $request->idins)->First()->Value('tipo_honorario');
         $porcentaje = $cursosnoav = NULL;
         $tipo_doc = 'VALIDACION';
+        if (isset($request->no_save)) {
+            $primera_espe = DB::TABLE('especialidad_instructores')->where('id_instructor', $request->idins)->orderBy('id', 'asc')->first();
+            if ($primera_espe) {
+                $hval_array = is_string($primera_espe->hvalidacion) ? json_decode($primera_espe->hvalidacion, true) : $primera_espe->hvalidacion;
+                if (is_array($hval_array) && count($hval_array) > 1) {
+                    $tipo_doc = 'REVALIDACION';
+                }
+            }
+        }
         $rplc = array('[',']','"');
         $arrtemp = array();
         $especialidad_cambios = FALSE;
@@ -3694,29 +3703,32 @@ class InstructorController extends Controller
                     $especialidades[$pos] = $item;
                 }
             }
-            if($tipo_doc != 'REACTIVACION')
-            {
-                switch($item->status)
+            if(!isset($request->no_save)) {
+                if($tipo_doc != 'REACTIVACION')
                 {
-                    case 'REVALIDACION EN CAPTURA';
-                        $tipo_doc = 'REVALIDACION';
-                    break;
-                    case 'REVALIDACION EN FIRMA';
-                        $tipo_doc = 'REVALIDACION';
+                    switch($item->status)
+                    {
+                        case 'REVALIDACION EN CAPTURA';
+                            $tipo_doc = 'REVALIDACION';
+                        break;
+                        case 'REVALIDACION EN FIRMA';
+                            $tipo_doc = 'REVALIDACION';
 
-                    break;
-                    case 'REACTIVACION EN FIRMA';
-                        $tipo_doc = 'REACTIVACION';
-                    break;
-                    case 'REVALIDACION EN PREVALIDACION';
-                        $tipo_doc = 'REVALIDACION';
-                    break;
-                    case 'REACTIVACION EN PREVALIDACION';
-                        $tipo_doc = 'REACTIVACION';
-                    break;
+                        break;
+                        case 'REACTIVACION EN FIRMA';
+                            $tipo_doc = 'REACTIVACION';
+                        break;
+                        case 'REVALIDACION EN PREVALIDACION';
+                            $tipo_doc = 'REVALIDACION';
+                        break;
+                        case 'REACTIVACION EN PREVALIDACION';
+                            $tipo_doc = 'REACTIVACION';
+                        break;
+                    }
+                } 
+                if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE) {
+                    $tipo_doc = 'REVALIDACION';
                 }
-            } if($instructor->tipo_honorario != $honorario_actual && $especialidad_cambios == FALSE) {
-                $tipo_doc = 'REVALIDACION';
             }
         }
 
