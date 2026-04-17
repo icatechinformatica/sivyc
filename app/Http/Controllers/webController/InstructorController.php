@@ -3823,7 +3823,23 @@ class InstructorController extends Controller
                 {
                     $cadwell->memorandum_baja = $special[$key]->memorandum_baja = $request->memovali;
                 }
-                $cadwell->observacion_validacion = $special[$key]->observacion_validacion = $request->observacion_validacion;
+
+                $memo_sol_str = '___________';
+                if ($request->has('memovali') && !empty($request->memovali)) {
+                    $espe_bd = DB::table('especialidad_instructores')->select('hvalidacion')->where('id', $cadwell->id)->first();
+                    if ($espe_bd) {
+                        $hval_array = is_string($espe_bd->hvalidacion) ? json_decode($espe_bd->hvalidacion, true) : $espe_bd->hvalidacion;
+                        if (is_array($hval_array)) {
+                            foreach ($hval_array as $hval) {
+                                if (isset($hval['memo_val']) && $hval['memo_val'] === $request->memovali && !empty($hval['memo_sol'])) {
+                                    $memo_sol_str = $hval['memo_sol'];
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                $cadwell->observacion_validacion = $special[$key]->observacion_validacion = "VALIDADO PARA IMPARTIR LOS CURSOS MENCIONADOS EN LA SOLICITUD N° {$memo_sol_str} ASI COMO CURSOS DE ACUERDO A SU PERFIL ACADEMICO Y/O EXPERIENCIA.";
 
                 $cp = DB::TABLE('criterio_pago')->SELECT('perfil_profesional')->WHERE('id',$cadwell->criterio_pago_id)->FIRST();
                 $sp = DB::TABLE('especialidades')->SELECT('nombre', 'clave')->WHERE('id',$cadwell->especialidad_id)->FIRST();
@@ -3836,6 +3852,18 @@ class InstructorController extends Controller
         }
 
         $instructor->data_especialidad = $special;
+
+        if (isset($request->no_save) && count($especialidades) > 0) {
+            $primera_espe_val = DB::table('especialidad_instructores')->where('id_instructor', $request->idinsgendocval)->orderBy('id', 'asc')->first();
+            if ($primera_espe_val) {
+                $hval_array_val = is_string($primera_espe_val->hvalidacion) ? json_decode($primera_espe_val->hvalidacion, true) : $primera_espe_val->hvalidacion;
+                if (is_array($hval_array_val) && count($hval_array_val) > 1) {
+                    $especialidades[0]->status = 'ACTUALIZACION';
+                } else {
+                    $especialidades[0]->status = 'EN FIRMA';
+                }
+            }
+        }
 
         if (count($especialidades) == 0) {
             return back()->with('mensaje', 'Error: El instructor no tiene especialidades válidas o en firma para poder generar este PDF.');
