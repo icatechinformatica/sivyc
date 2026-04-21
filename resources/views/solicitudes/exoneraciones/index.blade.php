@@ -77,6 +77,7 @@
                             <th rowspan="2" class="text-center">CURSO /CERTIFICACIÓN</th>
                             <th rowspan="2" class="text-center">UNIDAD /ACCIÓN MÓVIL</th> 
                             <th rowspan="2" class="text-center">CURSO</th>
+                            <th rowspan="2" class="text-center">INSTRUCTOR</th>
                             <th rowspan="2" class="text-center">COSTO</th>
                             <th rowspan="2" class="text-center">HORAS</th>
                             <th rowspan="2" class="text-center">INICIO</th>       
@@ -120,6 +121,7 @@
                                 <td class="text-center">{{$item->tipo_curso}}</td>
                                 <td class="text-center">{{$item->unidad}}</td>
                                 <td><div style="width: 280px;">{{$item->curso}}</div></td>
+                                <td><div style="width: 280px;">{{$item->instructor}}</div></td>
                                 <td class="text-center">{{$item->costo}}</td>
                                 <td class="text-center">{{$item->dura}}</td>
                                 <td class="text-center">{{$item->inicio}}</td>
