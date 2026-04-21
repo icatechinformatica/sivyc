@@ -30,11 +30,29 @@ class ExpedienteController extends Controller
         $val_rol = null;
         $user = Auth::user();$roles = $user->roles();$resul = $roles->first();
         $slug = $resul->slug;
-        if ($slug == 'admin') {$val_rol = 0;}
-        else if($slug == 'direccion_vinculacion' || $slug == 'unidad_vinculacion' || $slug == 'vinculadores_administrativo' || $slug == 'director_unidad') {$val_rol = 1;}
-        else if($slug == 'unidad' || $slug == 'titular_unidad' || $slug == 'auxiliar_unidad') {$val_rol = 2;}
-        else if($slug == 'administrativo' || $slug == 'pagos_contratos') {$val_rol = 3;}
-        else if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion' || $slug == 'dta') {$val_rol = 4;}
+        if ($slug) {
+            $grupo0 = ['admin'];
+            $grupo1 = ['direccion_vinculacion', 'unidad_vinculacion', 'vinculadores_administrativo', 'director_unidad', 'unidad_vinculacion_auxiliar'];
+            $grupo2 = ['unidad', 'titular_unidad', 'auxiliar_unidad'];
+            $grupo3 = ['administrativo', 'pagos_contratos', 'auxiliar-delegacion-unidad'];
+            $grupo4 = ['titular-innovacion', 'auxiliar-innovacion', 'dta'];
+
+            if (in_array($slug, $grupo0)) { //Administrador
+                $val_rol = 0;
+            } elseif (in_array($slug, $grupo1)) { //Vinculación
+                $val_rol = 1;
+            } elseif (in_array($slug, $grupo2)) { //Académico
+                $val_rol = 2;
+            } elseif (in_array($slug, $grupo3)) { //Delegación Administrativa
+                $val_rol = 3;
+            } elseif (in_array($slug, $grupo4)) { //DTA
+                $val_rol = 4;
+            }
+
+        }else{
+            return redirect()->route('expunico.principal.mostrar.get')->with('message', '¡ROL NO ASIGNADO, CONTACTE AL ADMINISTRADOR!')->with('status', 'danger');
+        }
+
 
         #REALIZAMOS LA BUSQUEDA
         $valor_select_true = $array_rol = [];
