@@ -3824,22 +3824,28 @@ class InstructorController extends Controller
                     $cadwell->memorandum_baja = $special[$key]->memorandum_baja = $request->memovali;
                 }
 
-                $memo_sol_str = '___________';
-                if ($request->has('memovali') && !empty($request->memovali)) {
-                    $espe_bd = DB::table('especialidad_instructores')->select('hvalidacion')->where('id', $cadwell->id)->first();
-                    if ($espe_bd) {
-                        $hval_array = is_string($espe_bd->hvalidacion) ? json_decode($espe_bd->hvalidacion, true) : $espe_bd->hvalidacion;
-                        if (is_array($hval_array)) {
-                            foreach ($hval_array as $hval) {
-                                if (isset($hval['memo_val']) && $hval['memo_val'] === $request->memovali && !empty($hval['memo_sol'])) {
-                                    $memo_sol_str = $hval['memo_sol'];
-                                    break;
+                if (isset($request->no_save)) {
+                    $memo_sol_str = '___________';
+                    if ($request->has('memovali') && !empty($request->memovali)) {
+                        $espe_bd = DB::table('especialidad_instructores')->select('hvalidacion')->where('id', $cadwell->id)->first();
+                        if ($espe_bd) {
+                            $hval_array = is_string($espe_bd->hvalidacion) ? json_decode($espe_bd->hvalidacion, true) : $espe_bd->hvalidacion;
+                            if (is_array($hval_array)) {
+                                foreach ($hval_array as $hval) {
+                                    if (isset($hval['memo_val']) && $hval['memo_val'] === $request->memovali && !empty($hval['memo_sol'])) {
+                                        $memo_sol_str = $hval['memo_sol'];
+                                        break;
+                                    }
                                 }
                             }
                         }
                     }
+                    $cadwell->observacion_validacion = $special[$key]->observacion_validacion = "VALIDADO PARA IMPARTIR LOS CURSOS MENCIONADOS EN LA SOLICITUD N° {$memo_sol_str} ASI COMO CURSOS DE ACUERDO A SU PERFIL ACADEMICO Y/O EXPERIENCIA.";
+                } else {
+                    if ($request->has('observacion_validacion') && !is_null($request->observacion_validacion)) {
+                        $cadwell->observacion_validacion = $special[$key]->observacion_validacion = $request->observacion_validacion;
+                    }
                 }
-                $cadwell->observacion_validacion = $special[$key]->observacion_validacion = "VALIDADO PARA IMPARTIR LOS CURSOS MENCIONADOS EN LA SOLICITUD N° {$memo_sol_str} ASI COMO CURSOS DE ACUERDO A SU PERFIL ACADEMICO Y/O EXPERIENCIA.";
 
                 $cp = DB::TABLE('criterio_pago')->SELECT('perfil_profesional')->WHERE('id',$cadwell->criterio_pago_id)->FIRST();
                 $sp = DB::TABLE('especialidades')->SELECT('nombre', 'clave')->WHERE('id',$cadwell->especialidad_id)->FIRST();
