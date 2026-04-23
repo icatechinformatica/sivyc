@@ -15,7 +15,7 @@
     $permisos['menu_consulta'] = $usuario->canAny(['consultas.folios', 'consultas.lotes', 'consultas.cursosaperturados', 'planeacion.estadisticas',
                     'planeacion.grupos.vulnerables', 'planeacion.ingresos.propios', 'consultas.cursosefisico',
                     'consultas.instructor', 'consultas.instructores.disponibles', 'consultas.poa', 'show.cursos.validados',
-                    'consulta.bolsa.trabajo','consultas.cursos.exo','consultas.contratosfirmados']);
+                    'consulta.bolsa.trabajo','consultas.cursos.exo','consultas.contratosfirmados','consultas.gruposaperturados']);
     $permiso['menu_estadistica'] =  $usuario->canAny(['estadisticas.ecursos', 'tablero.metas.index']);
 @endphp
 <nav class="mb-1 navbar navbar-expand-lg navbar-dark pink2 darken-4">
@@ -382,6 +382,9 @@
                             @endif
                             @if($usuario->can('consultas.cursosaperturados'))
                                 <a class="dropdown-item" href="{{ route('consultas.cursosaperturados') }}">Cursos Aperturados</a>
+                            @endif
+                            @if($usuario->can('consultas.gruposaperturados'))
+                                <a class="dropdown-item" href="{{ route('consultas.gruposaperturados') }}"> DTA - Grupos Aperturados</a>
                             @endif
                             @if($usuario->can('consultas.contratosfirmados'))
                                 <a class="dropdown-item" href="{{ route('consultas.contratosfirmados') }}"> DTA - Contratos</a>
