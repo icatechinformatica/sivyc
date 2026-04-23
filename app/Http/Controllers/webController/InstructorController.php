@@ -3502,7 +3502,7 @@ class InstructorController extends Controller
         // dd($idins);
         $leyenda = DB::TABLE('tbl_instituto')->PLUCK('distintivo')->FIRST();
         $data = pre_instructor::WHERE('id', '=', $idins)->WHERE('registro_activo', TRUE)->FIRST();
-        if(!is_array($data->entrevista)) {
+        if(!is_null($data) && !is_array($data->entrevista)) {
             $data->entrevista = json_decode($data->entrevista, true);
         }
         if(!isset($data))
