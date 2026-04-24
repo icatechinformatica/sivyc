@@ -59,17 +59,32 @@ class HomeController extends Controller
         }
         $data = json_encode($data);
         
-        if($request->mes)$mes_ant = $request->mes;
-        else $mes_ant = date("n");
-        $mes_ant = $meses[($mes_ant==0) ? 12 : str_pad($mes_ant, 2, '0', STR_PAD_LEFT)];
-                
-        $data_asistencia = DB::table('tbl_instituto')->where('id',1)->value('asistencia_tecnica->E'.$anio.'->'.$mes_ant);
-        if(!$data_asistencia){
-            $mes_ant = date("n")-1;
-            $mes_ant = $meses[($mes_ant==0) ? 12 : str_pad($mes_ant, 2, '0', STR_PAD_LEFT)];             
+        if($request->mes) {
+            $mes_ant = $request->mes;
+            $mes_ant = $meses[($mes_ant==0) ? 12 : str_pad($mes_ant, 2, '0', STR_PAD_LEFT)];
             $data_asistencia = DB::table('tbl_instituto')->where('id',1)->value('asistencia_tecnica->E'.$anio.'->'.$mes_ant);
+            // No hacemos fallback si el usuario seleccionó un mes explícitamente
+        } else {
+            $mes_ant_num = date("n");
+            $mes_ant = $meses[($mes_ant_num==0) ? 12 : str_pad($mes_ant_num, 2, '0', STR_PAD_LEFT)];
+            $data_asistencia = DB::table('tbl_instituto')->where('id',1)->value('asistencia_tecnica->E'.$anio.'->'.$mes_ant);
+            
+            // Fallback solo si es la primera carga y el mes actual no tiene datos
+            if(!$data_asistencia){
+                $mes_ant_num = date("n") - 1;
+                $mes_ant = $meses[($mes_ant_num==0) ? 12 : str_pad($mes_ant_num, 2, '0', STR_PAD_LEFT)];             
+                $data_asistencia = DB::table('tbl_instituto')->where('id',1)->value('asistencia_tecnica->E'.$anio.'->'.$mes_ant);
+            }
         }
-             //dd($data_asistencia);
+        
+        if ($request->ajax()) {
+            return response()->json([
+                'cursos' => json_decode($data),
+                'asistencia' => $data_asistencia ? json_decode($data_asistencia) : null,
+                'subtit' => $data_asistencia ? $mes_ant." ". $anio : "NO DISPONIBLE"
+            ]);
+        }
+
         return view('layouts.pages.home', compact('cursos','meses','ejercicios','mes','anio','data','data_asistencia','mes_ant'));
     }
 }
