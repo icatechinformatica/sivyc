@@ -46,6 +46,11 @@
         </style>
 @endsection
 @section('content')
+        @php
+            if($tipo_doc == 'REVALIDACION') { $tipo_validacion = ['ACTUALIZACIÓN', 'actualizado']; }
+            elseif($tipo_doc == 'REACTIVACION') { $tipo_validacion = ['REACTIVACIÓN', 'reactivado']; }
+            else { $tipo_validacion = ['VALIDACIÓN', 'validado']; } 
+        @endphp
         <div>
             <div align=right> <b>Unidad de Capacitación {{$daesp}}</b> </div>
             <div align=right> <b>Memorandum No. @if($nomemosol != null){{$nomemosol}} @else BORRADOR @endif</b></div>
@@ -54,8 +59,9 @@
             <br><b>{{ $funcionarios['dacademico']['titulo'] }} {{ $funcionarios['dacademico']['nombre'] }}.</b>
             <br>{{ $funcionarios['dacademico']['puesto'] }}.
             <br>Presente.<br>
+            <br><p style='text-align:center; margin-bottom: -10px;'><b>SOLICITUD DE {{$tipo_validacion[0]}} DE INSTRUCTOR</b></p>
 
-            <br><p class="text-justify">Por este medio solicito la <b> @if($tipo_doc == 'REVALIDACION') actualización @elseif($tipo_doc == 'REACTIVACION') reactivación @else validación @endif  </b> como Instructor Externo, en función a que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica.</p>
+            <br><p class="text-justify">Por este medio solicito la <b> {{ $tipo_validacion[0] }} </b> como Instructor Externo, en función a que cumple con todos y cada uno de los requisitos establecidos en el manual de procedimientos del departamento de Gestión Académica.</p>
             {{-- <div class="table table-responsive"> --}}
                 <table class="tablad">
                     <thead>

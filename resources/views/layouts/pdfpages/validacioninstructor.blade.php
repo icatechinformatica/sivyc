@@ -118,7 +118,7 @@
         }
 
         .content {
-            margin-top: 12%;
+            margin-top: 14%;
         }
     </style>
 @endsection
@@ -129,7 +129,11 @@
                 if ($ari->status != 'BAJA EN FIRMA') {
                     $cont++;
                 }
-        } @endphp
+            }
+            
+            if($especialidades[0]->status == 'EN FIRMA') { $tipo_validacion = ['VALIDACIÓN', 'validado']; }
+            elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') {$tipo_validacion = ['REACTIVACIÓN', 'reactivado'];} else {$tipo_validacion = ['ACTUALIZACIÓN', 'actualizado']; }
+        @endphp
         <div align=right> <b>Dirección Técnica Académica</b></div>
         <div align=right> <b>Memorandum No. @if($especialidades[0]->status != 'BAJA EN FIRMA')
         {{$especialidades[0]->memorandum_validacion}} @else {{$especialidades[0]->memorandum_baja}} @endif</b></div>
@@ -137,13 +141,11 @@
         <b>{{ $funcionarios['dunidad']['titulo'] }} {{ $funcionarios['dunidad']['nombre'] }}.</b>
         <br>{{ $funcionarios['dunidad']['puesto'] }}.
         <br>Presente.
+        <br> <p style='text-align:center; margin-bottom:-40px;'><b>{{ $tipo_validacion[0] }} DE INSTRUCTOR</b></p>
         <br><br style="line-height: 1;">
-        <p style="line-height: 1; font-size: 12px;">Con relación a la solicitud de
-            @if($especialidades[0]->status == 'EN FIRMA') validación
-            @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivación @else actualización @endif del
+        <p style="line-height: 1; font-size: 12px;">Con relación a la solicitud de {{$tipo_validacion[0]}} del
             instructor, realizada mediante memorándum núm. {{$especialidades[0]->memorandum_solicitud}}, me permito
-            indicarle que el siguiente docente ha quedado @if($especialidades[0]->status == 'EN FIRMA') validado
-            @elseif($especialidades[0]->status == 'REACTIVACION EN FIRMA') reactivado @else actualizado @endif en
+            indicarle que el siguiente docente ha quedado {{$tipo_validacion[1]}}    en
             @if($cont == 1) la especialidad @else las especialidades @endif que se indica.</p>
         <div class="table table-responsive" style="margin-bottom: 0px; margin-top: -8px;">
             <table class="tablag" style="">

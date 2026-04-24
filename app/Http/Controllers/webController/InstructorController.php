@@ -3294,6 +3294,14 @@ class InstructorController extends Controller
                 LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as espe"),
+                DB::raw("array(
+                    SELECT c.nombre_curso
+                    FROM especialidad_instructores
+                    LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+                    CROSS JOIN LATERAL jsonb_array_elements_text(CASE WHEN jsonb_typeof(especialidad_instructores.cursos_impartir) = 'array' THEN especialidad_instructores.cursos_impartir ELSE '[]'::jsonb END) AS course_id
+                    JOIN cursos c on c.id = CAST(course_id AS integer)
+                    WHERE especialidad_instructores.perfilprof_id = instructor_perfil.id
+                ) as cursos_asignados"),
                 DB::raw("array(select fecha_validacion from especialidad_instructores
                 LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
                 where especialidad_instructores.perfilprof_id = instructor_perfil.id) as fechaval"),
@@ -3339,7 +3347,7 @@ class InstructorController extends Controller
                 ->ORDERBY('apellidoPaterno', 'ASC')
                 ->GET();
 
-        $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
+        $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','CURSOS QUE PUEDE IMPARTIR','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
                     'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
                     'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','SEXO','ESTADO_CIVIL',
                     'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION',
@@ -3359,6 +3367,14 @@ class InstructorController extends Controller
         LEFT JOIN especialidades on especialidades.id = especialidad_instructores.especialidad_id
         LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
         where especialidad_instructores.perfilprof_id = instructor_perfil.id) as espe"),
+        DB::raw("array(
+            SELECT c.nombre_curso
+            FROM especialidad_instructores
+            LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
+            CROSS JOIN LATERAL jsonb_array_elements_text(CASE WHEN jsonb_typeof(especialidad_instructores.cursos_impartir) = 'array' THEN especialidad_instructores.cursos_impartir ELSE '[]'::jsonb END) AS course_id
+            JOIN cursos c on c.id = CAST(course_id AS integer)
+            WHERE especialidad_instructores.perfilprof_id = instructor_perfil.id
+        ) as cursos_asignados"),
         DB::raw("array(select fecha_validacion from especialidad_instructores
         LEFT JOIN instructor_perfil on instructor_perfil.numero_control = instructores.id
         where especialidad_instructores.perfilprof_id = instructor_perfil.id) as fechaval"),
@@ -3398,7 +3414,7 @@ class InstructorController extends Controller
     ->get();
 
 
-        $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
+        $cabecera = ['ID','UNIDAD DE CAPACITACION/ACCION MOVIL','APELLIDO PATERNO','APELLIDO MATERNO','NOMBRE','CURP','RFC','NUMERO COTROL','ESPECIALIDAD','CURSOS QUE PUEDE IMPARTIR','FECHA DE VALIDACION','CLAVE','CRITERIO PAGO',
                     'GRADO PROFESIONAL QUE CUBRE PARA LA ESPECIALIDAD','PERFIL PROFESIONAL CON EL QUE SE VALIDO',
                     'FORMACION PROFESIONAL CON EL QUE SE VALIDO','INSTITUCION','SEXO','ESTADO_CIVIL',
                     'ASENTAMIENTO','DOMICILIO','TELEFONO','CORREO','MEMORANDUM DE VALIDACION',
