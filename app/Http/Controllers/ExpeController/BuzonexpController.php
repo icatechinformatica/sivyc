@@ -51,7 +51,7 @@ class BuzonexpController extends Controller
         $slug = $resul->slug;
         if($slug == 'titular-innovacion' || $slug == 'auxiliar-innovacion' || $slug == 'dta') $val_rol = 4;
         else if($slug == 'administrativo' || $slug == 'admin' || $slug == 'titular_unidad' || $slug == 'unidad_vinculacion'
-                || $slug == 'pagos_contratos' || $slug == 'director_unidad') $val_rol = 3;
+                || $slug == 'pagos_contratos' || $slug == 'director_unidad' || $slug == 'lectura_expedientes') $val_rol = 3;
         //Esto linea es solo para hacer pruebas
         // $val_rol = 3;
 
